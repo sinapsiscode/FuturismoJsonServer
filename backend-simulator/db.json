@@ -1,0 +1,372 @@
+{
+  "users": [
+    {
+      "id": "user-admin-1",
+      "username": "admin",
+      "email": "admin@futurismo.com",
+      "password_hash": "$2a$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi",
+      "role": "admin",
+      "status": "active",
+      "first_name": "Administrator",
+      "last_name": "Sistema",
+      "phone": "+51987654321",
+      "avatar": "https://ui-avatars.com/api/?name=Admin&background=3B82F6&color=fff",
+      "last_login_at": "2025-09-18T17:55:19.865Z",
+      "created_at": "2024-01-01T00:00:00Z",
+      "updated_at": "2024-12-18T10:00:00Z"
+    },
+    {
+      "id": "user-agency-1",
+      "username": "agency_lima",
+      "email": "contacto@tourslima.com",
+      "password_hash": "$2a$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi",
+      "role": "agency",
+      "status": "active",
+      "first_name": "María",
+      "last_name": "González",
+      "phone": "+51987654322",
+      "avatar": "https://ui-avatars.com/api/?name=Maria+Gonzalez&background=10B981&color=fff",
+      "last_login_at": "2024-12-18T09:30:00Z",
+      "created_at": "2024-02-01T00:00:00Z",
+      "updated_at": "2024-12-18T09:30:00Z"
+    },
+    {
+      "id": "user-guide-1",
+      "username": "guide_carlos",
+      "email": "carlos@guia.com",
+      "password_hash": "$2a$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi",
+      "role": "guide",
+      "status": "active",
+      "first_name": "Carlos",
+      "last_name": "Mendoza",
+      "phone": "+51987654323",
+      "avatar": "https://ui-avatars.com/api/?name=Carlos+Mendoza&background=F59E0B&color=fff",
+      "last_login_at": "2024-12-18T08:45:00Z",
+      "created_at": "2024-03-01T00:00:00Z",
+      "updated_at": "2024-12-18T08:45:00Z"
+    },
+    {
+      "id": "user-guide-freelance-1",
+      "username": "guide_ana",
+      "email": "ana@freelance.com",
+      "password_hash": "$2a$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi",
+      "role": "guide",
+      "status": "active",
+      "first_name": "Ana",
+      "last_name": "Ruiz",
+      "phone": "+51987654324",
+      "avatar": "https://ui-avatars.com/api/?name=Ana+Ruiz&background=8B5CF6&color=fff",
+      "last_login_at": "2024-12-18T07:15:00Z",
+      "created_at": "2024-04-01T00:00:00Z",
+      "updated_at": "2024-12-18T07:15:00Z"
+    }
+  ],
+  "agencies": [
+    {
+      "id": "agency-1",
+      "user_id": "user-agency-1",
+      "business_name": "Tours Lima Premium S.A.C.",
+      "commercial_name": "Tours Lima Premium",
+      "ruc": "20123456789",
+      "address": "Av. José Larco 1234, Miraflores, Lima",
+      "website": "https://tourslima.com",
+      "description": "Agencia especializada en tours premium por Lima y alrededores",
+      "foundation_date": "2015-06-15",
+      "status": "active",
+      "subscription_plan": "premium",
+      "rating": 4.7,
+      "total_tours": 1250,
+      "total_clients": 5600,
+      "created_at": "2024-02-01T00:00:00Z",
+      "updated_at": "2024-12-18T00:00:00Z"
+    }
+  ],
+  "guides": [
+    {
+      "id": "guide-1",
+      "user_id": "user-guide-1",
+      "agency_id": "agency-1",
+      "guide_type": "planta",
+      "license_number": "GUID-2024-001",
+      "specializations": [
+        "historical",
+        "museums",
+        "colonial"
+      ],
+      "languages": [
+        "es",
+        "en",
+        "fr"
+      ],
+      "experience_years": 8,
+      "rating": 4.8,
+      "total_tours": 156,
+      "base_price": 80,
+      "status": "active",
+      "availability_status": "available",
+      "bio": "Guía especializado en historia colonial de Lima con 8 años de experiencia",
+      "created_at": "2024-03-01T00:00:00Z",
+      "updated_at": "2024-12-18T00:00:00Z"
+    },
+    {
+      "id": "guide-2",
+      "user_id": "user-guide-freelance-1",
+      "agency_id": null,
+      "guide_type": "freelance",
+      "license_number": "GUID-2024-002",
+      "specializations": [
+        "gastronomic",
+        "cultural",
+        "modern"
+      ],
+      "languages": [
+        "es",
+        "en",
+        "pt"
+      ],
+      "experience_years": 5,
+      "rating": 4.9,
+      "total_tours": 89,
+      "base_price": 95,
+      "status": "active",
+      "availability_status": "available",
+      "bio": "Guía freelance especializada en gastronomía y cultura moderna limeña",
+      "created_at": "2024-04-01T00:00:00Z",
+      "updated_at": "2024-12-18T00:00:00Z"
+    }
+  ],
+  "tours": [
+    {
+      "id": "tour-1",
+      "agency_id": "agency-1",
+      "title": "Lima Colonial Walking Tour",
+      "description": "Explora el centro histórico de Lima y descubre su arquitectura colonial",
+      "duration_hours": 3,
+      "max_participants": 15,
+      "price": 45,
+      "category": "historical",
+      "difficulty": "easy",
+      "includes": [
+        "Guía certificado",
+        "Entrada a museos",
+        "Agua embotellada"
+      ],
+      "meeting_point": "Plaza de Armas de Lima",
+      "status": "active",
+      "rating": 4.6,
+      "total_bookings": 234,
+      "created_at": "2024-05-01T00:00:00Z",
+      "updated_at": "2024-12-18T00:00:00Z"
+    },
+    {
+      "id": "tour-2",
+      "agency_id": "agency-1",
+      "title": "Lima Gastronómica Experience",
+      "description": "Tour gastronómico por los mejores restaurantes y mercados de Lima",
+      "duration_hours": 4,
+      "max_participants": 12,
+      "price": 85,
+      "category": "gastronomic",
+      "difficulty": "easy",
+      "includes": [
+        "Degustaciones",
+        "Guía gastronómico",
+        "Transporte"
+      ],
+      "meeting_point": "Mercado Central de Lima",
+      "status": "active",
+      "rating": 4.9,
+      "total_bookings": 189,
+      "created_at": "2024-06-01T00:00:00Z",
+      "updated_at": "2024-12-18T00:00:00Z"
+    }
+  ],
+  "reservations": [
+    {
+      "id": "reservation-1",
+      "tour_id": "tour-1",
+      "client_id": "client-1",
+      "guide_id": "guide-1",
+      "agency_id": "agency-1",
+      "date": "2024-12-25",
+      "time": "09:00",
+      "participants": 4,
+      "total_amount": 180,
+      "status": "confirmed",
+      "payment_status": "paid",
+      "special_requests": "Grupo familiar con niños",
+      "created_at": "2024-12-15T14:30:00Z",
+      "updated_at": "2024-12-15T14:30:00Z"
+    },
+    {
+      "id": "reservation-2",
+      "tour_id": "tour-2",
+      "client_id": "client-2",
+      "guide_id": "guide-2",
+      "agency_id": "agency-1",
+      "date": "2024-12-28",
+      "time": "11:00",
+      "participants": 2,
+      "total_amount": 170,
+      "status": "pending",
+      "payment_status": "pending",
+      "special_requests": "Vegetarianos",
+      "created_at": "2024-12-16T10:15:00Z",
+      "updated_at": "2024-12-16T10:15:00Z"
+    }
+  ],
+  "clients": [
+    {
+      "id": "client-1",
+      "email": "juan.cliente@email.com",
+      "first_name": "Juan",
+      "last_name": "Pérez",
+      "phone": "+51987654325",
+      "nationality": "Peruana",
+      "birth_date": "1985-03-15",
+      "total_bookings": 3,
+      "total_spent": 520,
+      "points_balance": 156,
+      "preferred_language": "es",
+      "status": "active",
+      "created_at": "2024-08-01T00:00:00Z",
+      "updated_at": "2024-12-15T00:00:00Z"
+    },
+    {
+      "id": "client-2",
+      "email": "maria.turista@email.com",
+      "first_name": "María",
+      "last_name": "Johnson",
+      "phone": "+1234567890",
+      "nationality": "Estadounidense",
+      "birth_date": "1992-07-22",
+      "total_bookings": 1,
+      "total_spent": 85,
+      "points_balance": 25,
+      "preferred_language": "en",
+      "status": "active",
+      "created_at": "2024-12-10T00:00:00Z",
+      "updated_at": "2024-12-16T00:00:00Z"
+    }
+  ],
+  "marketplace_requests": [
+    {
+      "id": "request-1",
+      "agency_id": "agency-1",
+      "service_type": "city_tour",
+      "date": "2024-12-30",
+      "time": "14:00",
+      "duration_hours": 3,
+      "participants": 8,
+      "budget": 600,
+      "specialization_required": "historical",
+      "language_required": "en",
+      "description": "Tour histórico para grupo internacional",
+      "status": "open",
+      "responses_count": 2,
+      "created_at": "2024-12-17T09:00:00Z",
+      "updated_at": "2024-12-17T09:00:00Z"
+    }
+  ],
+  "guide_responses": [
+    {
+      "id": "response-1",
+      "request_id": "request-1",
+      "guide_id": "guide-1",
+      "proposed_price": 75,
+      "message": "Tengo amplia experiencia en tours históricos en inglés",
+      "availability_confirmed": true,
+      "status": "pending",
+      "created_at": "2024-12-17T10:30:00Z",
+      "updated_at": "2024-12-17T10:30:00Z"
+    },
+    {
+      "id": "response-2",
+      "request_id": "request-1",
+      "guide_id": "guide-2",
+      "proposed_price": 85,
+      "message": "Soy guía certificada con excelentes reviews",
+      "availability_confirmed": true,
+      "status": "pending",
+      "created_at": "2024-12-17T11:15:00Z",
+      "updated_at": "2024-12-17T11:15:00Z"
+    }
+  ],
+  "financial_transactions": [
+    {
+      "id": "transaction-1",
+      "type": "booking_payment",
+      "amount": 180,
+      "currency": "PEN",
+      "reservation_id": "reservation-1",
+      "payer_id": "client-1",
+      "recipient_id": "agency-1",
+      "status": "completed",
+      "payment_method": "credit_card",
+      "created_at": "2024-12-15T14:35:00Z",
+      "updated_at": "2024-12-15T14:35:00Z"
+    }
+  ],
+  "notifications": [
+    {
+      "id": "notification-1",
+      "user_id": "user-guide-1",
+      "type": "booking_confirmed",
+      "title": "Nueva reserva confirmada",
+      "message": "Se ha confirmado tu asignación para el tour del 25 de diciembre",
+      "read": false,
+      "action_url": "/reservations/reservation-1",
+      "created_at": "2024-12-15T14:35:00Z"
+    },
+    {
+      "id": "notification-2",
+      "user_id": "user-agency-1",
+      "type": "new_request",
+      "title": "Nueva solicitud en marketplace",
+      "message": "Hay 2 respuestas para tu solicitud de tour histórico",
+      "read": false,
+      "action_url": "/marketplace/requests/request-1",
+      "created_at": "2024-12-17T11:20:00Z"
+    }
+  ],
+  "conversations": [
+    {
+      "id": "conversation-1",
+      "type": "service_coordination",
+      "participants": [
+        "user-agency-1",
+        "user-guide-1"
+      ],
+      "title": "Coordinación Tour Colonial 25/12",
+      "last_message": "Confirmado el punto de encuentro",
+      "last_message_at": "2024-12-17T16:30:00Z",
+      "created_at": "2024-12-15T14:40:00Z",
+      "updated_at": "2024-12-17T16:30:00Z"
+    }
+  ],
+  "messages": [
+    {
+      "id": "message-1",
+      "conversation_id": "conversation-1",
+      "sender_id": "user-agency-1",
+      "content": "Hola Carlos, confirmamos el tour para el 25 de diciembre a las 9:00 AM",
+      "type": "text",
+      "read_by": [
+        "user-agency-1"
+      ],
+      "created_at": "2024-12-15T14:45:00Z"
+    },
+    {
+      "id": "message-2",
+      "conversation_id": "conversation-1",
+      "sender_id": "user-guide-1",
+      "content": "Perfecto, estaré en la Plaza de Armas a las 8:45 AM para preparar todo",
+      "type": "text",
+      "read_by": [
+        "user-agency-1",
+        "user-guide-1"
+      ],
+      "created_at": "2024-12-17T16:30:00Z"
+    }
+  ]
+}
