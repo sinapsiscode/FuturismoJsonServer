@@ -43,19 +43,19 @@ module.exports = (router) => {
   // Get monthly data for charts
   dashboardRouter.get('/monthly-data', (req, res) => {
     try {
-      const monthlyData = [
+      const db = router.db;
+      const dashboardStats = db.get('dashboard_stats').value();
+
+      // Use data from db.json or fallback
+      const monthlyData = dashboardStats ? dashboardStats.line_data.map(item => ({
+        month: item.name,
+        revenue: item.ingresos,
+        bookings: item.reservas,
+        guides: Math.floor(item.turistas / 50) // Estimate guides based on tourists
+      })) : [
         { month: 'Ene', revenue: 15400, bookings: 45, guides: 12 },
         { month: 'Feb', revenue: 18200, bookings: 52, guides: 14 },
-        { month: 'Mar', revenue: 22100, bookings: 64, guides: 16 },
-        { month: 'Abr', revenue: 19800, bookings: 58, guides: 15 },
-        { month: 'May', revenue: 25300, bookings: 71, guides: 18 },
-        { month: 'Jun', revenue: 28900, bookings: 82, guides: 20 },
-        { month: 'Jul', revenue: 32100, bookings: 95, guides: 22 },
-        { month: 'Ago', revenue: 29800, bookings: 87, guides: 21 },
-        { month: 'Sep', revenue: 27500, bookings: 79, guides: 19 },
-        { month: 'Oct', revenue: 31200, bookings: 89, guides: 23 },
-        { month: 'Nov', revenue: 33800, bookings: 96, guides: 24 },
-        { month: 'Dic', revenue: 36400, bookings: 104, guides: 26 }
+        { month: 'Mar', revenue: 22100, bookings: 64, guides: 16 }
       ];
 
       res.json({
@@ -67,6 +67,161 @@ module.exports = (router) => {
       res.status(500).json({
         success: false,
         error: 'Error al obtener datos mensuales'
+      });
+    }
+  });
+
+  // Get chart data
+  dashboardRouter.get('/chart-data', (req, res) => {
+    try {
+      const { type, timeRange } = req.query;
+      const db = router.db;
+      const dashboardStats = db.get('dashboard_stats').value();
+
+      let data = [];
+
+      if (type === 'line' && dashboardStats) {
+        data = dashboardStats.line_data;
+      } else if (type === 'bar' && dashboardStats) {
+        data = dashboardStats.bar_data;
+      }
+
+      res.json({
+        success: true,
+        data: data
+      });
+
+    } catch (error) {
+      res.status(500).json({
+        success: false,
+        error: 'Error al obtener datos del gráfico'
+      });
+    }
+  });
+
+  // Get KPIs
+  dashboardRouter.get('/kpis', (req, res) => {
+    try {
+      const db = router.db;
+      const dashboardStats = db.get('dashboard_stats').value();
+
+      const kpis = dashboardStats ? dashboardStats.kpi_data : {
+        totalReservas: { actual: 0, anterior: 0, crecimiento: 0 },
+        totalTuristas: { actual: 0, anterior: 0, crecimiento: 0 },
+        ingresosTotales: { actual: 0, anterior: 0, crecimiento: 0 }
+      };
+
+      res.json({
+        success: true,
+        data: kpis
+      });
+
+    } catch (error) {
+      res.status(500).json({
+        success: false,
+        error: 'Error al obtener KPIs'
+      });
+    }
+  });
+
+  // Get summary data
+  dashboardRouter.get('/summary', (req, res) => {
+    try {
+      const db = router.db;
+      const dashboardStats = db.get('dashboard_stats').value();
+
+      const summary = dashboardStats ? dashboardStats.summary_data : {
+        popularTour: 'Sin datos',
+        avgPerBooking: 0,
+        bestDay: 'Sin datos',
+        conversionRate: 0
+      };
+
+      res.json({
+        success: true,
+        data: summary
+      });
+
+    } catch (error) {
+      res.status(500).json({
+        success: false,
+        error: 'Error al obtener resumen'
+      });
+    }
+  });
+
+  // Get work zones
+  dashboardRouter.get('/work-zones', (req, res) => {
+    try {
+      const db = router.db;
+      const workZones = db.get('work_zones').value() || [];
+
+      res.json({
+        success: true,
+        data: workZones
+      });
+
+    } catch (error) {
+      res.status(500).json({
+        success: false,
+        error: 'Error al obtener zonas de trabajo'
+      });
+    }
+  });
+
+  // Get tour types
+  dashboardRouter.get('/tour-types', (req, res) => {
+    try {
+      const db = router.db;
+      const tourTypes = db.get('tour_types').value() || [];
+
+      res.json({
+        success: true,
+        data: tourTypes
+      });
+
+    } catch (error) {
+      res.status(500).json({
+        success: false,
+        error: 'Error al obtener tipos de tour'
+      });
+    }
+  });
+
+  // Get group types
+  dashboardRouter.get('/group-types', (req, res) => {
+    try {
+      const db = router.db;
+      const groupTypes = db.get('group_types').value() || [];
+
+      res.json({
+        success: true,
+        data: groupTypes
+      });
+
+    } catch (error) {
+      res.status(500).json({
+        success: false,
+        error: 'Error al obtener tipos de grupo'
+      });
+    }
+  });
+
+  // Get languages
+  dashboardRouter.get('/languages', (req, res) => {
+    try {
+      const db = router.db;
+      const languages = db.get('languages').value() || [];
+
+      res.json({
+        success: true,
+        data: languages
+      });
+
+    } catch (error) {
+      res.status(500).json({
+        success: false,
+        error: 'Error al obtener idiomas'
       });
     }
   });

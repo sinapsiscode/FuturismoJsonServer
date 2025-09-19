@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm start)",
+      "Bash(node server.js)",
+      "Bash(netstat:*)",
+      "Bash(findstr:*)",
+      "Bash(\"taskkill\" \"/F\" \"/PID\" \"17472\")",
+      "Bash(find:*)",
+      "Bash(node:*)",
+      "Bash(tasklist)",
+      "Bash(taskkill:*)",
+      "Bash(copy authService.js authService.backup.js)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
