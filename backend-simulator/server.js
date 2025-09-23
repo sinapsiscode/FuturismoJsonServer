@@ -21,6 +21,14 @@ const validatorsRoutes = require('./routes/validators');
 const utilsRoutes = require('./routes/utils');
 const systemRoutes = require('./routes/system');
 const appRoutes = require('./routes/app');
+const vehiclesRoutes = require('./routes/vehicles');
+const guidesRoutes = require('./routes/guides');
+const financialRoutes = require('./routes/financial');
+const chatRoutes = require('./routes/chat');
+const usersRoutes = require('./routes/users');
+const driversRoutes = require('./routes/drivers');
+const agenciesRoutes = require('./routes/agencies');
+const filesRoutes = require('./routes/files');
 const { addHelpers } = require('./middlewares/helpers');
 
 // Create server
@@ -62,6 +70,14 @@ server.use('/api/validators', validatorsRoutes(router));
 server.use('/api/utils', utilsRoutes(router));
 server.use('/api/system', systemRoutes(router));
 server.use('/api/app', appRoutes(router));
+server.use('/api/vehicles', vehiclesRoutes(router));
+server.use('/api/guides', guidesRoutes(router));
+server.use('/api/financial', financialRoutes(router));
+server.use('/api/chat', chatRoutes(router));
+server.use('/api/users', usersRoutes(router));
+server.use('/api/drivers', driversRoutes(router));
+server.use('/api/agencies', agenciesRoutes(router));
+server.use('/api/files', filesRoutes(router));
 
 // JSON Server router (handles CRUD for all other endpoints)
 server.use('/api', router);

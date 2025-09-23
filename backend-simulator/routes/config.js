@@ -319,27 +319,57 @@ module.exports = (router) => {
       const settings = {
         app: {
           name: 'Futurismo',
-          version: '1.0.0',
-          environment: 'development'
+          version: process.env.APP_VERSION || '25.07.0001',
+          environment: process.env.NODE_ENV || 'development'
+        },
+        contact: {
+          whatsapp: process.env.WHATSAPP_NUMBER || '+51999888777',
+          email: process.env.COMPANY_EMAIL || 'info@futurismo.com',
+          website: process.env.COMPANY_WEBSITE || 'https://futurismo.com',
+          emergency: {
+            police: process.env.EMERGENCY_POLICE || '105',
+            fire: process.env.EMERGENCY_FIRE || '116',
+            medical: process.env.EMERGENCY_MEDICAL || '106',
+            company: process.env.EMERGENCY_COMPANY || '+51 999 888 777'
+          }
+        },
+        api: {
+          baseUrl: process.env.API_BASE_URL || 'http://localhost:4050/api',
+          wsUrl: process.env.WEBSOCKET_URL || 'http://localhost:3000',
+          timeout: parseInt(process.env.API_TIMEOUT) || 30000
         },
         features: {
-          notifications: true,
-          emergency_alerts: true,
-          multi_language: true,
-          payment_gateway: false,
-          real_time_tracking: true
+          notifications: process.env.FEATURE_NOTIFICATIONS !== 'false',
+          emergency_alerts: process.env.FEATURE_EMERGENCY !== 'false',
+          multi_language: process.env.FEATURE_MULTILANG !== 'false',
+          payment_gateway: process.env.FEATURE_PAYMENTS === 'true',
+          real_time_tracking: process.env.FEATURE_TRACKING !== 'false'
         },
         limits: {
-          max_file_size: 5242880, // 5MB
-          max_group_size: 50,
-          reservation_days_ahead: 365,
-          cancellation_hours: 24
+          max_file_size: parseInt(process.env.MAX_FILE_SIZE) || 5242880, // 5MB
+          max_group_size: parseInt(process.env.MAX_GROUP_SIZE) || 50,
+          max_tour_capacity: parseInt(process.env.MAX_TOUR_CAPACITY) || 20,
+          reservation_days_ahead: parseInt(process.env.RESERVATION_DAYS_AHEAD) || 365,
+          cancellation_hours: parseInt(process.env.CANCELLATION_HOURS) || 24,
+          session_timeout: parseInt(process.env.SESSION_TIMEOUT) || 1800000,
+          whatsapp_cutoff_hour: parseInt(process.env.WHATSAPP_CUTOFF_HOUR) || 17
+        },
+        intervals: {
+          fast_update: parseInt(process.env.UPDATE_INTERVAL_FAST) || 30000,
+          medium_update: parseInt(process.env.UPDATE_INTERVAL_MEDIUM) || 60000,
+          slow_update: parseInt(process.env.UPDATE_INTERVAL_SLOW) || 300000,
+          debounce_delay: parseInt(process.env.DEBOUNCE_DELAY) || 300
         },
         formats: {
-          date: 'DD/MM/YYYY',
-          time: 'HH:mm',
-          currency: 'USD',
-          timezone: 'America/Lima'
+          date: process.env.DATE_FORMAT || 'DD/MM/YYYY',
+          time: process.env.TIME_FORMAT || 'HH:mm',
+          currency: process.env.DEFAULT_CURRENCY || 'USD',
+          timezone: process.env.TIMEZONE || 'America/Lima'
+        },
+        external_services: {
+          google_maps_api: process.env.GOOGLE_MAPS_API_KEY || '',
+          avatars_service: process.env.AVATARS_SERVICE_URL || 'https://ui-avatars.com/api/',
+          osm_tiles: process.env.OSM_TILES_URL || 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
         }
       };
 
