@@ -1,0 +1,243 @@
+import { StyleSheet } from '@react-pdf/renderer';
+
+export const pdfStyles = StyleSheet.create({
+  page: {
+    flexDirection: 'column',
+    backgroundColor: '#ffffff',
+    padding: 25,
+    fontSize: 10,
+    fontFamily: 'Helvetica',
+  },
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 15,
+    paddingBottom: 12,
+    borderBottomWidth: 3,
+    borderBottomColor: '#2563eb',
+  },
+  headerContent: {
+    alignItems: 'center',
+  },
+  companyName: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    color: '#1f2937',
+    marginBottom: 4,
+  },
+  subtitle: {
+    fontSize: 11,
+    color: '#2563eb',
+    fontWeight: 'bold',
+    marginBottom: 8,
+  },
+  titleBox: {
+    backgroundColor: '#eff6ff',
+    padding: 8,
+    borderRadius: 6,
+    alignItems: 'center',
+    marginTop: 6,
+  },
+  titleText: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    color: '#1e40af',
+    marginBottom: 2,
+  },
+  titleSubtext: {
+    fontSize: 9,
+    color: '#1e40af',
+  },
+  section: {
+    marginBottom: 12,
+  },
+  sectionTitle: {
+    fontSize: 13,
+    fontWeight: 'bold',
+    color: '#374151',
+    marginBottom: 8,
+    paddingBottom: 4,
+    borderBottomWidth: 1,
+    borderBottomColor: '#e5e7eb',
+  },
+  infoGrid: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 12,
+  },
+  infoBox: {
+    backgroundColor: '#f8fafc',
+    padding: 12,
+    borderRadius: 6,
+    flex: 0.48,
+    borderWidth: 1,
+    borderColor: '#e2e8f0',
+  },
+  infoRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingVertical: 2,
+    borderBottomWidth: 1,
+    borderBottomColor: '#e5e7eb',
+    marginBottom: 2,
+  },
+  infoLabel: {
+    fontWeight: 'bold',
+    color: '#6b7280',
+    fontSize: 9,
+  },
+  infoValue: {
+    fontWeight: 'bold',
+    color: '#111827',
+    fontSize: 9,
+  },
+  teamSection: {
+    marginBottom: 12,
+  },
+  teamTitle: {
+    fontSize: 12,
+    fontWeight: 'bold',
+    color: '#374151',
+    marginBottom: 6,
+  },
+  teamMember: {
+    marginBottom: 8,
+    padding: 8,
+    backgroundColor: '#f3f4f6',
+    borderRadius: 4,
+  },
+  teamMemberName: {
+    fontWeight: 'bold',
+    fontSize: 10,
+    color: '#111827',
+    marginBottom: 2,
+  },
+  teamMemberInfo: {
+    fontSize: 9,
+    color: '#6b7280',
+    marginBottom: 1,
+  },
+  touristTable: {
+    marginBottom: 12,
+  },
+  tableHeader: {
+    flexDirection: 'row',
+    backgroundColor: '#374151',
+    padding: 6,
+    borderRadius: 4,
+  },
+  tableHeaderCell: {
+    color: '#ffffff',
+    fontWeight: 'bold',
+    fontSize: 9,
+    flex: 1,
+  },
+  tableRow: {
+    flexDirection: 'row',
+    padding: 4,
+    borderBottomWidth: 1,
+    borderBottomColor: '#e5e7eb',
+  },
+  tableCell: {
+    fontSize: 9,
+    color: '#374151',
+    flex: 1,
+  },
+  notesSection: {
+    backgroundColor: '#fefce8',
+    borderWidth: 1,
+    borderColor: '#fef08a',
+    padding: 8,
+    borderRadius: 6,
+    marginBottom: 10,
+  },
+  notesTitle: {
+    fontSize: 10,
+    fontWeight: 'bold',
+    color: '#92400e',
+    marginBottom: 4,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  notesText: {
+    fontSize: 9,
+    color: '#92400e',
+  },
+  emergencySection: {
+    backgroundColor: '#fef2f2',
+    borderWidth: 1,
+    borderColor: '#fecaca',
+    borderRadius: 6,
+    padding: 8,
+    marginBottom: 10,
+  },
+  emergencyTitle: {
+    fontSize: 11,
+    fontWeight: 'bold',
+    color: '#991b1b',
+    textAlign: 'center',
+    marginBottom: 6,
+  },
+  emergencyGrid: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  emergencyBox: {
+    backgroundColor: '#fef2f2',
+    borderWidth: 1,
+    borderColor: '#fecaca',
+    borderRadius: 4,
+    padding: 6,
+    flex: 0.48,
+  },
+  emergencyBoxTitle: {
+    fontWeight: 'bold',
+    color: '#991b1b',
+    fontSize: 9,
+    marginBottom: 2,
+  },
+  emergencyContact: {
+    color: '#991b1b',
+    fontSize: 8,
+    marginBottom: 1,
+  },
+  footer: {
+    borderTopWidth: 2,
+    borderTopColor: '#2563eb',
+    paddingTop: 8,
+    marginTop: 'auto',
+  },
+  footerGrid: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 6,
+  },
+  footerBox: {
+    flex: 0.31,
+  },
+  footerTitle: {
+    fontWeight: 'bold',
+    color: '#374151',
+    fontSize: 9,
+    marginBottom: 2,
+  },
+  footerText: {
+    color: '#6b7280',
+    fontSize: 8,
+    marginBottom: 1,
+  },
+  footerBottom: {
+    borderTopWidth: 1,
+    borderTopColor: '#e5e7eb',
+    paddingTop: 6,
+    alignItems: 'center',
+  },
+  footerBottomText: {
+    color: '#9ca3af',
+    fontSize: 7,
+    marginBottom: 1,
+  },
+});
+
+export default pdfStyles;

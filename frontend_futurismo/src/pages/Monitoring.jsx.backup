@@ -1,0 +1,288 @@
+import { useState, useEffect } from 'react';
+import { MapIcon, UserGroupIcon, ChartBarIcon, FunnelIcon, CameraIcon, PlayIcon, PauseIcon, CheckIcon } from '@heroicons/react/24/outline';
+import { useTranslation } from 'react-i18next';
+import LiveMapResponsive from '../components/monitoring/LiveMapResponsive';
+import TourProgress from '../components/monitoring/TourProgress';
+import TourPhotosGallery from '../components/monitoring/TourPhotosGallery';
+import useAuthStore from '../stores/authStore';
+import useGuideTours from '../hooks/useGuideTours';
+import toast from 'react-hot-toast';
+
+const Monitoring = () => {
+  const { user } = useAuthStore();
+  const { t } = useTranslation();
+  
+  // Para guías, solo mostrar sus propios tours
+  const isGuide = user?.role === 'guide';
+  const isAdmin = user?.role === 'admin';
+  
+  const [activeView, setActiveView] = useState(isGuide ? 'tours' : 'map');
+  const [selectedTour, setSelectedTour] = useState(null);
+
+  // Hook para manejar tours del guía (reemplaza datos hardcodeados)
+  const {
+    tours: guideTours,
+    loading: toursLoading,
+    activeTour,
+    updateTourStatus,
+    getStats
+  } = useGuideTours();
+
+  // Manejar cambio de estado de tour
+  const handleTourStatusChange = async (tourId, newStatus) => {
+    if (isGuide) {
+      await updateTourStatus(tourId, newStatus);
+    }
+  };
+
+  const getStatusColor = (status) => {
+    const colors = {
+      asignado: 'bg-blue-100 text-blue-800',
+      en_camino: 'bg-yellow-100 text-yellow-800',
+      iniciado: 'bg-purple-100 text-purple-800',
+      en_progreso: 'bg-green-100 text-green-800',
+      finalizado: 'bg-gray-100 text-gray-800'
+    };
+    return colors[status] || 'bg-gray-100 text-gray-800';
+  };
+
+  const getStatusIcon = (status) => {
+    const icons = {
+      asignado: '📋',
+      en_camino: '🚶',
+      iniciado: '▶️',
+      en_progreso: '🔄',
+      finalizado: '✅'
+    };
+    return icons[status] || '📋';
+  };
+
+  return (
+    <div className="h-full flex flex-col">
+      {/* Header con opciones de vista */}
+      <div className="flex items-center justify-between mb-6">
+        <h1 className="text-3xl font-bold text-gray-900">
+          {isGuide ? t('monitoring.myTours') : t('monitoring.liveMonitoring')}
+        </h1>
+        
+        <div className="flex items-center gap-4">
+          <div className="flex bg-gray-100 rounded-lg p-1">
+            <button
+              className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+                activeView === 'map'
+                  ? 'bg-white text-gray-900 shadow-sm'
+                  : 'text-gray-600 hover:text-gray-900'
+              }`}
+              onClick={() => setActiveView('map')}
+            >
+              <MapIcon className="w-4 h-4 inline mr-2" />
+              {isGuide ? t('monitoring.myLocation') : t('monitoring.liveMap')}
+            </button>
+            <button
+              className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+                activeView === 'tours'
+                  ? 'bg-white text-gray-900 shadow-sm'
+                  : 'text-gray-600 hover:text-gray-900'
+              }`}
+              onClick={() => setActiveView('tours')}
+            >
+              <ChartBarIcon className="w-4 h-4 inline mr-2" />
+              {isGuide ? t('monitoring.myActiveTours') : t('monitoring.activeTours')}
+            </button>
+            {isAdmin && (
+              <button
+                className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+                  activeView === 'photos'
+                    ? 'bg-white text-gray-900 shadow-sm'
+                    : 'text-gray-600 hover:text-gray-900'
+                }`}
+                onClick={() => setActiveView('photos')}
+              >
+                <CameraIcon className="w-4 h-4 inline mr-2" />
+                {t('monitoring.tourPhotos')}
+              </button>
+            )}
+          </div>
+
+          <button className="btn btn-outline flex items-center gap-2">
+            <FunnelIcon className="w-4 h-4" />
+            {t('monitoring.filters')}
+          </button>
+        </div>
+      </div>
+
+      {/* Contenido principal */}
+      <div className="flex-1 min-h-0">
+        {activeView === 'map' && <LiveMapResponsive />}
+        
+
+        {activeView === 'tours' && (
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 h-full">
+            {/* Lista de tours - específica para guías */}
+            <div className="bg-white rounded-lg shadow-lg p-6 overflow-y-auto">
+              <h3 className="text-lg font-semibold mb-4">
+                {isGuide ? 'Mis Tours' : t('monitoring.toursInProgress')}
+              </h3>
+              
+              {isGuide ? (
+                /* Vista específica del guía */
+                <div className="space-y-4">
+                  {toursLoading ? (
+                    <div className="text-center py-8 text-gray-500">
+                      <div className="animate-spin w-8 h-8 border-2 border-blue-500 border-t-transparent rounded-full mx-auto mb-2"></div>
+                      <p>Cargando tus tours...</p>
+                    </div>
+                  ) : guideTours.length === 0 ? (
+                    <div className="text-center py-8 text-gray-500">
+                      <p>No tienes tours asignados</p>
+                    </div>
+                  ) : (
+                    guideTours.map((tour) => (
+                      <div
+                        key={tour.id}
+                        className={`p-4 border rounded-lg transition-all ${
+                          selectedTour === tour.id
+                            ? 'border-blue-500 bg-blue-50'
+                            : 'border-gray-200 hover:border-gray-300'
+                        } ${tour.isActive ? 'ring-2 ring-green-200' : ''}`}
+                        onClick={() => setSelectedTour(tour.id)}
+                      >
+                        <div className="space-y-3">
+                          {/* Header del tour */}
+                          <div className="flex items-center justify-between">
+                            <div className="flex-1">
+                              <h4 className="font-medium text-gray-900">{tour.name}</h4>
+                              <p className="text-sm text-gray-600">
+                                {tour.date} • {tour.time} • {tour.tourists} turistas
+                              </p>
+                              <p className="text-xs text-gray-500">
+                                Agencia: {tour.agency} • {tour.location}
+                              </p>
+                            </div>
+                            <div className="flex flex-col items-end gap-2">
+                              <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(tour.status)}`}>
+                                {getStatusIcon(tour.status)} {tour.status.replace('_', ' ')}
+                              </span>
+                              {tour.isActive && (
+                                <span className="text-xs text-green-600 font-medium">🔴 ACTIVO</span>
+                              )}
+                            </div>
+                          </div>
+
+                          {/* Controles de estado */}
+                          <div className="flex flex-wrap gap-2">
+                            {tour.status === 'asignado' && (
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleTourStatusChange(tour.id, 'en_camino');
+                                }}
+                                className="px-3 py-1 bg-yellow-500 text-white text-xs rounded-lg hover:bg-yellow-600 transition-colors"
+                              >
+                                🚶 En camino
+                              </button>
+                            )}
+                            {tour.status === 'en_camino' && (
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleTourStatusChange(tour.id, 'iniciado');
+                                }}
+                                className="px-3 py-1 bg-purple-500 text-white text-xs rounded-lg hover:bg-purple-600 transition-colors"
+                              >
+                                ▶️ Iniciar tour
+                              </button>
+                            )}
+                            {tour.status === 'iniciado' && (
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleTourStatusChange(tour.id, 'en_progreso');
+                                }}
+                                className="px-3 py-1 bg-green-500 text-white text-xs rounded-lg hover:bg-green-600 transition-colors"
+                              >
+                                🔄 En progreso
+                              </button>
+                            )}
+                            {tour.status === 'en_progreso' && (
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  handleTourStatusChange(tour.id, 'finalizado');
+                                }}
+                                className="px-3 py-1 bg-gray-500 text-white text-xs rounded-lg hover:bg-gray-600 transition-colors"
+                              >
+                                ✅ Finalizar
+                              </button>
+                            )}
+                            
+                            {/* Botón de chat */}
+                            {['en_camino', 'iniciado', 'en_progreso'].includes(tour.status) && (
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  // Redireccionar al chat con la agencia
+                                  window.location.href = `/chat?agency=${tour.agency}&tour=${tour.id}`;
+                                }}
+                                className="px-3 py-1 bg-blue-500 text-white text-xs rounded-lg hover:bg-blue-600 transition-colors"
+                              >
+                                💬 Chat
+                              </button>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    ))
+                  )}
+                </div>
+              ) : (
+                /* Vista para admin/agencia (original) */
+                <div className="space-y-3">
+                  {[1, 2, 3].map((id) => (
+                    <div
+                      key={id}
+                      className={`p-4 border rounded-lg cursor-pointer transition-all ${
+                        selectedTour === id
+                          ? 'border-primary-500 bg-primary-50'
+                          : 'border-gray-200 hover:border-gray-300'
+                      }`}
+                      onClick={() => setSelectedTour(id)}
+                    >
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <p className="font-medium">Tour Lima Histórica #{id}</p>
+                          <p className="text-sm text-gray-600">12 {t('monitoring.tourists')} • Guía: Carlos Mendoza</p>
+                        </div>
+                        <div className="text-right">
+                          <span className="badge badge-green">En ruta</span>
+                          <p className="text-xs text-gray-500 mt-1">60% {t('monitoring.completedPercentage')}</p>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Progreso del tour seleccionado */}
+            <div className="overflow-y-auto">
+              {selectedTour ? (
+                <TourProgress tourId={String(selectedTour)} isGuideView={isGuide} />
+              ) : (
+                <div className="bg-white rounded-lg shadow-lg p-6 h-full flex items-center justify-center">
+                  <p className="text-gray-500">{t('monitoring.selectTour')}</p>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
+        {activeView === 'photos' && isAdmin && (
+          <TourPhotosGallery />
+        )}
+      </div>
+    </div>
+  );
+};
+
+export default Monitoring;

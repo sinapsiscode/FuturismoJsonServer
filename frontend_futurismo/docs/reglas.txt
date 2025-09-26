@@ -1,0 +1,164 @@
+📘 Guía de Estándares de Código – React
+1. Filosofía general
+Nuestro código debe ser:
+
+Legible → fácil de entender para cualquier desarrollador.
+
+Mantenible → fácil de modificar sin romper otras partes.
+
+Escalable → soportar crecimiento del proyecto.
+
+Consistente → seguir las mismas convenciones en todo el código.
+
+2. Estructura de carpetas
+graphql
+Copiar
+Editar
+src/
+ ├── assets/       # Imágenes, íconos, fuentes
+ ├── components/   # Componentes de UI reutilizables
+ ├── hooks/        # Hooks personalizados
+ ├── pages/        # Páginas o vistas principales
+ ├── store/        # Estado global (Zustand, Redux, etc.)
+ ├── services/     # Llamadas a API y lógica de datos
+ ├── utils/        # Funciones auxiliares puras
+ ├── constants/    # Valores fijos (config, enums, data estática)
+ ├── styles/       # Archivos de estilos globales o theme
+ ├── App.jsx
+ ├── main.jsx
+3. Nomenclatura
+Archivos
+Componentes → PascalCase → UserCard.jsx
+
+Hooks → camelCase con use → useAuth.js
+
+Constantes → UPPER_CASE → API_BASE_URL.js
+
+Utils → camelCase → formatDate.js
+
+Variables
+Booleanos → is, has, can → isLoading, hasError, canAssign
+
+Funciones → verbos → fetchUsers, updateDriver
+
+Datos → sustantivos → drivers, userList
+
+4. Componentes
+Reglas
+Un componente debe hacer solo una cosa (SRP).
+
+Ideal ≤ 60 líneas, máximo aceptable ≤ 100.
+
+Recibir datos vía props o hooks, nunca hardcodeados.
+
+✅ Ejemplo correcto
+
+jsx
+Copiar
+Editar
+function UserCard({ name, email }) {
+  return (
+    <div>
+      <h3>{name}</h3>
+      <p>{email}</p>
+    </div>
+  );
+}
+❌ Ejemplo incorrecto
+
+jsx
+Copiar
+Editar
+function UserCard() {
+  const name = 'Juan'; // Hardcodeado ❌
+  const email = 'juan@mail.com';
+  return (
+    <div>
+      <h3>{name}</h3>
+      <p>{email}</p>
+    </div>
+  );
+}
+5. Hooks
+Reglas
+Nombres siempre comienzan con use.
+
+Una sola responsabilidad por hook.
+
+Ideal ≤ 50 líneas, máximo aceptable ≤ 80.
+
+No devolver JSX, solo datos y funciones.
+
+✅ Ejemplo correcto
+
+js
+Copiar
+Editar
+function useDrivers() {
+  const [drivers, setDrivers] = useState([]);
+  useEffect(() => {
+    fetch('/drivers.json')
+      .then(res => res.json())
+      .then(setDrivers);
+  }, []);
+  return { drivers };
+}
+6. Estado y store
+Estado local con useState / useReducer.
+
+Estado global en /store con Zustand o Redux.
+
+Evitar estados duplicados (si algo está en store, no repetirlo en otro lado).
+
+7. Funciones auxiliares
+Toda función que no dependa de React va en /utils.
+
+Deben ser puras: mismo input → mismo output.
+
+Ejemplo: formatDate(date) o calculateDriverStats(drivers).
+
+8. Estilos
+Usar TailwindCSS o styled-components, no mezclar múltiples enfoques sin necesidad.
+
+Clases reutilizables → en /styles/.
+
+No hardcodear colores, usar theme o variables.
+
+9. Comentarios
+Solo para explicar por qué se hace algo, no qué hace.
+
+Mantenerlos actualizados.
+
+✅ Correcto:
+
+js
+Copiar
+Editar
+// Regla de negocio: documentos vencen en 30 días
+const daysUntilExpiry = 30;
+10. Pruebas
+Unitarias para hooks y funciones de /utils.
+
+De integración para componentes clave.
+
+Testear reglas de negocio críticas.
+
+11. Revisión de código
+Antes de subir:
+
+Sin console.log innecesarios.
+
+Sin código comentado muerto.
+
+Linter y formatter ejecutados (ESLint + Prettier).
+
+Nombres claros en commits (feat:, fix:, refactor:).
+
+12. Límites recomendados
+Componente: ≤ 60 líneas ideal, ≤ 100 aceptable.
+
+Hook: ≤ 50 líneas ideal, ≤ 80 aceptable.
+
+Función: ≤ 30 líneas ideal.
+
+Un archivo: ≤ 300 líneas ideal, luego dividir.
