@@ -10,7 +10,9 @@
       "Bash(node:*)",
       "Bash(tasklist)",
       "Bash(taskkill:*)",
-      "Bash(copy authService.js authService.backup.js)"
+      "Bash(copy authService.js authService.backup.js)",
+      "Bash(git add:*)",
+      "Bash(git rm:*)"
     ],
     "deny": [],
     "ask": []
