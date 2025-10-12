@@ -49,8 +49,8 @@ export const APP_CONFIG = {
 
   // Feature flags
   features: {
-    mockData: getEnvBoolean('VITE_ENABLE_MOCK_DATA', false),
-    debugMode: getEnvBoolean('VITE_ENABLE_DEBUG_MODE', false),
+    mockData: false, // MIGRACIÓN: Deshabilitado - usar API real
+    debugMode: getEnvBoolean('VITE_ENABLE_DEBUG_MODE', true), // Habilitado para debugging
     analytics: getEnvBoolean('VITE_ENABLE_ANALYTICS', false),
     maintenance: getEnvBoolean('VITE_MAINTENANCE_MODE', false)
   },

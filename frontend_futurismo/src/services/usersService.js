@@ -5,7 +5,7 @@
 
 import BaseService from './baseService';
 import { APP_CONFIG } from '../config/app.config';
-import { mockUsersService } from './mockUsersService';
+
 
 class UsersService extends BaseService {
   constructor() {
@@ -18,11 +18,7 @@ class UsersService extends BaseService {
    * @returns {Promise<Object>}
    */
   async getUsers(filters = {}) {
-    if (this.isUsingMockData) {
-      return mockUsersService.getUsers(filters);
-    }
-
-    return this.get('', filters);
+return this.get('', filters);
   }
 
   /**
@@ -31,11 +27,7 @@ class UsersService extends BaseService {
    * @returns {Promise<Object>}
    */
   async getUserById(id) {
-    if (this.isUsingMockData) {
-      return mockUsersService.getUserById(id);
-    }
-
-    return this.get(`/${id}`);
+return this.get(`/${id}`);
   }
 
   /**
@@ -44,11 +36,7 @@ class UsersService extends BaseService {
    * @returns {Promise<Object>}
    */
   async createUser(userData) {
-    if (this.isUsingMockData) {
-      return mockUsersService.createUser(userData);
-    }
-
-    return this.post('', userData);
+return this.post('', userData);
   }
 
   /**
@@ -58,11 +46,7 @@ class UsersService extends BaseService {
    * @returns {Promise<Object>}
    */
   async updateUser(id, updateData) {
-    if (this.isUsingMockData) {
-      return mockUsersService.updateUser(id, updateData);
-    }
-
-    return this.put(`/${id}`, updateData);
+return this.put(`/${id}`, updateData);
   }
 
   /**
@@ -71,11 +55,7 @@ class UsersService extends BaseService {
    * @returns {Promise<Object>}
    */
   async deleteUser(id) {
-    if (this.isUsingMockData) {
-      return mockUsersService.deleteUser(id);
-    }
-
-    return this.delete(`/${id}`);
+return this.delete(`/${id}`);
   }
 
   /**
@@ -85,11 +65,7 @@ class UsersService extends BaseService {
    * @returns {Promise<Object>}
    */
   async toggleUserStatus(id, status) {
-    if (this.isUsingMockData) {
-      return mockUsersService.toggleUserStatus(id, status);
-    }
-
-    return this.patch(`/${id}/status`, { status });
+return this.patch(`/${id}/status`, { status });
   }
 
   /**
@@ -98,11 +74,7 @@ class UsersService extends BaseService {
    * @returns {Promise<Object>}
    */
   async resetUserPassword(id) {
-    if (this.isUsingMockData) {
-      return mockUsersService.resetUserPassword(id);
-    }
-
-    return this.post(`/${id}/reset-password`);
+return this.post(`/${id}/reset-password`);
   }
 
   /**
@@ -112,11 +84,7 @@ class UsersService extends BaseService {
    * @returns {Promise<Object>}
    */
   async changeUserPassword(id, passwordData) {
-    if (this.isUsingMockData) {
-      return mockUsersService.changeUserPassword(id, passwordData);
-    }
-
-    return this.post(`/${id}/change-password`, passwordData);
+return this.post(`/${id}/change-password`, passwordData);
   }
 
   /**
@@ -126,11 +94,7 @@ class UsersService extends BaseService {
    * @returns {Promise<Object>}
    */
   async updateUserPermissions(id, permissions) {
-    if (this.isUsingMockData) {
-      return mockUsersService.updateUserPermissions(id, permissions);
-    }
-
-    return this.put(`/${id}/permissions`, { permissions });
+return this.put(`/${id}/permissions`, { permissions });
   }
 
   /**
@@ -140,11 +104,7 @@ class UsersService extends BaseService {
    * @returns {Promise<Object>}
    */
   async updateUserRole(id, roleId) {
-    if (this.isUsingMockData) {
-      return mockUsersService.updateUserRole(id, roleId);
-    }
-
-    return this.put(`/${id}/role`, { roleId });
+return this.put(`/${id}/role`, { roleId });
   }
 
   /**
@@ -152,11 +112,7 @@ class UsersService extends BaseService {
    * @returns {Promise<Object>}
    */
   async getRoles() {
-    if (this.isUsingMockData) {
-      return mockUsersService.getRoles();
-    }
-
-    return this.get('/roles');
+return this.get('/roles');
   }
 
   /**
@@ -164,11 +120,7 @@ class UsersService extends BaseService {
    * @returns {Promise<Object>}
    */
   async getPermissions() {
-    if (this.isUsingMockData) {
-      return mockUsersService.getPermissions();
-    }
-
-    return this.get('/permissions');
+return this.get('/permissions');
   }
 
   /**
@@ -177,11 +129,7 @@ class UsersService extends BaseService {
    * @returns {Promise<Object>}
    */
   async searchUsers(query) {
-    if (this.isUsingMockData) {
-      return mockUsersService.searchUsers(query);
-    }
-
-    return this.get('/search', { q: query });
+return this.get('/search', { q: query });
   }
 
   /**
@@ -191,11 +139,7 @@ class UsersService extends BaseService {
    * @returns {Promise<Object>}
    */
   async getUserActivity(id, params = {}) {
-    if (this.isUsingMockData) {
-      return mockUsersService.getUserActivity(id, params);
-    }
-
-    return this.get(`/${id}/activity`, params);
+return this.get(`/${id}/activity`, params);
   }
 
   /**
@@ -203,11 +147,7 @@ class UsersService extends BaseService {
    * @returns {Promise<Object>}
    */
   async getUsersStats() {
-    if (this.isUsingMockData) {
-      return mockUsersService.getUsersStats();
-    }
-
-    return this.get('/stats');
+return this.get('/stats');
   }
 
   /**
@@ -217,11 +157,7 @@ class UsersService extends BaseService {
    * @returns {Promise<Object>}
    */
   async checkEmailUnique(email, excludeId = null) {
-    if (this.isUsingMockData) {
-      return mockUsersService.checkEmailUnique(email, excludeId);
-    }
-
-    return this.post('/check-email', { email, excludeId });
+return this.post('/check-email', { email, excludeId });
   }
 
   /**
@@ -230,11 +166,7 @@ class UsersService extends BaseService {
    * @returns {Promise<Object>}
    */
   async inviteUser(inviteData) {
-    if (this.isUsingMockData) {
-      return mockUsersService.inviteUser(inviteData);
-    }
-
-    return this.post('/invite', inviteData);
+return this.post('/invite', inviteData);
   }
 
   /**
@@ -243,11 +175,7 @@ class UsersService extends BaseService {
    * @returns {Promise<Object>}
    */
   async resendInvitation(userId) {
-    if (this.isUsingMockData) {
-      return mockUsersService.resendInvitation(userId);
-    }
-
-    return this.post(`/${userId}/resend-invitation`);
+return this.post(`/${userId}/resend-invitation`);
   }
 
   /**
@@ -257,11 +185,7 @@ class UsersService extends BaseService {
    * @returns {Promise<Object>}
    */
   async importUsers(file, onProgress = null) {
-    if (this.isUsingMockData) {
-      return mockUsersService.importUsers(file);
-    }
-
-    return this.upload('/import', file, onProgress);
+return this.upload('/import', file, onProgress);
   }
 
   /**
@@ -271,11 +195,7 @@ class UsersService extends BaseService {
    * @returns {Promise<Object>}
    */
   async exportUsers(filters = {}, format = 'excel') {
-    if (this.isUsingMockData) {
-      return mockUsersService.exportUsers(filters, format);
-    }
-
-    const filename = `users_${new Date().toISOString().split('T')[0]}.${format}`;
+const filename = `users_${new Date().toISOString().split('T')[0]}.${format}`;
     return this.download('/export', filename, { ...filters, format });
   }
 
@@ -285,11 +205,7 @@ class UsersService extends BaseService {
    * @returns {Promise<Object>}
    */
   async getUserSessions(userId) {
-    if (this.isUsingMockData) {
-      return mockUsersService.getUserSessions(userId);
-    }
-
-    return this.get(`/${userId}/sessions`);
+return this.get(`/${userId}/sessions`);
   }
 
   /**
@@ -299,11 +215,7 @@ class UsersService extends BaseService {
    * @returns {Promise<Object>}
    */
   async terminateUserSession(userId, sessionId) {
-    if (this.isUsingMockData) {
-      return mockUsersService.terminateUserSession(userId, sessionId);
-    }
-
-    return this.delete(`/${userId}/sessions/${sessionId}`);
+return this.delete(`/${userId}/sessions/${sessionId}`);
   }
 
   /**
@@ -312,11 +224,7 @@ class UsersService extends BaseService {
    * @returns {Promise<Object>}
    */
   async terminateAllUserSessions(userId) {
-    if (this.isUsingMockData) {
-      return mockUsersService.terminateAllUserSessions(userId);
-    }
-
-    return this.delete(`/${userId}/sessions`);
+return this.delete(`/${userId}/sessions`);
   }
 }
 

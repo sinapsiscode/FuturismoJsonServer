@@ -5,7 +5,7 @@
 
 import BaseService from './baseService';
 import { APP_CONFIG } from '../config/app.config';
-import { mockMarketplaceService } from './mockMarketplaceService';
+
 
 class MarketplaceService extends BaseService {
   constructor() {
@@ -18,11 +18,7 @@ class MarketplaceService extends BaseService {
    * @returns {Promise<Object>}
    */
   async getFreelanceGuides(filters = {}) {
-    if (this.isUsingMockData) {
-      return mockMarketplaceService.getFreelanceGuides(filters);
-    }
-
-    return this.get('/guides', filters);
+return this.get('/guides', filters);
   }
 
   /**
@@ -31,11 +27,7 @@ class MarketplaceService extends BaseService {
    * @returns {Promise<Object>}
    */
   async getGuideProfile(guideId) {
-    if (this.isUsingMockData) {
-      return mockMarketplaceService.getGuideProfile(guideId);
-    }
-
-    return this.get(`/guides/${guideId}`);
+return this.get(`/guides/${guideId}`);
   }
 
   /**
@@ -45,11 +37,7 @@ class MarketplaceService extends BaseService {
    * @returns {Promise<Object>}
    */
   async getGuideAvailability(guideId, params = {}) {
-    if (this.isUsingMockData) {
-      return mockMarketplaceService.getGuideAvailability(guideId, params);
-    }
-
-    return this.get(`/guides/${guideId}/availability`, params);
+return this.get(`/guides/${guideId}/availability`, params);
   }
 
   /**
@@ -59,11 +47,7 @@ class MarketplaceService extends BaseService {
    * @returns {Promise<Object>}
    */
   async updateGuideAvailability(guideId, availability) {
-    if (this.isUsingMockData) {
-      return mockMarketplaceService.updateGuideAvailability(guideId, availability);
-    }
-
-    return this.put(`/guides/${guideId}/availability`, availability);
+return this.put(`/guides/${guideId}/availability`, availability);
   }
 
   /**
@@ -73,11 +57,7 @@ class MarketplaceService extends BaseService {
    * @returns {Promise<Object>}
    */
   async getGuideReviews(guideId, params = {}) {
-    if (this.isUsingMockData) {
-      return mockMarketplaceService.getGuideReviews(guideId, params);
-    }
-
-    return this.get(`/guides/${guideId}/reviews`, params);
+return this.get(`/guides/${guideId}/reviews`, params);
   }
 
   /**
@@ -86,11 +66,7 @@ class MarketplaceService extends BaseService {
    * @returns {Promise<Object>}
    */
   async createServiceRequest(requestData) {
-    if (this.isUsingMockData) {
-      return mockMarketplaceService.createServiceRequest(requestData);
-    }
-
-    return this.post('/service-requests', requestData);
+return this.post('/service-requests', requestData);
   }
 
   /**
@@ -99,11 +75,7 @@ class MarketplaceService extends BaseService {
    * @returns {Promise<Object>}
    */
   async getServiceRequests(filters = {}) {
-    if (this.isUsingMockData) {
-      return mockMarketplaceService.getServiceRequests(filters);
-    }
-
-    return this.get('/service-requests', filters);
+return this.get('/service-requests', filters);
   }
 
   /**
@@ -112,11 +84,7 @@ class MarketplaceService extends BaseService {
    * @returns {Promise<Object>}
    */
   async getServiceRequestById(requestId) {
-    if (this.isUsingMockData) {
-      return mockMarketplaceService.getServiceRequestById(requestId);
-    }
-
-    return this.get(`/service-requests/${requestId}`);
+return this.get(`/service-requests/${requestId}`);
   }
 
   /**
@@ -126,11 +94,7 @@ class MarketplaceService extends BaseService {
    * @returns {Promise<Object>}
    */
   async updateServiceRequest(requestId, updates) {
-    if (this.isUsingMockData) {
-      return mockMarketplaceService.updateServiceRequest(requestId, updates);
-    }
-
-    return this.patch(`/service-requests/${requestId}`, updates);
+return this.patch(`/service-requests/${requestId}`, updates);
   }
 
   /**
@@ -140,11 +104,7 @@ class MarketplaceService extends BaseService {
    * @returns {Promise<Object>}
    */
   async respondToServiceRequest(requestId, response) {
-    if (this.isUsingMockData) {
-      return mockMarketplaceService.respondToServiceRequest(requestId, response);
-    }
-
-    return this.post(`/service-requests/${requestId}/respond`, response);
+return this.post(`/service-requests/${requestId}/respond`, response);
   }
 
   /**
@@ -154,11 +114,7 @@ class MarketplaceService extends BaseService {
    * @returns {Promise<Object>}
    */
   async cancelServiceRequest(requestId, reason) {
-    if (this.isUsingMockData) {
-      return mockMarketplaceService.cancelServiceRequest(requestId, reason);
-    }
-
-    return this.post(`/service-requests/${requestId}/cancel`, { reason });
+return this.post(`/service-requests/${requestId}/cancel`, { reason });
   }
 
   /**
@@ -168,11 +124,7 @@ class MarketplaceService extends BaseService {
    * @returns {Promise<Object>}
    */
   async completeService(requestId, completionData) {
-    if (this.isUsingMockData) {
-      return mockMarketplaceService.completeService(requestId, completionData);
-    }
-
-    return this.post(`/service-requests/${requestId}/complete`, completionData);
+return this.post(`/service-requests/${requestId}/complete`, completionData);
   }
 
   /**
@@ -181,11 +133,7 @@ class MarketplaceService extends BaseService {
    * @returns {Promise<Object>}
    */
   async createReview(reviewData) {
-    if (this.isUsingMockData) {
-      return mockMarketplaceService.createReview(reviewData);
-    }
-
-    return this.post('/reviews', reviewData);
+return this.post('/reviews', reviewData);
   }
 
   /**
@@ -195,11 +143,7 @@ class MarketplaceService extends BaseService {
    * @returns {Promise<Object>}
    */
   async respondToReview(reviewId, response) {
-    if (this.isUsingMockData) {
-      return mockMarketplaceService.respondToReview(reviewId, response);
-    }
-
-    return this.post(`/reviews/${reviewId}/respond`, { response });
+return this.post(`/reviews/${reviewId}/respond`, { response });
   }
 
   /**
@@ -208,11 +152,7 @@ class MarketplaceService extends BaseService {
    * @returns {Promise<Object>}
    */
   async markReviewHelpful(reviewId) {
-    if (this.isUsingMockData) {
-      return mockMarketplaceService.markReviewHelpful(reviewId);
-    }
-
-    return this.post(`/reviews/${reviewId}/helpful`);
+return this.post(`/reviews/${reviewId}/helpful`);
   }
 
   /**
@@ -220,11 +160,7 @@ class MarketplaceService extends BaseService {
    * @returns {Promise<Object>}
    */
   async getMarketplaceStats() {
-    if (this.isUsingMockData) {
-      return mockMarketplaceService.getMarketplaceStats();
-    }
-
-    return this.get('/stats');
+return this.get('/stats');
   }
 
   /**
@@ -233,11 +169,7 @@ class MarketplaceService extends BaseService {
    * @returns {Promise<Object>}
    */
   async getGuideStats(guideId) {
-    if (this.isUsingMockData) {
-      return mockMarketplaceService.getGuideStats(guideId);
-    }
-
-    return this.get(`/guides/${guideId}/stats`);
+return this.get(`/guides/${guideId}/stats`);
   }
 
   /**
@@ -247,11 +179,7 @@ class MarketplaceService extends BaseService {
    * @returns {Promise<Object>}
    */
   async updateGuideMarketplaceProfile(guideId, profileData) {
-    if (this.isUsingMockData) {
-      return mockMarketplaceService.updateGuideMarketplaceProfile(guideId, profileData);
-    }
-
-    return this.put(`/guides/${guideId}/profile`, profileData);
+return this.put(`/guides/${guideId}/profile`, profileData);
   }
 
   /**
@@ -261,11 +189,7 @@ class MarketplaceService extends BaseService {
    * @returns {Promise<Object>}
    */
   async updateGuidePricing(guideId, pricing) {
-    if (this.isUsingMockData) {
-      return mockMarketplaceService.updateGuidePricing(guideId, pricing);
-    }
-
-    return this.put(`/guides/${guideId}/pricing`, pricing);
+return this.put(`/guides/${guideId}/pricing`, pricing);
   }
 
   /**
@@ -275,11 +199,7 @@ class MarketplaceService extends BaseService {
    * @returns {Promise<Object>}
    */
   async verifyGuide(guideId, verificationData) {
-    if (this.isUsingMockData) {
-      return mockMarketplaceService.verifyGuide(guideId, verificationData);
-    }
-
-    return this.post(`/guides/${guideId}/verify`, verificationData);
+return this.post(`/guides/${guideId}/verify`, verificationData);
   }
 
   /**
@@ -289,11 +209,7 @@ class MarketplaceService extends BaseService {
    * @returns {Promise<Object>}
    */
   async suspendGuide(guideId, suspensionData) {
-    if (this.isUsingMockData) {
-      return mockMarketplaceService.suspendGuide(guideId, suspensionData);
-    }
-
-    return this.post(`/guides/${guideId}/suspend`, suspensionData);
+return this.post(`/guides/${guideId}/suspend`, suspensionData);
   }
 
   /**
@@ -302,11 +218,7 @@ class MarketplaceService extends BaseService {
    * @returns {Promise<Object>}
    */
   async reactivateGuide(guideId) {
-    if (this.isUsingMockData) {
-      return mockMarketplaceService.reactivateGuide(guideId);
-    }
-
-    return this.post(`/guides/${guideId}/reactivate`);
+return this.post(`/guides/${guideId}/reactivate`);
   }
 
   /**
@@ -314,11 +226,7 @@ class MarketplaceService extends BaseService {
    * @returns {Promise<Object>}
    */
   async getFeaturedGuides() {
-    if (this.isUsingMockData) {
-      return mockMarketplaceService.getFeaturedGuides();
-    }
-
-    return this.get('/guides/featured');
+return this.get('/guides/featured');
   }
 
   /**
@@ -327,11 +235,7 @@ class MarketplaceService extends BaseService {
    * @returns {Promise<Object>}
    */
   async searchGuidesByCompetencies(requirements) {
-    if (this.isUsingMockData) {
-      return mockMarketplaceService.searchGuidesByCompetencies(requirements);
-    }
-
-    return this.post('/guides/search-competencies', requirements);
+return this.post('/guides/search-competencies', requirements);
   }
 }
 

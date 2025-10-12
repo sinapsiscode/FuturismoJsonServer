@@ -1,76 +1,59 @@
 /**
- * Constantes para funcionalidades de carga de archivos
+ * COMPATIBILITY LAYER - Upload
+ *
+ * Este archivo re-exporta constantes desde el backend.
+ * Mantiene compatibilidad con código existente.
+ *
+ * ⚠️ TEMPORAL: Este archivo es parte de la capa de compatibilidad.
+ * RECOMENDADO: Migrar a useUploadConfig() para uso en componentes React.
  */
 
-// Tipos de archivo aceptados
-export const ACCEPTED_IMAGE_TYPES = [
-  'image/jpeg',
-  'image/jpg',
-  'image/png',
-  'image/gif',
-  'image/webp'
-];
+import useModulesConfigStore from '../stores/modulesConfigStore';
 
-export const ACCEPTED_DOCUMENT_TYPES = [
-  'application/pdf',
-  'application/msword',
-  'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-  'application/vnd.ms-excel',
-  'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-];
+// Cargar configuración si no está cargada
+const store = useModulesConfigStore.getState();
+if (!store.modules && !store.isLoading) {
+  store.loadModules();
+}
 
-// Tamaños máximos de archivo
-export const FILE_SIZE_LIMITS = {
-  IMAGE: 5 * 1024 * 1024, // 5MB
-  DOCUMENT: 10 * 1024 * 1024, // 10MB
-  VIDEO: 50 * 1024 * 1024, // 50MB
-  AVATAR: 2 * 1024 * 1024 // 2MB
+// Helper para obtener configuración
+const getUploadConfig = () => {
+  const state = useModulesConfigStore.getState();
+  return state.modules?.upload || {};
 };
 
-// Configuración de upload
-export const UPLOAD_CONFIG = {
-  UPLOAD_DELAY: 1000, // Simulación de delay de carga
-  CHUNK_SIZE: 1024 * 1024, // 1MB chunks para uploads grandes
-  MAX_RETRIES: 3,
-  RETRY_DELAY: 1000
-};
 
-// Estados de upload
-export const UPLOAD_STATES = {
-  IDLE: 'idle',
-  UPLOADING: 'uploading',
-  SUCCESS: 'success',
-  ERROR: 'error',
-  CANCELLED: 'cancelled'
-};
+export const ALLOWED_FILE_TYPES = (() => {
+  const config = getUploadConfig();
+  return config.allowedFileTypes || {};
+})();
 
-// Formatos de imagen para preview
-export const IMAGE_PREVIEW_CONFIG = {
-  MAX_WIDTH: 800,
-  MAX_HEIGHT: 600,
-  QUALITY: 0.8,
-  FORMAT: 'image/jpeg'
-};
+export const MAX_FILE_SIZE = (() => {
+  const config = getUploadConfig();
+  return config.maxFileSize || 5242880;
+})();
 
-// Mensajes de error (keys para i18n)
-export const UPLOAD_ERROR_KEYS = {
-  INVALID_FORMAT: 'upload.invalidFormat',
-  FILE_TOO_LARGE: 'upload.fileTooLarge',
-  UPLOAD_ERROR: 'upload.uploadError',
-  NETWORK_ERROR: 'upload.networkError',
-  TIMEOUT_ERROR: 'upload.timeoutError'
-};
+export const MAX_TOTAL_SIZE = (() => {
+  const config = getUploadConfig();
+  return config.maxTotalSize || 52428800;
+})();
 
-// Estilos de drag & drop
-export const DRAG_STYLES = {
-  ACTIVE: 'border-blue-500 bg-blue-50',
-  INACTIVE: 'border-gray-300',
-  ERROR: 'border-red-500 bg-red-50'
-};
+export const UPLOAD_CATEGORIES = (() => {
+  const config = getUploadConfig();
+  return config.uploadCategories || [];
+})();
 
-// Configuración de thumbnails
-export const THUMBNAIL_CONFIG = {
-  WIDTH: 150,
-  HEIGHT: 150,
-  QUALITY: 0.7
+export const IMAGE_CONSTRAINTS = (() => {
+  const config = getUploadConfig();
+  return config.imageConstraints || {};
+})();
+
+
+// Export default para compatibilidad
+export default {
+  ALLOWED_FILE_TYPES,
+  MAX_FILE_SIZE,
+  MAX_TOTAL_SIZE,
+  UPLOAD_CATEGORIES,
+  IMAGE_CONSTRAINTS
 };

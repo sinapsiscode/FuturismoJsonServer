@@ -1,12 +1,14 @@
 const express = require('express');
 const _ = require('lodash');
 const { generateId, paginate, filterBy, sortBy, successResponse, errorResponse } = require('../middlewares/helpers');
+const { authenticated, adminOrAgency, freelanceGuidesOnly } = require('../middlewares/authorize');
 
 module.exports = (router) => {
   const marketplaceRouter = express.Router();
 
   // Search guides
-  marketplaceRouter.get('/search', (req, res) => {
+  // Accessible to all authenticated users
+  marketplaceRouter.get('/search', authenticated(), (req, res) => {
     try {
       const { specialization, language, date, minRating, maxPrice } = req.query;
       const db = router.db;
@@ -85,7 +87,8 @@ module.exports = (router) => {
   });
 
   // Get service requests
-  marketplaceRouter.get('/requests', (req, res) => {
+  // Accessible to agencies and guides (to see available requests)
+  marketplaceRouter.get('/requests', authenticated(), (req, res) => {
     try {
       const db = router.db;
       const requests = db.get('marketplace_requests').value();
@@ -104,7 +107,8 @@ module.exports = (router) => {
   });
 
   // Create service request
-  marketplaceRouter.post('/requests', (req, res) => {
+  // Only agencies can create service requests
+  marketplaceRouter.post('/requests', adminOrAgency(), (req, res) => {
     try {
       const db = router.db;
       const newRequest = {
@@ -132,7 +136,8 @@ module.exports = (router) => {
   });
 
   // Get guide responses for a request
-  marketplaceRouter.get('/requests/:id/responses', (req, res) => {
+  // Agencies can view responses to their requests
+  marketplaceRouter.get('/requests/:id/responses', adminOrAgency(), (req, res) => {
     try {
       const db = router.db;
       const responses = db.get('guide_responses')
@@ -171,7 +176,8 @@ module.exports = (router) => {
   });
 
   // Submit response to service request (for guides)
-  marketplaceRouter.post('/requests/:id/respond', (req, res) => {
+  // Only freelance guides can respond to marketplace requests
+  marketplaceRouter.post('/requests/:id/respond', freelanceGuidesOnly(), (req, res) => {
     try {
       const db = router.db;
       const { id } = req.params;
@@ -222,7 +228,8 @@ module.exports = (router) => {
   });
 
   // Accept a guide response (for agencies/clients)
-  marketplaceRouter.post('/responses/:responseId/accept', (req, res) => {
+  // Only agencies can accept guide responses
+  marketplaceRouter.post('/responses/:responseId/accept', adminOrAgency(), (req, res) => {
     try {
       const db = router.db;
       const { responseId } = req.params;
@@ -275,7 +282,8 @@ module.exports = (router) => {
   });
 
   // Get popular guides
-  marketplaceRouter.get('/popular-guides', (req, res) => {
+  // Accessible to all authenticated users
+  marketplaceRouter.get('/popular-guides', authenticated(), (req, res) => {
     try {
       const db = router.db;
       const guides = db.get('guides').value() || [];
@@ -309,7 +317,8 @@ module.exports = (router) => {
   });
 
   // Get marketplace statistics
-  marketplaceRouter.get('/stats', (req, res) => {
+  // Accessible to admins and agencies
+  marketplaceRouter.get('/stats', adminOrAgency(), (req, res) => {
     try {
       const db = router.db;
       const guides = db.get('guides').value() || [];

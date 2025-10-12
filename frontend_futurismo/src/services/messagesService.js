@@ -5,7 +5,7 @@
 
 import BaseService from './baseService';
 import { APP_CONFIG } from '../config/app.config';
-import { mockMessagesService } from './mockMessagesService';
+
 
 class MessagesService extends BaseService {
   constructor() {
@@ -18,11 +18,7 @@ class MessagesService extends BaseService {
    * @returns {Promise<Object>}
    */
   async getConversations(userId) {
-    if (this.isUsingMockData) {
-      return mockMessagesService.getConversations(userId);
-    }
-
-    return this.get('/conversations', { userId });
+return this.get('/conversations', { userId });
   }
 
   /**
@@ -32,11 +28,7 @@ class MessagesService extends BaseService {
    * @returns {Promise<Object>}
    */
   async getMessages(conversationId, filters = {}) {
-    if (this.isUsingMockData) {
-      return mockMessagesService.getMessages(conversationId, filters);
-    }
-
-    return this.get(`/conversation/${conversationId}`, filters);
+return this.get(`/conversation/${conversationId}`, filters);
   }
 
   /**
@@ -45,11 +37,7 @@ class MessagesService extends BaseService {
    * @returns {Promise<Object>}
    */
   async sendMessage(messageData) {
-    if (this.isUsingMockData) {
-      return mockMessagesService.sendMessage(messageData);
-    }
-
-    return this.post('', messageData);
+return this.post('', messageData);
   }
 
   /**
@@ -59,11 +47,7 @@ class MessagesService extends BaseService {
    * @returns {Promise<Object>}
    */
   async markAsRead(conversationId, userId) {
-    if (this.isUsingMockData) {
-      return mockMessagesService.markAsRead(conversationId, userId);
-    }
-
-    return this.put(`/conversation/${conversationId}/read`, { userId });
+return this.put(`/conversation/${conversationId}/read`, { userId });
   }
 
   /**
@@ -72,11 +56,7 @@ class MessagesService extends BaseService {
    * @returns {Promise<Object>}
    */
   async deleteMessage(messageId) {
-    if (this.isUsingMockData) {
-      return mockMessagesService.deleteMessage(messageId);
-    }
-
-    return this.delete(`/${messageId}`);
+return this.delete(`/${messageId}`);
   }
 
   /**
@@ -86,11 +66,7 @@ class MessagesService extends BaseService {
    * @returns {Promise<Object>}
    */
   async searchMessages(searchTerm, userId) {
-    if (this.isUsingMockData) {
-      return mockMessagesService.searchMessages(searchTerm, userId);
-    }
-
-    return this.get('/search', { q: searchTerm, userId });
+return this.get('/search', { q: searchTerm, userId });
   }
 
   /**
@@ -99,11 +75,7 @@ class MessagesService extends BaseService {
    * @returns {Promise<Object>}
    */
   async createGroupConversation(groupData) {
-    if (this.isUsingMockData) {
-      return mockMessagesService.createGroupConversation(groupData);
-    }
-
-    return this.post('/conversations/group', groupData);
+return this.post('/conversations/group', groupData);
   }
 
   /**
@@ -113,11 +85,7 @@ class MessagesService extends BaseService {
    * @returns {Promise<Object>}
    */
   async addParticipant(conversationId, participantId) {
-    if (this.isUsingMockData) {
-      return mockMessagesService.addParticipant(conversationId, participantId);
-    }
-
-    return this.post(`/conversation/${conversationId}/participants`, { participantId });
+return this.post(`/conversation/${conversationId}/participants`, { participantId });
   }
 
   /**
@@ -127,11 +95,7 @@ class MessagesService extends BaseService {
    * @returns {Promise<Object>}
    */
   async removeParticipant(conversationId, participantId) {
-    if (this.isUsingMockData) {
-      return mockMessagesService.removeParticipant(conversationId, participantId);
-    }
-
-    return this.delete(`/conversation/${conversationId}/participants/${participantId}`);
+return this.delete(`/conversation/${conversationId}/participants/${participantId}`);
   }
 
   /**
@@ -142,11 +106,7 @@ class MessagesService extends BaseService {
    * @returns {Promise<Object>}
    */
   async setTypingStatus(conversationId, userId, isTyping) {
-    if (this.isUsingMockData) {
-      return mockMessagesService.setTypingStatus(conversationId, userId, isTyping);
-    }
-
-    return this.post(`/conversation/${conversationId}/typing`, { userId, isTyping });
+return this.post(`/conversation/${conversationId}/typing`, { userId, isTyping });
   }
 
   /**
@@ -155,11 +115,7 @@ class MessagesService extends BaseService {
    * @returns {Promise<Object>}
    */
   async uploadAttachment(file) {
-    if (this.isUsingMockData) {
-      return mockMessagesService.uploadAttachment(file);
-    }
-
-    const formData = new FormData();
+const formData = new FormData();
     formData.append('file', file);
     
     return this.post('/attachments', formData, {
@@ -175,18 +131,8 @@ class MessagesService extends BaseService {
    * @returns {Promise<Object>}
    */
   async getUnreadCount(userId) {
-    if (this.isUsingMockData) {
-      // Mock: contar mensajes no leídos
-      const conversations = await mockMessagesService.getConversations(userId);
-      const totalUnread = conversations.data.reduce((sum, conv) => sum + (conv.unreadCount || 0), 0);
-      
-      return {
-        success: true,
-        data: { totalUnread }
-      };
-    }
 
-    return this.get('/unread-count', { userId });
+return this.get('/unread-count', { userId });
   }
 
   /**
@@ -195,15 +141,8 @@ class MessagesService extends BaseService {
    * @returns {Promise<Object>}
    */
   async archiveConversation(conversationId) {
-    if (this.isUsingMockData) {
-      // Mock: marcar como archivada
-      return {
-        success: true,
-        data: { conversationId, archived: true }
-      };
-    }
 
-    return this.put(`/conversation/${conversationId}/archive`);
+return this.put(`/conversation/${conversationId}/archive`);
   }
 
   /**
@@ -212,15 +151,8 @@ class MessagesService extends BaseService {
    * @returns {Promise<Object>}
    */
   async unarchiveConversation(conversationId) {
-    if (this.isUsingMockData) {
-      // Mock: marcar como no archivada
-      return {
-        success: true,
-        data: { conversationId, archived: false }
-      };
-    }
 
-    return this.put(`/conversation/${conversationId}/unarchive`);
+return this.put(`/conversation/${conversationId}/unarchive`);
   }
 
   /**
@@ -229,15 +161,8 @@ class MessagesService extends BaseService {
    * @returns {Promise<Object>}
    */
   async getArchivedConversations(userId) {
-    if (this.isUsingMockData) {
-      // Mock: retornar conversaciones archivadas vacías
-      return {
-        success: true,
-        data: []
-      };
-    }
 
-    return this.get('/conversations/archived', { userId });
+return this.get('/conversations/archived', { userId });
   }
 
   /**
@@ -247,14 +172,8 @@ class MessagesService extends BaseService {
    * @returns {Promise<Object>}
    */
   async setConversationNotifications(conversationId, muted) {
-    if (this.isUsingMockData) {
-      return {
-        success: true,
-        data: { conversationId, muted }
-      };
-    }
 
-    return this.put(`/conversation/${conversationId}/notifications`, { muted });
+return this.put(`/conversation/${conversationId}/notifications`, { muted });
   }
 
   /**
@@ -264,27 +183,8 @@ class MessagesService extends BaseService {
    * @returns {Promise<Object>}
    */
   async forwardMessage(messageId, conversationId) {
-    if (this.isUsingMockData) {
-      // Mock: copiar mensaje a otra conversación
-      const messages = mockMessagesService.messages;
-      const originalMessage = messages.find(m => m.id === messageId);
-      
-      if (!originalMessage) {
-        return {
-          success: false,
-          error: 'Mensaje no encontrado'
-        };
-      }
-      
-      return mockMessagesService.sendMessage({
-        ...originalMessage,
-        conversationId,
-        id: undefined,
-        timestamp: undefined
-      });
-    }
 
-    return this.post(`/${messageId}/forward`, { conversationId });
+return this.post(`/${messageId}/forward`, { conversationId });
   }
 
   /**
@@ -293,23 +193,8 @@ class MessagesService extends BaseService {
    * @returns {Promise<Object>}
    */
   async getUsersStatus(userIds) {
-    if (this.isUsingMockData) {
-      // Mock: generar estados aleatorios
-      const statuses = {};
-      userIds.forEach(userId => {
-        statuses[userId] = {
-          online: Math.random() > 0.5,
-          lastSeen: new Date(Date.now() - Math.random() * 3600000).toISOString()
-        };
-      });
-      
-      return {
-        success: true,
-        data: statuses
-      };
-    }
 
-    return this.post('/users/status', { userIds });
+return this.post('/users/status', { userIds });
   }
 }
 

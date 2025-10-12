@@ -1,40 +1,53 @@
 /**
- * Constantes para disponibilidad de guías
+ * COMPATIBILITY LAYER - GuideAvailability
+ *
+ * Este archivo re-exporta constantes desde el backend.
+ * Mantiene compatibilidad con código existente.
+ *
+ * ⚠️ TEMPORAL: Este archivo es parte de la capa de compatibilidad.
+ * RECOMENDADO: Migrar a useCalendarConfig() para uso en componentes React.
  */
 
-// Configuración de horarios
-export const TIME_SLOT_CONFIG = {
-  PATTERN: /^\d{2}:\d{2}-\d{2}:\d{2}$/,
-  DEFAULT_SLOT: '09:00-17:00',
-  DEFAULT_START: '09:00',
-  DEFAULT_END: '17:00'
+import useModulesConfigStore from '../stores/modulesConfigStore';
+
+// Cargar configuración si no está cargada
+const store = useModulesConfigStore.getState();
+if (!store.modules && !store.isLoading) {
+  store.loadModules();
+}
+
+// Helper para obtener configuración
+const getCalendarConfig = () => {
+  const state = useModulesConfigStore.getState();
+  return state.modules?.guideavailability || {};
 };
 
-// Estados de slots
-export const SLOT_STATUS = {
-  AVAILABLE: 'available',
-  BUSY: 'busy',
-  OCCUPIED: 'occupied',
-  BLOCKED: 'blocked'
-};
 
-// Tipos de guía
-export const GUIDE_TYPES = {
-  PLANTA: 'planta',
-  FREELANCE: 'freelance'
-};
+export const SLOT_STATUS = (() => {
+  const config = getCalendarConfig();
+  return config.slotStatus || [];
+})();
 
-// Límites de visualización
-export const DISPLAY_LIMITS = {
-  MAX_LANGUAGES: 5,
-  MAX_MUSEUMS: 2,
-  MAX_SPECIALTIES: 7
-};
+export const TIME_SLOT_CONFIG = (() => {
+  const config = getCalendarConfig();
+  return config.timeSlotConfig || {};
+})();
 
-// Configuración de navegación de fecha
-export const DATE_NAVIGATION = {
-  DAYS_FORWARD: 1,
-  DAYS_BACKWARD: -1,
-  WEEK_FORWARD: 7,
-  WEEK_BACKWARD: -7
+export const DISPLAY_LIMITS = (() => {
+  const config = getCalendarConfig();
+  return config.displayLimits || { maxDays: 30 };
+})();
+
+export const DATE_NAVIGATION = (() => {
+  const config = getCalendarConfig();
+  return config.dateNavigation || {};
+})();
+
+
+// Export default para compatibilidad
+export default {
+  SLOT_STATUS,
+  TIME_SLOT_CONFIG,
+  DISPLAY_LIMITS,
+  DATE_NAVIGATION
 };

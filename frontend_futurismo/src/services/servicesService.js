@@ -5,7 +5,7 @@
 
 import BaseService from './baseService';
 import { APP_CONFIG } from '../config/app.config';
-import { mockServicesService } from './mockServicesService';
+
 
 class ServicesService extends BaseService {
   constructor() {
@@ -19,11 +19,7 @@ class ServicesService extends BaseService {
    * @returns {Promise<Object>}
    */
   async getServices(filters = {}) {
-    if (this.isUsingMockData) {
-      return mockServicesService.getServices(filters);
-    }
-
-    return this.get('', filters);
+return this.get('', filters);
   }
 
   /**
@@ -32,11 +28,7 @@ class ServicesService extends BaseService {
    * @returns {Promise<Object>}
    */
   async getActiveServices(filters = {}) {
-    if (this.isUsingMockData) {
-      return mockServicesService.getActiveServices(filters);
-    }
-
-    return this.get('/active', filters);
+return this.get('/active', filters);
   }
 
   /**
@@ -45,11 +37,7 @@ class ServicesService extends BaseService {
    * @returns {Promise<Object>}
    */
   async getServiceById(id) {
-    if (this.isUsingMockData) {
-      return mockServicesService.getServiceById(id);
-    }
-
-    return this.get(`/${id}`);
+return this.get(`/${id}`);
   }
 
   /**
@@ -58,11 +46,7 @@ class ServicesService extends BaseService {
    * @returns {Promise<Object>}
    */
   async createService(serviceData) {
-    if (this.isUsingMockData) {
-      return mockServicesService.createService(serviceData);
-    }
-
-    return this.post('', serviceData);
+return this.post('', serviceData);
   }
 
   /**
@@ -72,11 +56,7 @@ class ServicesService extends BaseService {
    * @returns {Promise<Object>}
    */
   async updateService(id, updateData) {
-    if (this.isUsingMockData) {
-      return mockServicesService.updateService(id, updateData);
-    }
-
-    return this.put(`/${id}`, updateData);
+return this.put(`/${id}`, updateData);
   }
 
   /**
@@ -86,11 +66,7 @@ class ServicesService extends BaseService {
    * @returns {Promise<Object>}
    */
   async updateServiceStatus(id, status) {
-    if (this.isUsingMockData) {
-      return mockServicesService.updateServiceStatus(id, status);
-    }
-
-    return this.put(`/${id}/status`, { status });
+return this.put(`/${id}/status`, { status });
   }
 
   /**
@@ -100,11 +76,7 @@ class ServicesService extends BaseService {
    * @returns {Promise<Object>}
    */
   async updateServiceLocation(id, location) {
-    if (this.isUsingMockData) {
-      return mockServicesService.updateServiceLocation(id, location);
-    }
-
-    return this.put(`/${id}/location`, location);
+return this.put(`/${id}/location`, location);
   }
 
   /**
@@ -114,11 +86,7 @@ class ServicesService extends BaseService {
    * @returns {Promise<Object>}
    */
   async updateGuideLocation(guideId, location) {
-    if (this.isUsingMockData) {
-      return mockServicesService.updateGuideLocation(guideId, location);
-    }
-
-    return this.put(`/guide/${guideId}/location`, location);
+return this.put(`/guide/${guideId}/location`, location);
   }
 
   /**
@@ -127,11 +95,7 @@ class ServicesService extends BaseService {
    * @returns {Promise<Object>}
    */
   async deleteService(id) {
-    if (this.isUsingMockData) {
-      return mockServicesService.deleteService(id);
-    }
-
-    return this.delete(`/${id}`);
+return this.delete(`/${id}`);
   }
 
   /**
@@ -140,11 +104,7 @@ class ServicesService extends BaseService {
    * @returns {Promise<Object>}
    */
   async getStatistics(filters = {}) {
-    if (this.isUsingMockData) {
-      return mockServicesService.getStatistics(filters);
-    }
-
-    return this.get('/statistics', filters);
+return this.get('/statistics', filters);
   }
 
   /**
@@ -155,11 +115,7 @@ class ServicesService extends BaseService {
    * @returns {Promise<Object>}
    */
   async rateService(id, rating, feedback = '') {
-    if (this.isUsingMockData) {
-      return mockServicesService.rateService(id, rating, feedback);
-    }
-
-    return this.post(`/${id}/rate`, { rating, feedback });
+return this.post(`/${id}/rate`, { rating, feedback });
   }
 
   /**
@@ -167,11 +123,7 @@ class ServicesService extends BaseService {
    * @returns {Promise<Object>}
    */
   async getServiceTypes() {
-    if (this.isUsingMockData) {
-      return mockServicesService.getServiceTypes();
-    }
-
-    return this.get('/types');
+return this.get('/types');
   }
 
   /**
@@ -180,11 +132,7 @@ class ServicesService extends BaseService {
    * @returns {Promise<Object>}
    */
   async startService(id) {
-    if (this.isUsingMockData) {
-      return mockServicesService.updateServiceStatus(id, 'ON_WAY');
-    }
-
-    return this.post(`/${id}/start`);
+return this.post(`/${id}/start`);
   }
 
   /**
@@ -194,14 +142,6 @@ class ServicesService extends BaseService {
    * @returns {Promise<Object>}
    */
   async pauseService(id, reason = '') {
-    if (this.isUsingMockData) {
-      return mockServicesService.updateService(id, {
-        status: 'PAUSED',
-        pauseReason: reason,
-        pausedAt: new Date().toISOString()
-      });
-    }
-
     return this.post(`/${id}/pause`, { reason });
   }
 
@@ -211,11 +151,7 @@ class ServicesService extends BaseService {
    * @returns {Promise<Object>}
    */
   async resumeService(id) {
-    if (this.isUsingMockData) {
-      return mockServicesService.updateServiceStatus(id, 'IN_SERVICE');
-    }
-
-    return this.post(`/${id}/resume`);
+return this.post(`/${id}/resume`);
   }
 
   /**
@@ -225,14 +161,6 @@ class ServicesService extends BaseService {
    * @returns {Promise<Object>}
    */
   async finishService(id, completionData = {}) {
-    if (this.isUsingMockData) {
-      return mockServicesService.updateService(id, {
-        status: 'FINISHED',
-        completedAt: new Date().toISOString(),
-        ...completionData
-      });
-    }
-
     return this.post(`/${id}/finish`, completionData);
   }
 
@@ -243,14 +171,6 @@ class ServicesService extends BaseService {
    * @returns {Promise<Object>}
    */
   async cancelService(id, reason) {
-    if (this.isUsingMockData) {
-      return mockServicesService.updateService(id, {
-        status: 'CANCELLED',
-        cancellationReason: reason,
-        cancelledAt: new Date().toISOString()
-      });
-    }
-
     return this.post(`/${id}/cancel`, { reason });
   }
 
@@ -260,34 +180,6 @@ class ServicesService extends BaseService {
    * @returns {Promise<Object>}
    */
   async getLocationHistory(id) {
-    if (this.isUsingMockData) {
-      // Mock: generar historial simulado
-      const service = await mockServicesService.getServiceById(id);
-      if (!service.success) return service;
-
-      const history = [];
-      const startTime = new Date(service.data.createdAt);
-      const now = new Date();
-      const interval = 5 * 60 * 1000; // 5 minutos
-
-      let currentTime = startTime;
-      while (currentTime < now) {
-        history.push({
-          timestamp: currentTime.toISOString(),
-          location: {
-            lat: service.data.pickupCoordinates.lat + (Math.random() - 0.5) * 0.01,
-            lng: service.data.pickupCoordinates.lng + (Math.random() - 0.5) * 0.01
-          }
-        });
-        currentTime = new Date(currentTime.getTime() + interval);
-      }
-
-      return {
-        success: true,
-        data: history
-      };
-    }
-
     return this.get(`/${id}/location-history`);
   }
 
@@ -298,22 +190,6 @@ class ServicesService extends BaseService {
    * @returns {Promise<Object>}
    */
   async assignGuide(serviceId, guideId) {
-    if (this.isUsingMockData) {
-      // Mock: obtener datos del guía y actualizar servicio
-      const guides = [
-        { id: 'guide-001', name: 'Carlos Mendoza', phone: '+51 123456789' },
-        { id: 'guide-002', name: 'Ana Rivera', phone: '+51 987654321' },
-        { id: 'guide-003', name: 'Miguel Torres', phone: '+51 876543210' }
-      ];
-
-      const guide = guides.find(g => g.id === guideId) || guides[0];
-      
-      return mockServicesService.updateService(serviceId, {
-        guide,
-        assignedAt: new Date().toISOString()
-      });
-    }
-
     return this.post(`/${serviceId}/assign-guide`, { guideId });
   }
 
@@ -324,11 +200,7 @@ class ServicesService extends BaseService {
    * @returns {Promise<Object>}
    */
   async getServicesByGuide(guideId, filters = {}) {
-    if (this.isUsingMockData) {
-      return mockServicesService.getServices({ ...filters, guideId });
-    }
-
-    return this.get(`/guide/${guideId}`, filters);
+return this.get(`/guide/${guideId}`, filters);
   }
 
   /**
@@ -337,11 +209,6 @@ class ServicesService extends BaseService {
    * @returns {number} ID del intervalo
    */
   startRealtimeUpdates(callback) {
-    if (this.isUsingMockData) {
-      this.realtimeInterval = mockServicesService.startRealtimeUpdates(callback);
-      return this.realtimeInterval;
-    }
-
     // En producción, esto sería una conexión WebSocket
     console.log('Realtime updates would be handled via WebSocket in production');
     return null;
@@ -352,9 +219,6 @@ class ServicesService extends BaseService {
    */
   stopRealtimeUpdates() {
     if (this.realtimeInterval) {
-      if (this.isUsingMockData) {
-        mockServicesService.stopRealtimeUpdates(this.realtimeInterval);
-      }
       this.realtimeInterval = null;
     }
   }
@@ -366,18 +230,6 @@ class ServicesService extends BaseService {
    * @returns {Promise<Object>}
    */
   async sendEmergencyAlert(serviceId, emergencyData) {
-    if (this.isUsingMockData) {
-      return {
-        success: true,
-        data: {
-          alertId: `alert-${Date.now()}`,
-          serviceId,
-          ...emergencyData,
-          sentAt: new Date().toISOString()
-        }
-      };
-    }
-
     return this.post(`/${serviceId}/emergency`, emergencyData);
   }
 
@@ -387,26 +239,6 @@ class ServicesService extends BaseService {
    * @returns {Promise<Object>}
    */
   async getOptimalRoute(serviceId) {
-    if (this.isUsingMockData) {
-      const service = await mockServicesService.getServiceById(serviceId);
-      if (!service.success) return service;
-
-      // Mock: generar ruta simple
-      return {
-        success: true,
-        data: {
-          distance: '5.2 km',
-          duration: '15 minutos',
-          polyline: 'encoded_polyline_string',
-          steps: [
-            { instruction: 'Dirígete hacia el norte por Av. Arequipa', distance: '2.1 km' },
-            { instruction: 'Gira a la derecha en Av. Javier Prado', distance: '1.5 km' },
-            { instruction: 'Continúa recto hasta el destino', distance: '1.6 km' }
-          ]
-        }
-      };
-    }
-
     return this.get(`/${serviceId}/route`);
   }
 }

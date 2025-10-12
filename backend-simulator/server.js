@@ -30,6 +30,7 @@ const driversRoutes = require('./routes/drivers');
 const agenciesRoutes = require('./routes/agencies');
 const filesRoutes = require('./routes/files');
 const { addHelpers } = require('./middlewares/helpers');
+const { authMiddleware } = require('./middlewares/auth');
 
 // Create server
 const server = jsonServer.create();
@@ -50,6 +51,9 @@ server.use(jsonServer.bodyParser);
 
 // Add helper functions to all requests
 server.use(addHelpers);
+
+// Authentication middleware - validates JWT and sets req.user
+server.use(authMiddleware);
 
 // Custom routes (BEFORE json-server router)
 server.use('/api/auth', authRoutes(router));

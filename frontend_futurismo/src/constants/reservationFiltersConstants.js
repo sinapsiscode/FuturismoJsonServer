@@ -1,46 +1,47 @@
 /**
- * Constantes para filtros de reservas
+ * COMPATIBILITY LAYER - ReservationFilters
+ *
+ * Este archivo re-exporta constantes desde el backend.
+ * Mantiene compatibilidad con código existente.
+ *
+ * ⚠️ TEMPORAL: Este archivo es parte de la capa de compatibilidad.
+ * RECOMENDADO: Migrar a useReservationsConfig() para uso en componentes React.
  */
 
-// Valores por defecto de filtros
-export const DEFAULT_FILTER_VALUES = {
-  SEARCH_TERM: '',
-  STATUS: 'all',
-  DATE_FROM: '',
-  DATE_TO: '',
-  CUSTOMER: '',
-  MIN_PASSENGERS: '',
-  MAX_PASSENGERS: '',
-  CURRENT_PAGE: 1
+import useModulesConfigStore from '../stores/modulesConfigStore';
+
+// Cargar configuración si no está cargada
+const store = useModulesConfigStore.getState();
+if (!store.modules && !store.isLoading) {
+  store.loadModules();
+}
+
+// Helper para obtener configuración
+const getReservationsConfig = () => {
+  const state = useModulesConfigStore.getState();
+  return state.modules?.reservationfilters || {};
 };
 
-// Opciones de estado
-export const STATUS_OPTIONS = {
-  ALL: 'all',
-  PENDING: 'pending',
-  CONFIRMED: 'confirmed',
-  CANCELLED: 'cancelled',
-  COMPLETED: 'completed'
-};
 
-// Configuración de fechas
-export const DATE_CONFIG = {
-  END_OF_DAY_HOURS: 23,
-  END_OF_DAY_MINUTES: 59,
-  END_OF_DAY_SECONDS: 59,
-  END_OF_DAY_MILLISECONDS: 999
-};
+export const DEFAULT_FILTER_VALUES = (() => {
+  const config = getReservationsConfig();
+  return config.defaultFilterValues || {};
+})();
 
-// Límites de filtros
-export const FILTER_LIMITS = {
-  MIN_PASSENGERS: 1,
-  MAX_PASSENGERS: 100,
-  MIN_SEARCH_LENGTH: 2
-};
+export const FILTER_LIMITS = (() => {
+  const config = getReservationsConfig();
+  return config.filterLimits || {};
+})();
 
-// Configuración de paginación (si no está ya en reservationConstants)
-export const PAGINATION_CONFIG = {
-  DEFAULT_PAGE: 1,
-  ITEMS_PER_PAGE: 10,
-  MAX_PAGE_BUTTONS: 5
+export const PAGINATION_CONFIG = (() => {
+  const config = getReservationsConfig();
+  return config.paginationConfig || { defaultPageSize: 10 };
+})();
+
+
+// Export default para compatibilidad
+export default {
+  DEFAULT_FILTER_VALUES,
+  FILTER_LIMITS,
+  PAGINATION_CONFIG
 };

@@ -19,14 +19,8 @@ class AuthService {
    * @returns {Promise<Object>} - { success, data: { token, user } }
    */
   async login(credentials) {
-    console.log('🔐 AuthService.login called with mockData:', this.isUsingMockData);
+    console.log('🔐 AuthService.login called');
     console.log('🔗 Base URL:', this.baseURL);
-
-    if (this.isUsingMockData) {
-      console.log('📱 Using MOCK auth service');
-      const { mockAuthService } = await import('./mockAuthService');
-      return mockAuthService.login(credentials);
-    }
 
     const url = `${this.baseURL}/auth/login`;
     console.log('🌐 Using REAL API call to:', url);
@@ -84,11 +78,6 @@ class AuthService {
    * Cerrar sesión
    */
   async logout() {
-    if (this.isUsingMockData) {
-      const { mockAuthService } = await import('./mockAuthService');
-      return mockAuthService.logout();
-    }
-
     try {
       const token = localStorage.getItem('auth_token');
       const response = await fetch(`${this.baseURL}/auth/logout`, {
@@ -114,11 +103,6 @@ class AuthService {
    * Obtener usuario actual
    */
   async getCurrentUser() {
-    if (this.isUsingMockData) {
-      const { mockAuthService } = await import('./mockAuthService');
-      return mockAuthService.getCurrentUser();
-    }
-
     try {
       const token = localStorage.getItem('auth_token');
       if (!token) {
@@ -157,11 +141,6 @@ class AuthService {
    * Verificar si el token es válido
    */
   async verifyToken(token) {
-    if (this.isUsingMockData) {
-      const { mockAuthService } = await import('./mockAuthService');
-      return mockAuthService.verifyToken(token);
-    }
-
     try {
       const response = await fetch(`${this.baseURL}/auth/me`, {
         headers: {
@@ -189,11 +168,6 @@ class AuthService {
    * Refrescar token
    */
   async refreshToken(token) {
-    if (this.isUsingMockData) {
-      const { mockAuthService } = await import('./mockAuthService');
-      return mockAuthService.refreshToken(token);
-    }
-
     // Por ahora, simplemente verificar el token existente
     return this.verifyToken(token);
   }

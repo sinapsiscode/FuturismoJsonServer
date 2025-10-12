@@ -1,98 +1,59 @@
 /**
- * Constantes para formularios de eventos
+ * COMPATIBILITY LAYER - EventForm
+ *
+ * Este archivo re-exporta constantes desde el backend.
+ * Mantiene compatibilidad con código existente.
+ *
+ * ⚠️ TEMPORAL: Este archivo es parte de la capa de compatibilidad.
+ * RECOMENDADO: Migrar a useCalendarConfig() para uso en componentes React.
  */
 
-// Estados iniciales del formulario
-export const INITIAL_EVENT_FORM_STATE = {
-  title: '',
-  description: '',
-  date: '',
-  startTime: '',
-  endTime: '',
-  location: '',
-  allDay: false,
-  category: 'personal',
-  recurring: false,
-  reminder: '15',
-  priority: 'medium',
-  visibility: 'private',
-  attendees: [],
-  tags: []
+import useModulesConfigStore from '../stores/modulesConfigStore';
+
+// Cargar configuración si no está cargada
+const store = useModulesConfigStore.getState();
+if (!store.modules && !store.isLoading) {
+  store.loadModules();
+}
+
+// Helper para obtener configuración
+const getCalendarConfig = () => {
+  const state = useModulesConfigStore.getState();
+  return state.modules?.eventform || {};
 };
 
-// Categorías de eventos
-export const EVENT_CATEGORIES = {
-  PERSONAL: 'personal',
-  WORK: 'work',
-  COMPANY_TOUR: 'companyTour',
-  MEETING: 'meeting',
-  OCCUPIED: 'occupied'
-};
 
-// Niveles de prioridad
-export const EVENT_PRIORITIES = {
-  LOW: 'low',
-  MEDIUM: 'medium',
-  HIGH: 'high',
-  URGENT: 'urgent'
-};
+export const EVENT_PRIORITIES = (() => {
+  const config = getCalendarConfig();
+  return config.eventPriorities || [];
+})();
 
-// Visibilidad de eventos
-export const EVENT_VISIBILITY = {
-  PRIVATE: 'private',
-  PUBLIC: 'public',
-  COMPANY: 'company',
-  TEAM: 'team'
-};
+export const EVENT_VISIBILITY = (() => {
+  const config = getCalendarConfig();
+  return config.eventVisibility || [];
+})();
 
-// Recordatorios (en minutos)
-export const EVENT_REMINDERS = {
-  NONE: '0',
-  FIVE_MINUTES: '5',
-  FIFTEEN_MINUTES: '15',
-  THIRTY_MINUTES: '30',
-  ONE_HOUR: '60',
-  TWO_HOURS: '120',
-  ONE_DAY: '1440'
-};
+export const EVENT_REMINDERS = (() => {
+  const config = getCalendarConfig();
+  return config.eventReminders || [];
+})();
 
-// Límites de validación
-export const EVENT_VALIDATION_LIMITS = {
-  TITLE_MAX_LENGTH: 100,
-  DESCRIPTION_MAX_LENGTH: 500,
-  LOCATION_MAX_LENGTH: 200,
-  MAX_ATTENDEES: 50,
-  MAX_TAGS: 10,
-  TAG_MAX_LENGTH: 20
-};
+export const RECURRENCE_PATTERNS = (() => {
+  const config = getCalendarConfig();
+  return config.recurrencePatterns || [];
+})();
 
-// Horarios por defecto
-export const DEFAULT_EVENT_TIMES = {
-  START: '09:00',
-  END: '10:00',
-  DURATION: 60 // minutos
-};
+export const DEFAULT_EVENT_TIMES = (() => {
+  const config = getCalendarConfig();
+  return config.defaultEventTimes || { start: '09:00', end: '17:00' };
+})();
 
-// Patrones de recurrencia
-export const RECURRENCE_PATTERNS = {
-  DAILY: 'daily',
-  WEEKLY: 'weekly',
-  MONTHLY: 'monthly',
-  YEARLY: 'yearly',
-  CUSTOM: 'custom'
-};
 
-// Errores de validación (keys para i18n)
-export const EVENT_ERROR_KEYS = {
-  TITLE_REQUIRED: 'calendar.errors.titleRequired',
-  TITLE_TOO_LONG: 'calendar.errors.titleTooLong',
-  DATE_REQUIRED: 'calendar.errors.dateRequired',
-  START_TIME_REQUIRED: 'calendar.errors.startTimeRequired',
-  END_TIME_REQUIRED: 'calendar.errors.endTimeRequired',
-  INVALID_TIME_RANGE: 'calendar.errors.invalidTimeRange',
-  DESCRIPTION_TOO_LONG: 'calendar.errors.descriptionTooLong',
-  LOCATION_TOO_LONG: 'calendar.errors.locationTooLong',
-  TOO_MANY_ATTENDEES: 'calendar.errors.tooManyAttendees',
-  INVALID_EMAIL: 'calendar.errors.invalidEmail',
-  DUPLICATE_ATTENDEE: 'calendar.errors.duplicateAttendee'
+// Export default para compatibilidad
+export default {
+  EVENT_PRIORITIES,
+  EVENT_VISIBILITY,
+  EVENT_REMINDERS,
+  RECURRENCE_PATTERNS,
+  DEFAULT_EVENT_TIMES
 };

@@ -12,7 +12,14 @@
       "Bash(taskkill:*)",
       "Bash(copy authService.js authService.backup.js)",
       "Bash(git add:*)",
-      "Bash(git rm:*)"
+      "Bash(git rm:*)",
+      "Bash(curl:*)",
+      "Bash(npm run lint)",
+      "Bash(dir:*)",
+      "Bash(timeout:*)",
+      "Bash(python:*)",
+      "Bash(del:*)",
+      "Read(//c/**)"
     ],
     "deny": [],
     "ask": []

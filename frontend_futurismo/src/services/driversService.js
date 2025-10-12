@@ -3,7 +3,7 @@
  */
 
 import BaseService from './BaseService';
-import mockDriversService from './mockDriversService';
+
 import { APP_CONFIG } from '../config/app.config';
 
 class DriversService extends BaseService {
@@ -17,10 +17,7 @@ class DriversService extends BaseService {
    * @returns {Promise<Object>}
    */
   async getDrivers(params = {}) {
-    if (this.isUsingMockData) {
-      return mockDriversService.getDrivers(params);
-    }
-    return this.get('', params);
+return this.get('', params);
   }
 
   /**
@@ -29,10 +26,7 @@ class DriversService extends BaseService {
    * @returns {Promise<Object>}
    */
   async getDriverById(id) {
-    if (this.isUsingMockData) {
-      return mockDriversService.getDriverById(id);
-    }
-    return this.get(`/${id}`);
+return this.get(`/${id}`);
   }
 
   /**
@@ -41,10 +35,7 @@ class DriversService extends BaseService {
    * @returns {Promise<Object>}
    */
   async createDriver(driverData) {
-    if (this.isUsingMockData) {
-      return mockDriversService.createDriver(driverData);
-    }
-    return this.post('', driverData);
+return this.post('', driverData);
   }
 
   /**
@@ -54,10 +45,7 @@ class DriversService extends BaseService {
    * @returns {Promise<Object>}
    */
   async updateDriver(id, driverData) {
-    if (this.isUsingMockData) {
-      return mockDriversService.updateDriver(id, driverData);
-    }
-    return this.put(`/${id}`, driverData);
+return this.put(`/${id}`, driverData);
   }
 
   /**
@@ -66,10 +54,7 @@ class DriversService extends BaseService {
    * @returns {Promise<Object>}
    */
   async deleteDriver(id) {
-    if (this.isUsingMockData) {
-      return mockDriversService.deleteDriver(id);
-    }
-    return this.delete(`/${id}`);
+return this.delete(`/${id}`);
   }
 
   /**
@@ -80,10 +65,7 @@ class DriversService extends BaseService {
    * @returns {Promise<Object>}
    */
   async checkAvailability(driverId, date, duration = 8) {
-    if (this.isUsingMockData) {
-      return mockDriversService.checkAvailability(driverId, date, duration);
-    }
-    return this.post(`/${driverId}/availability`, { date, duration });
+return this.post(`/${driverId}/availability`, { date, duration });
   }
 
   /**
@@ -93,10 +75,7 @@ class DriversService extends BaseService {
    * @returns {Promise<Object>}
    */
   async getAvailableDrivers(date, vehicleType = null) {
-    if (this.isUsingMockData) {
-      return mockDriversService.getAvailableDrivers(date, vehicleType);
-    }
-    return this.get('/available', { date, vehicleType });
+return this.get('/available', { date, vehicleType });
   }
 
   /**
@@ -106,10 +85,7 @@ class DriversService extends BaseService {
    * @returns {Promise<Object>}
    */
   async assignDriver(driverId, assignmentData) {
-    if (this.isUsingMockData) {
-      return mockDriversService.assignDriver(driverId, assignmentData);
-    }
-    return this.post(`/${driverId}/assignments`, assignmentData);
+return this.post(`/${driverId}/assignments`, assignmentData);
   }
 
   /**
@@ -117,10 +93,7 @@ class DriversService extends BaseService {
    * @returns {Promise<Object>}
    */
   async getDriversStatistics() {
-    if (this.isUsingMockData) {
-      return mockDriversService.getDriversStatistics();
-    }
-    return this.get('/statistics');
+return this.get('/statistics');
   }
 
   /**
@@ -130,10 +103,7 @@ class DriversService extends BaseService {
    * @returns {Promise<Object>}
    */
   async updateDocuments(driverId, documents) {
-    if (this.isUsingMockData) {
-      return mockDriversService.updateDriver(driverId, { documents });
-    }
-    return this.patch(`/${driverId}/documents`, documents);
+return this.patch(`/${driverId}/documents`, documents);
   }
 
   /**
@@ -143,18 +113,8 @@ class DriversService extends BaseService {
    * @returns {Promise<Object>}
    */
   async getAssignmentHistory(driverId, params = {}) {
-    if (this.isUsingMockData) {
-      // En mock, retornamos las asignaciones actuales
-      const driver = await mockDriversService.getDriverById(driverId);
-      if (driver.success) {
-        return {
-          success: true,
-          data: driver.data.currentAssignments || []
-        };
-      }
-      return driver;
-    }
-    return this.get(`/${driverId}/assignments`, params);
+
+return this.get(`/${driverId}/assignments`, params);
   }
 
   /**
@@ -165,26 +125,8 @@ class DriversService extends BaseService {
    * @returns {Promise<Object>}
    */
   async uploadPhoto(driverId, file, onProgress) {
-    if (this.isUsingMockData) {
-      // Simular upload en mock
-      return new Promise((resolve) => {
-        let progress = 0;
-        const interval = setInterval(() => {
-          progress += 20;
-          if (onProgress) onProgress(progress);
-          if (progress >= 100) {
-            clearInterval(interval);
-            resolve({
-              success: true,
-              data: {
-                photoUrl: URL.createObjectURL(file)
-              }
-            });
-          }
-        }, 200);
-      });
-    }
-    return this.upload(`/${driverId}/photo`, file, onProgress);
+
+return this.upload(`/${driverId}/photo`, file, onProgress);
   }
 }
 

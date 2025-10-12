@@ -1,11 +1,13 @@
 const express = require('express');
 const { generateId, paginate, filterBy, sortBy, calculatePrice, successResponse, errorResponse } = require('../middlewares/helpers');
+const { adminOrAgency } = require('../middlewares/authorize');
 
 module.exports = (router) => {
   const reservationsRouter = express.Router();
 
   // Get all reservations with filtering
-  reservationsRouter.get('/', (req, res) => {
+  // Only admins and agencies can manage reservations
+  reservationsRouter.get('/', adminOrAgency(), (req, res) => {
     try {
       const db = router.db;
       let reservations = db.get('reservations').value();
@@ -45,7 +47,7 @@ module.exports = (router) => {
   });
 
   // Get reservation by ID
-  reservationsRouter.get('/:id', (req, res) => {
+  reservationsRouter.get('/:id', adminOrAgency(), (req, res) => {
     try {
       const db = router.db;
       const reservation = db.get('reservations').find({ id: req.params.id }).value();
@@ -72,7 +74,7 @@ module.exports = (router) => {
   });
 
   // Create new reservation
-  reservationsRouter.post('/', (req, res) => {
+  reservationsRouter.post('/', adminOrAgency(), (req, res) => {
     try {
       const db = router.db;
       const {
@@ -132,7 +134,7 @@ module.exports = (router) => {
   });
 
   // Update reservation
-  reservationsRouter.put('/:id', (req, res) => {
+  reservationsRouter.put('/:id', adminOrAgency(), (req, res) => {
     try {
       const db = router.db;
       const { id } = req.params;
@@ -183,7 +185,7 @@ module.exports = (router) => {
   });
 
   // Cancel reservation
-  reservationsRouter.delete('/:id', (req, res) => {
+  reservationsRouter.delete('/:id', adminOrAgency(), (req, res) => {
     try {
       const db = router.db;
       const { id } = req.params;
@@ -212,7 +214,7 @@ module.exports = (router) => {
   });
 
   // Get reservation with full details
-  reservationsRouter.get('/:id/details', (req, res) => {
+  reservationsRouter.get('/:id/details', adminOrAgency(), (req, res) => {
     try {
       const db = router.db;
       const { id } = req.params;
@@ -261,7 +263,7 @@ module.exports = (router) => {
   });
 
   // Confirm reservation
-  reservationsRouter.post('/:id/confirm', (req, res) => {
+  reservationsRouter.post('/:id/confirm', adminOrAgency(), (req, res) => {
     try {
       const db = router.db;
       const { id } = req.params;

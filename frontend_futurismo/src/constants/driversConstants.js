@@ -1,59 +1,53 @@
 /**
- * Constantes para la gestión de choferes
+ * COMPATIBILITY LAYER - Drivers
+ *
+ * Este archivo re-exporta constantes desde el backend.
+ * Mantiene compatibilidad con código existente.
+ *
+ * ⚠️ TEMPORAL: Este archivo es parte de la capa de compatibilidad.
+ * RECOMENDADO: Migrar a useDriversConfig() para uso en componentes React.
  */
 
-// Categorías de licencia
-export const LICENSE_CATEGORIES = {
-  A_I: 'A-I',      // Motos
-  A_IIA: 'A-IIa',  // Mototaxis
-  A_IIB: 'A-IIb',  // Motos
-  A_IIIA: 'A-IIIa', // Autos
-  A_IIIB: 'A-IIIb', // Camionetas
-  A_IIIC: 'A-IIIc', // Autos y camionetas
-  B_I: 'B-I',      // Camiones pequeños
-  B_IIA: 'B-IIa',  // Buses
-  B_IIB: 'B-IIb',  // Buses turísticos
-  B_IIC: 'B-IIc'   // Buses interprovinciales
+import useModulesConfigStore from '../stores/modulesConfigStore';
+
+// Cargar configuración si no está cargada
+const store = useModulesConfigStore.getState();
+if (!store.modules && !store.isLoading) {
+  store.loadModules();
+}
+
+// Helper para obtener configuración
+const getDriversConfig = () => {
+  const state = useModulesConfigStore.getState();
+  return state.modules?.drivers || {};
 };
 
-// Labels para licencias
-export const LICENSE_CATEGORY_LABELS = {
-  [LICENSE_CATEGORIES.A_I]: 'A-I - Motocicletas',
-  [LICENSE_CATEGORIES.A_IIA]: 'A-IIa - Mototaxis',
-  [LICENSE_CATEGORIES.A_IIB]: 'A-IIb - Motocicletas',
-  [LICENSE_CATEGORIES.A_IIIA]: 'A-IIIa - Autos particulares',
-  [LICENSE_CATEGORIES.A_IIIB]: 'A-IIIb - Camionetas',
-  [LICENSE_CATEGORIES.A_IIIC]: 'A-IIIc - Autos y camionetas',
-  [LICENSE_CATEGORIES.B_I]: 'B-I - Camiones pequeños',
-  [LICENSE_CATEGORIES.B_IIA]: 'B-IIa - Buses',
-  [LICENSE_CATEGORIES.B_IIB]: 'B-IIb - Buses turísticos',
-  [LICENSE_CATEGORIES.B_IIC]: 'B-IIc - Buses interprovinciales'
-};
 
-// Validaciones
-export const DRIVER_VALIDATIONS = {
-  NAME_MIN_LENGTH: 2,
-  DNI_LENGTH: 8
-};
+export const DRIVER_STATUS = (() => {
+  const config = getDriversConfig();
+  return config.driverStatus || [];
+})();
 
-// Mensajes
-export const DRIVER_MESSAGES = {
-  CREATE_SUCCESS: 'Chofer creado exitosamente',
-  UPDATE_SUCCESS: 'Chofer actualizado exitosamente',
-  DELETE_SUCCESS: 'Chofer eliminado exitosamente',
-  CREATE_ERROR: 'Error al crear chofer',
-  UPDATE_ERROR: 'Error al actualizar chofer',
-  DELETE_ERROR: 'Error al eliminar chofer',
-  FETCH_ERROR: 'Error al cargar choferes',
-  DUPLICATE_LICENSE: 'Ya existe un chofer con esa licencia',
-  DUPLICATE_DNI: 'Ya existe un chofer con ese DNI',
-  LICENSE_EXPIRED: 'La licencia del chofer está vencida',
-  ASSIGN_SUCCESS: 'Chofer asignado exitosamente',
-  ASSIGN_ERROR: 'Error al asignar chofer',
-  NOT_AVAILABLE: 'El chofer no está disponible en esa fecha'
-};
+export const LICENSE_TYPES = (() => {
+  const config = getDriversConfig();
+  return config.licenseTypes || [];
+})();
 
-// Helpers
-export const getLicenseCategoryLabel = (category) => {
-  return LICENSE_CATEGORY_LABELS[category] || category;
+export const EMPLOYMENT_TYPES = (() => {
+  const config = getDriversConfig();
+  return config.employmentTypes || [];
+})();
+
+export const VEHICLE_CATEGORIES = (() => {
+  const config = getDriversConfig();
+  return config.vehicleCategories || [];
+})();
+
+
+// Export default para compatibilidad
+export default {
+  DRIVER_STATUS,
+  LICENSE_TYPES,
+  EMPLOYMENT_TYPES,
+  VEHICLE_CATEGORIES
 };

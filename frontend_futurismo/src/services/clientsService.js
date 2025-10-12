@@ -5,7 +5,7 @@
 
 import BaseService from './baseService';
 import { APP_CONFIG } from '../config/app.config';
-import { mockClientsService } from './mockClientsService';
+
 
 class ClientsService extends BaseService {
   constructor() {
@@ -18,11 +18,7 @@ class ClientsService extends BaseService {
    * @returns {Promise<Object>}
    */
   async getClients(filters = {}) {
-    if (this.isUsingMockData) {
-      return mockClientsService.getClients(filters);
-    }
-
-    return this.get('', filters);
+return this.get('', filters);
   }
 
   /**
@@ -31,11 +27,7 @@ class ClientsService extends BaseService {
    * @returns {Promise<Object>}
    */
   async getClientById(id) {
-    if (this.isUsingMockData) {
-      return mockClientsService.getClientById(id);
-    }
-
-    return this.get(`/${id}`);
+return this.get(`/${id}`);
   }
 
   /**
@@ -44,11 +36,7 @@ class ClientsService extends BaseService {
    * @returns {Promise<Object>}
    */
   async createClient(clientData) {
-    if (this.isUsingMockData) {
-      return mockClientsService.createClient(clientData);
-    }
-
-    return this.post('', clientData);
+return this.post('', clientData);
   }
 
   /**
@@ -58,11 +46,7 @@ class ClientsService extends BaseService {
    * @returns {Promise<Object>}
    */
   async updateClient(id, updateData) {
-    if (this.isUsingMockData) {
-      return mockClientsService.updateClient(id, updateData);
-    }
-
-    return this.put(`/${id}`, updateData);
+return this.put(`/${id}`, updateData);
   }
 
   /**
@@ -71,11 +55,7 @@ class ClientsService extends BaseService {
    * @returns {Promise<Object>}
    */
   async deleteClient(id) {
-    if (this.isUsingMockData) {
-      return mockClientsService.deleteClient(id);
-    }
-
-    return this.delete(`/${id}`);
+return this.delete(`/${id}`);
   }
 
   /**
@@ -84,11 +64,7 @@ class ClientsService extends BaseService {
    * @returns {Promise<Object>}
    */
   async toggleClientStatus(id) {
-    if (this.isUsingMockData) {
-      return mockClientsService.toggleClientStatus(id);
-    }
-
-    return this.put(`/${id}/toggle-status`);
+return this.put(`/${id}/toggle-status`);
   }
 
   /**
@@ -96,11 +72,7 @@ class ClientsService extends BaseService {
    * @returns {Promise<Object>}
    */
   async getClientTypes() {
-    if (this.isUsingMockData) {
-      return mockClientsService.getClientTypes();
-    }
-
-    return this.get('/types');
+return this.get('/types');
   }
 
   /**
@@ -108,11 +80,7 @@ class ClientsService extends BaseService {
    * @returns {Promise<Object>}
    */
   async getStatistics() {
-    if (this.isUsingMockData) {
-      return mockClientsService.getStatistics();
-    }
-
-    return this.get('/statistics');
+return this.get('/statistics');
   }
 
   /**
@@ -122,11 +90,7 @@ class ClientsService extends BaseService {
    * @returns {Promise<Object>}
    */
   async getClientBookings(clientId, filters = {}) {
-    if (this.isUsingMockData) {
-      return mockClientsService.getClientBookings(clientId, filters);
-    }
-
-    return this.get(`/${clientId}/bookings`, filters);
+return this.get(`/${clientId}/bookings`, filters);
   }
 
   /**
@@ -136,11 +100,7 @@ class ClientsService extends BaseService {
    * @returns {Promise<Object>}
    */
   async updateClientCredit(id, creditData) {
-    if (this.isUsingMockData) {
-      return mockClientsService.updateClientCredit(id, creditData);
-    }
-
-    return this.put(`/${id}/credit`, creditData);
+return this.put(`/${id}/credit`, creditData);
   }
 
   /**
@@ -150,11 +110,7 @@ class ClientsService extends BaseService {
    * @returns {Promise<Object>}
    */
   async registerBooking(clientId, amount) {
-    if (this.isUsingMockData) {
-      return mockClientsService.registerBooking(clientId, amount);
-    }
-
-    return this.post(`/${clientId}/booking`, { amount });
+return this.post(`/${clientId}/booking`, { amount });
   }
 
   /**
@@ -163,11 +119,7 @@ class ClientsService extends BaseService {
    * @returns {Promise<Object>}
    */
   async getClientsByPreference(preference) {
-    if (this.isUsingMockData) {
-      return mockClientsService.getClientsByPreference(preference);
-    }
-
-    return this.get('/by-preference', { preference });
+return this.get('/by-preference', { preference });
   }
 
   /**
@@ -176,18 +128,8 @@ class ClientsService extends BaseService {
    * @returns {Promise<Object>}
    */
   async validateRUC(ruc) {
-    if (this.isUsingMockData) {
-      // Mock: validación simple
-      return {
-        success: true,
-        data: {
-          valid: ruc.length === 11 && /^\d+$/.test(ruc),
-          exists: this.clients?.some(c => c.ruc === ruc) || false
-        }
-      };
-    }
 
-    return this.post('/validate-ruc', { ruc });
+return this.post('/validate-ruc', { ruc });
   }
 
   /**
@@ -195,14 +137,7 @@ class ClientsService extends BaseService {
    * @returns {Promise<Object>}
    */
   async getClientsWithCredit() {
-    if (this.isUsingMockData) {
-      return mockClientsService.getClients({
-        type: 'agency',
-        hasCredit: true
-      });
-    }
-
-    return this.get('/with-credit');
+return this.get('/with-credit');
   }
 
   /**
@@ -211,14 +146,8 @@ class ClientsService extends BaseService {
    * @returns {Promise<Blob>}
    */
   async exportClients(filters = {}) {
-    if (this.isUsingMockData) {
-      // Mock: generar CSV simulado
-      const clients = await mockClientsService.getClients(filters);
-      const csv = this.generateCSV(clients.data);
-      return new Blob([csv], { type: 'text/csv' });
-    }
 
-    const response = await this.get('/export', filters, {
+const response = await this.get('/export', filters, {
       responseType: 'blob'
     });
 
@@ -247,19 +176,8 @@ class ClientsService extends BaseService {
    * @returns {Promise<Object>}
    */
   async importClients(file) {
-    if (this.isUsingMockData) {
-      // Mock: simular importación exitosa
-      return {
-        success: true,
-        data: {
-          imported: 3,
-          failed: 0,
-          errors: []
-        }
-      };
-    }
 
-    const formData = new FormData();
+const formData = new FormData();
     formData.append('file', file);
     
     return this.post('/import', formData, {
@@ -276,34 +194,8 @@ class ClientsService extends BaseService {
    * @returns {Promise<Object>}
    */
   async mergeClients(primaryId, secondaryId) {
-    if (this.isUsingMockData) {
-      // Mock: simular fusión
-      const primary = await mockClientsService.getClientById(primaryId);
-      const secondary = await mockClientsService.getClientById(secondaryId);
-      
-      if (!primary.success || !secondary.success) {
-        return {
-          success: false,
-          error: 'Uno o ambos clientes no encontrados'
-        };
-      }
-      
-      // Actualizar cliente principal con datos combinados
-      const merged = {
-        totalBookings: primary.data.totalBookings + secondary.data.totalBookings,
-        totalRevenue: primary.data.totalRevenue + secondary.data.totalRevenue
-      };
-      
-      await mockClientsService.updateClient(primaryId, merged);
-      await mockClientsService.deleteClient(secondaryId);
-      
-      return {
-        success: true,
-        data: { ...primary.data, ...merged }
-      };
-    }
 
-    return this.post('/merge', { primaryId, secondaryId });
+return this.post('/merge', { primaryId, secondaryId });
   }
 }
 

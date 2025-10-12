@@ -7,10 +7,6 @@
 export { default as authService } from './authService';
 export { default as reservationsService } from './reservationsService';
 
-// Servicios mock (solo en desarrollo)
-export { default as mockAuthService } from './mockAuthService';
-export { default as mockReservationsService } from './mockReservationsService';
-
 // Servicio base
 export { default as BaseService } from './baseService';
 

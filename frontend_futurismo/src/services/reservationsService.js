@@ -5,7 +5,7 @@
 
 import BaseService from './baseService';
 import { APP_CONFIG } from '../config/app.config';
-import { mockReservationsService } from './mockReservationsService';
+
 
 class ReservationsService extends BaseService {
   constructor() {
@@ -18,11 +18,7 @@ class ReservationsService extends BaseService {
    * @returns {Promise<Object>}
    */
   async createReservation(reservationData) {
-    if (this.isUsingMockData) {
-      return mockReservationsService.createReservation(reservationData);
-    }
-
-    return this.post('', reservationData);
+return this.post('', reservationData);
   }
 
   /**
@@ -31,11 +27,7 @@ class ReservationsService extends BaseService {
    * @returns {Promise<Object>}
    */
   async getReservations(filters = {}) {
-    if (this.isUsingMockData) {
-      return mockReservationsService.getReservations(filters);
-    }
-
-    return this.get('', filters);
+return this.get('', filters);
   }
 
   /**
@@ -44,11 +36,7 @@ class ReservationsService extends BaseService {
    * @returns {Promise<Object>}
    */
   async getReservationById(id) {
-    if (this.isUsingMockData) {
-      return mockReservationsService.getReservationById(id);
-    }
-
-    return this.get(`/${id}`);
+return this.get(`/${id}`);
   }
 
   /**
@@ -58,11 +46,7 @@ class ReservationsService extends BaseService {
    * @returns {Promise<Object>}
    */
   async updateReservation(id, updateData) {
-    if (this.isUsingMockData) {
-      return mockReservationsService.updateReservation(id, updateData);
-    }
-
-    return this.put(`/${id}`, updateData);
+return this.put(`/${id}`, updateData);
   }
 
   /**
@@ -73,11 +57,7 @@ class ReservationsService extends BaseService {
    * @returns {Promise<Object>}
    */
   async updateReservationStatus(id, status, reason = null) {
-    if (this.isUsingMockData) {
-      return mockReservationsService.updateReservationStatus(id, status, reason);
-    }
-
-    return this.patch(`/${id}/status`, { status, reason });
+return this.patch(`/${id}/status`, { status, reason });
   }
 
   /**
@@ -87,11 +67,7 @@ class ReservationsService extends BaseService {
    * @returns {Promise<Object>}
    */
   async cancelReservation(id, reason) {
-    if (this.isUsingMockData) {
-      return mockReservationsService.cancelReservation(id, reason);
-    }
-
-    return this.patch(`/${id}/cancel`, { reason });
+return this.patch(`/${id}/cancel`, { reason });
   }
 
   /**
@@ -101,11 +77,7 @@ class ReservationsService extends BaseService {
    * @returns {Promise<Object>}
    */
   async assignGuide(reservationId, guideId) {
-    if (this.isUsingMockData) {
-      return mockReservationsService.assignGuide(reservationId, guideId);
-    }
-
-    return this.post(`/${reservationId}/assign-guide`, { guideId });
+return this.post(`/${reservationId}/assign-guide`, { guideId });
   }
 
   /**
@@ -114,11 +86,7 @@ class ReservationsService extends BaseService {
    * @returns {Promise<Object>}
    */
   async generateVoucher(id) {
-    if (this.isUsingMockData) {
-      return mockReservationsService.generateVoucher(id);
-    }
-
-    return this.get(`/${id}/voucher`);
+return this.get(`/${id}/voucher`);
   }
 
   /**
@@ -127,11 +95,7 @@ class ReservationsService extends BaseService {
    * @returns {Promise<Object>}
    */
   async downloadVoucherPDF(id) {
-    if (this.isUsingMockData) {
-      return mockReservationsService.downloadVoucherPDF(id);
-    }
-
-    return this.download(`/${id}/voucher/pdf`, `voucher_${id}.pdf`);
+return this.download(`/${id}/voucher/pdf`, `voucher_${id}.pdf`);
   }
 
   /**
@@ -140,11 +104,7 @@ class ReservationsService extends BaseService {
    * @returns {Promise<Object>}
    */
   async getReservationStats(params = {}) {
-    if (this.isUsingMockData) {
-      return mockReservationsService.getReservationStats(params);
-    }
-
-    return this.get('/stats', params);
+return this.get('/stats', params);
   }
 
   /**
@@ -154,11 +114,7 @@ class ReservationsService extends BaseService {
    * @returns {Promise<Object>}
    */
   async searchReservations(query, filters = {}) {
-    if (this.isUsingMockData) {
-      return mockReservationsService.searchReservations(query, filters);
-    }
-
-    return this.get('/search', { q: query, ...filters });
+return this.get('/search', { q: query, ...filters });
   }
 
   /**
@@ -167,11 +123,7 @@ class ReservationsService extends BaseService {
    * @returns {Promise<Object>}
    */
   async checkAvailability(params) {
-    if (this.isUsingMockData) {
-      return mockReservationsService.checkAvailability(params);
-    }
-
-    return this.post('/check-availability', params);
+return this.post('/check-availability', params);
   }
 
   /**
@@ -180,11 +132,7 @@ class ReservationsService extends BaseService {
    * @returns {Promise<Object>}
    */
   async getAvailableTours(date) {
-    if (this.isUsingMockData) {
-      return mockReservationsService.getAvailableTours(date);
-    }
-
-    return this.get('/available-tours', { date });
+return this.get('/available-tours', { date });
   }
 
   /**
@@ -194,11 +142,7 @@ class ReservationsService extends BaseService {
    * @returns {Promise<Object>}
    */
   async duplicateReservation(id, newData = {}) {
-    if (this.isUsingMockData) {
-      return mockReservationsService.duplicateReservation(id, newData);
-    }
-
-    return this.post(`/${id}/duplicate`, newData);
+return this.post(`/${id}/duplicate`, newData);
   }
 
   /**
@@ -208,11 +152,7 @@ class ReservationsService extends BaseService {
    * @returns {Promise<Object>}
    */
   async exportReservations(filters = {}, format = 'excel') {
-    if (this.isUsingMockData) {
-      return mockReservationsService.exportReservations(filters, format);
-    }
-
-    const filename = `reservations_${new Date().toISOString().split('T')[0]}.${format}`;
+const filename = `reservations_${new Date().toISOString().split('T')[0]}.${format}`;
     return this.download('/export', filename, { ...filters, format });
   }
 }

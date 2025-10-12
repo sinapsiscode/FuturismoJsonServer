@@ -5,7 +5,7 @@
 
 import BaseService from './baseService';
 import { APP_CONFIG } from '../config/app.config';
-import { mockAgencyService } from './mockAgencyService';
+
 
 class AgencyService extends BaseService {
   constructor() {
@@ -17,11 +17,7 @@ class AgencyService extends BaseService {
    * @returns {Promise<Object>}
    */
   async getAgencies() {
-    if (this.isUsingMockData) {
-      return mockAgencyService.getAgencies();
-    }
-
-    return this.get('');
+return this.get('');
   }
 
   /**
@@ -30,11 +26,7 @@ class AgencyService extends BaseService {
    * @returns {Promise<Object>}
    */
   async getAgencyById(id) {
-    if (this.isUsingMockData) {
-      return mockAgencyService.getAgencyById(id);
-    }
-
-    return this.get(`/${id}`);
+return this.get(`/${id}`);
   }
 
   /**
@@ -44,11 +36,7 @@ class AgencyService extends BaseService {
    * @returns {Promise<Object>}
    */
   async updateAgency(id, updateData) {
-    if (this.isUsingMockData) {
-      return mockAgencyService.updateAgency(id, updateData);
-    }
-
-    return this.put(`/${id}`, updateData);
+return this.put(`/${id}`, updateData);
   }
 
   /**
@@ -58,11 +46,7 @@ class AgencyService extends BaseService {
    * @returns {Promise<Object>}
    */
   async getReservations(agencyId, filters = {}) {
-    if (this.isUsingMockData) {
-      return mockAgencyService.getReservations(agencyId, filters);
-    }
-
-    return this.get(`/${agencyId}/reservations`, filters);
+return this.get(`/${agencyId}/reservations`, filters);
   }
 
   /**
@@ -71,11 +55,7 @@ class AgencyService extends BaseService {
    * @returns {Promise<Object>}
    */
   async getReservationById(id) {
-    if (this.isUsingMockData) {
-      return mockAgencyService.getReservationById(id);
-    }
-
-    return this.get(`/reservations/${id}`);
+return this.get(`/reservations/${id}`);
   }
 
   /**
@@ -84,11 +64,7 @@ class AgencyService extends BaseService {
    * @returns {Promise<Object>}
    */
   async createReservation(reservationData) {
-    if (this.isUsingMockData) {
-      return mockAgencyService.createReservation(reservationData);
-    }
-
-    return this.post('/reservations', reservationData);
+return this.post('/reservations', reservationData);
   }
 
   /**
@@ -98,11 +74,7 @@ class AgencyService extends BaseService {
    * @returns {Promise<Object>}
    */
   async updateReservation(id, updateData) {
-    if (this.isUsingMockData) {
-      return mockAgencyService.updateReservation(id, updateData);
-    }
-
-    return this.put(`/reservations/${id}`, updateData);
+return this.put(`/reservations/${id}`, updateData);
   }
 
   /**
@@ -111,11 +83,7 @@ class AgencyService extends BaseService {
    * @returns {Promise<Object>}
    */
   async deleteReservation(id) {
-    if (this.isUsingMockData) {
-      return mockAgencyService.deleteReservation(id);
-    }
-
-    return this.delete(`/reservations/${id}`);
+return this.delete(`/reservations/${id}`);
   }
 
   /**
@@ -125,11 +93,7 @@ class AgencyService extends BaseService {
    * @returns {Promise<Object>}
    */
   async getPointsTransactions(agencyId, filters = {}) {
-    if (this.isUsingMockData) {
-      return mockAgencyService.getPointsTransactions(agencyId, filters);
-    }
-
-    return this.get(`/${agencyId}/points/transactions`, filters);
+return this.get(`/${agencyId}/points/transactions`, filters);
   }
 
   /**
@@ -138,11 +102,7 @@ class AgencyService extends BaseService {
    * @returns {Promise<Object>}
    */
   async createPointsTransaction(transactionData) {
-    if (this.isUsingMockData) {
-      return mockAgencyService.createPointsTransaction(transactionData);
-    }
-
-    return this.post('/points/transactions', transactionData);
+return this.post('/points/transactions', transactionData);
   }
 
   /**
@@ -151,11 +111,7 @@ class AgencyService extends BaseService {
    * @returns {Promise<Object>}
    */
   async getPointsBalance(agencyId) {
-    if (this.isUsingMockData) {
-      return mockAgencyService.getPointsBalance(agencyId);
-    }
-
-    return this.get(`/${agencyId}/points/balance`);
+return this.get(`/${agencyId}/points/balance`);
   }
 
   /**
@@ -166,11 +122,7 @@ class AgencyService extends BaseService {
    * @returns {Promise<Object>}
    */
   async getMonthlyReport(agencyId, year, month) {
-    if (this.isUsingMockData) {
-      return mockAgencyService.getMonthlyReport(agencyId, year, month);
-    }
-
-    return this.get(`/${agencyId}/reports/monthly`, { year, month });
+return this.get(`/${agencyId}/reports/monthly`, { year, month });
   }
 
   /**
@@ -180,11 +132,7 @@ class AgencyService extends BaseService {
    * @returns {Promise<Object>}
    */
   async getYearlyComparison(agencyId, year) {
-    if (this.isUsingMockData) {
-      return mockAgencyService.getYearlyComparison(agencyId, year);
-    }
-
-    return this.get(`/${agencyId}/reports/yearly`, { year });
+return this.get(`/${agencyId}/reports/yearly`, { year });
   }
 
   /**
@@ -194,11 +142,7 @@ class AgencyService extends BaseService {
    * @returns {Promise<Object>}
    */
   async getAvailableSlots(agencyId, date) {
-    if (this.isUsingMockData) {
-      return mockAgencyService.getAvailableSlots(agencyId, date);
-    }
-
-    return this.get(`/${agencyId}/availability`, { date });
+return this.get(`/${agencyId}/availability`, { date });
   }
 
   /**
@@ -209,11 +153,7 @@ class AgencyService extends BaseService {
    * @returns {Promise<Object>}
    */
   async setAvailableSlots(agencyId, date, slots) {
-    if (this.isUsingMockData) {
-      return mockAgencyService.setAvailableSlots(agencyId, date, slots);
-    }
-
-    return this.post(`/${agencyId}/availability`, { date, slots });
+return this.post(`/${agencyId}/availability`, { date, slots });
   }
 
   /**
@@ -222,11 +162,7 @@ class AgencyService extends BaseService {
    * @returns {Promise<Object>}
    */
   async getAgencyStats(agencyId) {
-    if (this.isUsingMockData) {
-      return mockAgencyService.getAgencyStats(agencyId);
-    }
-
-    return this.get(`/${agencyId}/stats`);
+return this.get(`/${agencyId}/stats`);
   }
 
   /**
@@ -237,11 +173,7 @@ class AgencyService extends BaseService {
    * @returns {Promise<Object>}
    */
   async getCalendarData(agencyId, startDate, endDate) {
-    if (this.isUsingMockData) {
-      return mockAgencyService.getCalendarData(agencyId, startDate, endDate);
-    }
-
-    return this.get(`/${agencyId}/calendar`, { startDate, endDate });
+return this.get(`/${agencyId}/calendar`, { startDate, endDate });
   }
 
   /**
@@ -250,11 +182,7 @@ class AgencyService extends BaseService {
    * @returns {Promise<Object>}
    */
   async confirmReservation(id) {
-    if (this.isUsingMockData) {
-      return mockAgencyService.updateReservation(id, { status: 'confirmed' });
-    }
-
-    return this.post(`/reservations/${id}/confirm`);
+return this.post(`/reservations/${id}/confirm`);
   }
 
   /**
@@ -264,15 +192,8 @@ class AgencyService extends BaseService {
    * @returns {Promise<Object>}
    */
   async cancelReservation(id, reason = '') {
-    if (this.isUsingMockData) {
-      return mockAgencyService.updateReservation(id, { 
-        status: 'cancelled',
-        cancellationReason: reason,
-        cancelledAt: new Date().toISOString()
-      });
-    }
 
-    return this.post(`/reservations/${id}/cancel`, { reason });
+return this.post(`/reservations/${id}/cancel`, { reason });
   }
 
   /**
@@ -282,14 +203,8 @@ class AgencyService extends BaseService {
    * @returns {Promise<Object>}
    */
   async assignGuideToReservation(reservationId, guideId) {
-    if (this.isUsingMockData) {
-      return mockAgencyService.updateReservation(reservationId, { 
-        guideAssigned: guideId,
-        guideAssignedAt: new Date().toISOString()
-      });
-    }
 
-    return this.post(`/reservations/${reservationId}/assign-guide`, { guideId });
+return this.post(`/reservations/${reservationId}/assign-guide`, { guideId });
   }
 
   /**
@@ -301,15 +216,8 @@ class AgencyService extends BaseService {
    * @returns {Promise<Object>}
    */
   async exportMonthlyReport(agencyId, year, month, format = 'pdf') {
-    if (this.isUsingMockData) {
-      // Mock: simular exportación
-      return {
-        success: true,
-        message: 'Reporte exportado exitosamente'
-      };
-    }
 
-    const filename = `report_${agencyId}_${year}_${month}.${format}`;
+const filename = `report_${agencyId}_${year}_${month}.${format}`;
     return this.download(`/${agencyId}/reports/monthly/export`, filename, { year, month, format });
   }
 
@@ -320,15 +228,7 @@ class AgencyService extends BaseService {
    * @returns {Promise<Object>}
    */
   async redeemPoints(agencyId, redemptionData) {
-    if (this.isUsingMockData) {
-      return mockAgencyService.createPointsTransaction({
-        agencyId,
-        type: 'redeemed',
-        ...redemptionData
-      });
-    }
-
-    return this.post(`/${agencyId}/points/redeem`, redemptionData);
+return this.post(`/${agencyId}/points/redeem`, redemptionData);
   }
 
   /**
@@ -337,15 +237,8 @@ class AgencyService extends BaseService {
    * @returns {Promise<Object>}
    */
   async calculatePoints(reservation) {
-    if (this.isUsingMockData) {
-      const points = mockAgencyService.calculatePointsForReservation(reservation);
-      return {
-        success: true,
-        data: { points }
-      };
-    }
 
-    return this.post('/points/calculate', reservation);
+return this.post('/points/calculate', reservation);
   }
 }
 

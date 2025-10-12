@@ -1,10 +1,12 @@
 const express = require('express');
+const { adminOnly, selfOrAdmin } = require('../middlewares/authorize');
 
 module.exports = (router) => {
   const usersRouter = express.Router();
 
   // Get all users with filters and pagination
-  usersRouter.get('/', (req, res) => {
+  // Only admins can list all users
+  usersRouter.get('/', adminOnly(), (req, res) => {
     try {
       const db = router.db;
       let users = db.get('users').value() || [];
@@ -63,7 +65,8 @@ module.exports = (router) => {
   });
 
   // Get user by ID
-  usersRouter.get('/:id', (req, res) => {
+  // Admin can access any user, others can only access their own profile
+  usersRouter.get('/:id', selfOrAdmin(), (req, res) => {
     try {
       const db = router.db;
       const user = db.get('users').find({ id: req.params.id }).value();
@@ -120,7 +123,8 @@ module.exports = (router) => {
   });
 
   // Create new user
-  usersRouter.post('/', (req, res) => {
+  // Only admins can create new users
+  usersRouter.post('/', adminOnly(), (req, res) => {
     try {
       const db = router.db;
       const { email, phone } = req.body;
@@ -187,7 +191,8 @@ module.exports = (router) => {
   });
 
   // Update user
-  usersRouter.put('/:id', (req, res) => {
+  // Admin can update any user, others can only update their own profile
+  usersRouter.put('/:id', selfOrAdmin(), (req, res) => {
     try {
       const db = router.db;
       const user = db.get('users').find({ id: req.params.id });
@@ -246,7 +251,8 @@ module.exports = (router) => {
   });
 
   // Delete user (soft delete)
-  usersRouter.delete('/:id', (req, res) => {
+  // Only admins can delete users
+  usersRouter.delete('/:id', adminOnly(), (req, res) => {
     try {
       const db = router.db;
       const user = db.get('users').find({ id: req.params.id });
@@ -290,7 +296,8 @@ module.exports = (router) => {
   });
 
   // Update user status
-  usersRouter.put('/:id/status', (req, res) => {
+  // Only admins can change user status
+  usersRouter.put('/:id/status', adminOnly(), (req, res) => {
     try {
       const db = router.db;
       const { status, reason } = req.body;
@@ -337,7 +344,8 @@ module.exports = (router) => {
   });
 
   // Reset user password
-  usersRouter.post('/:id/reset-password', (req, res) => {
+  // Only admins can reset passwords
+  usersRouter.post('/:id/reset-password', adminOnly(), (req, res) => {
     try {
       const db = router.db;
       const { new_password, reset_by } = req.body;
@@ -383,7 +391,8 @@ module.exports = (router) => {
   });
 
   // Get user roles
-  usersRouter.get('/roles/list', (req, res) => {
+  // Only admins can view roles
+  usersRouter.get('/roles/list', adminOnly(), (req, res) => {
     try {
       const db = router.db;
       const roles = db.get('roles').value() || [];
@@ -401,7 +410,8 @@ module.exports = (router) => {
   });
 
   // Assign role to user
-  usersRouter.post('/:id/roles', (req, res) => {
+  // Only admins can assign roles
+  usersRouter.post('/:id/roles', adminOnly(), (req, res) => {
     try {
       const db = router.db;
       const { role_id, assigned_by } = req.body;
@@ -469,7 +479,8 @@ module.exports = (router) => {
   });
 
   // Get user activity logs
-  usersRouter.get('/:id/activity', (req, res) => {
+  // Admin can view any user's activity, users can only view their own
+  usersRouter.get('/:id/activity', selfOrAdmin(), (req, res) => {
     try {
       const db = router.db;
       const { page = 1, limit = 20 } = req.query;
@@ -503,7 +514,8 @@ module.exports = (router) => {
   });
 
   // Get users statistics
-  usersRouter.get('/stats/overview', (req, res) => {
+  // Only admins can view user statistics
+  usersRouter.get('/stats/overview', adminOnly(), (req, res) => {
     try {
       const db = router.db;
       const users = db.get('users').value() || [];

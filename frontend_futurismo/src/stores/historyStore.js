@@ -35,18 +35,22 @@ const useHistoryStore = create(
         direction: 'desc' // asc, desc
       },
 
-      // Cargar servicios del historial
+      // Cargar servicios del historial desde la API
       loadHistory: async () => {
         set({ loading: true, error: null });
         try {
-          // Simular carga de datos - en producción vendría de la API
-          const mockHistoryData = generateMockHistoryData();
-          const totalItems = mockHistoryData.length;
+          // TODO: Implementar llamada real a la API cuando esté disponible
+          // const response = await api.get('/history/services');
+          // const historyData = response.data;
+
+          // Temporalmente retornamos array vacío hasta que se implemente el endpoint
+          const historyData = [];
+          const totalItems = historyData.length;
           const totalPages = Math.ceil(totalItems / get().pagination.itemsPerPage);
-          
-          set({ 
-            services: mockHistoryData,
-            filteredServices: mockHistoryData,
+
+          set({
+            services: historyData,
+            filteredServices: historyData,
             loading: false,
             pagination: {
               ...get().pagination,
@@ -55,9 +59,9 @@ const useHistoryStore = create(
             }
           });
         } catch (error) {
-          set({ 
-            error: error.message, 
-            loading: false 
+          set({
+            error: error.message,
+            loading: false
           });
         }
       },
@@ -251,48 +255,10 @@ const useHistoryStore = create(
   )
 );
 
-// Función auxiliar para generar datos mock
-function generateMockHistoryData() {
-  const services = [];
-  const serviceTypes = ['regular', 'private', 'transfer'];
-  const statuses = ['completed', 'cancelled', 'pending'];
-  const guides = ['Carlos Mendoza', 'Ana García', 'Luis Rodriguez', 'María López'];
-  const drivers = ['Pedro Silva', 'Juan Torres', 'Diego Morales', 'Roberto Castro'];
-  const vehicles = ['Toyota Hiace - ABC123', 'Mercedes Sprinter - XYZ789', 'Ford Transit - DEF456'];
-
-  for (let i = 0; i < 50; i++) {
-    const date = new Date();
-    date.setDate(date.getDate() - Math.floor(Math.random() * 365));
-
-    const status = statuses[Math.floor(Math.random() * statuses.length)];
-    const hasRating = status === 'completed' && Math.random() > 0.3; // 70% de servicios completados tienen rating
-
-    services.push({
-      id: `service-${i + 1}`,
-      serviceName: `Servicio ${i + 1}`,
-      clientName: `Cliente ${i + 1}`,
-      date: date.toISOString(),
-      serviceType: serviceTypes[Math.floor(Math.random() * serviceTypes.length)],
-      status,
-      guide: guides[Math.floor(Math.random() * guides.length)],
-      driver: drivers[Math.floor(Math.random() * drivers.length)],
-      vehicle: vehicles[Math.floor(Math.random() * vehicles.length)],
-      amount: Math.floor(Math.random() * 500) + 100,
-      duration: Math.floor(Math.random() * 8) + 2,
-      passengers: Math.floor(Math.random() * 10) + 1,
-      notes: `Notas para el servicio ${i + 1}`,
-      rating: hasRating ? Math.floor(Math.random() * 5) + 1 : null,
-      ratingComment: hasRating ? `Comentario de calificación para el servicio ${i + 1}` : null
-    });
-  }
-
-  return services;
-}
-
 // Función auxiliar para obtener fecha por rango
 function getDateByRange(range, baseDate) {
   const date = new Date(baseDate);
-  
+
   switch (range) {
     case 'today':
       date.setHours(0, 0, 0, 0);
@@ -309,7 +275,7 @@ function getDateByRange(range, baseDate) {
     default:
       return new Date(0); // Fecha muy antigua para mostrar todos
   }
-  
+
   return date;
 }
 

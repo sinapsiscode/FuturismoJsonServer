@@ -1,26 +1,59 @@
-import { SERVICE_AREAS as SHARED_SERVICE_AREAS } from './sharedConstants';
+/**
+ * COMPATIBILITY LAYER - Feedback
+ *
+ * Este archivo re-exporta constantes desde el backend.
+ * Mantiene compatibilidad con código existente.
+ *
+ * ⚠️ TEMPORAL: Este archivo es parte de la capa de compatibilidad.
+ * RECOMENDADO: Migrar a useFeedbackConfig() para uso en componentes React.
+ */
 
-// Service areas for feedback module
-export const SERVICE_AREAS = [
-  { key: SHARED_SERVICE_AREAS.CUSTOMER_SERVICE, label: 'feedback.areas.customerService' },
-  { key: SHARED_SERVICE_AREAS.OPERATIONS, label: 'feedback.areas.operations' },
-  { key: SHARED_SERVICE_AREAS.PUNCTUALITY, label: 'feedback.areas.punctuality' },
-  { key: SHARED_SERVICE_AREAS.COMMUNICATION, label: 'feedback.areas.communication' },
-  { key: SHARED_SERVICE_AREAS.LOGISTICS, label: 'feedback.areas.logistics' },
-  { key: SHARED_SERVICE_AREAS.SAFETY, label: 'feedback.areas.safety' }
-];
+import useModulesConfigStore from '../stores/modulesConfigStore';
 
-export const STATUS_TYPES = [
-  { value: 'pending', label: 'feedback.status.pending', color: 'bg-yellow-100 text-yellow-800' },
-  { value: 'reviewed', label: 'feedback.status.reviewed', color: 'bg-blue-100 text-blue-800' },
-  { value: 'in_progress', label: 'feedback.status.inProgress', color: 'bg-orange-100 text-orange-800' },
-  { value: 'implemented', label: 'feedback.status.implemented', color: 'bg-green-100 text-green-800' },
-  { value: 'rejected', label: 'feedback.status.rejected', color: 'bg-red-100 text-red-800' }
-];
+// Cargar configuración si no está cargada
+const store = useModulesConfigStore.getState();
+if (!store.modules && !store.isLoading) {
+  store.loadModules();
+}
 
-export const FEEDBACK_TYPES = {
-  suggestion: 'suggestion',
-  recognition: 'recognition',
-  positive: 'positive',
-  negative: 'negative'
+// Helper para obtener configuración
+const getFeedbackConfig = () => {
+  const state = useModulesConfigStore.getState();
+  return state.modules?.feedback || {};
+};
+
+
+export const SERVICE_AREAS = (() => {
+  const config = getFeedbackConfig();
+  return config.serviceAreas || [];
+})();
+
+export const STATUS_TYPES = (() => {
+  const config = getFeedbackConfig();
+  return config.statusTypes || [];
+})();
+
+export const FEEDBACK_TYPES = (() => {
+  const config = getFeedbackConfig();
+  return config.feedbackTypes || [];
+})();
+
+export const PRIORITY_LEVELS = (() => {
+  const config = getFeedbackConfig();
+  return config.priorityLevels || [];
+})();
+
+export const FEEDBACK_CATEGORIES = (() => {
+  const config = getFeedbackConfig();
+  return config.feedbackCategories || [];
+})();
+
+
+// Export default para compatibilidad
+export default {
+  SERVICE_AREAS,
+  STATUS_TYPES,
+  FEEDBACK_TYPES,
+  PRIORITY_LEVELS,
+  FEEDBACK_CATEGORIES
 };

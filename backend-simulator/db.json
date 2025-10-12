@@ -11,7 +11,7 @@
       "last_name": "Sistema",
       "phone": "+51987654321",
       "avatar": "https://ui-avatars.com/api/?name=Admin&background=3B82F6&color=fff",
-      "last_login_at": "2025-09-20T06:59:17.969Z",
+      "last_login_at": "2025-10-12T19:09:43.418Z",
       "created_at": "2024-01-01T00:00:00Z",
       "updated_at": "2024-12-18T10:00:00Z"
     },
@@ -26,7 +26,7 @@
       "last_name": "González",
       "phone": "+51987654322",
       "avatar": "https://ui-avatars.com/api/?name=Maria+Gonzalez&background=10B981&color=fff",
-      "last_login_at": "2025-09-18T23:16:08.244Z",
+      "last_login_at": "2025-10-12T19:09:43.472Z",
       "created_at": "2024-02-01T00:00:00Z",
       "updated_at": "2024-12-18T09:30:00Z"
     },
@@ -41,7 +41,7 @@
       "last_name": "Mendoza",
       "phone": "+51987654323",
       "avatar": "https://ui-avatars.com/api/?name=Carlos+Mendoza&background=F59E0B&color=fff",
-      "last_login_at": "2024-12-18T08:45:00Z",
+      "last_login_at": "2025-10-12T19:09:43.501Z",
       "created_at": "2024-03-01T00:00:00Z",
       "updated_at": "2024-12-18T08:45:00Z"
     },
@@ -2064,14 +2064,138 @@
     }
   ],
   "monitoring_config": {
-    "defaultCenter": [
-      -12.0464,
-      -77.0428
+    "version": "1.0.0",
+    "tourStatus": [
+      {
+        "value": "completed",
+        "label": "Completado",
+        "color": "green"
+      },
+      {
+        "value": "in_progress",
+        "label": "En Progreso",
+        "color": "blue"
+      },
+      {
+        "value": "pending",
+        "label": "Pendiente",
+        "color": "yellow"
+      }
     ],
-    "defaultZoom": 12,
-    "maxZoom": 19,
-    "tileLayerUrl": "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-    "attribution": "© OpenStreetMap contributors"
+    "guideStatus": [
+      {
+        "value": "active",
+        "label": "Activo",
+        "color": "green"
+      },
+      {
+        "value": "inactive",
+        "label": "Inactivo",
+        "color": "gray"
+      }
+    ],
+    "signalQuality": [
+      {
+        "value": "excellent",
+        "label": "Excelente",
+        "color": "green",
+        "icon": "📶"
+      },
+      {
+        "value": "good",
+        "label": "Buena",
+        "color": "blue",
+        "icon": "📶"
+      },
+      {
+        "value": "regular",
+        "label": "Regular",
+        "color": "yellow",
+        "icon": "📶"
+      },
+      {
+        "value": "poor",
+        "label": "Mala",
+        "color": "red",
+        "icon": "📵"
+      }
+    ],
+    "activityTypes": [
+      {
+        "value": "checkpoint",
+        "label": "Punto de Control",
+        "icon": "📍"
+      },
+      {
+        "value": "delay",
+        "label": "Retraso",
+        "icon": "⏱️"
+      },
+      {
+        "value": "start",
+        "label": "Inicio",
+        "icon": "🚀"
+      }
+    ],
+    "deviceStatus": [
+      {
+        "value": "gps",
+        "label": "GPS",
+        "icon": "📍"
+      },
+      {
+        "value": "internet",
+        "label": "Internet",
+        "icon": "📶"
+      },
+      {
+        "value": "battery_saver",
+        "label": "Ahorro de Batería",
+        "icon": "🔋"
+      }
+    ],
+    "tabs": [
+      {
+        "value": "info",
+        "label": "Información"
+      },
+      {
+        "value": "activity",
+        "label": "Actividad"
+      },
+      {
+        "value": "stats",
+        "label": "Estadísticas"
+      }
+    ],
+    "batteryLevels": {
+      "high": {
+        "threshold": 60,
+        "color": "green",
+        "icon": "🔋"
+      },
+      "medium": {
+        "threshold": 30,
+        "color": "yellow",
+        "icon": "🔋"
+      },
+      "low": {
+        "threshold": 0,
+        "color": "red",
+        "icon": "🪫"
+      }
+    },
+    "config": {
+      "responseTimeThreshold": 30,
+      "maxPhotosPerStop": 8,
+      "mapMobileHeight": "calc(100vh - 8rem)",
+      "progressCircle": {
+        "cx": 32,
+        "cy": 32,
+        "r": 28,
+        "strokeWidth": 8
+      }
+    }
   },
   "feedback_data_full": {
     "mockStats": {
@@ -6030,397 +6154,76 @@
     "version": "1.0"
   },
   "validation_schemas": {
-    "yupSchemas": {
-      "loginSchema": {
-        "name": "loginSchema",
-        "fields": {
-          "email": {
-            "type": "string",
-            "validations": [
-              "required",
-              "email"
-            ]
-          },
-          "password": {
-            "type": "string",
-            "validations": [
-              "required",
-              "min:6"
-            ]
-          },
-          "remember": {
-            "type": "boolean",
-            "validations": []
-          }
+    "version": "1.0.0",
+    "lastUpdated": "2025-10-12T00:00:00Z",
+    "schemas": {
+      "login": {
+        "email": {
+          "type": "string",
+          "format": "email",
+          "required": true,
+          "message": "Email inválido"
         },
-        "useCases": [
-          "authentication",
-          "user_login"
-        ]
+        "password": {
+          "type": "string",
+          "minLength": 6,
+          "required": true,
+          "message": "La contraseña debe tener al menos 6 caracteres"
+        }
       },
-      "freelanceGuideRegisterSchema": {
-        "name": "freelanceGuideRegisterSchema",
-        "fields": {
-          "name": {
-            "type": "string",
-            "validations": [
-              "required",
-              "min:2"
-            ]
-          },
-          "email": {
-            "type": "string",
-            "validations": [
-              "required",
-              "email"
-            ]
-          },
-          "password": {
-            "type": "string",
-            "validations": [
-              "required",
-              "min:6"
-            ]
-          },
-          "confirmPassword": {
-            "type": "string",
-            "validations": [
-              "required",
-              "oneOf"
-            ]
-          },
-          "phone": {
-            "type": "string",
-            "validations": [
-              "required",
-              "matches"
-            ]
-          },
-          "dni": {
-            "type": "string",
-            "validations": [
-              "required",
-              "matches"
-            ]
-          },
-          "city": {
-            "type": "string",
-            "validations": [
-              "required"
-            ]
-          },
-          "languages": {
-            "type": "string",
-            "validations": [
-              "required",
-              "min:1"
-            ]
-          },
-          "experience": {
-            "type": "string",
-            "validations": [
-              "required",
-              "min:0",
-              "max:50"
-            ]
-          },
-          "specialties": {
-            "type": "string",
-            "validations": [
-              "required",
-              "min:1"
-            ]
-          },
-          "museums": {
-            "type": "string",
-            "validations": []
-          },
-          "museumExperiences": {
-            "type": "string",
-            "validations": []
-          },
-          "acceptTerms": {
-            "type": "string",
-            "validations": [
-              "required",
-              "oneOf"
-            ]
-          },
-          "profileImage": {
-            "type": "string",
-            "validations": []
-          }
+      "tourist": {
+        "name": {
+          "type": "string",
+          "minLength": 2,
+          "required": true,
+          "message": "El nombre debe tener al menos 2 caracteres"
         },
-        "useCases": [
-          "registration",
-          "guide_onboarding"
-        ]
+        "passport": {
+          "type": "string",
+          "pattern": "^[A-Z0-9]{6,20}$",
+          "required": true,
+          "message": "Formato de pasaporte inválido"
+        },
+        "email": {
+          "type": "string",
+          "format": "email",
+          "required": true,
+          "message": "Email inválido"
+        }
       },
-      "touristSchema": {
-        "name": "touristSchema",
-        "fields": {
-          "name": {
-            "type": "string",
-            "validations": [
-              "required",
-              "min:2"
-            ]
-          },
-          "passport": {
-            "type": "string",
-            "validations": [
-              "required",
-              "matches"
-            ]
-          },
-          "email": {
-            "type": "string",
-            "validations": [
-              "required",
-              "email"
-            ]
-          }
+      "reservation": {
+        "serviceType": {
+          "type": "string",
+          "enum": [
+            "transfer",
+            "tour",
+            "package",
+            "custom"
+          ],
+          "required": true,
+          "message": "Tipo de servicio inválido"
         },
-        "useCases": [
-          "reservation",
-          "tourist_data"
-        ]
-      },
-      "reservationBaseSchema": {
-        "name": "reservationBaseSchema",
-        "fields": {
-          "serviceType": {
-            "type": "string",
-            "validations": [
-              "required",
-              "oneOf"
-            ]
-          },
-          "date": {
-            "type": "string",
-            "validations": [
-              "required"
-            ]
-          },
-          "time": {
-            "type": "string",
-            "validations": [
-              "required",
-              "matches"
-            ]
-          },
-          "touristsCount": {
-            "type": "string",
-            "validations": [
-              "required"
-            ]
-          }
+        "date": {
+          "type": "date",
+          "minDate": "today",
+          "required": true,
+          "message": "La fecha no puede ser anterior a hoy"
         },
-        "useCases": [
-          "reservation",
-          "service_booking"
-        ]
-      },
-      "agencyProfileSchema": {
-        "name": "agencyProfileSchema",
-        "fields": {
-          "name": {
-            "type": "string",
-            "validations": [
-              "required",
-              "min:2"
-            ]
-          },
-          "email": {
-            "type": "string",
-            "validations": [
-              "required",
-              "email"
-            ]
-          },
-          "phone": {
-            "type": "string",
-            "validations": [
-              "required",
-              "matches"
-            ]
-          },
-          "address": {
-            "type": "string",
-            "validations": [
-              "required"
-            ]
-          },
-          "contactPerson": {
-            "type": "string",
-            "validations": [
-              "required"
-            ]
-          }
+        "time": {
+          "type": "string",
+          "pattern": "^([01]\\d|2[0-3]):([0-5]\\d)$",
+          "required": true,
+          "message": "Formato de hora inválido"
         },
-        "useCases": [
-          "profile",
-          "agency_settings"
-        ]
-      },
-      "changePasswordSchema": {
-        "name": "changePasswordSchema",
-        "fields": {
-          "currentPassword": {
-            "type": "string",
-            "validations": [
-              "required"
-            ]
-          },
-          "newPassword": {
-            "type": "string",
-            "validations": [
-              "required",
-              "min:6"
-            ]
-          },
-          "confirmPassword": {
-            "type": "string",
-            "validations": [
-              "required",
-              "oneOf"
-            ]
-          }
-        },
-        "useCases": [
-          "security",
-          "password_change"
-        ]
+        "touristsCount": {
+          "type": "number",
+          "min": 1,
+          "max": 50,
+          "required": true,
+          "message": "La cantidad de turistas debe estar entre 1 y 50"
+        }
       }
-    },
-    "validationFunctions": {
-      "validateImageFile": {
-        "name": "validateImageFile",
-        "parameters": [
-          "file"
-        ],
-        "type": "file",
-        "returns": "boolean or object with valid/error"
-      },
-      "validateServiceCode": {
-        "name": "validateServiceCode",
-        "parameters": [
-          "code"
-        ],
-        "type": "custom",
-        "returns": "boolean or object with valid/error"
-      },
-      "validateDateRange": {
-        "name": "validateDateRange",
-        "parameters": [
-          "startDate",
-          "endDate"
-        ],
-        "type": "date",
-        "returns": "boolean or object with valid/error"
-      },
-      "validateEmail": {
-        "name": "validateEmail",
-        "parameters": [
-          "email"
-        ],
-        "type": "email",
-        "returns": "boolean or object with valid/error"
-      },
-      "validatePhone": {
-        "name": "validatePhone",
-        "parameters": [
-          "phone"
-        ],
-        "type": "phone",
-        "returns": "boolean or object with valid/error"
-      },
-      "validateRUC": {
-        "name": "validateRUC",
-        "parameters": [
-          "ruc"
-        ],
-        "type": "custom",
-        "returns": "boolean or object with valid/error"
-      },
-      "validateDNI": {
-        "name": "validateDNI",
-        "parameters": [
-          "dni"
-        ],
-        "type": "custom",
-        "returns": "boolean or object with valid/error"
-      },
-      "validateName": {
-        "name": "validateName",
-        "parameters": [
-          "name"
-        ],
-        "type": "custom",
-        "returns": "boolean or object with valid/error"
-      },
-      "validatePassword": {
-        "name": "validatePassword",
-        "parameters": [
-          "password"
-        ],
-        "type": "custom",
-        "returns": "boolean or object with valid/error"
-      },
-      "validateCreditCard": {
-        "name": "validateCreditCard",
-        "parameters": [
-          "number"
-        ],
-        "type": "custom",
-        "returns": "boolean or object with valid/error"
-      },
-      "validateRequiredField": {
-        "name": "validateRequiredField",
-        "parameters": [
-          "value"
-        ],
-        "type": "custom",
-        "returns": "boolean or object with valid/error"
-      },
-      "validateMinLength": {
-        "name": "validateMinLength",
-        "parameters": [
-          "value",
-          "min"
-        ],
-        "type": "custom",
-        "returns": "boolean or object with valid/error"
-      },
-      "validateMaxLength": {
-        "name": "validateMaxLength",
-        "parameters": [
-          "value",
-          "max"
-        ],
-        "type": "custom",
-        "returns": "boolean or object with valid/error"
-      },
-      "validateNumberRange": {
-        "name": "validateNumberRange",
-        "parameters": [
-          "value",
-          "min",
-          "max"
-        ],
-        "type": "number",
-        "returns": "boolean or object with valid/error"
-      },
-      "validateFutureDate": {
-        "name": "validateFutureDate",
-        "parameters": [
-          "date"
-        ],
-        "type": "date",
-        "returns": "boolean or object with valid/error"
-      }
-    },
-    "regexPatterns": {}
+    }
   },
   "format_functions": {
     "functions": {
@@ -10465,5 +10268,3440 @@
     "sourceLocation": "frontend_futurismo/src/constants/",
     "description": "Remaining constants migrated from frontend application",
     "migrationScript": "migrate_remaining_constants.js"
+  },
+  "system_config": {
+    "version": "1.0.0",
+    "currencies": [
+      {
+        "value": "PEN",
+        "symbol": "S/",
+        "name": "Peruvian Sol"
+      },
+      {
+        "value": "USD",
+        "symbol": "$",
+        "name": "US Dollar"
+      },
+      {
+        "value": "EUR",
+        "symbol": "€",
+        "name": "Euro"
+      }
+    ],
+    "languages": [
+      {
+        "code": "es",
+        "name": "Spanish",
+        "localKey": "languages.spanish"
+      },
+      {
+        "code": "en",
+        "name": "English",
+        "localKey": "languages.english"
+      },
+      {
+        "code": "fr",
+        "name": "French",
+        "localKey": "languages.french"
+      },
+      {
+        "code": "de",
+        "name": "German",
+        "localKey": "languages.german"
+      },
+      {
+        "code": "it",
+        "name": "Italian",
+        "localKey": "languages.italian"
+      },
+      {
+        "code": "pt",
+        "name": "Portuguese",
+        "localKey": "languages.portuguese"
+      },
+      {
+        "code": "ja",
+        "name": "Japanese",
+        "localKey": "languages.japanese"
+      },
+      {
+        "code": "zh",
+        "name": "Chinese",
+        "localKey": "languages.chinese"
+      },
+      {
+        "code": "ko",
+        "name": "Korean",
+        "localKey": "languages.korean"
+      },
+      {
+        "code": "ru",
+        "name": "Russian",
+        "localKey": "languages.russian"
+      }
+    ],
+    "guideTypes": [
+      {
+        "value": "plant",
+        "label": "Guía de Planta"
+      },
+      {
+        "value": "freelance",
+        "label": "Guía Freelance"
+      }
+    ],
+    "validationPatterns": {
+      "email": "^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$",
+      "phone": "^9\\d{8}$",
+      "url": "^(https?:\\/\\/)?([\\da-z\\.-]+)\\.([a-z\\.]{2,6})([\\/\\w \\.-]*)*\\/?$",
+      "username": "^[a-zA-Z0-9_]+$",
+      "dni": "^\\d{8}$",
+      "ruc": "^[0-9]{11}$",
+      "taxId": "^[0-9]{11}$"
+    },
+    "statusValues": [
+      {
+        "value": "active",
+        "label": "Activo"
+      },
+      {
+        "value": "inactive",
+        "label": "Inactivo"
+      },
+      {
+        "value": "pending",
+        "label": "Pendiente"
+      },
+      {
+        "value": "confirmed",
+        "label": "Confirmado"
+      },
+      {
+        "value": "cancelled",
+        "label": "Cancelado"
+      },
+      {
+        "value": "completed",
+        "label": "Completado"
+      },
+      {
+        "value": "in_progress",
+        "label": "En Progreso"
+      },
+      {
+        "value": "suspended",
+        "label": "Suspendido"
+      },
+      {
+        "value": "draft",
+        "label": "Borrador"
+      }
+    ],
+    "priorityLevels": [
+      {
+        "value": "high",
+        "label": "Alta"
+      },
+      {
+        "value": "medium",
+        "label": "Media"
+      },
+      {
+        "value": "low",
+        "label": "Baja"
+      }
+    ],
+    "dateFormats": {
+      "default": "DD/MM/YYYY",
+      "iso": "YYYY-MM-DD",
+      "us": "MM/DD/YYYY",
+      "time12h": "12h",
+      "time24h": "24h",
+      "datetime": "DD/MM/YYYY HH:mm",
+      "datetimeUs": "MM/DD/YYYY HH:mm"
+    },
+    "fileSizeLimits": {
+      "image": 5242880,
+      "document": 10485760,
+      "video": 52428800
+    },
+    "acceptedFileTypes": {
+      "images": ".jpg,.jpeg,.png,.webp,.gif",
+      "documents": ".pdf,.doc,.docx,.xls,.xlsx",
+      "all": ".jpg,.jpeg,.png,.webp,.gif,.pdf,.doc,.docx,.xls,.xlsx"
+    },
+    "statusColors": {
+      "active": {
+        "bg": "bg-green-100",
+        "text": "text-green-800",
+        "border": "border-green-200"
+      },
+      "confirmed": {
+        "bg": "bg-green-100",
+        "text": "text-green-800",
+        "border": "border-green-200"
+      },
+      "completed": {
+        "bg": "bg-blue-100",
+        "text": "text-blue-800",
+        "border": "border-blue-200"
+      },
+      "paid": {
+        "bg": "bg-green-100",
+        "text": "text-green-800",
+        "border": "border-green-200"
+      },
+      "pending": {
+        "bg": "bg-yellow-100",
+        "text": "text-yellow-800",
+        "border": "border-yellow-200"
+      },
+      "in_progress": {
+        "bg": "bg-orange-100",
+        "text": "text-orange-800",
+        "border": "border-orange-200"
+      },
+      "partial": {
+        "bg": "bg-orange-100",
+        "text": "text-orange-800",
+        "border": "border-orange-200"
+      },
+      "inactive": {
+        "bg": "bg-red-100",
+        "text": "text-red-800",
+        "border": "border-red-200"
+      },
+      "cancelled": {
+        "bg": "bg-red-100",
+        "text": "text-red-800",
+        "border": "border-red-200"
+      },
+      "suspended": {
+        "bg": "bg-red-100",
+        "text": "text-red-800",
+        "border": "border-red-200"
+      },
+      "draft": {
+        "bg": "bg-gray-100",
+        "text": "text-gray-800",
+        "border": "border-gray-200"
+      },
+      "default": {
+        "bg": "bg-gray-100",
+        "text": "text-gray-800",
+        "border": "border-gray-200"
+      }
+    },
+    "priorityColors": {
+      "high": {
+        "bg": "bg-red-100",
+        "text": "text-red-800",
+        "border": "border-red-200"
+      },
+      "medium": {
+        "bg": "bg-yellow-100",
+        "text": "text-yellow-800",
+        "border": "border-yellow-200"
+      },
+      "low": {
+        "bg": "bg-green-100",
+        "text": "text-green-800",
+        "border": "border-green-200"
+      },
+      "default": {
+        "bg": "bg-gray-100",
+        "text": "text-gray-800",
+        "border": "border-gray-200"
+      }
+    },
+    "timeConstants": {
+      "secondsInMinute": 60,
+      "minutesInHour": 60,
+      "hoursInDay": 24,
+      "daysInWeek": 7,
+      "monthsInYear": 12,
+      "millisecondsInSecond": 1000,
+      "defaultTimeout": 30000,
+      "apiTimeout": 60000
+    },
+    "paginationDefaults": {
+      "pageSize": 10,
+      "pageSizeOptions": [
+        10,
+        25,
+        50,
+        100
+      ],
+      "defaultPage": 1
+    },
+    "ratingScale": {
+      "min": 0,
+      "max": 5,
+      "default": 0,
+      "step": 0.5
+    },
+    "exportFormats": [
+      {
+        "value": "pdf",
+        "label": "PDF"
+      },
+      {
+        "value": "excel",
+        "label": "Excel"
+      }
+    ],
+    "documentTypes": [
+      {
+        "value": "dni",
+        "label": "DNI"
+      },
+      {
+        "value": "passport",
+        "label": "Pasaporte"
+      },
+      {
+        "value": "ruc",
+        "label": "RUC"
+      },
+      {
+        "value": "ce",
+        "label": "Carné de Extranjería"
+      },
+      {
+        "value": "license",
+        "label": "Licencia"
+      },
+      {
+        "value": "certificate",
+        "label": "Certificado"
+      },
+      {
+        "value": "contract",
+        "label": "Contrato"
+      },
+      {
+        "value": "insurance",
+        "label": "Seguro"
+      }
+    ],
+    "contactTypes": [
+      {
+        "value": "main",
+        "label": "Principal"
+      },
+      {
+        "value": "billing",
+        "label": "Facturación"
+      },
+      {
+        "value": "emergency",
+        "label": "Emergencia"
+      },
+      {
+        "value": "operations",
+        "label": "Operaciones"
+      },
+      {
+        "value": "coordinator",
+        "label": "Coordinador"
+      },
+      {
+        "value": "management",
+        "label": "Gerencia"
+      }
+    ],
+    "serviceAreas": [
+      {
+        "value": "customerService",
+        "label": "Atención al Cliente"
+      },
+      {
+        "value": "operations",
+        "label": "Operaciones"
+      },
+      {
+        "value": "punctuality",
+        "label": "Puntualidad"
+      },
+      {
+        "value": "communication",
+        "label": "Comunicación"
+      },
+      {
+        "value": "logistics",
+        "label": "Logística"
+      },
+      {
+        "value": "safety",
+        "label": "Seguridad"
+      }
+    ]
+  },
+  "emergency_config": {
+    "version": "1.0.0",
+    "lastUpdated": "2025-10-12T00:00:00Z",
+    "emergencyNumbers": {
+      "GENERAL": "105",
+      "SENAMHI": "115",
+      "DEFENSA_CIVIL": "116",
+      "BOMBEROS": "116",
+      "SAMU": "106"
+    },
+    "contacts": {
+      "COORDINATOR": "+51 999 888 777",
+      "MANAGEMENT": "+51 999 888 778",
+      "MANAGEMENT_24H": "+51 999 888 779",
+      "INSURANCE_MEDICAL": "+51 999 888 780",
+      "INSURANCE_VEHICLE": "+51 999 888 785",
+      "TOWING_SERVICE": "+51 999 888 786"
+    },
+    "protocolIcons": {
+      "medico": "🚑",
+      "climatico": "⛈️",
+      "transporte": "🚗",
+      "seguridad": "🔍",
+      "comunicacion": "📡",
+      "desastre_natural": "🌋"
+    },
+    "standardMaterials": {
+      "MEDICAL": [
+        "Botiquín de primeros auxilios",
+        "Lista de contactos de emergencia",
+        "Información médica de participantes",
+        "Linterna y silbato",
+        "Mantas térmicas"
+      ],
+      "WEATHER": [
+        "Radio de comunicación",
+        "Impermeables de emergencia",
+        "Brújula y GPS",
+        "Linternas adicionales",
+        "Silbato de emergencia"
+      ],
+      "VEHICLE": [
+        "Kit de herramientas básicas",
+        "Triángulos de seguridad",
+        "Chaleco reflectivo",
+        "Extintor",
+        "Botiquín vehicular"
+      ],
+      "SECURITY": [
+        "Lista actualizada de participantes",
+        "Silbato de emergencia",
+        "Linterna potente",
+        "Radio de comunicación",
+        "Fotografías del grupo"
+      ],
+      "COMMUNICATION": [
+        "Teléfono satelital",
+        "Radio VHF",
+        "Cargadores portátiles",
+        "Panel solar portátil",
+        "Números de emergencia impresos"
+      ]
+    },
+    "standardSteps": {
+      "INITIAL_ASSESSMENT": "Evaluar la situación y seguridad del entorno",
+      "CONTACT_EMERGENCY": "Llamar inmediatamente a emergencias",
+      "CONTACT_COORDINATOR": "Contactar coordinador de tours",
+      "DOCUMENT_INCIDENT": "Documentar el incidente",
+      "SECURE_AREA": "Asegurar la zona del incidente",
+      "GROUP_SAFETY": "Mantener al resto del grupo seguro",
+      "COORDINATE_RESPONSE": "Coordinar plan de contingencia"
+    }
+  },
+  "guides_config": {
+    "version": "1.0.0",
+    "lastUpdated": "2025-10-12T00:00:00Z",
+    "levelOptions": [
+      {
+        "value": "principiante",
+        "label": "guides.levels.beginner",
+        "color": "bg-yellow-100 text-yellow-800"
+      },
+      {
+        "value": "intermedio",
+        "label": "guides.levels.intermediate",
+        "color": "bg-blue-100 text-blue-800"
+      },
+      {
+        "value": "avanzado",
+        "label": "guides.levels.advanced",
+        "color": "bg-green-100 text-green-800"
+      },
+      {
+        "value": "experto",
+        "label": "guides.levels.expert",
+        "color": "bg-purple-100 text-purple-800"
+      },
+      {
+        "value": "nativo",
+        "label": "guides.levels.native",
+        "color": "bg-indigo-100 text-indigo-800"
+      }
+    ],
+    "availableLanguages": [
+      {
+        "code": "es",
+        "name": "Español",
+        "flag": "🇪🇸"
+      },
+      {
+        "code": "en",
+        "name": "Inglés",
+        "flag": "🇺🇸"
+      },
+      {
+        "code": "fr",
+        "name": "Francés",
+        "flag": "🇫🇷"
+      },
+      {
+        "code": "de",
+        "name": "Alemán",
+        "flag": "🇩🇪"
+      },
+      {
+        "code": "it",
+        "name": "Italiano",
+        "flag": "🇮🇹"
+      },
+      {
+        "code": "pt",
+        "name": "Portugués",
+        "flag": "🇵🇹"
+      },
+      {
+        "code": "ja",
+        "name": "Japonés",
+        "flag": "🇯🇵"
+      },
+      {
+        "code": "ko",
+        "name": "Coreano",
+        "flag": "🇰🇷"
+      },
+      {
+        "code": "zh",
+        "name": "Chino Mandarín",
+        "flag": "🇨🇳"
+      },
+      {
+        "code": "ru",
+        "name": "Ruso",
+        "flag": "🇷🇺"
+      }
+    ],
+    "commonMuseums": [
+      "Museo Larco",
+      "Museo del Oro",
+      "Museo Nacional de Antropología",
+      "Museo de Arte de Lima",
+      "Museo Pedro de Osma",
+      "Museo de la Nación",
+      "Museo de Sitio Pachacamac"
+    ]
+  },
+  "app_config": {
+    "version": "25.07.0001",
+    "environment": "production",
+    "api": {
+      "timeout": 30000,
+      "retryAttempts": 3,
+      "retryDelay": 1000
+    },
+    "websocket": {
+      "enabled": false,
+      "reconnectDelay": 5000,
+      "maxReconnectAttempts": 10
+    },
+    "features": {
+      "mockData": false,
+      "debugMode": false,
+      "analytics": true,
+      "maintenance": false
+    },
+    "security": {
+      "tokenExpiryHours": 24,
+      "maxLoginAttempts": 5,
+      "sessionTimeout": 1800000,
+      "passwordMinLength": 8,
+      "requireStrongPassword": true
+    },
+    "storage": {
+      "prefix": "futurismo_",
+      "keys": {
+        "authToken": "auth_token",
+        "authUser": "auth_user",
+        "language": "language",
+        "theme": "theme",
+        "preferences": "preferences"
+      }
+    },
+    "external": {
+      "avatarServiceUrl": "https://ui-avatars.com/api/",
+      "mapTileUrl": "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+      "googleMapsApiKey": ""
+    },
+    "limits": {
+      "maxFileSize": 10485760,
+      "allowedFileTypes": [
+        "jpg",
+        "jpeg",
+        "png",
+        "pdf",
+        "doc",
+        "docx"
+      ],
+      "maxUploadFiles": 10,
+      "maxImageDimensions": {
+        "width": 4096,
+        "height": 4096
+      }
+    },
+    "ui": {
+      "debounceDelay": 300,
+      "toastDuration": 4000,
+      "modalAnimationDuration": 200,
+      "notificationDuration": 5000
+    },
+    "map": {
+      "defaultCenter": [
+        -13.5319,
+        -71.9675
+      ],
+      "defaultZoom": 13,
+      "minZoom": 10,
+      "maxZoom": 18
+    }
+  },
+  "agencies_config": {
+    "version": "1.0.0",
+    "serviceTypes": [
+      "City Tour",
+      "Machu Picchu",
+      "Valle Sagrado",
+      "Islas Ballestas",
+      "Nazca Lines"
+    ],
+    "reservationStatus": [
+      {
+        "value": "confirmed",
+        "label": "Confirmado",
+        "color": "green"
+      },
+      {
+        "value": "pending",
+        "label": "Pendiente",
+        "color": "yellow"
+      },
+      {
+        "value": "cancelled",
+        "label": "Cancelado",
+        "color": "red"
+      },
+      {
+        "value": "in_progress",
+        "label": "En Progreso",
+        "color": "blue"
+      },
+      {
+        "value": "completed",
+        "label": "Completado",
+        "color": "gray"
+      }
+    ],
+    "pointsTransactionTypes": [
+      {
+        "value": "earned",
+        "label": "Ganado"
+      },
+      {
+        "value": "redeemed",
+        "label": "Canjeado"
+      }
+    ],
+    "transactionReasons": [
+      "Reserva confirmada",
+      "Tour completado",
+      "Bonus mensual",
+      "Canje descuento",
+      "Promoción especial"
+    ],
+    "availableTimes": [
+      "08:00",
+      "09:00",
+      "14:00",
+      "15:00"
+    ],
+    "membershipTiers": [
+      {
+        "value": "bronze",
+        "label": "Bronce",
+        "minPoints": 0,
+        "color": "amber"
+      },
+      {
+        "value": "silver",
+        "label": "Plata",
+        "minPoints": 500,
+        "color": "gray"
+      },
+      {
+        "value": "gold",
+        "label": "Oro",
+        "minPoints": 1000,
+        "color": "yellow"
+      },
+      {
+        "value": "platinum",
+        "label": "Platino",
+        "minPoints": 2000,
+        "color": "purple"
+      }
+    ],
+    "pointsConfig": {
+      "minTransactionAmount": 5,
+      "maxTransactionAmount": 50,
+      "pointsPerDollar": 1,
+      "minRedemption": 100,
+      "expirationMonths": 12
+    },
+    "availabilityStatus": [
+      {
+        "value": "available",
+        "label": "Disponible",
+        "color": "green"
+      },
+      {
+        "value": "booked",
+        "label": "Reservado",
+        "color": "blue"
+      },
+      {
+        "value": "blocked",
+        "label": "Bloqueado",
+        "color": "red"
+      }
+    ],
+    "idPrefixes": {
+      "reservation": "res_",
+      "pointsTransaction": "pt_",
+      "agency": "agency_"
+    },
+    "validationMessages": {
+      "reservationNotFound": "Reserva no encontrada",
+      "invalidDateRange": "Rango de fechas inválido",
+      "insufficientPoints": "Puntos insuficientes",
+      "invalidStatus": "Estado inválido",
+      "agencyNotFound": "Agencia no encontrada"
+    }
+  },
+  "calendar_config": {
+    "version": "1.0.0",
+    "views": [
+      {
+        "value": "day",
+        "label": "Día"
+      },
+      {
+        "value": "week",
+        "label": "Semana"
+      },
+      {
+        "value": "month",
+        "label": "Mes"
+      },
+      {
+        "value": "year",
+        "label": "Año"
+      },
+      {
+        "value": "agenda",
+        "label": "Agenda"
+      }
+    ],
+    "eventTypes": [
+      {
+        "value": "personal",
+        "label": "Personal",
+        "color": "#3B82F6",
+        "icon": "user"
+      },
+      {
+        "value": "companyTour",
+        "label": "Tour de Empresa",
+        "color": "#10B981",
+        "icon": "building"
+      },
+      {
+        "value": "occupied",
+        "label": "Ocupado",
+        "color": "#6B7280",
+        "icon": "clock"
+      },
+      {
+        "value": "meeting",
+        "label": "Reunión",
+        "color": "#8B5CF6",
+        "icon": "users"
+      },
+      {
+        "value": "reminder",
+        "label": "Recordatorio",
+        "color": "#F59E0B",
+        "icon": "bell"
+      }
+    ],
+    "timeFilters": [
+      {
+        "value": "all",
+        "label": "Todo"
+      },
+      {
+        "value": "today",
+        "label": "Hoy"
+      },
+      {
+        "value": "thisWeek",
+        "label": "Esta Semana"
+      },
+      {
+        "value": "thisMonth",
+        "label": "Este Mes"
+      },
+      {
+        "value": "thisYear",
+        "label": "Este Año"
+      }
+    ],
+    "defaultWorkingHours": {
+      "start": "08:00",
+      "end": "18:00"
+    },
+    "weekdays": [
+      {
+        "value": 0,
+        "label": "Domingo",
+        "short": "Dom"
+      },
+      {
+        "value": 1,
+        "label": "Lunes",
+        "short": "Lun"
+      },
+      {
+        "value": 2,
+        "label": "Martes",
+        "short": "Mar"
+      },
+      {
+        "value": 3,
+        "label": "Miércoles",
+        "short": "Mié"
+      },
+      {
+        "value": 4,
+        "label": "Jueves",
+        "short": "Jue"
+      },
+      {
+        "value": 5,
+        "label": "Viernes",
+        "short": "Vie"
+      },
+      {
+        "value": 6,
+        "label": "Sábado",
+        "short": "Sáb"
+      }
+    ],
+    "config": {
+      "weekStartsOn": 1,
+      "timeSlotDuration": 30,
+      "minEventDuration": 15,
+      "defaultEventDuration": 60,
+      "maxEventsPerDay": 20,
+      "showTimeSlots": true,
+      "enableDragDrop": true
+    },
+    "defaultFilters": {
+      "showWeekends": true,
+      "showPersonalEvents": true,
+      "showCompanyTours": true,
+      "showOccupiedTime": true,
+      "workingHoursOnly": false,
+      "showPastEvents": false
+    },
+    "eventPriorities": [
+      {
+        "value": "low",
+        "label": "Baja",
+        "color": "#10B981"
+      },
+      {
+        "value": "medium",
+        "label": "Media",
+        "color": "#F59E0B"
+      },
+      {
+        "value": "high",
+        "label": "Alta",
+        "color": "#EF4444"
+      },
+      {
+        "value": "urgent",
+        "label": "Urgente",
+        "color": "#DC2626"
+      }
+    ],
+    "eventVisibility": [
+      {
+        "value": "private",
+        "label": "Privado"
+      },
+      {
+        "value": "public",
+        "label": "Público"
+      },
+      {
+        "value": "company",
+        "label": "Empresa"
+      },
+      {
+        "value": "team",
+        "label": "Equipo"
+      }
+    ],
+    "eventReminders": [
+      {
+        "value": "0",
+        "label": "Sin recordatorio"
+      },
+      {
+        "value": "5",
+        "label": "5 minutos antes"
+      },
+      {
+        "value": "15",
+        "label": "15 minutos antes"
+      },
+      {
+        "value": "30",
+        "label": "30 minutos antes"
+      },
+      {
+        "value": "60",
+        "label": "1 hora antes"
+      },
+      {
+        "value": "120",
+        "label": "2 horas antes"
+      },
+      {
+        "value": "1440",
+        "label": "1 día antes"
+      }
+    ],
+    "recurrencePatterns": [
+      {
+        "value": "daily",
+        "label": "Diario"
+      },
+      {
+        "value": "weekly",
+        "label": "Semanal"
+      },
+      {
+        "value": "monthly",
+        "label": "Mensual"
+      },
+      {
+        "value": "yearly",
+        "label": "Anual"
+      },
+      {
+        "value": "custom",
+        "label": "Personalizado"
+      }
+    ],
+    "eventValidationLimits": {
+      "titleMaxLength": 100,
+      "descriptionMaxLength": 500,
+      "locationMaxLength": 200,
+      "maxAttendees": 50,
+      "maxTags": 10,
+      "tagMaxLength": 20
+    },
+    "defaultEventTimes": {
+      "start": "09:00",
+      "end": "10:00",
+      "duration": 60
+    },
+    "slotStatus": [
+      {
+        "value": "available",
+        "label": "Disponible",
+        "color": "#10B981"
+      },
+      {
+        "value": "busy",
+        "label": "Ocupado",
+        "color": "#F59E0B"
+      },
+      {
+        "value": "occupied",
+        "label": "No Disponible",
+        "color": "#EF4444"
+      },
+      {
+        "value": "blocked",
+        "label": "Bloqueado",
+        "color": "#6B7280"
+      }
+    ],
+    "timeSlotConfig": {
+      "pattern": "^\\d{2}:\\d{2}-\\d{2}:\\d{2}$",
+      "defaultSlot": "09:00-17:00",
+      "defaultStart": "09:00",
+      "defaultEnd": "17:00"
+    },
+    "displayLimits": {
+      "maxLanguages": 5,
+      "maxMuseums": 2,
+      "maxSpecialties": 7
+    },
+    "dateNavigation": {
+      "daysForward": 1,
+      "daysBackward": -1,
+      "weekForward": 7,
+      "weekBackward": -7
+    },
+    "monthViewConfig": {
+      "weekStartDay": 1,
+      "dateFormat": "yyyy-MM-dd",
+      "monthFormat": "MMMM yyyy",
+      "dayFormat": "EEEE, d MMMM",
+      "maxEventsPerDay": 3,
+      "maxIndicators": 5,
+      "tooltipDelay": 500
+    },
+    "hoverConfig": {
+      "delayIn": 200,
+      "delayOut": 100,
+      "position": "bottom"
+    },
+    "eventColors": {
+      "personal": "blue",
+      "companyTour": "green",
+      "occupied": "red",
+      "available": "emerald",
+      "meeting": "purple"
+    }
+  },
+  "clients_config": {
+    "version": "1.0.0",
+    "clientTypes": [
+      {
+        "value": "agency",
+        "label": "Agencia de Viajes"
+      },
+      {
+        "value": "company",
+        "label": "Empresa"
+      },
+      {
+        "value": "individual",
+        "label": "Particular"
+      }
+    ],
+    "clientStatus": [
+      {
+        "value": "active",
+        "label": "Activo",
+        "color": "green"
+      },
+      {
+        "value": "inactive",
+        "label": "Inactivo",
+        "color": "gray"
+      },
+      {
+        "value": "suspended",
+        "label": "Suspendido",
+        "color": "red"
+      },
+      {
+        "value": "pending",
+        "label": "Pendiente",
+        "color": "yellow"
+      }
+    ],
+    "documentTypes": [
+      {
+        "value": "ruc",
+        "label": "RUC",
+        "length": 11
+      },
+      {
+        "value": "dni",
+        "label": "DNI",
+        "length": 8
+      },
+      {
+        "value": "passport",
+        "label": "Pasaporte",
+        "minLength": 6,
+        "maxLength": 20
+      },
+      {
+        "value": "other",
+        "label": "Otro",
+        "minLength": 5,
+        "maxLength": 20
+      }
+    ],
+    "commissionTypes": [
+      {
+        "value": "percentage",
+        "label": "Porcentaje",
+        "symbol": "%"
+      },
+      {
+        "value": "fixed",
+        "label": "Monto Fijo",
+        "symbol": "S/"
+      }
+    ],
+    "validations": {
+      "nameMinLength": 3,
+      "nameMaxLength": 100,
+      "documentMinLength": 8,
+      "documentMaxLength": 20,
+      "phoneMinLength": 9,
+      "phoneMaxLength": 15,
+      "rucLength": 11
+    },
+    "pagination": {
+      "defaultPage": 1,
+      "defaultPageSize": 10,
+      "pageSizeOptions": [
+        10,
+        20,
+        50,
+        100
+      ]
+    },
+    "sortOptions": [
+      {
+        "field": "name",
+        "order": "asc",
+        "label": "Nombre (A-Z)"
+      },
+      {
+        "field": "name",
+        "order": "desc",
+        "label": "Nombre (Z-A)"
+      },
+      {
+        "field": "createdAt",
+        "order": "desc",
+        "label": "Más recientes"
+      },
+      {
+        "field": "createdAt",
+        "order": "asc",
+        "label": "Más antiguos"
+      }
+    ],
+    "requiredFieldsByType": {
+      "agency": [
+        "name",
+        "documentType",
+        "documentNumber",
+        "email",
+        "phone",
+        "address",
+        "contact"
+      ],
+      "company": [
+        "name",
+        "documentType",
+        "documentNumber",
+        "email",
+        "phone",
+        "address",
+        "contact"
+      ],
+      "individual": [
+        "name",
+        "documentType",
+        "documentNumber",
+        "email",
+        "phone"
+      ]
+    },
+    "messages": {
+      "createSuccess": "Cliente creado exitosamente",
+      "updateSuccess": "Cliente actualizado exitosamente",
+      "deleteSuccess": "Cliente eliminado exitosamente",
+      "createError": "Error al crear cliente",
+      "updateError": "Error al actualizar cliente",
+      "deleteError": "Error al eliminar cliente",
+      "fetchError": "Error al cargar clientes",
+      "duplicateDocument": "Ya existe un cliente con ese número de documento",
+      "invalidEmail": "El email ingresado no es válido",
+      "invalidDocument": "El número de documento no es válido"
+    }
+  },
+  "drivers_config": {
+    "version": "1.0.0",
+    "licenseCategories": [
+      {
+        "value": "A-I",
+        "label": "A-I - Motocicletas",
+        "vehicleType": "motorcycle"
+      },
+      {
+        "value": "A-IIa",
+        "label": "A-IIa - Mototaxis",
+        "vehicleType": "mototaxi"
+      },
+      {
+        "value": "A-IIb",
+        "label": "A-IIb - Motocicletas",
+        "vehicleType": "motorcycle"
+      },
+      {
+        "value": "A-IIIa",
+        "label": "A-IIIa - Autos particulares",
+        "vehicleType": "car"
+      },
+      {
+        "value": "A-IIIb",
+        "label": "A-IIIb - Camionetas",
+        "vehicleType": "pickup"
+      },
+      {
+        "value": "A-IIIc",
+        "label": "A-IIIc - Autos y camionetas",
+        "vehicleType": "car_pickup"
+      },
+      {
+        "value": "B-I",
+        "label": "B-I - Camiones pequeños",
+        "vehicleType": "small_truck"
+      },
+      {
+        "value": "B-IIa",
+        "label": "B-IIa - Buses",
+        "vehicleType": "bus"
+      },
+      {
+        "value": "B-IIb",
+        "label": "B-IIb - Buses turísticos",
+        "vehicleType": "tourist_bus"
+      },
+      {
+        "value": "B-IIc",
+        "label": "B-IIc - Buses interprovinciales",
+        "vehicleType": "intercity_bus"
+      }
+    ],
+    "validations": {
+      "nameMinLength": 2,
+      "dniLength": 8
+    },
+    "messages": {
+      "createSuccess": "Chofer creado exitosamente",
+      "updateSuccess": "Chofer actualizado exitosamente",
+      "deleteSuccess": "Chofer eliminado exitosamente",
+      "createError": "Error al crear chofer",
+      "updateError": "Error al actualizar chofer",
+      "deleteError": "Error al eliminar chofer",
+      "fetchError": "Error al cargar choferes",
+      "duplicateLicense": "Ya existe un chofer con esa licencia",
+      "duplicateDNI": "Ya existe un chofer con ese DNI",
+      "licenseExpired": "La licencia del chofer está vencida",
+      "assignSuccess": "Chofer asignado exitosamente",
+      "assignError": "Error al asignar chofer",
+      "notAvailable": "El chofer no está disponible en esa fecha"
+    }
+  },
+  "vehicles_config": {
+    "version": "1.0.0",
+    "vehicleStatus": [
+      {
+        "value": "active",
+        "label": "Activo",
+        "color": "green"
+      },
+      {
+        "value": "maintenance",
+        "label": "En Mantenimiento",
+        "color": "yellow"
+      },
+      {
+        "value": "repair",
+        "label": "En Reparación",
+        "color": "orange"
+      },
+      {
+        "value": "inactive",
+        "label": "Inactivo",
+        "color": "gray"
+      },
+      {
+        "value": "reserved",
+        "label": "Reservado",
+        "color": "blue"
+      }
+    ],
+    "vehicleTypes": [
+      {
+        "value": "van",
+        "label": "Van/Combi",
+        "minCapacity": 8,
+        "maxCapacity": 15
+      },
+      {
+        "value": "minibus",
+        "label": "Minibús",
+        "minCapacity": 16,
+        "maxCapacity": 25
+      },
+      {
+        "value": "bus",
+        "label": "Bus",
+        "minCapacity": 26,
+        "maxCapacity": 60
+      },
+      {
+        "value": "car",
+        "label": "Auto",
+        "minCapacity": 2,
+        "maxCapacity": 4
+      },
+      {
+        "value": "suv",
+        "label": "SUV/4x4",
+        "minCapacity": 4,
+        "maxCapacity": 7
+      },
+      {
+        "value": "pickup",
+        "label": "Camioneta",
+        "minCapacity": 2,
+        "maxCapacity": 5
+      }
+    ],
+    "fuelTypes": [
+      {
+        "value": "gasoline",
+        "label": "Gasolina"
+      },
+      {
+        "value": "diesel",
+        "label": "Diésel"
+      },
+      {
+        "value": "gas",
+        "label": "GLP/GNV"
+      },
+      {
+        "value": "hybrid",
+        "label": "Híbrido"
+      },
+      {
+        "value": "electric",
+        "label": "Eléctrico"
+      }
+    ],
+    "documentTypes": [
+      {
+        "value": "soat",
+        "label": "SOAT",
+        "alertDays": 30
+      },
+      {
+        "value": "technical_review",
+        "label": "Revisión Técnica",
+        "alertDays": 30
+      },
+      {
+        "value": "circulation_permit",
+        "label": "Permiso de Circulación",
+        "alertDays": 45
+      },
+      {
+        "value": "insurance",
+        "label": "Seguro Vehicular",
+        "alertDays": 30
+      }
+    ],
+    "documentStatus": [
+      {
+        "value": "valid",
+        "label": "Vigente",
+        "color": "green"
+      },
+      {
+        "value": "expiring_soon",
+        "label": "Por Vencer",
+        "color": "yellow"
+      },
+      {
+        "value": "expired",
+        "label": "Vencido",
+        "color": "red"
+      }
+    ],
+    "features": [
+      {
+        "value": "air_conditioning",
+        "label": "Aire Acondicionado",
+        "icon": "❄️"
+      },
+      {
+        "value": "heating",
+        "label": "Calefacción",
+        "icon": "🔥"
+      },
+      {
+        "value": "gps",
+        "label": "GPS",
+        "icon": "📍"
+      },
+      {
+        "value": "wifi",
+        "label": "WiFi",
+        "icon": "📶"
+      },
+      {
+        "value": "usb_chargers",
+        "label": "Cargadores USB",
+        "icon": "🔌"
+      },
+      {
+        "value": "microphone",
+        "label": "Micrófono",
+        "icon": "🎤"
+      },
+      {
+        "value": "first_aid_kit",
+        "label": "Botiquín",
+        "icon": "🏥"
+      },
+      {
+        "value": "wheelchair_access",
+        "label": "Acceso Silla de Ruedas",
+        "icon": "♿"
+      },
+      {
+        "value": "luggage_compartment",
+        "label": "Compartimento de Equipaje",
+        "icon": "🧳"
+      },
+      {
+        "value": "reclining_seats",
+        "label": "Asientos Reclinables",
+        "icon": "💺"
+      }
+    ],
+    "maintenanceIntervals": {
+      "oilChange": {
+        "km": 5000,
+        "label": "Cambio de Aceite"
+      },
+      "tireRotation": {
+        "km": 10000,
+        "label": "Rotación de Llantas"
+      },
+      "brakeCheck": {
+        "km": 20000,
+        "label": "Revisión de Frenos"
+      },
+      "generalService": {
+        "km": 15000,
+        "label": "Servicio General"
+      }
+    },
+    "validations": {
+      "plateMinLength": 6,
+      "plateMaxLength": 8,
+      "brandMinLength": 2,
+      "brandMaxLength": 50,
+      "modelMinLength": 2,
+      "modelMaxLength": 50,
+      "minYear": 2000,
+      "maxYear": 2026,
+      "minCapacity": 1,
+      "maxCapacity": 60,
+      "minMileage": 0,
+      "maxMileage": 9999999
+    },
+    "metrics": {
+      "goodFuelEfficiency": 15,
+      "averageFuelEfficiency": 10,
+      "poorFuelEfficiency": 7,
+      "highMileageThreshold": 200000,
+      "maintenanceCostHigh": 1000,
+      "maintenanceCostAverage": 500
+    },
+    "pagination": {
+      "defaultPage": 1,
+      "defaultPageSize": 10,
+      "pageSizeOptions": [
+        10,
+        20,
+        50,
+        100
+      ]
+    },
+    "sortOptions": [
+      {
+        "field": "plate",
+        "order": "asc",
+        "label": "Placa (A-Z)"
+      },
+      {
+        "field": "plate",
+        "order": "desc",
+        "label": "Placa (Z-A)"
+      },
+      {
+        "field": "brand",
+        "order": "asc",
+        "label": "Marca (A-Z)"
+      },
+      {
+        "field": "capacity",
+        "order": "desc",
+        "label": "Mayor Capacidad"
+      },
+      {
+        "field": "capacity",
+        "order": "asc",
+        "label": "Menor Capacidad"
+      },
+      {
+        "field": "year",
+        "order": "desc",
+        "label": "Más Nuevos"
+      },
+      {
+        "field": "year",
+        "order": "asc",
+        "label": "Más Antiguos"
+      }
+    ],
+    "messages": {
+      "createSuccess": "Vehículo creado exitosamente",
+      "updateSuccess": "Vehículo actualizado exitosamente",
+      "deleteSuccess": "Vehículo eliminado exitosamente",
+      "createError": "Error al crear vehículo",
+      "updateError": "Error al actualizar vehículo",
+      "deleteError": "Error al eliminar vehículo",
+      "fetchError": "Error al cargar vehículos",
+      "duplicatePlate": "Ya existe un vehículo con esa placa",
+      "maintenanceRequired": "El vehículo requiere mantenimiento",
+      "documentsExpired": "El vehículo tiene documentos vencidos",
+      "assignSuccess": "Vehículo asignado exitosamente",
+      "assignError": "Error al asignar vehículo",
+      "notAvailable": "El vehículo no está disponible en esa fecha",
+      "capacityExceeded": "La capacidad del vehículo es insuficiente"
+    }
+  },
+  "reservations_config": {
+    "version": "1.0.0",
+    "formSteps": [
+      {
+        "step": 1,
+        "name": "service",
+        "label": "Seleccionar Servicio"
+      },
+      {
+        "step": 2,
+        "name": "tourists",
+        "label": "Datos de Turistas"
+      },
+      {
+        "step": 3,
+        "name": "confirmation",
+        "label": "Confirmación"
+      }
+    ],
+    "reservationStatus": [
+      {
+        "value": "draft",
+        "label": "Borrador",
+        "color": "gray"
+      },
+      {
+        "value": "confirmed",
+        "label": "Confirmado",
+        "color": "green"
+      },
+      {
+        "value": "pending",
+        "label": "Pendiente",
+        "color": "yellow"
+      },
+      {
+        "value": "cancelled",
+        "label": "Cancelado",
+        "color": "red"
+      },
+      {
+        "value": "in_progress",
+        "label": "En Progreso",
+        "color": "blue"
+      },
+      {
+        "value": "completed",
+        "label": "Completado",
+        "color": "purple"
+      }
+    ],
+    "touristConfig": {
+      "minCount": 1,
+      "defaultCount": 1,
+      "maxCount": 50
+    },
+    "durationConfig": {
+      "minHours": 1,
+      "defaultHours": 1,
+      "maxHours": 24,
+      "minDays": 2,
+      "defaultDays": 2,
+      "maxDays": 30
+    },
+    "formats": {
+      "idPrefix": "DRAFT-",
+      "codePrefix": "FT",
+      "codeLength": 6
+    },
+    "validationMessages": {
+      "serviceTypeRequired": "Selecciona un tipo de servicio",
+      "dateRequired": "La fecha es requerida",
+      "timeRequired": "La hora es requerida",
+      "originRequired": "El origen es requerido",
+      "destinationRequired": "El destino es requerido",
+      "tourNameRequired": "El nombre del tour es requerido",
+      "pickupLocationRequired": "El lugar de recojo es requerido",
+      "packageNameRequired": "El nombre del paquete es requerido",
+      "accommodationRequired": "El alojamiento es requerido",
+      "touristsRequired": "Agrega al menos un turista",
+      "touristsCountMismatch": "Debes agregar {count} turista(s)",
+      "touristNameRequired": "El nombre es requerido",
+      "touristPassportRequired": "El pasaporte es requerido",
+      "touristEmailRequired": "El email es requerido"
+    },
+    "defaultFilterValues": {
+      "searchTerm": "",
+      "status": "all",
+      "dateFrom": "",
+      "dateTo": "",
+      "customer": "",
+      "minPassengers": "",
+      "maxPassengers": "",
+      "currentPage": 1
+    },
+    "filterLimits": {
+      "minPassengers": 1,
+      "maxPassengers": 100,
+      "minSearchLength": 2
+    },
+    "paginationConfig": {
+      "defaultPage": 1,
+      "itemsPerPage": 10,
+      "maxPageButtons": 5
+    }
+  },
+  "marketplace_config": {
+    "version": "1.0.0",
+    "workZones": [
+      {
+        "id": "cusco-ciudad",
+        "name": "Cusco Ciudad",
+        "description": "Centro histórico y alrededores"
+      },
+      {
+        "id": "valle-sagrado",
+        "name": "Valle Sagrado",
+        "description": "Pisac, Ollantaytambo, Chinchero"
+      },
+      {
+        "id": "machu-picchu",
+        "name": "Machu Picchu",
+        "description": "Ciudadela y Huayna Picchu"
+      },
+      {
+        "id": "sur-valle",
+        "name": "Sur del Valle",
+        "description": "Tipón, Pikillaqta, Andahuaylillas"
+      },
+      {
+        "id": "otros",
+        "name": "Otros destinos",
+        "description": "Otros lugares turísticos"
+      }
+    ],
+    "tourTypes": [
+      {
+        "id": "cultural",
+        "name": "Cultural",
+        "icon": "🏛️"
+      },
+      {
+        "id": "aventura",
+        "name": "Aventura",
+        "icon": "🏔️"
+      },
+      {
+        "id": "gastronomico",
+        "name": "Gastronómico",
+        "icon": "🍽️"
+      },
+      {
+        "id": "mistico",
+        "name": "Místico",
+        "icon": "🔮"
+      },
+      {
+        "id": "fotografico",
+        "name": "Fotográfico",
+        "icon": "📸"
+      }
+    ],
+    "groupTypes": [
+      {
+        "id": "children",
+        "name": "Niños",
+        "description": "Grupos escolares y familiares con niños"
+      },
+      {
+        "id": "schools",
+        "name": "Colegios",
+        "description": "Visitas educativas"
+      },
+      {
+        "id": "elderly",
+        "name": "Adultos mayores",
+        "description": "Grupos de tercera edad"
+      },
+      {
+        "id": "corporate",
+        "name": "Corporativo",
+        "description": "Viajes de empresa"
+      },
+      {
+        "id": "vip",
+        "name": "VIP",
+        "description": "Clientes exclusivos"
+      },
+      {
+        "id": "specialNeeds",
+        "name": "Necesidades especiales",
+        "description": "Grupos con requerimientos especiales"
+      }
+    ],
+    "languageLevels": [
+      {
+        "value": "native",
+        "label": "Nativo"
+      },
+      {
+        "value": "advanced",
+        "label": "Avanzado"
+      },
+      {
+        "value": "intermediate",
+        "label": "Intermedio"
+      },
+      {
+        "value": "basic",
+        "label": "Básico"
+      }
+    ],
+    "experienceLevels": [
+      {
+        "value": "expert",
+        "label": "Experto",
+        "minYears": 5
+      },
+      {
+        "value": "intermediate",
+        "label": "Intermedio",
+        "minYears": 2
+      },
+      {
+        "value": "basic",
+        "label": "Básico",
+        "minYears": 0
+      }
+    ],
+    "defaultPricing": {
+      "hourlyRate": 30,
+      "fullDayRate": 200,
+      "halfDayRate": 120,
+      "vipRate": 50,
+      "childrenRate": 25
+    },
+    "availabilityConfig": {
+      "defaultAdvanceBookingDays": 2,
+      "maxGroupSize": 20,
+      "defaultWorkingDays": [
+        "monday",
+        "tuesday",
+        "wednesday",
+        "thursday",
+        "friday",
+        "saturday"
+      ]
+    },
+    "ratingCategories": [
+      {
+        "key": "overall",
+        "label": "General"
+      },
+      {
+        "key": "communication",
+        "label": "Comunicación"
+      },
+      {
+        "key": "knowledge",
+        "label": "Conocimiento"
+      },
+      {
+        "key": "punctuality",
+        "label": "Puntualidad"
+      },
+      {
+        "key": "professionalism",
+        "label": "Profesionalismo"
+      },
+      {
+        "key": "valueForMoney",
+        "label": "Relación Calidad-Precio"
+      }
+    ],
+    "defaultRatings": {
+      "minRating": 1,
+      "maxRating": 5,
+      "initialRating": 0
+    },
+    "responseTimeConfig": {
+      "excellent": {
+        "minutes": 30,
+        "label": "Excelente"
+      },
+      "good": {
+        "minutes": 60,
+        "label": "Bueno"
+      },
+      "average": {
+        "minutes": 120,
+        "label": "Promedio"
+      },
+      "slow": {
+        "minutes": 240,
+        "label": "Lento"
+      }
+    },
+    "acceptanceRateConfig": {
+      "excellent": {
+        "percentage": 90,
+        "label": "Excelente"
+      },
+      "good": {
+        "percentage": 75,
+        "label": "Bueno"
+      },
+      "average": {
+        "percentage": 60,
+        "label": "Promedio"
+      },
+      "low": {
+        "percentage": 40,
+        "label": "Bajo"
+      }
+    },
+    "commonCertifications": [
+      "Guía Oficial de Turismo",
+      "Primeros Auxilios",
+      "Certificación de Idioma",
+      "Tour Especializado"
+    ],
+    "marketplaceStatus": [
+      {
+        "value": "active",
+        "label": "Activo",
+        "color": "green"
+      },
+      {
+        "value": "inactive",
+        "label": "Inactivo",
+        "color": "gray"
+      },
+      {
+        "value": "suspended",
+        "label": "Suspendido",
+        "color": "red"
+      },
+      {
+        "value": "pending_approval",
+        "label": "Pendiente de Aprobación",
+        "color": "yellow"
+      }
+    ],
+    "sortOptions": [
+      {
+        "value": "rating",
+        "label": "Calificación"
+      },
+      {
+        "value": "price",
+        "label": "Precio"
+      },
+      {
+        "value": "experience",
+        "label": "Experiencia"
+      },
+      {
+        "value": "reviews",
+        "label": "Reseñas"
+      }
+    ],
+    "priceRangeConfig": {
+      "min": {
+        "min": 0,
+        "max": 200,
+        "step": 10
+      },
+      "max": {
+        "min": 0,
+        "max": 500,
+        "step": 10
+      }
+    },
+    "defaultFilters": {
+      "languages": [],
+      "tourTypes": [],
+      "workZones": [],
+      "groupTypes": [],
+      "priceRange": {
+        "min": 0,
+        "max": 500
+      },
+      "rating": 0,
+      "availability": null,
+      "instantBooking": false,
+      "verified": false
+    },
+    "pagination": {
+      "defaultPageSize": 12,
+      "pageSizeOptions": [
+        12,
+        24,
+        48
+      ]
+    },
+    "views": [
+      {
+        "value": "grid",
+        "label": "Cuadrícula",
+        "icon": "grid"
+      },
+      {
+        "value": "list",
+        "label": "Lista",
+        "icon": "list"
+      }
+    ],
+    "validationMessages": {
+      "noGuidesFound": "No se encontraron guías con los filtros seleccionados",
+      "loadingGuides": "Cargando guías...",
+      "errorLoading": "Error al cargar los guías. Por favor intenta nuevamente.",
+      "guideNotFound": "Guía no encontrado",
+      "invalidFilter": "Filtro inválido"
+    }
+  },
+  "auth_config": {
+    "version": "1.0.0",
+    "userRoles": [
+      {
+        "value": "admin",
+        "label": "Administrador",
+        "description": "Acceso completo al sistema",
+        "permissions": [
+          "all"
+        ],
+        "color": "purple"
+      },
+      {
+        "value": "agency",
+        "label": "Agencia",
+        "description": "Gestión de reservas y marketplace",
+        "permissions": [
+          "reservations",
+          "marketplace",
+          "reports"
+        ],
+        "color": "blue"
+      },
+      {
+        "value": "guide",
+        "label": "Guía",
+        "description": "Gestión de agenda y servicios",
+        "permissions": [
+          "agenda",
+          "monitoring",
+          "marketplace_view"
+        ],
+        "color": "green"
+      }
+    ],
+    "guideTypes": [
+      {
+        "value": "planta",
+        "label": "Planta",
+        "description": "Guía de planta"
+      },
+      {
+        "value": "freelance",
+        "label": "Freelance",
+        "description": "Guía independiente"
+      }
+    ],
+    "userStatus": [
+      {
+        "value": "active",
+        "label": "Activo",
+        "color": "green",
+        "icon": "✓"
+      },
+      {
+        "value": "pending",
+        "label": "Pendiente",
+        "color": "yellow",
+        "icon": "⏳"
+      },
+      {
+        "value": "inactive",
+        "label": "Inactivo",
+        "color": "gray",
+        "icon": "○"
+      },
+      {
+        "value": "suspended",
+        "label": "Suspendido",
+        "color": "red",
+        "icon": "✕"
+      }
+    ],
+    "authStates": [
+      {
+        "value": "idle",
+        "label": "Inactivo"
+      },
+      {
+        "value": "loading",
+        "label": "Cargando"
+      },
+      {
+        "value": "authenticated",
+        "label": "Autenticado"
+      },
+      {
+        "value": "unauthenticated",
+        "label": "No Autenticado"
+      },
+      {
+        "value": "error",
+        "label": "Error"
+      }
+    ],
+    "authTypes": [
+      {
+        "value": "local",
+        "label": "Local",
+        "enabled": true
+      },
+      {
+        "value": "oauth",
+        "label": "OAuth",
+        "enabled": false
+      },
+      {
+        "value": "sso",
+        "label": "SSO",
+        "enabled": false
+      }
+    ],
+    "sessionConfig": {
+      "checkInterval": 60000,
+      "warningBeforeExpiry": 300000,
+      "activityEvents": [
+        "mousedown",
+        "keydown",
+        "scroll",
+        "touchstart"
+      ],
+      "maxInactivityTime": 1800000,
+      "tokenRefreshInterval": 900000
+    },
+    "passwordPolicy": {
+      "minLength": 8,
+      "requireUppercase": true,
+      "requireLowercase": true,
+      "requireNumbers": true,
+      "requireSpecialChars": false,
+      "maxAge": 90,
+      "preventReuse": 5
+    },
+    "authEvents": [
+      "auth:login:success",
+      "auth:login:failure",
+      "auth:logout",
+      "auth:session:expired",
+      "auth:token:refreshed"
+    ],
+    "messages": {
+      "invalidCredentials": "Credenciales inválidas",
+      "emailExists": "Este email ya está registrado",
+      "updateProfileError": "Error al actualizar perfil",
+      "sessionRecoveryError": "Error al recuperar sesión guardada",
+      "sessionInitError": "Error al inicializar sesión",
+      "passwordWeak": "La contraseña es muy débil",
+      "accountSuspended": "Tu cuenta ha sido suspendida",
+      "accountPending": "Tu cuenta está pendiente de aprobación",
+      "sessionExpired": "Tu sesión ha expirado"
+    }
+  },
+  "feedback_config": {
+    "version": "1.0.0",
+    "serviceAreas": [
+      {
+        "key": "customer_service",
+        "label": "Atención al Cliente",
+        "icon": "👥"
+      },
+      {
+        "key": "operations",
+        "label": "Operaciones",
+        "icon": "⚙️"
+      },
+      {
+        "key": "punctuality",
+        "label": "Puntualidad",
+        "icon": "⏰"
+      },
+      {
+        "key": "communication",
+        "label": "Comunicación",
+        "icon": "💬"
+      },
+      {
+        "key": "logistics",
+        "label": "Logística",
+        "icon": "📦"
+      },
+      {
+        "key": "safety",
+        "label": "Seguridad",
+        "icon": "🛡️"
+      }
+    ],
+    "statusTypes": [
+      {
+        "value": "pending",
+        "label": "Pendiente",
+        "color": "yellow",
+        "bgColor": "bg-yellow-100",
+        "textColor": "text-yellow-800"
+      },
+      {
+        "value": "reviewed",
+        "label": "Revisado",
+        "color": "blue",
+        "bgColor": "bg-blue-100",
+        "textColor": "text-blue-800"
+      },
+      {
+        "value": "in_progress",
+        "label": "En Progreso",
+        "color": "orange",
+        "bgColor": "bg-orange-100",
+        "textColor": "text-orange-800"
+      },
+      {
+        "value": "implemented",
+        "label": "Implementado",
+        "color": "green",
+        "bgColor": "bg-green-100",
+        "textColor": "text-green-800"
+      },
+      {
+        "value": "rejected",
+        "label": "Rechazado",
+        "color": "red",
+        "bgColor": "bg-red-100",
+        "textColor": "text-red-800"
+      }
+    ],
+    "feedbackTypes": [
+      {
+        "value": "suggestion",
+        "label": "Sugerencia",
+        "icon": "💡",
+        "color": "blue"
+      },
+      {
+        "value": "recognition",
+        "label": "Reconocimiento",
+        "icon": "⭐",
+        "color": "yellow"
+      },
+      {
+        "value": "positive",
+        "label": "Positivo",
+        "icon": "👍",
+        "color": "green"
+      },
+      {
+        "value": "negative",
+        "label": "Negativo",
+        "icon": "👎",
+        "color": "red"
+      }
+    ],
+    "priorityLevels": [
+      {
+        "value": "low",
+        "label": "Baja",
+        "color": "gray"
+      },
+      {
+        "value": "medium",
+        "label": "Media",
+        "color": "yellow"
+      },
+      {
+        "value": "high",
+        "label": "Alta",
+        "color": "orange"
+      },
+      {
+        "value": "critical",
+        "label": "Crítica",
+        "color": "red"
+      }
+    ],
+    "categories": [
+      {
+        "value": "service_quality",
+        "label": "Calidad del Servicio"
+      },
+      {
+        "value": "staff_behavior",
+        "label": "Comportamiento del Personal"
+      },
+      {
+        "value": "facilities",
+        "label": "Instalaciones"
+      },
+      {
+        "value": "pricing",
+        "label": "Precios"
+      },
+      {
+        "value": "booking_process",
+        "label": "Proceso de Reserva"
+      },
+      {
+        "value": "other",
+        "label": "Otro"
+      }
+    ],
+    "config": {
+      "maxFeedbackLength": 1000,
+      "minFeedbackLength": 10,
+      "allowAnonymous": true,
+      "requireEmail": false,
+      "autoArchiveDays": 90
+    }
+  },
+  "ratings_config": {
+    "version": "1.0.0",
+    "ratingScale": {
+      "min": 1,
+      "max": 5,
+      "default": 3,
+      "step": 0.5
+    },
+    "evaluationCriteria": [
+      {
+        "key": "performance",
+        "label": "Desempeño",
+        "weight": 1
+      },
+      {
+        "key": "communication",
+        "label": "Comunicación",
+        "weight": 1
+      },
+      {
+        "key": "professionalism",
+        "label": "Profesionalismo",
+        "weight": 1
+      },
+      {
+        "key": "knowledge",
+        "label": "Conocimiento",
+        "weight": 1.2
+      },
+      {
+        "key": "punctuality",
+        "label": "Puntualidad",
+        "weight": 1.1
+      },
+      {
+        "key": "teamwork",
+        "label": "Trabajo en Equipo",
+        "weight": 0.9
+      }
+    ],
+    "recommendationTypes": [
+      {
+        "value": "highly_recommend",
+        "label": "Altamente Recomendado",
+        "minRating": 4.5,
+        "color": "green"
+      },
+      {
+        "value": "recommend",
+        "label": "Recomendado",
+        "minRating": 4,
+        "color": "blue"
+      },
+      {
+        "value": "satisfactory",
+        "label": "Satisfactorio",
+        "minRating": 3,
+        "color": "yellow"
+      },
+      {
+        "value": "needs_improvement",
+        "label": "Necesita Mejorar",
+        "minRating": 2,
+        "color": "orange"
+      },
+      {
+        "value": "not_recommend",
+        "label": "No Recomendado",
+        "minRating": 0,
+        "color": "red"
+      }
+    ],
+    "ratingPeriods": [
+      {
+        "value": "week",
+        "label": "Semana",
+        "days": 7
+      },
+      {
+        "value": "month",
+        "label": "Mes",
+        "days": 30
+      },
+      {
+        "value": "quarter",
+        "label": "Trimestre",
+        "days": 90
+      },
+      {
+        "value": "year",
+        "label": "Año",
+        "days": 365
+      }
+    ],
+    "ratingAspects": [
+      {
+        "key": "guideKnowledge",
+        "label": "Conocimiento del Guía",
+        "icon": "🎓"
+      },
+      {
+        "key": "guideAttitude",
+        "label": "Actitud del Guía",
+        "icon": "😊"
+      },
+      {
+        "key": "transportQuality",
+        "label": "Calidad del Transporte",
+        "icon": "🚐"
+      },
+      {
+        "key": "itinerary",
+        "label": "Itinerario",
+        "icon": "📋"
+      },
+      {
+        "key": "valueForMoney",
+        "label": "Relación Calidad-Precio",
+        "icon": "💰"
+      },
+      {
+        "key": "overall",
+        "label": "General",
+        "icon": "⭐"
+      }
+    ],
+    "touristRatingCategories": [
+      {
+        "key": "guides",
+        "label": "Guías",
+        "weight": 1.2
+      },
+      {
+        "key": "transport",
+        "label": "Transporte",
+        "weight": 1
+      },
+      {
+        "key": "itinerary",
+        "label": "Itinerario",
+        "weight": 1.1
+      },
+      {
+        "key": "value",
+        "label": "Valor",
+        "weight": 0.9
+      },
+      {
+        "key": "overall",
+        "label": "General",
+        "weight": 1
+      }
+    ],
+    "ratingStatus": [
+      {
+        "value": "pending",
+        "label": "Pendiente",
+        "color": "yellow"
+      },
+      {
+        "value": "submitted",
+        "label": "Enviado",
+        "color": "blue"
+      },
+      {
+        "value": "reviewed",
+        "label": "Revisado",
+        "color": "green"
+      }
+    ],
+    "feedbackTypes": [
+      {
+        "value": "strengths",
+        "label": "Fortalezas"
+      },
+      {
+        "value": "improvements",
+        "label": "Mejoras"
+      },
+      {
+        "value": "generalComments",
+        "label": "Comentarios Generales"
+      }
+    ],
+    "chartColors": {
+      "primary": "#3B82F6",
+      "secondary": "#10B981",
+      "tertiary": "#F59E0B",
+      "danger": "#EF4444",
+      "success": "#22C55E",
+      "warning": "#F97316",
+      "info": "#06B6D4",
+      "purple": "#8B5CF6"
+    },
+    "trendIndicators": [
+      {
+        "value": "positive",
+        "symbol": "+",
+        "color": "green",
+        "icon": "↑"
+      },
+      {
+        "value": "negative",
+        "symbol": "-",
+        "color": "red",
+        "icon": "↓"
+      },
+      {
+        "value": "neutral",
+        "symbol": "=",
+        "color": "gray",
+        "icon": "→"
+      }
+    ],
+    "ratingIcons": {
+      "excellent": "😊",
+      "good": "👍",
+      "average": "😐",
+      "poor": "😞",
+      "terrible": "😢"
+    },
+    "ratingColors": {
+      "excellent": {
+        "text": "text-green-600",
+        "bg": "bg-green-50 border-green-200",
+        "hover": "hover:bg-green-100",
+        "selected": "bg-green-500 border-green-500 text-white"
+      },
+      "good": {
+        "text": "text-blue-600",
+        "bg": "bg-blue-50 border-blue-200",
+        "hover": "hover:bg-blue-100",
+        "selected": "bg-blue-500 border-blue-500 text-white"
+      },
+      "average": {
+        "text": "text-yellow-600",
+        "bg": "bg-yellow-50 border-yellow-200",
+        "hover": "hover:bg-yellow-100",
+        "selected": "bg-yellow-500 border-yellow-500 text-white"
+      },
+      "poor": {
+        "text": "text-red-600",
+        "bg": "bg-red-50 border-red-200",
+        "hover": "hover:bg-red-100",
+        "selected": "bg-red-500 border-red-500 text-white"
+      }
+    },
+    "ratedByTypes": [
+      {
+        "value": "agency",
+        "label": "Agencia"
+      },
+      {
+        "value": "tourist",
+        "label": "Turista"
+      },
+      {
+        "value": "system",
+        "label": "Sistema"
+      }
+    ],
+    "ratingSteps": [
+      {
+        "value": "rating",
+        "label": "Calificación",
+        "order": 1
+      },
+      {
+        "value": "summary",
+        "label": "Resumen",
+        "order": 2
+      }
+    ],
+    "touristRatingValues": [
+      {
+        "value": "excellent",
+        "label": "Excelente",
+        "minScore": 4.5
+      },
+      {
+        "value": "good",
+        "label": "Bueno",
+        "minScore": 3.5
+      },
+      {
+        "value": "average",
+        "label": "Promedio",
+        "minScore": 2.5
+      },
+      {
+        "value": "poor",
+        "label": "Malo",
+        "minScore": 0
+      }
+    ],
+    "config": {
+      "apiSimulationDelay": 1000,
+      "stepTransitionDelay": 1000,
+      "minCommentLength": 10,
+      "maxCommentLength": 500,
+      "requireComment": false,
+      "allowAnonymous": false
+    }
+  },
+  "rewards_config": {
+    "version": "1.0.0",
+    "servicePoints": {
+      "cityTour": 100,
+      "gastronomicTour": 150,
+      "islandsTour": 200,
+      "customTour": 120,
+      "walkingTour": 80,
+      "bikeTour": 90,
+      "foodTour": 130,
+      "adventureTour": 180
+    },
+    "rewardCategories": [
+      {
+        "value": "electronics",
+        "label": "Electrónicos",
+        "icon": "💻"
+      },
+      {
+        "value": "travel",
+        "label": "Viajes",
+        "icon": "✈️"
+      },
+      {
+        "value": "gift_cards",
+        "label": "Tarjetas Regalo",
+        "icon": "🎁"
+      },
+      {
+        "value": "experiences",
+        "label": "Experiencias",
+        "icon": "🎭"
+      },
+      {
+        "value": "merchandise",
+        "label": "Merchandising",
+        "icon": "👕"
+      }
+    ],
+    "redemptionStatus": [
+      {
+        "value": "pending",
+        "label": "Pendiente",
+        "color": "yellow"
+      },
+      {
+        "value": "approved",
+        "label": "Aprobado",
+        "color": "blue"
+      },
+      {
+        "value": "delivered",
+        "label": "Entregado",
+        "color": "green"
+      },
+      {
+        "value": "cancelled",
+        "label": "Cancelado",
+        "color": "red"
+      }
+    ],
+    "pointsLimits": {
+      "minRedemption": 500,
+      "maxDailyPoints": 2000,
+      "pointExpiryDays": 365
+    },
+    "serviceTypePoints": {
+      "city_tour": 100,
+      "gastronomy_tour": 150,
+      "islands_tour": 200,
+      "walking_tour": 80,
+      "bike_tour": 90,
+      "food_tour": 130,
+      "adventure_tour": 180,
+      "custom": 120
+    }
+  },
+  "assignments_config": {
+    "version": "1.0.0",
+    "assignmentStatus": [
+      {
+        "value": "pending",
+        "label": "Pendiente",
+        "color": "yellow"
+      },
+      {
+        "value": "confirmed",
+        "label": "Confirmado",
+        "color": "blue"
+      },
+      {
+        "value": "in_progress",
+        "label": "En Progreso",
+        "color": "orange"
+      },
+      {
+        "value": "completed",
+        "label": "Completado",
+        "color": "green"
+      },
+      {
+        "value": "cancelled",
+        "label": "Cancelado",
+        "color": "red"
+      }
+    ],
+    "documentTypes": [
+      {
+        "value": "DNI",
+        "label": "DNI"
+      },
+      {
+        "value": "PASSPORT",
+        "label": "Pasaporte"
+      },
+      {
+        "value": "CE",
+        "label": "Carné de Extranjería"
+      },
+      {
+        "value": "RUC",
+        "label": "RUC"
+      }
+    ],
+    "licenseTypes": [
+      {
+        "value": "A",
+        "label": "Licencia A - Motocicletas"
+      },
+      {
+        "value": "B",
+        "label": "Licencia B - Automóviles"
+      },
+      {
+        "value": "C",
+        "label": "Licencia C - Camiones ligeros"
+      },
+      {
+        "value": "D",
+        "label": "Licencia D - Buses y transporte público"
+      },
+      {
+        "value": "E",
+        "label": "Licencia E - Vehículos pesados"
+      }
+    ],
+    "vehicleTypes": [
+      {
+        "value": "car",
+        "label": "Auto",
+        "capacity": 4
+      },
+      {
+        "value": "van",
+        "label": "Van",
+        "capacity": 8
+      },
+      {
+        "value": "minibus",
+        "label": "Minibus",
+        "capacity": 20
+      },
+      {
+        "value": "bus",
+        "label": "Bus",
+        "capacity": 50
+      }
+    ],
+    "assignmentLimits": {
+      "minGroupSize": 1,
+      "maxGroupSize": 50,
+      "minAdvanceHours": 24,
+      "maxAdvanceDays": 365
+    },
+    "tourLanguages": [
+      "Español",
+      "Inglés",
+      "Francés",
+      "Portugués",
+      "Alemán",
+      "Italiano",
+      "Japonés",
+      "Chino"
+    ],
+    "guideSpecialties": [
+      "Historia",
+      "Naturaleza",
+      "Cultura",
+      "Gastronomía",
+      "Arte",
+      "Arqueología",
+      "Aventura",
+      "Fotografía"
+    ],
+    "defaultAssignment": {
+      "status": "pending",
+      "tourists": [],
+      "notes": ""
+    },
+    "formats": {
+      "time": "HH:mm",
+      "date": "DD/MM/YYYY"
+    }
+  },
+  "providers_config": {
+    "version": "1.0.0",
+    "providerCategories": [
+      {
+        "value": "transport",
+        "label": "Transporte",
+        "icon": "🚌"
+      },
+      {
+        "value": "accommodation",
+        "label": "Alojamiento",
+        "icon": "🏨"
+      },
+      {
+        "value": "restaurant",
+        "label": "Restaurante",
+        "icon": "🍽️"
+      },
+      {
+        "value": "activity",
+        "label": "Actividad",
+        "icon": "🎯"
+      },
+      {
+        "value": "guide",
+        "label": "Guía",
+        "icon": "👨‍🏫"
+      },
+      {
+        "value": "equipment",
+        "label": "Equipamiento",
+        "icon": "🎒"
+      },
+      {
+        "value": "other",
+        "label": "Otro",
+        "icon": "📋"
+      }
+    ],
+    "pricingTypes": [
+      {
+        "value": "per_person",
+        "label": "Por Persona"
+      },
+      {
+        "value": "per_group",
+        "label": "Por Grupo"
+      },
+      {
+        "value": "per_hour",
+        "label": "Por Hora"
+      },
+      {
+        "value": "per_day",
+        "label": "Por Día"
+      },
+      {
+        "value": "fixed",
+        "label": "Precio Fijo"
+      }
+    ],
+    "providerStatus": [
+      {
+        "value": "active",
+        "label": "Activo",
+        "color": "green"
+      },
+      {
+        "value": "inactive",
+        "label": "Inactivo",
+        "color": "gray"
+      },
+      {
+        "value": "pending",
+        "label": "Pendiente",
+        "color": "yellow"
+      },
+      {
+        "value": "suspended",
+        "label": "Suspendido",
+        "color": "red"
+      }
+    ],
+    "serviceTypes": {
+      "transport": [
+        {
+          "key": "bus",
+          "label": "Bus"
+        },
+        {
+          "key": "van",
+          "label": "Van"
+        },
+        {
+          "key": "car",
+          "label": "Auto"
+        },
+        {
+          "key": "boat",
+          "label": "Bote"
+        }
+      ],
+      "accommodation": [
+        {
+          "key": "hotel",
+          "label": "Hotel"
+        },
+        {
+          "key": "hostel",
+          "label": "Hostel"
+        },
+        {
+          "key": "lodge",
+          "label": "Lodge"
+        },
+        {
+          "key": "camping",
+          "label": "Camping"
+        }
+      ],
+      "restaurant": [
+        {
+          "key": "breakfast",
+          "label": "Desayuno"
+        },
+        {
+          "key": "lunch",
+          "label": "Almuerzo"
+        },
+        {
+          "key": "dinner",
+          "label": "Cena"
+        },
+        {
+          "key": "snacks",
+          "label": "Snacks"
+        }
+      ],
+      "activity": [
+        {
+          "key": "trekking",
+          "label": "Trekking"
+        },
+        {
+          "key": "rafting",
+          "label": "Rafting"
+        },
+        {
+          "key": "zipline",
+          "label": "Tirolesa"
+        },
+        {
+          "key": "cultural",
+          "label": "Cultural"
+        }
+      ]
+    },
+    "locations": {
+      "lima": {
+        "id": "lima",
+        "name": "Lima",
+        "districts": [
+          {
+            "id": "lima_miraflores",
+            "name": "Miraflores"
+          },
+          {
+            "id": "lima_barranco",
+            "name": "Barranco"
+          },
+          {
+            "id": "lima_san_isidro",
+            "name": "San Isidro"
+          },
+          {
+            "id": "lima_centro",
+            "name": "Centro"
+          }
+        ]
+      },
+      "cusco": {
+        "id": "cusco",
+        "name": "Cusco",
+        "districts": [
+          {
+            "id": "cusco_ciudad",
+            "name": "Ciudad"
+          },
+          {
+            "id": "cusco_valle",
+            "name": "Valle Sagrado"
+          },
+          {
+            "id": "cusco_machupicchu",
+            "name": "Machu Picchu"
+          }
+        ]
+      },
+      "ica": {
+        "id": "ica",
+        "name": "Ica",
+        "districts": [
+          {
+            "id": "ica_ciudad",
+            "name": "Ciudad"
+          },
+          {
+            "id": "ica_paracas",
+            "name": "Paracas"
+          },
+          {
+            "id": "ica_nazca",
+            "name": "Nazca"
+          }
+        ]
+      }
+    },
+    "ratingRange": {
+      "min": 0,
+      "max": 5,
+      "default": 4
+    },
+    "timeSlots": {
+      "defaultStart": "09:00",
+      "defaultEnd": "10:00"
+    },
+    "currencies": [
+      "PEN",
+      "USD",
+      "EUR"
+    ]
+  },
+  "settings_config": {
+    "version": "1.0.0",
+    "notificationChannels": [
+      {
+        "value": "email",
+        "label": "Email",
+        "color": "blue"
+      },
+      {
+        "value": "sms",
+        "label": "SMS",
+        "color": "green"
+      },
+      {
+        "value": "push",
+        "label": "Push",
+        "color": "purple"
+      },
+      {
+        "value": "whatsapp",
+        "label": "WhatsApp",
+        "color": "green"
+      }
+    ],
+    "notificationTypes": [
+      "newReservation",
+      "reservationCancelled",
+      "reminder24h",
+      "reminder2h",
+      "tourComplete",
+      "paymentReceived",
+      "newMessage",
+      "guideAssignment",
+      "cancellation",
+      "lowCredit",
+      "systemAlerts",
+      "emergencyOnly"
+    ],
+    "timezones": [
+      {
+        "value": "America/Lima",
+        "label": "Lima",
+        "offset": "UTC-5"
+      },
+      {
+        "value": "America/New_York",
+        "label": "New York",
+        "offset": "UTC-5/UTC-4"
+      },
+      {
+        "value": "Europe/London",
+        "label": "London",
+        "offset": "UTC+0/UTC+1"
+      }
+    ],
+    "languages": [
+      {
+        "value": "es",
+        "label": "Español"
+      },
+      {
+        "value": "en",
+        "label": "English"
+      },
+      {
+        "value": "pt",
+        "label": "Português"
+      }
+    ],
+    "dateFormats": [
+      {
+        "value": "DD/MM/YYYY",
+        "label": "DD/MM/YYYY"
+      },
+      {
+        "value": "MM/DD/YYYY",
+        "label": "MM/DD/YYYY"
+      },
+      {
+        "value": "YYYY-MM-DD",
+        "label": "YYYY-MM-DD"
+      }
+    ],
+    "timeFormats": [
+      {
+        "value": "12h",
+        "label": "12 horas"
+      },
+      {
+        "value": "24h",
+        "label": "24 horas"
+      }
+    ],
+    "tourLimits": {
+      "minAdvanceBookingHours": 0,
+      "maxAdvanceBookingHours": 720,
+      "minCancellationHours": 0,
+      "maxCancellationHours": 168,
+      "minGroupSize": 1,
+      "maxGroupSize": 100,
+      "minCommission": 0,
+      "maxCommission": 100,
+      "minPrice": 0,
+      "maxPrice": 10000
+    },
+    "workingHours": {
+      "defaultStart": "08:00",
+      "defaultEnd": "18:00",
+      "minHour": "00:00",
+      "maxHour": "23:59"
+    },
+    "priceRangeTypes": [
+      {
+        "value": "budget",
+        "label": "Presupuesto",
+        "min": 0,
+        "max": 50
+      },
+      {
+        "value": "standard",
+        "label": "Estándar",
+        "min": 50,
+        "max": 100
+      },
+      {
+        "value": "premium",
+        "label": "Premium",
+        "min": 100,
+        "max": 200
+      },
+      {
+        "value": "luxury",
+        "label": "Lujo",
+        "min": 200,
+        "max": 999
+      }
+    ],
+    "defaultToursConfig": {
+      "maxCapacity": 20,
+      "minAdvanceBookingHours": 24,
+      "maxAdvanceBookingDays": 365,
+      "cancellationPolicyHours": 24,
+      "defaultDurationHours": 4
+    },
+    "defaultAgenciesConfig": {
+      "defaultCreditLimit": 5000,
+      "commissionRatePercent": 10,
+      "paymentTermsDays": 30,
+      "maxActiveReservations": 50
+    },
+    "defaultGuidesConfig": {
+      "maxToursPerDay": 2,
+      "restTimeBetweenToursHours": 2,
+      "evaluationPeriodDays": 90,
+      "minRatingRequired": 4
+    },
+    "defaultMonitoringConfig": {
+      "updateIntervalSeconds": 30,
+      "alertRadiusMeters": 500,
+      "batteryAlertThresholdPercent": 20
+    },
+    "defaultSecurityConfig": {
+      "sessionTimeoutMinutes": 120,
+      "passwordMinLength": 8,
+      "maxLoginAttempts": 5,
+      "lockoutDurationMinutes": 30
+    }
+  },
+  "profile_config": {
+    "version": "1.0.0",
+    "paymentMethodTypes": [
+      {
+        "value": "bank_account",
+        "label": "Cuenta Bancaria"
+      },
+      {
+        "value": "credit_card",
+        "label": "Tarjeta de Crédito"
+      }
+    ],
+    "accountTypes": [
+      {
+        "value": "checking",
+        "label": "Cuenta Corriente"
+      },
+      {
+        "value": "savings",
+        "label": "Cuenta de Ahorros"
+      },
+      {
+        "value": "cts",
+        "label": "CTS"
+      }
+    ],
+    "cardTypes": [
+      {
+        "value": "visa",
+        "label": "Visa"
+      },
+      {
+        "value": "mastercard",
+        "label": "Mastercard"
+      },
+      {
+        "value": "amex",
+        "label": "American Express"
+      }
+    ],
+    "documentTypes": [
+      {
+        "value": "RUC",
+        "label": "RUC"
+      },
+      {
+        "value": "DNI",
+        "label": "DNI"
+      },
+      {
+        "value": "LICENSE",
+        "label": "Licencia"
+      },
+      {
+        "value": "CERTIFICATE",
+        "label": "Certificado"
+      },
+      {
+        "value": "CONTRACT",
+        "label": "Contrato"
+      },
+      {
+        "value": "INSURANCE",
+        "label": "Seguro"
+      }
+    ],
+    "documentStatus": [
+      {
+        "value": "valid",
+        "label": "Válido",
+        "color": "green"
+      },
+      {
+        "value": "expired",
+        "label": "Expirado",
+        "color": "red"
+      },
+      {
+        "value": "pending",
+        "label": "Pendiente",
+        "color": "yellow"
+      },
+      {
+        "value": "rejected",
+        "label": "Rechazado",
+        "color": "red"
+      }
+    ],
+    "feedbackCategories": [
+      {
+        "value": "service",
+        "label": "Servicio"
+      },
+      {
+        "value": "guides",
+        "label": "Guías"
+      },
+      {
+        "value": "transport",
+        "label": "Transporte"
+      },
+      {
+        "value": "accommodation",
+        "label": "Alojamiento"
+      },
+      {
+        "value": "communication",
+        "label": "Comunicación"
+      },
+      {
+        "value": "other",
+        "label": "Otro"
+      }
+    ],
+    "ratingLevels": [
+      {
+        "value": 5,
+        "label": "Excelente"
+      },
+      {
+        "value": 4,
+        "label": "Muy Bueno"
+      },
+      {
+        "value": 3,
+        "label": "Bueno"
+      },
+      {
+        "value": 2,
+        "label": "Regular"
+      },
+      {
+        "value": 1,
+        "label": "Malo"
+      }
+    ],
+    "accountStatus": [
+      {
+        "value": "active",
+        "label": "Activo",
+        "color": "green"
+      },
+      {
+        "value": "inactive",
+        "label": "Inactivo",
+        "color": "gray"
+      },
+      {
+        "value": "suspended",
+        "label": "Suspendido",
+        "color": "red"
+      },
+      {
+        "value": "pending",
+        "label": "Pendiente",
+        "color": "yellow"
+      }
+    ],
+    "contactTypes": [
+      {
+        "value": "main",
+        "label": "Principal"
+      },
+      {
+        "value": "billing",
+        "label": "Facturación"
+      },
+      {
+        "value": "emergency",
+        "label": "Emergencia"
+      },
+      {
+        "value": "operations",
+        "label": "Operaciones"
+      }
+    ],
+    "dateFormats": {
+      "expiry": "MM/YYYY",
+      "document": "DD/MM/YYYY"
+    },
+    "maxFileSize": 5242880,
+    "acceptedFileTypes": {
+      "documents": [
+        ".pdf",
+        ".doc",
+        ".docx"
+      ],
+      "images": [
+        ".jpg",
+        ".jpeg",
+        ".png"
+      ]
+    }
+  },
+  "upload_config": {
+    "version": "1.0.0",
+    "acceptedImageTypes": [
+      "image/jpeg",
+      "image/jpg",
+      "image/png",
+      "image/gif",
+      "image/webp"
+    ],
+    "acceptedDocumentTypes": [
+      "application/pdf",
+      "application/msword",
+      "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      "application/vnd.ms-excel",
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    ],
+    "fileSizeLimits": {
+      "image": 5242880,
+      "document": 10485760,
+      "video": 52428800,
+      "avatar": 2097152
+    },
+    "uploadConfig": {
+      "uploadDelay": 1000,
+      "chunkSize": 1048576,
+      "maxRetries": 3,
+      "retryDelay": 1000
+    },
+    "uploadStates": [
+      {
+        "value": "idle",
+        "label": "Inactivo"
+      },
+      {
+        "value": "uploading",
+        "label": "Subiendo"
+      },
+      {
+        "value": "success",
+        "label": "Exitoso",
+        "color": "green"
+      },
+      {
+        "value": "error",
+        "label": "Error",
+        "color": "red"
+      },
+      {
+        "value": "cancelled",
+        "label": "Cancelado",
+        "color": "gray"
+      }
+    ],
+    "imagePreviewConfig": {
+      "maxWidth": 800,
+      "maxHeight": 600,
+      "quality": 0.8,
+      "format": "image/jpeg"
+    },
+    "dragStyles": {
+      "active": "border-blue-500 bg-blue-50",
+      "inactive": "border-gray-300",
+      "error": "border-red-500 bg-red-50"
+    },
+    "thumbnailConfig": {
+      "width": 150,
+      "height": 150,
+      "quality": 0.7
+    }
   }
 }

@@ -3,7 +3,7 @@
  */
 
 import BaseService from './BaseService';
-import mockVehiclesService from './mockVehiclesService';
+
 import { APP_CONFIG } from '../config/app.config';
 
 class VehiclesService extends BaseService {
@@ -17,10 +17,7 @@ class VehiclesService extends BaseService {
    * @returns {Promise<Object>}
    */
   async getVehicles(params = {}) {
-    if (this.isUsingMockData) {
-      return mockVehiclesService.getVehicles(params);
-    }
-    return this.get('', params);
+return this.get('', params);
   }
 
   /**
@@ -29,10 +26,7 @@ class VehiclesService extends BaseService {
    * @returns {Promise<Object>}
    */
   async getVehicleById(id) {
-    if (this.isUsingMockData) {
-      return mockVehiclesService.getVehicleById(id);
-    }
-    return this.get(`/${id}`);
+return this.get(`/${id}`);
   }
 
   /**
@@ -41,10 +35,7 @@ class VehiclesService extends BaseService {
    * @returns {Promise<Object>}
    */
   async createVehicle(vehicleData) {
-    if (this.isUsingMockData) {
-      return mockVehiclesService.createVehicle(vehicleData);
-    }
-    return this.post('', vehicleData);
+return this.post('', vehicleData);
   }
 
   /**
@@ -54,10 +45,7 @@ class VehiclesService extends BaseService {
    * @returns {Promise<Object>}
    */
   async updateVehicle(id, vehicleData) {
-    if (this.isUsingMockData) {
-      return mockVehiclesService.updateVehicle(id, vehicleData);
-    }
-    return this.put(`/${id}`, vehicleData);
+return this.put(`/${id}`, vehicleData);
   }
 
   /**
@@ -66,10 +54,7 @@ class VehiclesService extends BaseService {
    * @returns {Promise<Object>}
    */
   async deleteVehicle(id) {
-    if (this.isUsingMockData) {
-      return mockVehiclesService.deleteVehicle(id);
-    }
-    return this.delete(`/${id}`);
+return this.delete(`/${id}`);
   }
 
   /**
@@ -80,10 +65,7 @@ class VehiclesService extends BaseService {
    * @returns {Promise<Object>}
    */
   async checkAvailability(vehicleId, date, passengers = 1) {
-    if (this.isUsingMockData) {
-      return mockVehiclesService.checkAvailability(vehicleId, date, passengers);
-    }
-    return this.post(`/${vehicleId}/availability`, { date, passengers });
+return this.post(`/${vehicleId}/availability`, { date, passengers });
   }
 
   /**
@@ -94,10 +76,7 @@ class VehiclesService extends BaseService {
    * @returns {Promise<Object>}
    */
   async getAvailableVehicles(date, minCapacity = 1, vehicleType = null) {
-    if (this.isUsingMockData) {
-      return mockVehiclesService.getAvailableVehicles(date, minCapacity, vehicleType);
-    }
-    return this.get('/available', { date, minCapacity, vehicleType });
+return this.get('/available', { date, minCapacity, vehicleType });
   }
 
   /**
@@ -107,10 +86,7 @@ class VehiclesService extends BaseService {
    * @returns {Promise<Object>}
    */
   async assignVehicle(vehicleId, assignmentData) {
-    if (this.isUsingMockData) {
-      return mockVehiclesService.assignVehicle(vehicleId, assignmentData);
-    }
-    return this.post(`/${vehicleId}/assignments`, assignmentData);
+return this.post(`/${vehicleId}/assignments`, assignmentData);
   }
 
   /**
@@ -120,10 +96,7 @@ class VehiclesService extends BaseService {
    * @returns {Promise<Object>}
    */
   async registerMaintenance(vehicleId, maintenanceData) {
-    if (this.isUsingMockData) {
-      return mockVehiclesService.registerMaintenance(vehicleId, maintenanceData);
-    }
-    return this.post(`/${vehicleId}/maintenance`, maintenanceData);
+return this.post(`/${vehicleId}/maintenance`, maintenanceData);
   }
 
   /**
@@ -131,10 +104,7 @@ class VehiclesService extends BaseService {
    * @returns {Promise<Object>}
    */
   async getVehiclesStatistics() {
-    if (this.isUsingMockData) {
-      return mockVehiclesService.getVehiclesStatistics();
-    }
-    return this.get('/statistics');
+return this.get('/statistics');
   }
 
   /**
@@ -142,10 +112,7 @@ class VehiclesService extends BaseService {
    * @returns {Promise<Object>}
    */
   async getMaintenanceRequired() {
-    if (this.isUsingMockData) {
-      return mockVehiclesService.getMaintenanceRequired();
-    }
-    return this.get('/maintenance-required');
+return this.get('/maintenance-required');
   }
 
   /**
@@ -155,10 +122,7 @@ class VehiclesService extends BaseService {
    * @returns {Promise<Object>}
    */
   async updateDocuments(vehicleId, documents) {
-    if (this.isUsingMockData) {
-      return mockVehiclesService.updateVehicle(vehicleId, { documents });
-    }
-    return this.patch(`/${vehicleId}/documents`, documents);
+return this.patch(`/${vehicleId}/documents`, documents);
   }
 
   /**
@@ -168,18 +132,8 @@ class VehiclesService extends BaseService {
    * @returns {Promise<Object>}
    */
   async getMaintenanceHistory(vehicleId, params = {}) {
-    if (this.isUsingMockData) {
-      // En mock, retornamos el historial del vehículo
-      const vehicle = await mockVehiclesService.getVehicleById(vehicleId);
-      if (vehicle.success) {
-        return {
-          success: true,
-          data: vehicle.data.maintenanceHistory || []
-        };
-      }
-      return vehicle;
-    }
-    return this.get(`/${vehicleId}/maintenance`, params);
+
+return this.get(`/${vehicleId}/maintenance`, params);
   }
 
   /**
@@ -189,18 +143,8 @@ class VehiclesService extends BaseService {
    * @returns {Promise<Object>}
    */
   async getAssignmentHistory(vehicleId, params = {}) {
-    if (this.isUsingMockData) {
-      // En mock, retornamos las asignaciones actuales
-      const vehicle = await mockVehiclesService.getVehicleById(vehicleId);
-      if (vehicle.success) {
-        return {
-          success: true,
-          data: vehicle.data.currentAssignments || []
-        };
-      }
-      return vehicle;
-    }
-    return this.get(`/${vehicleId}/assignments`, params);
+
+return this.get(`/${vehicleId}/assignments`, params);
   }
 
   /**
@@ -212,28 +156,8 @@ class VehiclesService extends BaseService {
    * @returns {Promise<Object>}
    */
   async uploadPhoto(vehicleId, photoType, file, onProgress) {
-    if (this.isUsingMockData) {
-      // Simular upload en mock
-      return new Promise((resolve) => {
-        let progress = 0;
-        const interval = setInterval(() => {
-          progress += 20;
-          if (onProgress) onProgress(progress);
-          if (progress >= 100) {
-            clearInterval(interval);
-            resolve({
-              success: true,
-              data: {
-                photoUrl: URL.createObjectURL(file),
-                photoType
-              }
-            });
-          }
-        }, 200);
-      });
-    }
-    
-    const formData = new FormData();
+
+const formData = new FormData();
     formData.append('photo', file);
     formData.append('photoType', photoType);
     
@@ -247,16 +171,8 @@ class VehiclesService extends BaseService {
    * @returns {Promise<Object>}
    */
   async generateReport(vehicleId, reportType = 'full') {
-    if (this.isUsingMockData) {
-      // En mock, simulamos la generación del reporte
-      return {
-        success: true,
-        data: {
-          reportUrl: `/reports/vehicles/${vehicleId}_${reportType}_${Date.now()}.pdf`
-        }
-      };
-    }
-    return this.post(`/${vehicleId}/reports`, { reportType });
+
+return this.post(`/${vehicleId}/reports`, { reportType });
   }
 }
 

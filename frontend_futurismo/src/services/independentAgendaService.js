@@ -5,7 +5,7 @@
 
 import BaseService from './baseService';
 import { APP_CONFIG } from '../config/app.config';
-import { mockIndependentAgendaService } from './mockIndependentAgendaService';
+
 
 class IndependentAgendaService extends BaseService {
   constructor() {
@@ -19,11 +19,7 @@ class IndependentAgendaService extends BaseService {
    * @returns {Promise<Object>}
    */
   async getPersonalEvents(guideId, filters = {}) {
-    if (this.isUsingMockData) {
-      return mockIndependentAgendaService.getPersonalEvents(guideId, filters);
-    }
-
-    return this.get(`/guides/${guideId}/personal-events`, filters);
+return this.get(`/guides/${guideId}/personal-events`, filters);
   }
 
   /**
@@ -33,11 +29,7 @@ class IndependentAgendaService extends BaseService {
    * @returns {Promise<Object>}
    */
   async createPersonalEvent(guideId, eventData) {
-    if (this.isUsingMockData) {
-      return mockIndependentAgendaService.createPersonalEvent(guideId, eventData);
-    }
-
-    return this.post(`/guides/${guideId}/personal-events`, eventData);
+return this.post(`/guides/${guideId}/personal-events`, eventData);
   }
 
   /**
@@ -48,11 +40,7 @@ class IndependentAgendaService extends BaseService {
    * @returns {Promise<Object>}
    */
   async updatePersonalEvent(guideId, eventId, updateData) {
-    if (this.isUsingMockData) {
-      return mockIndependentAgendaService.updatePersonalEvent(guideId, eventId, updateData);
-    }
-
-    return this.put(`/guides/${guideId}/personal-events/${eventId}`, updateData);
+return this.put(`/guides/${guideId}/personal-events/${eventId}`, updateData);
   }
 
   /**
@@ -62,11 +50,7 @@ class IndependentAgendaService extends BaseService {
    * @returns {Promise<Object>}
    */
   async deletePersonalEvent(guideId, eventId) {
-    if (this.isUsingMockData) {
-      return mockIndependentAgendaService.deletePersonalEvent(guideId, eventId);
-    }
-
-    return this.delete(`/guides/${guideId}/personal-events/${eventId}`);
+return this.delete(`/guides/${guideId}/personal-events/${eventId}`);
   }
 
   /**
@@ -76,11 +60,7 @@ class IndependentAgendaService extends BaseService {
    * @returns {Promise<Object>}
    */
   async markTimeAsOccupied(guideId, timeSlotData) {
-    if (this.isUsingMockData) {
-      return mockIndependentAgendaService.markTimeAsOccupied(guideId, timeSlotData);
-    }
-
-    return this.post(`/guides/${guideId}/occupied-time`, timeSlotData);
+return this.post(`/guides/${guideId}/occupied-time`, timeSlotData);
   }
 
   /**
@@ -90,11 +70,7 @@ class IndependentAgendaService extends BaseService {
    * @returns {Promise<Object>}
    */
   async getAssignedTours(guideId, filters = {}) {
-    if (this.isUsingMockData) {
-      return mockIndependentAgendaService.getAssignedTours(guideId, filters);
-    }
-
-    return this.get(`/guides/${guideId}/assigned-tours`, filters);
+return this.get(`/guides/${guideId}/assigned-tours`, filters);
   }
 
   /**
@@ -104,11 +80,7 @@ class IndependentAgendaService extends BaseService {
    * @returns {Promise<Object>}
    */
   async assignTourToGuide(guideId, tourData) {
-    if (this.isUsingMockData) {
-      return mockIndependentAgendaService.assignTourToGuide(guideId, tourData);
-    }
-
-    return this.post(`/guides/${guideId}/assigned-tours`, tourData);
+return this.post(`/guides/${guideId}/assigned-tours`, tourData);
   }
 
   /**
@@ -119,11 +91,7 @@ class IndependentAgendaService extends BaseService {
    * @returns {Promise<Object>}
    */
   async updateAssignedTour(guideId, tourId, updateData) {
-    if (this.isUsingMockData) {
-      return mockIndependentAgendaService.updateAssignedTour(guideId, tourId, updateData);
-    }
-
-    return this.put(`/guides/${guideId}/assigned-tours/${tourId}`, updateData);
+return this.put(`/guides/${guideId}/assigned-tours/${tourId}`, updateData);
   }
 
   /**
@@ -133,11 +101,7 @@ class IndependentAgendaService extends BaseService {
    * @returns {Promise<Object>}
    */
   async removeAssignedTour(guideId, tourId) {
-    if (this.isUsingMockData) {
-      return mockIndependentAgendaService.removeAssignedTour(guideId, tourId);
-    }
-
-    return this.delete(`/guides/${guideId}/assigned-tours/${tourId}`);
+return this.delete(`/guides/${guideId}/assigned-tours/${tourId}`);
   }
 
   /**
@@ -146,11 +110,7 @@ class IndependentAgendaService extends BaseService {
    * @returns {Promise<Object>}
    */
   async getWorkingHours(guideId) {
-    if (this.isUsingMockData) {
-      return mockIndependentAgendaService.getWorkingHours(guideId);
-    }
-
-    return this.get(`/guides/${guideId}/working-hours`);
+return this.get(`/guides/${guideId}/working-hours`);
   }
 
   /**
@@ -160,11 +120,7 @@ class IndependentAgendaService extends BaseService {
    * @returns {Promise<Object>}
    */
   async updateWorkingHours(guideId, schedule) {
-    if (this.isUsingMockData) {
-      return mockIndependentAgendaService.updateWorkingHours(guideId, schedule);
-    }
-
-    return this.put(`/guides/${guideId}/working-hours`, schedule);
+return this.put(`/guides/${guideId}/working-hours`, schedule);
   }
 
   /**
@@ -175,11 +131,7 @@ class IndependentAgendaService extends BaseService {
    * @returns {Promise<Object>}
    */
   async getGuideAvailability(guideId, date, options = {}) {
-    if (this.isUsingMockData) {
-      return mockIndependentAgendaService.getGuideAvailability(guideId, date, options);
-    }
-
-    return this.get(`/guides/${guideId}/availability`, { date, ...options });
+return this.get(`/guides/${guideId}/availability`, { date, ...options });
   }
 
   /**
@@ -190,24 +142,8 @@ class IndependentAgendaService extends BaseService {
    * @returns {Promise<Object>}
    */
   async getMultipleGuidesAvailability(guideIds, date, options = {}) {
-    if (this.isUsingMockData) {
-      // Mock: obtener disponibilidad de cada guía
-      const availabilities = {};
-      
-      for (const guideId of guideIds) {
-        const result = await mockIndependentAgendaService.getGuideAvailability(guideId, date, options);
-        if (result.success) {
-          availabilities[guideId] = result.data;
-        }
-      }
-      
-      return {
-        success: true,
-        data: availabilities
-      };
-    }
 
-    return this.post('/guides/availability/multiple', {
+return this.post('/guides/availability/multiple', {
       guideIds,
       date,
       ...options
@@ -221,11 +157,7 @@ class IndependentAgendaService extends BaseService {
    * @returns {Promise<Object>}
    */
   async getGuideCompleteAgenda(guideId, filters = {}) {
-    if (this.isUsingMockData) {
-      return mockIndependentAgendaService.getGuideCompleteAgenda(guideId, filters);
-    }
-
-    return this.get(`/guides/${guideId}/complete-agenda`, filters);
+return this.get(`/guides/${guideId}/complete-agenda`, filters);
   }
 
   /**
@@ -235,11 +167,7 @@ class IndependentAgendaService extends BaseService {
    * @returns {Promise<Object>}
    */
   async getGuideStats(guideId, filters = {}) {
-    if (this.isUsingMockData) {
-      return mockIndependentAgendaService.getGuideStats(guideId, filters);
-    }
-
-    return this.get(`/guides/${guideId}/stats`, filters);
+return this.get(`/guides/${guideId}/stats`, filters);
   }
 
   /**
@@ -248,33 +176,8 @@ class IndependentAgendaService extends BaseService {
    * @returns {Promise<Object>}
    */
   async findAvailableSlots(requirements) {
-    if (this.isUsingMockData) {
-      // Mock: buscar slots disponibles basado en requisitos
-      const { date, duration, guideIds } = requirements;
-      const availableGuides = [];
-      
-      for (const guideId of (guideIds || [])) {
-        const availability = await mockIndependentAgendaService.getGuideAvailability(
-          guideId, 
-          date, 
-          { minDuration: duration }
-        );
-        
-        if (availability.success && availability.data.availableSlots.length > 0) {
-          availableGuides.push({
-            guideId,
-            availableSlots: availability.data.availableSlots
-          });
-        }
-      }
-      
-      return {
-        success: true,
-        data: availableGuides
-      };
-    }
 
-    return this.post('/availability/search', requirements);
+return this.post('/availability/search', requirements);
   }
 
   /**
@@ -284,35 +187,8 @@ class IndependentAgendaService extends BaseService {
    * @returns {Promise<Object>}
    */
   async checkScheduleConflicts(guideId, eventData) {
-    if (this.isUsingMockData) {
-      // Mock: verificar conflictos
-      const { date, startTime, endTime } = eventData;
-      const availability = await mockIndependentAgendaService.getGuideAvailability(guideId, date);
-      
-      if (!availability.success) return availability;
-      
-      const conflicts = availability.data.occupiedSlots.filter(slot => {
-        if (slot.allDay) return true;
-        
-        // Verificar superposición de horarios
-        const slotStart = new Date(`2000-01-01T${slot.startTime}`);
-        const slotEnd = new Date(`2000-01-01T${slot.endTime}`);
-        const eventStart = new Date(`2000-01-01T${startTime}`);
-        const eventEnd = new Date(`2000-01-01T${endTime}`);
-        
-        return (eventStart < slotEnd && eventEnd > slotStart);
-      });
-      
-      return {
-        success: true,
-        data: {
-          hasConflicts: conflicts.length > 0,
-          conflicts
-        }
-      };
-    }
 
-    return this.post(`/guides/${guideId}/check-conflicts`, eventData);
+return this.post(`/guides/${guideId}/check-conflicts`, eventData);
   }
 
   /**
@@ -322,26 +198,8 @@ class IndependentAgendaService extends BaseService {
    * @returns {Promise<Object>}
    */
   async exportAgenda(guideId, options = {}) {
-    if (this.isUsingMockData) {
-      // Mock: generar datos para exportación
-      const agenda = await mockIndependentAgendaService.getGuideCompleteAgenda(guideId, options);
-      
-      if (!agenda.success) return agenda;
-      
-      const format = options.format || 'ical';
-      const filename = `agenda_${guideId}_${new Date().toISOString().split('T')[0]}.${format === 'ical' ? 'ics' : format}`;
-      
-      return {
-        success: true,
-        data: {
-          filename,
-          content: JSON.stringify(agenda.data, null, 2), // En producción sería el formato real
-          mimeType: format === 'ical' ? 'text/calendar' : 'application/json'
-        }
-      };
-    }
 
-    return this.get(`/guides/${guideId}/export`, options);
+return this.get(`/guides/${guideId}/export`, options);
   }
 
   /**
@@ -351,20 +209,8 @@ class IndependentAgendaService extends BaseService {
    * @returns {Promise<Object>}
    */
   async syncWithExternalCalendar(guideId, syncData) {
-    if (this.isUsingMockData) {
-      // Mock: simular sincronización
-      return {
-        success: true,
-        data: {
-          synced: true,
-          lastSync: new Date().toISOString(),
-          eventsImported: 0,
-          eventsExported: 0
-        }
-      };
-    }
 
-    return this.post(`/guides/${guideId}/sync`, syncData);
+return this.post(`/guides/${guideId}/sync`, syncData);
   }
 
   /**
@@ -374,11 +220,7 @@ class IndependentAgendaService extends BaseService {
    * @returns {Promise<Object>}
    */
   async clearOldEvents(guideId, daysToKeep = 30) {
-    if (this.isUsingMockData) {
-      return mockIndependentAgendaService.clearOldEvents(guideId, daysToKeep);
-    }
-
-    return this.delete(`/guides/${guideId}/events/old`, { daysToKeep });
+return this.delete(`/guides/${guideId}/events/old`, { daysToKeep });
   }
 
   /**
@@ -386,36 +228,8 @@ class IndependentAgendaService extends BaseService {
    * @returns {Promise<Object>}
    */
   async getEventTemplates() {
-    if (this.isUsingMockData) {
-      return {
-        success: true,
-        data: [
-          {
-            id: 'template-001',
-            name: 'Día libre',
-            type: 'personal',
-            allDay: true,
-            description: 'Día personal completo'
-          },
-          {
-            id: 'template-002',
-            name: 'Cita médica',
-            type: 'personal',
-            duration: 90,
-            description: 'Cita médica rutinaria'
-          },
-          {
-            id: 'template-003',
-            name: 'Capacitación',
-            type: 'personal',
-            duration: 240,
-            description: 'Sesión de capacitación'
-          }
-        ]
-      };
-    }
 
-    return this.get('/event-templates');
+return this.get('/event-templates');
   }
 }
 
