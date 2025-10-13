@@ -1,11 +1,13 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import useAuthStore from '../stores/authStore';
 import useIndependentAgendaStore from '../stores/independentAgendaStore';
+import useGuidesStore from '../stores/guidesStore';
 
 const useCalendarSidebar = () => {
   const { user } = useAuthStore();
   const { currentGuide, actions: { setCurrentGuide } } = useIndependentAgendaStore();
-  
+  const { guides: guidesData, fetchGuides } = useGuidesStore();
+
   const [expandedSections, setExpandedSections] = useState({
     calendars: true,
     guides: true,
@@ -17,6 +19,11 @@ const useCalendarSidebar = () => {
     company: true,
     reservations: true
   });
+
+  // Load guides from API
+  useEffect(() => {
+    fetchGuides();
+  }, [fetchGuides]);
 
   const toggleSection = (section) => {
     setExpandedSections(prev => ({
@@ -34,13 +41,13 @@ const useCalendarSidebar = () => {
 
   const isAdmin = user?.role === 'admin';
 
-  // Mock guides data - should be fetched from API
-  const guides = [
-    { id: '1', name: 'Carlos Mendoza', online: true, role: 'freelance' },
-    { id: '2', name: 'Ana García', online: false, role: 'freelance' },
-    { id: '3', name: 'Luis Rivera', online: true, role: 'freelance' },
-    { id: 'user123', name: 'María Torres', online: true, role: 'freelance' }
-  ];
+  // Transform guides data to the format needed by the sidebar
+  const guides = (guidesData || []).map(guide => ({
+    id: guide.id,
+    name: guide.name || `${guide.firstName || ''} ${guide.lastName || ''}`.trim(),
+    online: guide.isOnline || guide.online || false,
+    role: guide.type || guide.guideType || 'freelance'
+  }));
 
   return {
     expandedSections,

@@ -9,80 +9,49 @@ const AgencyRatingsSection = () => {
   const [selectedAgency, setSelectedAgency] = useState('all');
   const { t } = useTranslation();
 
-  // Datos de ejemplo - en producción vendrían del backend
+  // Estado para ratings y reviews
   const [ratingsData, setRatingsData] = useState({
-    averageRating: 4.3,
-    totalRatings: 156,
-    ratingsByAgency: [
-      {
-        id: '1',
-        agencyName: 'Viajes El Dorado SAC',
-        rating: 4.5,
-        totalReviews: 45,
-        lastReview: '2024-12-15',
-        comments: [
-          {
-            id: '1',
-            tourName: 'City Tour Lima',
-            rating: 5,
-            date: '2024-12-15',
-            comment: 'Excelente servicio, muy profesionales',
-            touristName: 'Juan Pérez'
-          },
-          {
-            id: '2',
-            tourName: 'Pachacamac Tour',
-            rating: 4,
-            date: '2024-12-10',
-            comment: 'Buen tour, pero hubo un pequeño retraso al inicio',
-            touristName: 'María García'
-          }
-        ]
-      },
-      {
-        id: '2',
-        agencyName: 'Turismo Aventura Peru',
-        rating: 4.2,
-        totalReviews: 38,
-        lastReview: '2024-12-18',
-        comments: [
-          {
-            id: '3',
-            tourName: 'Tour Gastronómico',
-            rating: 5,
-            date: '2024-12-18',
-            comment: 'Increíble experiencia culinaria',
-            touristName: 'Carlos López'
-          },
-          {
-            id: '4',
-            tourName: 'Lima Colonial',
-            rating: 3,
-            date: '2024-12-05',
-            comment: 'El guía llegó tarde y el tour fue muy apresurado',
-            touristName: 'Ana Martínez'
-          }
-        ]
-      },
-      {
-        id: '3',
-        agencyName: 'Lima Tours Express',
-        rating: 4.0,
-        totalReviews: 73,
-        lastReview: '2024-12-20',
-        comments: [
-          {
-            id: '5',
-            tourName: 'Miraflores Walking Tour',
-            rating: 4,
-            date: '2024-12-20',
-            comment: 'Muy buen recorrido, el guía muy conocedor',
-            touristName: 'Pedro Sánchez'
-          }
-        ]
-      }
-    ]
+    averageRating: 0,
+    totalRatings: 0,
+    ratingsByAgency: []
   });
+
+  // Cargar datos desde el backend
+  useEffect(() => {
+    const loadRatings = async () => {
+      try {
+        // TODO: Implementar endpoints:
+        // GET /api/data/section/agency_ratings - para ratings generales
+        // GET /api/data/section/agency_reviews - para comentarios/reviews
+        // Por ahora retorna datos vacíos
+        const ratingsResponse = { success: true, data: [] };
+
+        if (ratingsResponse.success) {
+          // Calcular estadísticas
+          const agencies = ratingsResponse.data || [];
+          const totalReviews = agencies.reduce((sum, agency) => sum + (agency.totalReviews || 0), 0);
+          const avgRating = agencies.length > 0
+            ? agencies.reduce((sum, agency) => sum + (agency.rating || 0), 0) / agencies.length
+            : 0;
+
+          setRatingsData({
+            averageRating: avgRating,
+            totalRatings: totalReviews,
+            ratingsByAgency: agencies
+          });
+        }
+      } catch (error) {
+        console.error('Error loading ratings:', error);
+        setRatingsData({
+          averageRating: 0,
+          totalRatings: 0,
+          ratingsByAgency: []
+        });
+      }
+    };
+
+    loadRatings();
+  }, []);
 
   // Filtrar datos según el período seleccionado
   const filterByPeriod = (data) => {

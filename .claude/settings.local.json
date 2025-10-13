@@ -25,7 +25,9 @@
       "Bash(Stop-Process -Force -Id 25828)",
       "mcp__ide__getDiagnostics",
       "Bash(npm run dev)",
-      "Bash(npx kill-port:*)"
+      "Bash(npx kill-port:*)",
+      "Bash(powershell:*)",
+      "Bash(more)"
     ],
     "deny": [],
     "ask": []

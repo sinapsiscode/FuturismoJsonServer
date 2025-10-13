@@ -99,6 +99,97 @@ export const USER_MESSAGES = {
   PASSWORD_ERROR: 'Error al cambiar contraseña'
 };
 
+// Default values
+export const DEFAULT_VALUES = {
+  TEMPORARY_PASSWORD: 'Temp123456',
+  DEFAULT_AVATAR: 'https://ui-avatars.com/api/?name=User&background=3B82F6&color=fff',
+  DEFAULT_ROLE: 'client',
+  DEFAULT_STATUS: 'active'
+};
+
+// Validation patterns
+export const VALIDATION_PATTERNS = {
+  EMAIL: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+  PHONE: /^9\d{8}$/,
+  RUC: /^\d{11}$/,
+  USERNAME: /^[a-zA-Z0-9_]{3,20}$/,
+  DNI: /^\d{8}$/
+};
+
+// Form limits
+export const FORM_LIMITS = {
+  USERNAME_MIN: 3,
+  USERNAME_MAX: 20,
+  NAME_MIN: 2,
+  NAME_MAX: 50,
+  PASSWORD_MIN: 8,
+  PASSWORD_MAX: 50,
+  BIO_MAX: 500
+};
+
+// Date formats
+export const DATE_FORMATS = {
+  LOCALE: 'es-PE',
+  DATE_TIME_FORMAT: { hour: '2-digit', minute: '2-digit' }
+};
+
+// Role colors (alias para compatibilidad)
+export const ROLE_COLORS = USER_ROLE_COLORS;
+
+// Status colors (alias para compatibilidad)
+export const STATUS_COLORS = USER_STATUS_COLORS;
+
+// Stat icons (letras para las tarjetas de estadísticas)
+export const STAT_ICONS = {
+  ADMIN: {
+    letter: 'A',
+    color: 'text-red-600',
+    bgColor: 'bg-red-100'
+  },
+  AGENCY: {
+    letter: 'AG',
+    color: 'text-blue-600',
+    bgColor: 'bg-blue-100'
+  },
+  GUIDE: {
+    letter: 'G',
+    color: 'text-green-600',
+    bgColor: 'bg-green-100'
+  },
+  CLIENT: {
+    letter: 'C',
+    color: 'text-yellow-600',
+    bgColor: 'bg-yellow-100'
+  },
+  DRIVER: {
+    letter: 'D',
+    color: 'text-orange-600',
+    bgColor: 'bg-orange-100'
+  }
+};
+
+// Default permissions por rol
+export const DEFAULT_PERMISSIONS = {
+  admin: ['users.create', 'users.read', 'users.update', 'users.delete', 'tours.create', 'tours.read', 'tours.update', 'tours.delete', 'reservations.create', 'reservations.read', 'reservations.update', 'reservations.delete', 'reports.read', 'settings.update'],
+  agency: ['tours.create', 'tours.read', 'tours.update', 'reservations.create', 'reservations.read', 'reservations.update', 'clients.create', 'clients.read', 'reports.read'],
+  guide: ['tours.read', 'reservations.read', 'profile.update'],
+  'guide-planta': ['tours.read', 'reservations.read', 'profile.update', 'availability.update'],
+  'guide-freelance': ['tours.read', 'reservations.read', 'profile.update', 'availability.update', 'marketplace.read'],
+  client: ['profile.update', 'reservations.read'],
+  driver: ['tours.read', 'reservations.read', 'profile.update']
+};
+
+// Default preferences (preferencias por defecto del usuario)
+export const DEFAULT_PREFERENCES = {
+  language: 'es',
+  notifications: {
+    email: true,
+    push: true,
+    sms: false
+  },
+  theme: 'light',
+  timezone: 'America/Lima'
+};
 
 // Export default para compatibilidad
 export default {
@@ -111,5 +202,14 @@ export default {
   USER_ROLE_COLORS,
   GUIDE_TYPE_LABELS,
   USER_VALIDATIONS,
-  USER_MESSAGES
+  USER_MESSAGES,
+  DEFAULT_VALUES,
+  VALIDATION_PATTERNS,
+  FORM_LIMITS,
+  DATE_FORMATS,
+  ROLE_COLORS,
+  STATUS_COLORS,
+  STAT_ICONS,
+  DEFAULT_PERMISSIONS,
+  DEFAULT_PREFERENCES
 };

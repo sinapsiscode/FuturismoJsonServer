@@ -4,32 +4,9 @@ import { PhoneIcon, PencilIcon, CheckIcon, XMarkIcon, PlusIcon, TrashIcon, Chevr
 const ContactDataSection = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [isCollapsed, setIsCollapsed] = useState(false);
-  const [contacts, setContacts] = useState([
-    {
-      id: 1,
-      name: 'Carlos Mendoza',
-      position: 'Gerente General',
-      phone: '+51 (01) 234-5678',
-      email: 'carlos.mendoza@miempresa.com',
-      department: 'Administración'
-    },
-    {
-      id: 2,
-      name: 'Ana Rivera',
-      position: 'Coordinadora de Tours',
-      phone: '+51 987-654-321',
-      email: 'ana.rivera@miempresa.com',
-      department: 'Operaciones'
-    },
-    {
-      id: 3,
-      name: 'Miguel Torres',
-      position: 'Atención al Cliente',
-      phone: '+51 976-543-210',
-      email: 'miguel.torres@miempresa.com',
-      department: 'Ventas'
-    }
-  ]);
+  // Iniciar con array vacío - los usuarios agregarán sus propios contactos
+  // TODO: En el futuro, cargar desde API /api/profile/contacts o /api/agencies/:id/contacts
+  const [contacts, setContacts] = useState([]);
 
   const [newContact, setNewContact] = useState({
     name: '',

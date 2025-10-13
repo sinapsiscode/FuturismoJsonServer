@@ -1,9 +1,9 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { 
-  ChartBarIcon, 
-  ClockIcon, 
-  CheckCircleIcon, 
+import {
+  ChartBarIcon,
+  ClockIcon,
+  CheckCircleIcon,
   XCircleIcon,
   DocumentTextIcon,
   PhotoIcon
@@ -14,6 +14,12 @@ import toast from 'react-hot-toast';
 const useExportPanel = () => {
   const [selectedStatus, setSelectedStatus] = useState('all');
   const [isExporting, setIsExporting] = useState(false);
+  const [stats, setStats] = useState({
+    totalReservations: 0,
+    totalTourists: 0,
+    totalRevenue: 0,
+    avgTicket: 0
+  });
   const { t } = useTranslation();
 
   const statusOptions = [
@@ -60,24 +66,42 @@ const useExportPanel = () => {
     }
   ];
 
+  // Load statistics when selectedStatus changes
+  useEffect(() => {
+    const loadStats = async () => {
+      try {
+        const newStats = await exportService.getFilteredStats(selectedStatus);
+        setStats(newStats);
+      } catch (error) {
+        console.error('Error loading stats:', error);
+        setStats({
+          totalReservations: 0,
+          totalTourists: 0,
+          totalRevenue: 0,
+          avgTicket: 0
+        });
+      }
+    };
+
+    loadStats();
+  }, [selectedStatus]);
+
   const handleExport = async (format) => {
     setIsExporting(true);
     try {
-      await new Promise(resolve => setTimeout(resolve, 500)); // Simulate processing
-      
       // Get current filter statistics
-      const stats = exportService.getFilteredStats(selectedStatus);
+      const currentStats = await exportService.getFilteredStats(selectedStatus);
       const statusLabel = statusOptions.find(opt => opt.value === selectedStatus)?.label || '';
-      
+
       // Export with selected filter
-      exportService.exportData(format, selectedStatus);
-      
+      await exportService.exportData(format, selectedStatus);
+
       // Show success message
       toast.success(t('dashboard.export.success', {
         status: statusLabel,
-        count: stats.totalReservations,
-        tourists: stats.totalTourists,
-        revenue: stats.totalRevenue.toLocaleString(),
+        count: currentStats.totalReservations,
+        tourists: currentStats.totalTourists,
+        revenue: currentStats.totalRevenue.toLocaleString(),
         format: format.toUpperCase()
       }));
     } catch (error) {
@@ -87,9 +111,6 @@ const useExportPanel = () => {
       setIsExporting(false);
     }
   };
-
-  // Get current filter statistics
-  const stats = exportService.getFilteredStats(selectedStatus);
 
   const getSelectedStatusLabel = () => {
     return statusOptions.find(opt => opt.value === selectedStatus)?.label || '';

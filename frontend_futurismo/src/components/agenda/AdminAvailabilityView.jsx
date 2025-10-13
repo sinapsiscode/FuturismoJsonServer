@@ -20,20 +20,23 @@ import WeekView from '../calendar/Views/WeekView';
 import MonthView from '../calendar/Views/MonthView';
 import useIndependentAgendaStore from '../../stores/independentAgendaStore';
 import useAuthStore from '../../stores/authStore';
+import useGuidesStore from '../../stores/guidesStore';
 
 const AdminAvailabilityView = () => {
   const { user } = useAuthStore();
   const navigate = useNavigate();
-  const { 
+  const {
     currentView,
     currentGuide,
     selectedDate,
-    actions: { 
-      getGuideAvailability, 
+    actions: {
+      getGuideAvailability,
       assignTourToGuide,
-      setCurrentGuide 
+      setCurrentGuide
     }
   } = useIndependentAgendaStore();
+
+  const { guides: guidesData, fetchGuides } = useGuidesStore();
 
   const [isAssignTourModalOpen, setIsAssignTourModalOpen] = useState(false);
   const [selectedTimeSlot, setSelectedTimeSlot] = useState(null);
@@ -48,49 +51,22 @@ const AdminAvailabilityView = () => {
     status: 'pending'
   });
 
-  // Guías data - sincronizado con mock data del store
-  const guides = [
-    { 
-      id: '1', 
-      name: 'Carlos Mendoza', 
-      online: true, 
-      role: 'freelance',
-      phone: '+51 987 654 321',
-      specialities: ['Machu Picchu', 'Valle Sagrado'],
-      rating: 4.8,
-      avatar: '/avatars/carlos.jpg'
-    },
-    { 
-      id: '2', 
-      name: 'Ana García', 
-      online: false, 
-      role: 'freelance',
-      phone: '+51 987 654 322',
-      specialities: ['City Tour', 'Museos'],
-      rating: 4.9,
-      avatar: '/avatars/ana.jpg'
-    },
-    { 
-      id: '3', 
-      name: 'Luis Rivera', 
-      online: true, 
-      role: 'freelance',
-      phone: '+51 987 654 323',
-      specialities: ['Aventura', 'Trekking'],
-      rating: 4.7,
-      avatar: '/avatars/luis.jpg'
-    },
-    { 
-      id: 'user123', 
-      name: 'María Torres', 
-      online: true, 
-      role: 'freelance',
-      phone: '+51 987 654 324',
-      specialities: ['Historia', 'Cultura'],
-      rating: 4.9,
-      avatar: '/avatars/maria.jpg'
-    }
-  ];
+  // Load guides from API
+  useEffect(() => {
+    fetchGuides();
+  }, [fetchGuides]);
+
+  // Transform guides data from API
+  const guides = (guidesData || []).map(guide => ({
+    id: guide.id,
+    name: guide.name || `${guide.firstName || ''} ${guide.lastName || ''}`.trim(),
+    online: guide.isOnline || guide.online || false,
+    role: guide.type || guide.guideType || 'freelance',
+    phone: guide.phone || guide.phoneNumber || 'N/A',
+    specialities: guide.specialities || guide.specializations || [],
+    rating: guide.rating || guide.averageRating || 0,
+    avatar: guide.avatar || guide.profileImage || ''
+  }));
 
   const currentGuideInfo = guides.find(g => g.id === currentGuide) || guides[0];
 
@@ -219,10 +195,12 @@ const AdminAvailabilityView = () => {
                 <span>📱</span>
                 <span>{currentGuideInfo.phone}</span>
               </div>
-              <div className="flex items-center space-x-2">
-                <span>🎯</span>
-                <span>{currentGuideInfo.specialities.join(', ')}</span>
-              </div>
+              {currentGuideInfo.specialities && currentGuideInfo.specialities.length > 0 && (
+                <div className="flex items-center space-x-2">
+                  <span>🎯</span>
+                  <span>{currentGuideInfo.specialities.join(', ')}</span>
+                </div>
+              )}
             </div>
 
             <div className="flex space-x-2 mt-3">

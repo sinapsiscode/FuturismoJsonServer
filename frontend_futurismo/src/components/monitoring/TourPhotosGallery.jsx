@@ -28,68 +28,31 @@ const TourPhotosGallery = () => {
   });
   const [loading, setLoading] = useState(true);
 
-  // Mock data - En producción esto vendría del backend
+  // Cargar fotos desde la API
   useEffect(() => {
-    const mockPhotos = [
-      {
-        id: '1',
-        url: '/api/placeholder/400/300',
-        thumbnail: '/api/placeholder/200/150',
-        tourId: 'tour-1',
-        tourName: 'Tour Lima Histórica',
-        stopName: 'Plaza de Armas',
-        guideName: 'Carlos Mendoza',
-        guideId: 'guide-1',
-        agencyName: 'Aventura Tours',
-        timestamp: new Date('2024-01-15T10:30:00'),
-        comment: 'Grupo disfrutando de la explicación histórica'
-      },
-      {
-        id: '2',
-        url: '/api/placeholder/400/300',
-        thumbnail: '/api/placeholder/200/150',
-        tourId: 'tour-1',
-        tourName: 'Tour Lima Histórica',
-        stopName: 'Catedral de Lima',
-        guideName: 'Carlos Mendoza',
-        guideId: 'guide-1',
-        agencyName: 'Aventura Tours',
-        timestamp: new Date('2024-01-15T11:15:00'),
-        comment: 'Vista panorámica de la catedral'
-      },
-      {
-        id: '3',
-        url: '/api/placeholder/400/300',
-        thumbnail: '/api/placeholder/200/150',
-        tourId: 'tour-2',
-        tourName: 'Tour Gastronómico',
-        stopName: 'Mercado Central',
-        guideName: 'María García',
-        guideId: 'guide-2',
-        agencyName: 'Peru Experiences',
-        timestamp: new Date('2024-01-15T09:45:00'),
-        comment: 'Degustación de frutas locales'
-      },
-      {
-        id: '4',
-        url: '/api/placeholder/400/300',
-        thumbnail: '/api/placeholder/200/150',
-        tourId: 'tour-3',
-        tourName: 'Tour Barranco Artístico',
-        stopName: 'Puente de los Suspiros',
-        guideName: 'Luis Rodríguez',
-        guideId: 'guide-3',
-        agencyName: 'Cultural Tours',
-        timestamp: new Date('2024-01-14T16:20:00'),
-        comment: 'Atardecer en el puente'
-      }
-    ];
+    const loadPhotos = async () => {
+      try {
+        setLoading(true);
+        // TODO: Implementar endpoint GET /api/monitoring/photos o /api/tours/photos
+        // const response = await fetch('/api/monitoring/photos');
+        // const result = await response.json();
+        // const photosData = result.data || [];
 
-    setTimeout(() => {
-      setPhotos(mockPhotos);
-      setFilteredPhotos(mockPhotos);
-      setLoading(false);
-    }, 1000);
+        // Por ahora retorna array vacío
+        const photosData = [];
+
+        setPhotos(photosData);
+        setFilteredPhotos(photosData);
+      } catch (error) {
+        console.error('Error loading photos:', error);
+        setPhotos([]);
+        setFilteredPhotos([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadPhotos();
   }, []);
 
   // Filtrar fotos cuando cambian los filtros

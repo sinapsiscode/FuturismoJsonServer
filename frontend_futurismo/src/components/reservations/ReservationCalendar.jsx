@@ -1,7 +1,7 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { CalendarIcon, ChevronLeftIcon, ChevronRightIcon, UserGroupIcon, ClockIcon, MapPinIcon, EyeIcon, PlusIcon, FunnelIcon } from '@heroicons/react/24/outline';
-import { format, startOfMonth, endOfMonth, eachDayOfInterval, 
-  isSameMonth, isSameDay, addMonths, subMonths, startOfWeek, 
+import { format, startOfMonth, endOfMonth, eachDayOfInterval,
+  isSameMonth, isSameDay, addMonths, subMonths, startOfWeek,
   endOfWeek, isToday } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { formatters } from '../../utils/formatters';
@@ -13,72 +13,44 @@ const ReservationCalendar = ({ onNewReservation }) => {
   const [selectedReservation, setSelectedReservation] = useState(null);
   const [showDetail, setShowDetail] = useState(false);
   const [viewMode, setViewMode] = useState('month'); // 'month', 'week', 'day'
+  const [reservations, setReservations] = useState([]);
   const [filters, setFilters] = useState({
     guide: 'all',
     tourType: 'all',
     status: 'all'
   });
 
-  // Datos mock de reservas
-  const mockReservations = [
-    {
-      id: 'RES001',
-      tourName: 'City Tour Lima Histórica',
-      clientName: 'Juan Pérez',
-      date: new Date(2024, 1, 15),
-      time: '09:00',
-      adults: 2,
-      children: 1,
-      status: 'confirmada',
-      guide: 'Carlos Mendoza',
-      color: '#10b981'
-    },
-    {
-      id: 'RES002',
-      tourName: 'Tour Gastronómico',
-      clientName: 'María García',
-      date: new Date(2024, 1, 15),
-      time: '14:00',
-      adults: 4,
-      status: 'pendiente',
-      guide: 'Ana López',
-      color: '#f59e0b'
-    },
-    {
-      id: 'RES003',
-      tourName: 'Islas Palomino',
-      clientName: 'Carlos Rodríguez',
-      date: new Date(2024, 1, 18),
-      time: '06:00',
-      adults: 3,
-      children: 2,
-      status: 'confirmada',
-      guide: 'Pedro Sánchez',
-      color: '#10b981'
-    },
-    {
-      id: 'RES004',
-      tourName: 'Pachacámac',
-      clientName: 'Ana López',
-      date: new Date(2024, 1, 20),
-      time: '10:00',
-      adults: 2,
-      status: 'confirmada',
-      guide: 'Carlos Mendoza',
-      color: '#10b981'
-    },
-    {
-      id: 'RES005',
-      tourName: 'City Tour Lima',
-      clientName: 'Luis Martínez',
-      date: new Date(2024, 1, 22),
-      time: '09:00',
-      adults: 5,
-      status: 'pendiente',
-      guide: 'María García',
-      color: '#f59e0b'
-    }
-  ];
+  // Cargar reservas desde la API
+  useEffect(() => {
+    const loadReservations = async () => {
+      try {
+        // TODO: Implementar endpoint GET /api/reservations
+        // const response = await fetch('/api/reservations');
+        // const result = await response.json();
+        // const reservationsData = (result.data || []).map(r => ({
+        //   id: r.id,
+        //   tourName: r.tourName || r.tour_name,
+        //   clientName: r.clientName || r.client_name,
+        //   date: new Date(r.date || r.tour_date),
+        //   time: r.time || r.tour_time,
+        //   adults: r.adults || r.num_adults || 0,
+        //   children: r.children || r.num_children || 0,
+        //   status: r.status,
+        //   guide: r.guide_name || r.guide,
+        //   color: r.status === 'confirmada' ? '#10b981' : r.status === 'pendiente' ? '#f59e0b' : '#ef4444'
+        // }));
+        // setReservations(reservationsData);
+
+        // Por ahora retorna array vacío
+        setReservations([]);
+      } catch (error) {
+        console.error('Error loading reservations:', error);
+        setReservations([]);
+      }
+    };
+
+    loadReservations();
+  }, []);
 
   // Obtener días del mes
   const monthStart = startOfMonth(currentDate);

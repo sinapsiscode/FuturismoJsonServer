@@ -46,17 +46,13 @@ module.exports = (router) => {
       const db = router.db;
       const dashboardStats = db.get('dashboard_stats').value();
 
-      // Use data from db.json or fallback
-      const monthlyData = dashboardStats ? dashboardStats.line_data.map(item => ({
+      // Use data from db.json or return empty data
+      const monthlyData = dashboardStats && dashboardStats.line_data ? dashboardStats.line_data.map(item => ({
         month: item.name,
         revenue: item.ingresos,
         bookings: item.reservas,
         guides: Math.floor(item.turistas / 50) // Estimate guides based on tourists
-      })) : [
-        { month: 'Ene', revenue: 15400, bookings: 45, guides: 12 },
-        { month: 'Feb', revenue: 18200, bookings: 52, guides: 14 },
-        { month: 'Mar', revenue: 22100, bookings: 64, guides: 16 }
-      ];
+      })) : [];
 
       res.json({
         success: true,
@@ -231,27 +227,27 @@ module.exports = (router) => {
 
 // Helper functions for different role stats
 function getAdminStats(db) {
-  const users = db.get('users').value();
-  const agencies = db.get('agencies').value();
-  const guides = db.get('guides').value();
-  const reservations = db.get('reservations').value();
-  const transactions = db.get('financial_transactions').value();
+  const users = db.get('users').value() || [];
+  const agencies = db.get('agencies').value() || [];
+  const guides = db.get('guides').value() || [];
+  const reservations = db.get('reservations').value() || [];
+  const transactions = db.get('financial_transactions').value() || [];
 
   return {
     totalUsers: users.length,
     totalAgencies: agencies.length,
     totalGuides: guides.length,
     totalReservations: reservations.length,
-    monthlyRevenue: _.sumBy(transactions, 'amount'),
+    monthlyRevenue: _.sumBy(transactions, 'amount') || 0,
     activeServices: reservations.filter(r => r.status === 'confirmed').length,
     pendingReservations: reservations.filter(r => r.status === 'pending').length
   };
 }
 
 function getAgencyStats(db, userId) {
-  const reservations = db.get('reservations').value();
-  const transactions = db.get('financial_transactions').value();
-  const tours = db.get('tours').value();
+  const reservations = db.get('reservations').value() || [];
+  const transactions = db.get('financial_transactions').value() || [];
+  const tours = db.get('tours').value() || [];
 
   // Filter by agency (assuming we can get agency_id from user)
   const agencyReservations = reservations; // Simplified for demo
@@ -260,32 +256,32 @@ function getAgencyStats(db, userId) {
     totalReservations: agencyReservations.length,
     confirmedReservations: agencyReservations.filter(r => r.status === 'confirmed').length,
     pendingReservations: agencyReservations.filter(r => r.status === 'pending').length,
-    monthlyRevenue: _.sumBy(transactions, 'amount'),
+    monthlyRevenue: _.sumBy(transactions, 'amount') || 0,
     activeTours: tours.filter(t => t.status === 'active').length,
     totalClients: _.uniqBy(agencyReservations, 'client_id').length
   };
 }
 
 function getGuideStats(db, userId) {
-  const reservations = db.get('reservations').value();
-  const guides = db.get('guides').value();
+  const reservations = db.get('reservations').value() || [];
+  const guides = db.get('guides').value() || [];
 
   // Find guide by user_id
   const guide = guides.find(g => g.user_id === userId);
   const guideReservations = guide ? reservations.filter(r => r.guide_id === guide.id) : [];
 
   return {
-    toursCompleted: guideReservations.filter(r => r.status === 'completed').length || 24,
-    upcomingTours: guideReservations.filter(r => r.status === 'confirmed').length || 3,
-    monthlyIncome: _.sumBy(guideReservations, 'total_amount') || 2850,
-    rating: guide ? guide.rating : 4.8,
-    totalClients: _.uniqBy(guideReservations, 'client_id').length || 67
+    toursCompleted: guideReservations.filter(r => r.status === 'completed').length,
+    upcomingTours: guideReservations.filter(r => r.status === 'confirmed').length,
+    monthlyIncome: _.sumBy(guideReservations, 'total_amount') || 0,
+    rating: guide ? guide.rating : 0,
+    totalClients: _.uniqBy(guideReservations, 'client_id').length
   };
 }
 
 function getBasicStats(db) {
-  const reservations = db.get('reservations').value();
-  const guides = db.get('guides').value();
+  const reservations = db.get('reservations').value() || [];
+  const guides = db.get('guides').value() || [];
 
   return {
     totalReservations: reservations.length,

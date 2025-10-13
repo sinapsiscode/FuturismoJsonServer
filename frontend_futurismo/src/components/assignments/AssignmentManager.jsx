@@ -13,6 +13,9 @@ import {
 } from '@heroicons/react/24/outline';
 import TourAssignmentBrochure from './TourAssignmentBrochure';
 import TourAssignmentBrochurePDF from './TourAssignmentBrochurePDF';
+import useGuidesStore from '../../stores/guidesStore';
+import useDriversStore from '../../stores/driversStore';
+import useVehiclesStore from '../../stores/vehiclesStore';
 
 const AssignmentManager = ({ reservation, onAssignmentComplete }) => {
   const [assignment, setAssignment] = useState({
@@ -33,85 +36,53 @@ const AssignmentManager = ({ reservation, onAssignmentComplete }) => {
   const [showPreview, setShowPreview] = useState(false);
   const brochureRef = useRef();
 
-  // Datos mock de personal y vehículos disponibles
-  const availableGuides = [
-    {
-      id: '1',
-      name: 'Carlos Mendoza',
-      phone: '+51 987 654 321',
-      license: 'GTL-12345',
-      rating: 4.8,
-      specialties: ['Historia', 'Arqueología', 'Cultura'],
-      languages: ['Español', 'Inglés', 'Portugués'],
-      photo: 'https://i.pravatar.cc/150?img=1'
-    },
-    {
-      id: '2',
-      name: 'Ana Rodríguez',
-      phone: '+51 954 321 987',
-      license: 'GTL-67890',
-      rating: 4.6,
-      specialties: ['Arte', 'Fotografía', 'Historia'],
-      languages: ['Español', 'Inglés'],
-      photo: 'https://i.pravatar.cc/150?img=2'
-    },
-    {
-      id: '3',
-      name: 'Miguel Torres',
-      phone: '+51 965 432 187',
-      license: 'GTL-54321',
-      rating: 4.9,
-      specialties: ['Aventura', 'Ecoturismo', 'Montañismo'],
-      languages: ['Español', 'Inglés', 'Francés'],
-      photo: 'https://i.pravatar.cc/150?img=3'
-    }
-  ];
+  // Get data from stores
+  const { guides: guidesData, fetchGuides } = useGuidesStore();
+  const { drivers: driversData, fetchDrivers } = useDriversStore();
+  const { vehicles: vehiclesData, fetchVehicles } = useVehiclesStore();
 
-  const availableDrivers = [
-    {
-      id: '1',
-      name: 'José Ramírez',
-      phone: '+51 923 456 789',
-      license: 'A2A-98765',
-      experience: 15,
-      certifications: ['Transporte Turístico', 'Primeros Auxilios'],
-      photo: 'https://i.pravatar.cc/150?img=4'
-    },
-    {
-      id: '2',
-      name: 'Pedro Sánchez',
-      phone: '+51 934 567 890',
-      license: 'A2A-87654',
-      experience: 12,
-      certifications: ['Transporte Turístico', 'Manejo Defensivo'],
-      photo: 'https://i.pravatar.cc/150?img=5'
-    }
-  ];
+  // Load data on mount
+  useEffect(() => {
+    fetchGuides();
+    fetchDrivers();
+    fetchVehicles();
+  }, [fetchGuides, fetchDrivers, fetchVehicles]);
 
-  const availableVehicles = [
-    {
-      id: '1',
-      brand: 'Toyota',
-      model: 'Hiace',
-      plate: 'ABC-123',
-      year: 2022,
-      color: 'Blanco',
-      capacity: 15,
-      features: ['Aire Acondicionado', 'Cinturones de Seguridad', 'GPS'],
-      photo: 'https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?w=300&h=200&fit=crop'
-    },
-    {
-      id: '2',
-      brand: 'Mercedes-Benz',
-      model: 'Sprinter',
-      plate: 'XYZ-789',
-      year: 2021,
-      color: 'Azul',
-      capacity: 20,
-      features: ['Aire Acondicionado', 'Wi-Fi', 'Sistema Audio', 'GPS'],
-      photo: 'https://images.unsplash.com/photo-1581833971358-2c8b550f87b3?w=300&h=200&fit=crop'
-    }
-  ];
+  // Transform guides data
+  const availableGuides = (guidesData || []).map(guide => ({
+    id: guide.id,
+    name: guide.name || `${guide.firstName || ''} ${guide.lastName || ''}`.trim(),
+    phone: guide.phone || guide.phoneNumber || 'N/A',
+    license: guide.license || guide.licenseNumber || 'N/A',
+    rating: guide.rating || guide.averageRating || 0,
+    specialties: guide.specialties || guide.specializations || [],
+    languages: guide.languages || ['Español'],
+    photo: guide.photo || guide.avatar || guide.profileImage || 'https://ui-avatars.com/api/?name=' + encodeURIComponent(guide.name || 'Guía')
+  }));
+
+  // Transform drivers data
+  const availableDrivers = (driversData || []).map(driver => ({
+    id: driver.id,
+    name: driver.name || `${driver.firstName || ''} ${driver.lastName || ''}`.trim(),
+    phone: driver.phone || driver.phoneNumber || 'N/A',
+    license: driver.license || driver.licenseNumber || driver.license_number || 'N/A',
+    experience: driver.experience || driver.yearsExperience || 0,
+    certifications: driver.certifications || [],
+    photo: driver.photo || driver.avatar || driver.profileImage || 'https://ui-avatars.com/api/?name=' + encodeURIComponent(driver.name || 'Chofer')
+  }));
+
+  // Transform vehicles data
+  const availableVehicles = (vehiclesData || []).map(vehicle => ({
+    id: vehicle.id,
+    brand: vehicle.brand || 'N/A',
+    model: vehicle.model || 'N/A',
+    plate: vehicle.plate || vehicle.licensePlate || 'N/A',
+    year: vehicle.year || vehicle.manufactureYear || new Date().getFullYear(),
+    color: vehicle.color || 'N/A',
+    capacity: vehicle.capacity || vehicle.maxCapacity || 0,
+    features: vehicle.features || vehicle.amenities || [],
+    photo: vehicle.photo || vehicle.image || 'https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?w=300&h=200&fit=crop'
+  }));
 
   const handleAssignmentChange = (field, value) => {
     setAssignment(prev => ({
@@ -281,7 +252,9 @@ const AssignmentManager = ({ reservation, onAssignmentComplete }) => {
                     />
                     <div className="flex-1">
                       <p className="font-medium text-gray-900">{guide.name}</p>
-                      <p className="text-sm text-gray-600">⭐ {guide.rating} • {guide.languages.join(', ')}</p>
+                      <p className="text-sm text-gray-600">
+                        ⭐ {guide.rating} • {(guide.languages && guide.languages.length > 0) ? guide.languages.join(', ') : 'N/A'}
+                      </p>
                     </div>
                   </div>
                 </div>

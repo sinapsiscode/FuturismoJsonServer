@@ -10,7 +10,7 @@ module.exports = (router) => {
       let drivers = db.get('drivers').value() || [];
 
       // Apply filters
-      const { status, license_type, agency_id, available, vehicle_assigned } = req.query;
+      const { status, license_type, agency_id, available, vehicle_assigned, page, pageSize, search } = req.query;
 
       if (status) {
         drivers = drivers.filter(d => d.status === status);
@@ -44,6 +44,7 @@ module.exports = (router) => {
 
         return {
           ...driver,
+          fullName: `${driver.firstName || ''} ${driver.lastName || ''}`.trim(),
           user: user ? {
             id: user.id,
             name: user.name,
@@ -61,10 +62,36 @@ module.exports = (router) => {
         };
       });
 
+      // Apply search filter if provided
+      if (search) {
+        const searchLower = search.toLowerCase();
+        drivers = drivers.filter(d =>
+          d.fullName?.toLowerCase().includes(searchLower) ||
+          d.dni?.includes(search) ||
+          d.license_number?.toLowerCase().includes(searchLower)
+        );
+      }
+
+      // Pagination
+      const currentPage = parseInt(page) || 1;
+      const itemsPerPage = parseInt(pageSize) || 10;
+      const totalItems = drivers.length;
+      const totalPages = Math.ceil(totalItems / itemsPerPage);
+      const startIndex = (currentPage - 1) * itemsPerPage;
+      const endIndex = startIndex + itemsPerPage;
+      const paginatedDrivers = drivers.slice(startIndex, endIndex);
+
       res.json({
         success: true,
-        data: drivers,
-        total: drivers.length
+        data: {
+          items: paginatedDrivers,
+          pagination: {
+            page: currentPage,
+            pageSize: itemsPerPage,
+            totalItems,
+            totalPages
+          }
+        }
       });
     } catch (error) {
       res.status(500).json({

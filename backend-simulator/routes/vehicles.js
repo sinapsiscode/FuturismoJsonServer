@@ -10,7 +10,7 @@ module.exports = (router) => {
       let vehicles = db.get('vehicles').value() || [];
 
       // Apply filters
-      const { status, type, agency_id, driver_id, available } = req.query;
+      const { status, type, agency_id, driver_id, available, page, pageSize, search } = req.query;
 
       if (status) {
         vehicles = vehicles.filter(v => v.status === status);
@@ -39,19 +39,47 @@ module.exports = (router) => {
         const driver = drivers.find(d => d.id === vehicle.current_driver_id);
         return {
           ...vehicle,
+          fullName: `${vehicle.brand || ''} ${vehicle.model || ''} - ${vehicle.plate || ''}`.trim(),
           driver: driver ? {
             id: driver.id,
-            name: driver.name,
+            fullName: `${driver.firstName || ''} ${driver.lastName || ''}`.trim(),
             license_number: driver.license_number,
             phone: driver.phone
           } : null
         };
       });
 
+      // Apply search filter if provided
+      if (search) {
+        const searchLower = search.toLowerCase();
+        vehicles = vehicles.filter(v =>
+          v.brand?.toLowerCase().includes(searchLower) ||
+          v.model?.toLowerCase().includes(searchLower) ||
+          v.plate?.toLowerCase().includes(searchLower) ||
+          v.type?.toLowerCase().includes(searchLower)
+        );
+      }
+
+      // Pagination
+      const currentPage = parseInt(page) || 1;
+      const itemsPerPage = parseInt(pageSize) || 10;
+      const totalItems = vehicles.length;
+      const totalPages = Math.ceil(totalItems / itemsPerPage);
+      const startIndex = (currentPage - 1) * itemsPerPage;
+      const endIndex = startIndex + itemsPerPage;
+      const paginatedVehicles = vehicles.slice(startIndex, endIndex);
+
       res.json({
         success: true,
-        data: vehicles,
-        total: vehicles.length
+        data: {
+          items: paginatedVehicles,
+          pagination: {
+            page: currentPage,
+            pageSize: itemsPerPage,
+            totalItems,
+            totalPages
+          }
+        }
       });
     } catch (error) {
       res.status(500).json({
