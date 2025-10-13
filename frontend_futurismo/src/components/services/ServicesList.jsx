@@ -15,6 +15,7 @@ import {
 } from '@heroicons/react/24/outline';
 import { useServicesStore } from '../../stores/servicesStore';
 import { useAuthStore } from '../../stores/authStore';
+import useModulesConfigStore from '../../stores/modulesConfigStore';
 import { SERVICE_STATUS, STATUS_COLORS } from '../../utils/constants';
 // import Pagination from '../common/Pagination';
 
@@ -76,8 +77,12 @@ const ServicesList = ({
   } = useServicesStore();
 
   const { user } = useAuthStore();
+  const { modules } = useModulesConfigStore();
 
   const [sortConfig, setSortConfig] = useState({ key: 'date', direction: 'desc' });
+
+  // Obtener tipos de servicio desde la configuración
+  const serviceTypes = modules?.serviceTypes?.serviceTypes || [];
 
   useEffect(() => {
     loadServices();
@@ -215,11 +220,11 @@ const ServicesList = ({
                 className="w-full text-sm border border-gray-300 rounded-md px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               >
                 <option value="">Todos</option>
-                <option value="transfer">Transfer</option>
-                <option value="city_tour">City Tour</option>
-                <option value="museum_tour">Tour Museos</option>
-                <option value="fullday">Full Day</option>
-                <option value="custom">Personalizado</option>
+                {serviceTypes.map((type) => (
+                  <option key={type.value} value={type.value}>
+                    {type.label}
+                  </option>
+                ))}
               </select>
             </div>
 

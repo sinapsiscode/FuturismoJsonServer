@@ -99,6 +99,16 @@ const ServicesManagement = () => {
           </div>
         </div>
 
+        {/* Botón Nuevo Servicio - solo visible en vista de lista y para admin */}
+        {currentView === 'list' && user?.role === 'admin' && (
+          <button
+            onClick={handleCreateService}
+            className="inline-flex items-center px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors"
+          >
+            <PlusIcon className="h-5 w-5 mr-2" />
+            {t('services.newService') || 'Nuevo Servicio'}
+          </button>
+        )}
       </div>
     );
   };

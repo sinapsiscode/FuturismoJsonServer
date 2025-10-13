@@ -1005,6 +1005,39 @@ module.exports = (router) => {
   });
 
   /**
+   * GET /api/config/service-types
+   * Obtiene los tipos de servicio desde db.json
+   */
+  configRouter.get('/service-types', (req, res) => {
+    try {
+      const db = router.db;
+      const serviceTypesConfig = db.get('service_types_config').value();
+
+      if (!serviceTypesConfig) {
+        return res.status(404).json({
+          success: false,
+          error: 'Configuración de tipos de servicio no encontrada'
+        });
+      }
+
+      res.json({
+        success: true,
+        data: serviceTypesConfig,
+        meta: {
+          version: serviceTypesConfig.version
+        }
+      });
+
+    } catch (error) {
+      console.error('Service types config error:', error);
+      res.status(500).json({
+        success: false,
+        error: 'Error al obtener tipos de servicio'
+      });
+    }
+  });
+
+  /**
    * GET /api/config/shared
    * Obtiene las constantes compartidas desde db.json
    */
@@ -1101,7 +1134,8 @@ module.exports = (router) => {
         guides: db.get('guides_config').value() || null,
         app: db.get('app_config').value() || null,
         coreServices: db.get('core_services_config').value() || null,
-        shared: db.get('shared_config').value() || null
+        shared: db.get('shared_config').value() || null,
+        serviceTypes: db.get('service_types_config').value() || null
       };
 
       res.json({

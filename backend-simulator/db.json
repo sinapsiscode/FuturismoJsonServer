@@ -10318,6 +10318,98 @@
       "quality": 0.7
     }
   },
+  "service_types_config": {
+    "version": "1.0.0",
+    "serviceTypes": [
+      {
+        "value": "transfer",
+        "label": "Transfer",
+        "description": "Servicio de traslado punto a punto",
+        "icon": "truck",
+        "category": "transport"
+      },
+      {
+        "value": "city_tour",
+        "label": "City Tour",
+        "description": "Recorrido por la ciudad y sus principales atractivos",
+        "icon": "map",
+        "category": "tour"
+      },
+      {
+        "value": "museum_tour",
+        "label": "Tour de Museos",
+        "description": "Visita guiada a museos y galerías",
+        "icon": "building",
+        "category": "tour"
+      },
+      {
+        "value": "historical_tour",
+        "label": "Tour Histórico",
+        "description": "Recorrido por sitios históricos y patrimoniales",
+        "icon": "clock",
+        "category": "tour"
+      },
+      {
+        "value": "gastronomy_tour",
+        "label": "Tour Gastronómico",
+        "description": "Experiencia culinaria y degustación",
+        "icon": "utensils",
+        "category": "tour"
+      },
+      {
+        "value": "adventure_tour",
+        "label": "Tour de Aventura",
+        "description": "Actividades de aventura y deportes extremos",
+        "icon": "mountain",
+        "category": "tour"
+      },
+      {
+        "value": "cultural_tour",
+        "label": "Tour Cultural",
+        "description": "Inmersión en cultura local y tradiciones",
+        "icon": "users",
+        "category": "tour"
+      },
+      {
+        "value": "nature_tour",
+        "label": "Tour de Naturaleza",
+        "description": "Exploración de áreas naturales y vida silvestre",
+        "icon": "tree",
+        "category": "tour"
+      },
+      {
+        "value": "fullday",
+        "label": "Full Day",
+        "description": "Tour de día completo con múltiples paradas",
+        "icon": "sun",
+        "category": "tour"
+      },
+      {
+        "value": "custom",
+        "label": "Personalizado",
+        "description": "Servicio personalizado según necesidades del cliente",
+        "icon": "star",
+        "category": "custom"
+      }
+    ],
+    "categories": [
+      {
+        "value": "transport",
+        "label": "Transporte",
+        "color": "blue"
+      },
+      {
+        "value": "tour",
+        "label": "Tours",
+        "color": "green"
+      },
+      {
+        "value": "custom",
+        "label": "Personalizado",
+        "color": "purple"
+      }
+    ]
+  },
   "suggestions": [],
   "drivers": [],
   "vehicles": [],

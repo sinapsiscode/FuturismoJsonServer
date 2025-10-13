@@ -3,9 +3,9 @@ import { useForm, Controller } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-import { 
-  CheckIcon, 
-  XMarkIcon, 
+import {
+  CheckIcon,
+  XMarkIcon,
   MapPinIcon,
   ClockIcon,
   UsersIcon,
@@ -15,6 +15,7 @@ import {
   CheckCircleIcon
 } from '@heroicons/react/24/outline';
 import { useServicesStore } from '../../stores/servicesStore';
+import useModulesConfigStore from '../../stores/modulesConfigStore';
 import LanguageMultiSelect from '../common/LanguageMultiSelect';
 import StopsManager from './StopsManager';
 
@@ -73,8 +74,12 @@ const serviceSchema = yup.object({
 const ServiceForm = ({ service = null, onSubmit, onCancel, isLoading = false }) => {
   const { t } = useTranslation();
   const { createService, updateService } = useServicesStore();
+  const { modules } = useModulesConfigStore();
 
   const isEdit = !!service;
+
+  // Obtener tipos de servicio desde la configuración
+  const serviceTypes = modules?.serviceTypes?.serviceTypes || [];
 
   const {
     register,
@@ -192,16 +197,11 @@ const ServiceForm = ({ service = null, onSubmit, onCancel, isLoading = false }) 
                 }`}
               >
                 <option value="">Seleccionar tipo</option>
-                <option value="transfer">Transfer</option>
-                <option value="city_tour">City Tour</option>
-                <option value="museum_tour">Tour de Museos</option>
-                <option value="historical_tour">Tour Histórico</option>
-                <option value="gastronomy_tour">Tour Gastronómico</option>
-                <option value="adventure_tour">Tour de Aventura</option>
-                <option value="cultural_tour">Tour Cultural</option>
-                <option value="nature_tour">Tour de Naturaleza</option>
-                <option value="fullday">Full Day</option>
-                <option value="custom">Personalizado</option>
+                {serviceTypes.map((type) => (
+                  <option key={type.value} value={type.value}>
+                    {type.label}
+                  </option>
+                ))}
               </select>
               {errors.serviceType && (
                 <p className="mt-1 text-sm text-red-600">{errors.serviceType.message}</p>
