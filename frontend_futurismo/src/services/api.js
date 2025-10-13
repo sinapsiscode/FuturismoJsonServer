@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { API_ENDPOINTS, ERROR_MESSAGES } from '../utils/constants';
+import { getStorageKey } from '../config/app.config';
 
 // Crear instancia de axios con configuración base
 // En desarrollo usar URL relativa para que funcione el proxy de Vite
@@ -12,18 +13,59 @@ const api = axios.create({
   }
 });
 
+// Variable para guardar referencia al authStore (se carga después)
+let authStoreRef = null;
+
+// Función para obtener el token (primero del store, luego del storage)
+const getAuthToken = () => {
+  let token = null;
+
+  // Intentar obtener del authStore si está disponible
+  if (authStoreRef) {
+    try {
+      const state = authStoreRef.getState();
+      token = state?.token;
+
+      if (token) {
+        console.log('🔑 [Interceptor] Token found in authStore');
+        return token;
+      }
+    } catch (error) {
+      console.warn('⚠️ [Interceptor] Could not access authStore:', error.message);
+    }
+  }
+
+  // Si no está en el store, buscar en storage
+  const storageKey = getStorageKey('authToken');
+  token = localStorage.getItem(storageKey) || sessionStorage.getItem(storageKey);
+
+  if (token) {
+    console.log('🔑 [Interceptor] Token found in storage');
+  }
+
+  return token;
+};
+
+// Función para registrar el authStore (se llama desde authStore)
+export const setAuthStoreReference = (store) => {
+  authStoreRef = store;
+};
+
 // Interceptor para agregar token a las peticiones
 api.interceptors.request.use(
   (config) => {
-    // Obtener token del store de auth
-    const authStorage = localStorage.getItem('auth-storage');
-    if (authStorage) {
-      const { state } = JSON.parse(authStorage);
-      if (state?.token) {
-        config.headers.Authorization = `Bearer ${state.token}`;
-      }
+    const token = getAuthToken();
+
+    console.log('🔑 [Interceptor] Request to:', config.url);
+    console.log('🔑 [Interceptor] Token found:', token ? 'YES' : 'NO');
+
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+      console.log('✅ [Interceptor] Authorization header set');
+    } else {
+      console.warn('⚠️ [Interceptor] No token found, request will be made without auth');
     }
-    
+
     return config;
   },
   (error) => {
@@ -41,26 +83,34 @@ api.interceptors.response.use(
     if (!error.response) {
       throw new Error(ERROR_MESSAGES.NETWORK_ERROR);
     }
-    
+
     // Manejar errores por código de estado
     switch (error.response.status) {
       case 401:
-        // Token expirado o inválido
-        localStorage.removeItem('auth-storage');
+        // Token expirado o inválido - limpiar storage usando las claves correctas
+        const tokenKey = getStorageKey('authToken');
+        const userKey = getStorageKey('authUser');
+
+        localStorage.removeItem(tokenKey);
+        localStorage.removeItem(userKey);
+        sessionStorage.removeItem(tokenKey);
+        sessionStorage.removeItem(userKey);
+
+        console.log('🔒 [Interceptor] Session expired - cleared storage and redirecting to login');
         window.location.href = '/login';
         throw new Error(ERROR_MESSAGES.SESSION_EXPIRED);
-        
+
       case 403:
         throw new Error(ERROR_MESSAGES.UNAUTHORIZED);
-        
+
       case 422:
         // Errores de validación
         const validationErrors = error.response.data.errors || {};
-        throw { 
+        throw {
           message: ERROR_MESSAGES.VALIDATION_ERROR,
-          errors: validationErrors 
+          errors: validationErrors
         };
-        
+
       default:
         throw new Error(
           error.response.data.message || ERROR_MESSAGES.GENERIC_ERROR

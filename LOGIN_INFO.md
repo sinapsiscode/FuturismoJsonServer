@@ -8,16 +8,20 @@ La aplicación está corriendo en: http://localhost:5178
 
 Para hacer login en la aplicación, usa cualquiera de estos usuarios con la contraseña indicada:
 
-### Administrador
+### 1. Administrador
 - **Email**: admin@futurismo.com
 - **Password**: demo123
 
-### Agencia
-- **Email**: agency@futurismo.com
+### 2. Agencia
+- **Email**: contacto@tourslima.com
 - **Password**: demo123
 
-### Guía
-- **Email**: guide@futurismo.com
+### 3. Guía (Carlos)
+- **Email**: carlos@guia.com
+- **Password**: demo123
+
+### 4. Guía Freelance (Ana)
+- **Email**: ana@freelance.com
 - **Password**: demo123
 
 ## Notas Importantes

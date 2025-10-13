@@ -507,23 +507,6 @@ const useServicesStore = create((set, get) => ({
 
   // Utilidades
   clearError: () => set({ error: null }),
-  
-  // Limpiar duplicados y resetear datos
-  clearDuplicatesAndReset: async () => {
-    set({ isLoading: true });
-    try {
-      const { servicesService } = await import('../services/servicesService');
-      if (servicesService.isUsingMockData) {
-        const { mockServicesService } = await import('../services/mockServicesService');
-        mockServicesService.clearStorageAndReset();
-        await get().loadServices();
-      }
-    } catch (error) {
-      set({ error: error.message });
-    } finally {
-      set({ isLoading: false });
-    }
-  },
 
   // Limpiar store
   clearStore: () => {

@@ -146,7 +146,7 @@ const Login = () => {
                 id="email"
                 className={`form-control ${errors.email ? 'is-invalid' : ''}`}
                 placeholder="agencia@ejemplo.com"
-                autoComplete="email"
+                autoComplete="off"
               />
               {errors.email && (
                 <div className="invalid-feedback">{errors.email.message}</div>
@@ -166,7 +166,7 @@ const Login = () => {
                   className={`form-control ${errors.password ? 'is-invalid' : ''}`}
                   style={{ paddingRight: '40px' }}
                   placeholder="••••••••"
-                  autoComplete="current-password"
+                  autoComplete="off"
                 />
                 <button
                   type="button"
@@ -227,11 +227,16 @@ const Login = () => {
               {/* Botón Agencia */}
               <button
                 type="button"
-                onClick={() => {
-                  setValue('email', 'agencia@test.com');
-                  setValue('password', 'agencia123');
-                  setValue('remember', true);
-                  handleSubmit(onSubmit)();
+                onClick={async () => {
+                  const result = await login({
+                    email: 'contacto@tourslima.com',
+                    password: 'demo123',
+                    remember: true
+                  });
+                  if (result.success) {
+                    toast.success(t('auth.welcome'));
+                    navigate('/dashboard');
+                  }
                 }}
                 className="w-full text-left p-4 bg-gradient-to-r from-secondary-50 to-secondary-100 hover:from-secondary-100 hover:to-secondary-200 rounded-lg transition-all duration-1000 group hover-lift"
               >
@@ -241,7 +246,7 @@ const Login = () => {
                       <BuildingOffice2Icon className="w-4 h-4 text-secondary-600" />
                       {t('auth.travelAgency')}
                     </p>
-                    <p className="text-sm text-neutral-600">agencia@test.com</p>
+                    <p className="text-sm text-neutral-600">contacto@tourslima.com</p>
                   </div>
                   <span className="badge badge-primary badge-sm">
                     B2B
@@ -252,11 +257,16 @@ const Login = () => {
               {/* Botón Guía */}
               <button
                 type="button"
-                onClick={() => {
-                  setValue('email', 'guia@test.com');
-                  setValue('password', 'guia123');
-                  setValue('remember', true);
-                  handleSubmit(onSubmit)();
+                onClick={async () => {
+                  const result = await login({
+                    email: 'carlos@guia.com',
+                    password: 'demo123',
+                    remember: true
+                  });
+                  if (result.success) {
+                    toast.success(t('auth.welcome'));
+                    navigate('/dashboard');
+                  }
                 }}
                 className="w-full text-left p-4 bg-gradient-to-r from-accent-50 to-accent-100 hover:from-accent-100 hover:to-accent-200 rounded-lg transition-all duration-1000 group hover-lift"
               >
@@ -266,7 +276,7 @@ const Login = () => {
                       <MapIcon className="w-4 h-4 text-accent-600" />
                       {t('auth.tourGuide')}
                     </p>
-                    <p className="text-sm text-neutral-600">guia@test.com</p>
+                    <p className="text-sm text-neutral-600">carlos@guia.com</p>
                   </div>
                   <span className="badge badge-info badge-sm">
                     Operativo
@@ -277,11 +287,16 @@ const Login = () => {
               {/* Botón Guía Freelance */}
               <button
                 type="button"
-                onClick={() => {
-                  setValue('email', 'freelance@test.com');
-                  setValue('password', 'freelance123');
-                  setValue('remember', true);
-                  handleSubmit(onSubmit)();
+                onClick={async () => {
+                  const result = await login({
+                    email: 'ana@freelance.com',
+                    password: 'demo123',
+                    remember: true
+                  });
+                  if (result.success) {
+                    toast.success(t('auth.welcome'));
+                    navigate('/dashboard');
+                  }
                 }}
                 className="w-full text-left p-4 bg-gradient-to-r from-success-50 to-success-100 hover:from-success-100 hover:to-success-200 rounded-lg transition-all duration-1000 group hover-lift"
               >
@@ -291,7 +306,7 @@ const Login = () => {
                       <UserCircleIcon className="w-4 h-4 text-success-600" />
                       {t('auth.freelanceGuide')}
                     </p>
-                    <p className="text-sm text-neutral-600">freelance@test.com</p>
+                    <p className="text-sm text-neutral-600">ana@freelance.com</p>
                   </div>
                   <span className="badge badge-success badge-sm">
                     Freelance
@@ -302,11 +317,16 @@ const Login = () => {
               {/* Botón Admin */}
               <button
                 type="button"
-                onClick={() => {
-                  setValue('email', 'admin@futurismo.com');
-                  setValue('password', 'admin123');
-                  setValue('remember', true);
-                  handleSubmit(onSubmit)();
+                onClick={async () => {
+                  const result = await login({
+                    email: 'admin@futurismo.com',
+                    password: 'demo123',
+                    remember: true
+                  });
+                  if (result.success) {
+                    toast.success(t('auth.welcome'));
+                    navigate('/dashboard');
+                  }
                 }}
                 className="w-full text-left p-4 bg-gradient-to-r from-neutral-50 to-neutral-100 hover:from-neutral-100 hover:to-neutral-200 rounded-lg transition-all duration-1000 group hover-lift"
               >

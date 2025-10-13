@@ -11,7 +11,6 @@ import exportService from '../../services/exportService';
 import ServiceRatingModal from '../ratings/ServiceRatingModal';
 import ResponsiveTable from '../common/ResponsiveTable';
 import toast from 'react-hot-toast';
-import { mockReservations } from '../../data/mockReservationsData';
 import { useReservationFilters } from '../../hooks/useReservationFilters';
 import { getStatusBadge, getPaymentBadge, canRateService } from '../../utils/reservationHelpers';
 import { paymentVoucherService } from '../../services/paymentVoucherService';
@@ -20,8 +19,8 @@ const ReservationList = () => {
   const { reservations } = useReservationsStore();
   const { user } = useAuthStore();
   const { t } = useTranslation();
-  // Usar mock data importada
-  const reservationsData = mockReservations;
+  // Usar datos del store
+  const reservationsData = reservations || [];
   
   // Hook personalizado para filtros
   const {
@@ -717,7 +716,7 @@ const ReservationList = () => {
             setSelectedService(null);
           }}
           service={selectedService}
-          tourists={mockReservations.find(r => r.id === selectedService.id)?.tourists || []}
+          tourists={reservations.find(r => r.id === selectedService.id)?.tourists || []}
           onAllRatingsCompleted={handleRatingsCompleted}
         />
       )}

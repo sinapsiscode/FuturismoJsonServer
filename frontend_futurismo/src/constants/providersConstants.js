@@ -43,10 +43,31 @@ export const SERVICE_TYPES = (() => {
   return config.serviceTypes || {};
 })();
 
-export const RATING_RANGE = (() => {
-  const config = getProvidersConfig();
-  return config.ratingRange || { min: 1, max: 5 };
-})();
+export const RATING_RANGE = {
+  MIN: 1,
+  MAX: 5
+};
+
+// Validation messages (i18n keys)
+export const VALIDATION_MESSAGES = {
+  REQUIRED: 'validation.required',
+  INVALID_EMAIL: 'validation.invalidEmail',
+  POSITIVE_NUMBER: 'validation.positiveNumber',
+  MIN_VALUE: 'validation.minValue',
+  MAX_VALUE: 'validation.maxValue'
+};
+
+// Provider messages for toast notifications
+export const PROVIDER_MESSAGES = {
+  FETCH_ERROR: 'Error al cargar proveedores',
+  CREATE_SUCCESS: 'Proveedor creado exitosamente',
+  CREATE_ERROR: 'Error al crear proveedor',
+  UPDATE_SUCCESS: 'Proveedor actualizado exitosamente',
+  UPDATE_ERROR: 'Error al actualizar proveedor',
+  DELETE_SUCCESS: 'Proveedor eliminado exitosamente',
+  DELETE_ERROR: 'Error al eliminar proveedor',
+  NOT_FOUND: 'Proveedor no encontrado'
+};
 
 
 // Export default para compatibilidad
@@ -55,5 +76,7 @@ export default {
   PRICING_TYPES,
   CURRENCIES,
   SERVICE_TYPES,
-  RATING_RANGE
+  RATING_RANGE,
+  VALIDATION_MESSAGES,
+  PROVIDER_MESSAGES
 };

@@ -55,6 +55,55 @@ export const TOUR_TYPES = (() => {
   return config.tourTypes || [];
 })();
 
+export const GROUP_TYPES = (() => {
+  const config = getMarketplaceConfig();
+  return config.groupTypes || [
+    { value: 'individual', label: 'Individual' },
+    { value: 'small', label: 'Grupo pequeño (2-6)' },
+    { value: 'medium', label: 'Grupo mediano (7-15)' },
+    { value: 'large', label: 'Grupo grande (16+)' }
+  ];
+})();
+
+// Default filters for marketplace search
+export const DEFAULT_FILTERS = {
+  languages: [],
+  workZones: [],
+  tourTypes: [],
+  groupTypes: [],
+  priceRange: { min: 0, max: 500 },
+  minRating: 0,
+  verified: false,
+  availability: 'all' // all, available, unavailable
+};
+
+// Marketplace view modes
+export const MARKETPLACE_VIEWS = {
+  GRID: 'grid',
+  LIST: 'list',
+  MAP: 'map'
+};
+
+// Request status values
+export const REQUEST_STATUS = {
+  PENDING: 'pending',
+  ACCEPTED: 'accepted',
+  REJECTED: 'rejected',
+  COMPLETED: 'completed',
+  CANCELLED: 'cancelled'
+};
+
+// Marketplace messages for toast notifications
+export const MARKETPLACE_MESSAGES = {
+  FETCH_ERROR: 'Error al cargar guías del marketplace',
+  REQUEST_CREATED: 'Solicitud de servicio creada exitosamente',
+  REQUEST_ERROR: 'Error al crear solicitud',
+  RESPONSE_SENT: 'Respuesta enviada exitosamente',
+  RESPONSE_ERROR: 'Error al enviar respuesta',
+  REVIEW_CREATED: 'Reseña publicada exitosamente',
+  REVIEW_ERROR: 'Error al publicar reseña'
+};
+
 
 // Export default para compatibilidad
 export default {
@@ -63,5 +112,10 @@ export default {
   PRICE_RANGE_CONFIG,
   RATING_OPTIONS,
   WORK_ZONES,
-  TOUR_TYPES
+  TOUR_TYPES,
+  GROUP_TYPES,
+  DEFAULT_FILTERS,
+  MARKETPLACE_VIEWS,
+  REQUEST_STATUS,
+  MARKETPLACE_MESSAGES
 };

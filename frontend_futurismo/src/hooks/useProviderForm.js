@@ -4,8 +4,29 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { useTranslation } from 'react-i18next';
 import toast from 'react-hot-toast';
-import { getEmptyProvider } from '../data/mockProvidersData';
 import { VALIDATION_MESSAGES, RATING_RANGE } from '../constants/providersConstants';
+
+// Empty provider template for new providers
+const getEmptyProvider = () => ({
+  name: '',
+  category: '',
+  location: '',
+  contact: {
+    contactPerson: '',
+    phone: '',
+    email: '',
+    address: ''
+  },
+  pricing: {
+    basePrice: 0,
+    type: 'fixed'
+  },
+  rating: 0,
+  capacity: 1,
+  services: [''],
+  specialties: [],
+  languages: []
+});
 
 const useProviderForm = (provider, onSave, onCancel) => {
   const { t } = useTranslation();

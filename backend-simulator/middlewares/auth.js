@@ -4,7 +4,11 @@ const JWT_SECRET = 'futurismo-secret-2024';
 
 const authMiddleware = (req, res, next) => {
   // Skip auth for public endpoints
-  const publicPaths = ['/auth/login', '/auth/register'];
+  const publicPaths = [
+    '/auth/login',
+    '/auth/register',
+    '/config/' // All config endpoints should be public
+  ];
   if (publicPaths.some(path => req.path.includes(path))) {
     return next();
   }

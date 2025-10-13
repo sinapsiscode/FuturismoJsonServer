@@ -128,8 +128,8 @@ const useEventForm = (initialEvent = null) => {
     const newAllDay = !formData.allDay;
     updateFields({
       allDay: newAllDay,
-      startTime: newAllDay ? '' : DEFAULT_EVENT_TIMES.START,
-      endTime: newAllDay ? '' : DEFAULT_EVENT_TIMES.END
+      startTime: newAllDay ? '' : (DEFAULT_EVENT_TIMES.START || '09:00'),
+      endTime: newAllDay ? '' : (DEFAULT_EVENT_TIMES.END || '17:00')
     });
   }, [formData.allDay, updateFields]);
 

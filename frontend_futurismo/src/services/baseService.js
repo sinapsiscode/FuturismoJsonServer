@@ -4,7 +4,15 @@
  */
 
 import axios from 'axios';
-import { APP_CONFIG } from '../config/app.config';
+import { APP_CONFIG, getStorageKey } from '../config/app.config';
+
+// Variable para guardar referencia al authStore (se carga después)
+let authStoreRef = null;
+
+// Función para registrar el authStore (se llama desde authStore)
+export const setAuthStoreReference = (store) => {
+  authStoreRef = store;
+};
 
 class BaseService {
   constructor(endpoint) {
@@ -91,17 +99,32 @@ class BaseService {
    * @returns {string|null}
    */
   getAuthToken() {
-    // Obtener token del store de auth (zustand persist)
-    const authStorage = localStorage.getItem('auth-storage');
-    if (authStorage) {
+    let token = null;
+
+    // Intentar obtener del authStore si está disponible
+    if (authStoreRef) {
       try {
-        const { state } = JSON.parse(authStorage);
-        return state?.token || null;
+        const state = authStoreRef.getState();
+        token = state?.token;
+
+        if (token) {
+          console.log('🔑 [BaseService] Token found in authStore');
+          return token;
+        }
       } catch (error) {
-        console.error('Error parsing auth storage:', error);
+        console.warn('⚠️ [BaseService] Could not access authStore:', error.message);
       }
     }
-    return null;
+
+    // Si no está en el store, buscar en storage usando las claves correctas
+    const storageKey = getStorageKey('authToken');
+    token = localStorage.getItem(storageKey) || sessionStorage.getItem(storageKey);
+
+    if (token) {
+      console.log('🔑 [BaseService] Token found in storage');
+    }
+
+    return token;
   }
 
   /**
@@ -121,6 +144,13 @@ class BaseService {
   async get(path = '', params = {}) {
     try {
       const response = await this.api.get(`${this.endpoint}${path}`, { params });
+
+      // Si la respuesta ya tiene el formato {success, data}, devolverla directamente
+      if (response.data && typeof response.data === 'object' && 'success' in response.data) {
+        return response.data;
+      }
+
+      // Si no, envolverla en el formato estándar
       return {
         success: true,
         data: response.data
@@ -139,6 +169,13 @@ class BaseService {
   async post(path = '', data = {}) {
     try {
       const response = await this.api.post(`${this.endpoint}${path}`, data);
+
+      // Si la respuesta ya tiene el formato {success, data}, devolverla directamente
+      if (response.data && typeof response.data === 'object' && 'success' in response.data) {
+        return response.data;
+      }
+
+      // Si no, envolverla en el formato estándar
       return {
         success: true,
         data: response.data
@@ -157,6 +194,13 @@ class BaseService {
   async put(path = '', data = {}) {
     try {
       const response = await this.api.put(`${this.endpoint}${path}`, data);
+
+      // Si la respuesta ya tiene el formato {success, data}, devolverla directamente
+      if (response.data && typeof response.data === 'object' && 'success' in response.data) {
+        return response.data;
+      }
+
+      // Si no, envolverla en el formato estándar
       return {
         success: true,
         data: response.data
@@ -175,6 +219,13 @@ class BaseService {
   async patch(path = '', data = {}) {
     try {
       const response = await this.api.patch(`${this.endpoint}${path}`, data);
+
+      // Si la respuesta ya tiene el formato {success, data}, devolverla directamente
+      if (response.data && typeof response.data === 'object' && 'success' in response.data) {
+        return response.data;
+      }
+
+      // Si no, envolverla en el formato estándar
       return {
         success: true,
         data: response.data
@@ -192,6 +243,13 @@ class BaseService {
   async delete(path = '') {
     try {
       const response = await this.api.delete(`${this.endpoint}${path}`);
+
+      // Si la respuesta ya tiene el formato {success, data}, devolverla directamente
+      if (response.data && typeof response.data === 'object' && 'success' in response.data) {
+        return response.data;
+      }
+
+      // Si no, envolverla en el formato estándar
       return {
         success: true,
         data: response.data

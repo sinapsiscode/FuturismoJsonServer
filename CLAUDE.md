@@ -61,9 +61,10 @@ From project root, you can start both servers. Backend must run on port 4050 for
 ## Authentication System
 
 **Login Credentials** (all use password `demo123`):
-- Admin: `admin@futurismo.com`
-- Agency: `agency@futurismo.com`
-- Guide: `guide@futurismo.com`
+1. Admin: `admin@futurismo.com`
+2. Agency: `contacto@tourslima.com`
+3. Guide (Carlos): `carlos@guia.com`
+4. Guide Freelance (Ana): `ana@freelance.com`
 
 **Auth Flow**:
 1. User logs in via `POST /api/auth/login`

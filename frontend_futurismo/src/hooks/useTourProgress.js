@@ -2,16 +2,14 @@ import { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import toast from 'react-hot-toast';
 import { TOUR_STATUS } from '../constants/monitoringConstants';
-import { getMockTourData } from '../data/mockMonitoringData';
 import useNotificationStore from '../stores/notificationsStore';
 
-const useTourProgress = (tourId, isGuideView = false) => {
+const useTourProgress = (initialTourData, isGuideView = false) => {
   const [expandedStop, setExpandedStop] = useState(null);
   const [tourData, setTourData] = useState(() => {
-    // Inicializar con datos mock traducidos
-    const mockTourData = getMockTourData(tourId);
+    // Inicializar con datos proporcionados
     return {
-      ...mockTourData,
+      ...initialTourData,
       // Agregar timestamps reales para interactividad
       lastUpdate: new Date(),
       isActive: true
@@ -21,41 +19,24 @@ const useTourProgress = (tourId, isGuideView = false) => {
   const { t } = useTranslation();
   const { addNotification } = useNotificationStore();
 
-  const mockTourData = getMockTourData(tourId);
-  
-  // Traducir los textos del mock data
-  const mockTour = {
-    ...mockTourData,
-    name: t(mockTourData.name),
-    guide: {
-      ...mockTourData.guide,
-      name: t(mockTourData.guide.name),
-      phone: t(mockTourData.guide.phone)
-    },
-    stops: mockTourData.stops.map(stop => ({
-      ...stop,
-      name: t(stop.name),
-      description: t(stop.description),
-      incidents: stop.incidents.map(incident => ({
-        ...incident,
-        message: t(incident.message)
-      }))
-    })),
-    incidents: mockTourData.incidents.map(incident => ({
-      ...incident,
-      message: t(incident.message)
-    }))
+  // Datos base del tour (sin traducir para evitar errores si no hay i18n keys)
+  const baseTour = initialTourData || {
+    name: '',
+    guide: { name: '', phone: '' },
+    stops: [],
+    incidents: []
   };
 
   const getProgressPercentage = () => {
-    const completedStops = mockTour.stops.filter(s => s.status === TOUR_STATUS.COMPLETED).length;
-    return (completedStops / mockTour.stops.length) * 100;
+    const completedStops = baseTour.stops.filter(s => s.status === TOUR_STATUS.COMPLETED).length;
+    return baseTour.stops.length > 0 ? (completedStops / baseTour.stops.length) * 100 : 0;
   };
 
   const getEstimatedDelay = () => {
+    if (!baseTour.actualStartTime || !baseTour.startTime) return 0;
     const now = new Date();
-    const elapsed = now - mockTour.actualStartTime;
-    const plannedElapsed = now - mockTour.startTime;
+    const elapsed = now - new Date(baseTour.actualStartTime);
+    const plannedElapsed = now - new Date(baseTour.startTime);
     const delay = elapsed - plannedElapsed;
     return delay > 0 ? delay / 60000 : 0;
   };
@@ -105,15 +86,16 @@ const useTourProgress = (tourId, isGuideView = false) => {
     });
 
     // Notificación para la central
+    const stopName = baseTour.stops.find(s => s.id === stopId)?.name || '';
     addNotification({
       title: t('monitoring.notifications.checkIn'),
-      message: t('monitoring.notifications.checkInMessage', { stopName: mockTour.stops.find(s => s.id === stopId)?.name }),
+      message: t('monitoring.notifications.checkInMessage', { stopName }),
       type: 'info',
       duration: 5000
     });
 
     toast.success(t('monitoring.tour.checkedIn'));
-  }, [isGuideView, addNotification, t, mockTour.stops]);
+  }, [isGuideView, addNotification, t, baseTour.stops]);
 
   const handleCheckOut = useCallback((stopId) => {
     if (!isGuideView) return;
@@ -144,25 +126,26 @@ const useTourProgress = (tourId, isGuideView = false) => {
     });
 
     // Notificación para la central
+    const stopName = baseTour.stops.find(s => s.id === stopId)?.name || '';
     addNotification({
       title: t('monitoring.notifications.checkOut'),
-      message: t('monitoring.notifications.checkOutMessage', { stopName: mockTour.stops.find(s => s.id === stopId)?.name }),
+      message: t('monitoring.notifications.checkOutMessage', { stopName }),
       type: 'success',
       duration: 5000
     });
 
     toast.success(t('monitoring.tour.checkedOut'));
-    
+
     // Auto-avanzar al siguiente punto después de 2 segundos
     setTimeout(() => {
-      const currentIndex = mockTour.stops.findIndex(s => s.id === stopId);
-      const nextStop = mockTour.stops[currentIndex + 1];
+      const currentIndex = baseTour.stops.findIndex(s => s.id === stopId);
+      const nextStop = baseTour.stops[currentIndex + 1];
       if (nextStop && nextStop.status === TOUR_STATUS.PENDING) {
         setExpandedStop(nextStop.id);
         toast.info(t('monitoring.tour.nextStop', { stopName: nextStop.name }));
       }
     }, 2000);
-  }, [isGuideView, addNotification, t, mockTour.stops]);
+  }, [isGuideView, addNotification, t, baseTour.stops]);
 
   const reportIncident = useCallback((stopId, incidentType, message) => {
     const incident = {
@@ -193,11 +176,12 @@ const useTourProgress = (tourId, isGuideView = false) => {
     });
 
     // Notificación urgente para la central
+    const stopName = baseTour.stops.find(s => s.id === stopId)?.name || '';
     addNotification({
       title: t('monitoring.notifications.incident'),
-      message: t('monitoring.notifications.incidentMessage', { 
-        stopName: mockTour.stops.find(s => s.id === stopId)?.name,
-        incident: message 
+      message: t('monitoring.notifications.incidentMessage', {
+        stopName,
+        incident: message
       }),
       type: 'error',
       duration: 10000,
@@ -205,7 +189,7 @@ const useTourProgress = (tourId, isGuideView = false) => {
     });
 
     toast.error(t('monitoring.tour.incidentReported'));
-  }, [addNotification, t, mockTour.stops]);
+  }, [addNotification, t, baseTour.stops]);
 
   const canCheckIn = useCallback((stop) => {
     return isGuideView && stop.status === TOUR_STATUS.PENDING;
@@ -238,24 +222,16 @@ const useTourProgress = (tourId, isGuideView = false) => {
     }
   }, [isGuideView, tourData.isActive]);
 
-  // Usar tourData en lugar de mockTour para datos reactivos
+  // Usar tourData en lugar de baseTour para datos reactivos
   const currentTour = {
-    ...mockTour,
+    ...baseTour,
     ...tourData,
-    stops: tourData.stops?.map(stop => ({
-      ...stop,
-      name: t(stop.name || ''),
-      description: t(stop.description || ''),
-      incidents: (stop.incidents || []).map(incident => ({
-        ...incident,
-        message: typeof incident.message === 'string' ? incident.message : t(incident.message || '')
-      }))
-    })) || mockTour.stops
+    stops: tourData.stops || baseTour.stops || []
   };
 
   const getCurrentProgressPercentage = () => {
     const completedStops = currentTour.stops.filter(s => s.status === TOUR_STATUS.COMPLETED).length;
-    return (completedStops / currentTour.stops.length) * 100;
+    return currentTour.stops.length > 0 ? (completedStops / currentTour.stops.length) * 100 : 0;
   };
 
   return {

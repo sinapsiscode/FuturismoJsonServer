@@ -23,7 +23,9 @@ const TourHeader = ({ tour, estimatedDelay, progressPercentage }) => {
             </div>
             <div className="flex items-center gap-1">
               <UserGroupIcon className="w-4 h-4" />
-              <span>{tour.tourists.present}/{tour.tourists.total} {t('monitoring.tour.tourists')}</span>
+              <span>
+                {tour.tourists?.present || 0}/{tour.tourists?.total || 0} {t('monitoring.tour.tourists')}
+              </span>
             </div>
             {estimatedDelay > 0 && (
               <div className="flex items-center gap-1 text-yellow-600">

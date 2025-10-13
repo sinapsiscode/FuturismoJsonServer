@@ -16,6 +16,8 @@ import {
   AUTH_EVENTS,
   SESSION_CONFIG
 } from '../constants/authConstants';
+import { setAuthStoreReference as setApiAuthStore } from '../services/api';
+import { setAuthStoreReference as setBaseServiceAuthStore } from '../services/baseService';
 
 const useAuthStore = create((set, get) => ({
   // Estado inicial
@@ -354,6 +356,10 @@ if (APP_CONFIG.app.isDevelopment === false) {
     }
   }, SESSION_CONFIG.CHECK_INTERVAL);
 }
+
+// Registrar la referencia del authStore en los servicios para que puedan acceder al token
+setApiAuthStore(useAuthStore);
+setBaseServiceAuthStore(useAuthStore);
 
 export { useAuthStore };
 export default useAuthStore;

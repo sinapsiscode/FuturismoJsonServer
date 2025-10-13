@@ -107,7 +107,7 @@ function useDrivers() {
 Estado local con useState / useReducer.
 
 Estado global en /store con Zustand o Redux.
-
+8
 Evitar estados duplicados (si algo está en store, no repetirlo en otro lado).
 
 7. Funciones auxiliares

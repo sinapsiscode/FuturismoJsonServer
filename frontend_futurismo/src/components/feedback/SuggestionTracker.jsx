@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { 
+import React, { useState, useEffect } from 'react';
+import {
   ClockIcon as Clock,
   EyeIcon as Eye,
   CheckCircleIcon as CheckCircle,
@@ -13,11 +13,22 @@ import {
   PencilIcon as Edit3,
   PaperAirplaneIcon as Send
 } from '@heroicons/react/24/outline';
+import useSuggestionStore from '../../stores/suggestionStore';
+import useAuthStore from '../../stores/authStore';
 
-const SuggestionTracker = ({ suggestions = [], onUpdateStatus, onAddResponse }) => {
+const SuggestionTracker = () => {
   const [selectedSuggestion, setSelectedSuggestion] = useState(null);
   const [response, setResponse] = useState('');
   const [newStatus, setNewStatus] = useState('');
+
+  // Obtener datos del store
+  const { suggestions, isLoading, fetchSuggestions, updateStatus, addResponse } = useSuggestionStore();
+  const { user } = useAuthStore();
+
+  // Cargar sugerencias al montar el componente
+  useEffect(() => {
+    fetchSuggestions();
+  }, [fetchSuggestions]);
 
   const statusOptions = [
     {
@@ -63,69 +74,6 @@ const SuggestionTracker = ({ suggestions = [], onUpdateStatus, onAddResponse }) 
     { value: 'high', label: 'Alta', color: 'bg-red-100 text-red-800' }
   ];
 
-  // Mock data for demonstration
-  const mockSuggestions = [
-    {
-      id: 1,
-      title: 'Sistema de notificaciones push',
-      description: 'Implementar notificaciones push para mantener informados a los clientes sobre el estado de sus reservas',
-      submittedBy: 'Cliente Premium',
-      area: 'communication',
-      type: 'suggestion',
-      priority: 'high',
-      status: 'pending',
-      submittedAt: '2024-01-15T10:30:00Z',
-      responses: [],
-      estimatedDays: 14
-    },
-    {
-      id: 2,
-      title: 'Mejorar proceso de check-in',
-      description: 'Simplificar el proceso de check-in para tours, actualmente toma demasiado tiempo',
-      submittedBy: 'Guía Turístico A',
-      area: 'operations',
-      type: 'improvement',
-      priority: 'medium',
-      status: 'in_progress',
-      submittedAt: '2024-01-12T14:15:00Z',
-      responses: [
-        {
-          id: 1,
-          message: 'Estamos evaluando diferentes opciones para optimizar este proceso.',
-          respondedBy: 'Manager Operativo',
-          respondedAt: '2024-01-13T09:00:00Z'
-        }
-      ],
-      estimatedDays: 21
-    },
-    {
-      id: 3,
-      title: 'Programa de reconocimiento',
-      description: 'Crear un programa formal de reconocimiento para el personal destacado',
-      submittedBy: 'Recursos Humanos',
-      area: 'staff',
-      type: 'recognition',
-      priority: 'medium',
-      status: 'implemented',
-      submittedAt: '2024-01-08T11:45:00Z',
-      responses: [
-        {
-          id: 1,
-          message: 'Excelente sugerencia. Hemos desarrollado un programa piloto.',
-          respondedBy: 'Director RH',
-          respondedAt: '2024-01-10T16:30:00Z'
-        },
-        {
-          id: 2,
-          message: 'El programa ha sido implementado y ya está en funcionamiento.',
-          respondedBy: 'Director RH',
-          respondedAt: '2024-01-14T12:00:00Z'
-        }
-      ],
-      estimatedDays: 0,
-      completedAt: '2024-01-14T12:00:00Z'
-    }
-  ];
 
   const getStatusInfo = (status) => {
     return statusOptions.find(s => s.value === status) || statusOptions[0];
@@ -152,22 +100,25 @@ const SuggestionTracker = ({ suggestions = [], onUpdateStatus, onAddResponse }) 
     return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
   };
 
-  const handleStatusUpdate = (suggestionId, status) => {
-    if (onUpdateStatus) {
-      onUpdateStatus(suggestionId, status);
+  const handleStatusUpdate = async (suggestionId, status) => {
+    const result = await updateStatus(suggestionId, status);
+    if (result.success) {
+      setSelectedSuggestion(null);
+      setNewStatus('');
     }
-    setSelectedSuggestion(null);
-    setNewStatus('');
   };
 
-  const handleAddResponse = (suggestionId) => {
-    if (response.trim() && onAddResponse) {
-      onAddResponse(suggestionId, {
+  const handleAddResponse = async (suggestionId) => {
+    if (response.trim()) {
+      const result = await addResponse(suggestionId, {
         message: response,
-        respondedBy: 'Current User', // Should be replaced with actual user
+        respondedBy: user?.id || 'unknown',
+        respondedByName: user?.name || 'Usuario',
         respondedAt: new Date().toISOString()
       });
-      setResponse('');
+      if (result.success) {
+        setResponse('');
+      }
     }
   };
 
@@ -188,11 +139,11 @@ const SuggestionTracker = ({ suggestions = [], onUpdateStatus, onAddResponse }) 
               </span>
             </div>
             <p className="text-gray-600 mb-3">{suggestion.description}</p>
-            
+
             <div className="flex items-center gap-4 text-sm text-gray-500 mb-3">
               <div className="flex items-center gap-1">
                 <User size={14} />
-                <span>{suggestion.submittedBy}</span>
+                <span>{suggestion.submittedByName || suggestion.submittedBy}</span>
               </div>
               <div className="flex items-center gap-1">
                 <Calendar size={14} />
@@ -250,7 +201,7 @@ const SuggestionTracker = ({ suggestions = [], onUpdateStatus, onAddResponse }) 
                 <div key={resp.id} className="bg-gray-50 rounded-lg p-3">
                   <p className="text-sm text-gray-700 mb-1">{resp.message}</p>
                   <div className="flex items-center justify-between text-xs text-gray-500">
-                    <span>{resp.respondedBy}</span>
+                    <span>{resp.respondedByName || resp.respondedBy}</span>
                     <span>{formatDate(resp.respondedAt)}</span>
                   </div>
                 </div>
@@ -329,8 +280,8 @@ const SuggestionTracker = ({ suggestions = [], onUpdateStatus, onAddResponse }) 
         <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-8">
           {statusOptions.map((status) => {
             const StatusIcon = status.icon;
-            const count = mockSuggestions.filter(s => s.status === status.value).length;
-            
+            const count = suggestions.filter(s => s.status === status.value).length;
+
             return (
               <div key={status.value} className={`rounded-lg p-4 border ${status.color}`}>
                 <div className="flex items-center justify-between mb-2">
@@ -344,12 +295,29 @@ const SuggestionTracker = ({ suggestions = [], onUpdateStatus, onAddResponse }) 
           })}
         </div>
 
+        {/* Loading State */}
+        {isLoading && (
+          <div className="text-center py-12">
+            <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+            <p className="mt-2 text-gray-600">Cargando sugerencias...</p>
+          </div>
+        )}
+
+        {/* Empty State */}
+        {!isLoading && suggestions.length === 0 && (
+          <div className="text-center py-12">
+            <p className="text-gray-600">No hay sugerencias registradas</p>
+          </div>
+        )}
+
         {/* Suggestions List */}
-        <div className="space-y-6">
-          {mockSuggestions.map((suggestion) => (
-            <SuggestionCard key={suggestion.id} suggestion={suggestion} />
-          ))}
-        </div>
+        {!isLoading && suggestions.length > 0 && (
+          <div className="space-y-6">
+            {suggestions.map((suggestion) => (
+              <SuggestionCard key={suggestion.id} suggestion={suggestion} />
+            ))}
+          </div>
+        )}
 
         {/* Status Update Modal */}
         {selectedSuggestion && (

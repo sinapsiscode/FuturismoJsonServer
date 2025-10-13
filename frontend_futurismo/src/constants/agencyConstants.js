@@ -43,11 +43,45 @@ export const SERVICE_AREAS = (() => {
   return config.serviceAreas || [];
 })();
 
+// Date formats for agency store
+export const DATE_FORMATS = {
+  DATE_KEY: 'yyyy-MM-dd',
+  DISPLAY: 'dd/MM/yyyy',
+  DISPLAY_LONG: 'dd MMMM yyyy',
+  TIME: 'HH:mm',
+  DATETIME: 'dd/MM/yyyy HH:mm'
+};
+
+// Default agency configuration
+export const DEFAULT_AGENCY = {
+  ID: 'agency-1',
+  NAME: 'Agencia Principal',
+  INITIAL_POINTS: 0
+};
+
+// Storage configuration for persist middleware
+export const STORAGE_CONFIG = {
+  KEY: 'agency-storage',
+  VERSION: 1
+};
+
+// Reservation status constants
+export const RESERVATION_STATUS = {
+  PENDING: 'pending',
+  CONFIRMED: 'confirmed',
+  IN_PROGRESS: 'in_progress',
+  COMPLETED: 'completed',
+  CANCELLED: 'cancelled'
+};
 
 // Export default para compatibilidad
 export default {
   AGENCY_TYPES,
   AGENCY_STATUS,
   BUSINESS_CATEGORIES,
-  SERVICE_AREAS
+  SERVICE_AREAS,
+  DATE_FORMATS,
+  DEFAULT_AGENCY,
+  STORAGE_CONFIG,
+  RESERVATION_STATUS
 };

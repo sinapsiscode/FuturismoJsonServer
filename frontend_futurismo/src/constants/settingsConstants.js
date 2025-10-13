@@ -61,6 +61,58 @@ export const DEFAULT_VALUES = {
   duration: 4
 };
 
+// Setting categories
+export const SETTING_CATEGORIES = {
+  GENERAL: 'general',
+  NOTIFICATIONS: 'notifications',
+  PRIVACY: 'privacy',
+  APPEARANCE: 'appearance',
+  LANGUAGE: 'language',
+  SECURITY: 'security'
+};
+
+// Theme options
+export const THEME_OPTIONS = {
+  LIGHT: 'light',
+  DARK: 'dark',
+  AUTO: 'auto'
+};
+
+// Language options
+export const LANGUAGE_OPTIONS = [
+  { value: 'es', label: 'Español', flag: '🇪🇸' },
+  { value: 'en', label: 'English', flag: '🇺🇸' }
+];
+
+// Notification settings
+export const NOTIFICATION_SETTINGS = {
+  EMAIL: 'email',
+  SMS: 'sms',
+  PUSH: 'push',
+  WHATSAPP: 'whatsapp'
+};
+
+// Privacy settings
+export const PRIVACY_SETTINGS = {
+  PUBLIC: 'public',
+  PRIVATE: 'private',
+  FRIENDS: 'friends',
+  CUSTOM: 'custom'
+};
+
+// Settings messages
+export const SETTINGS_MESSAGES = {
+  FETCH_ERROR: 'Error al cargar configuración',
+  UPDATE_SUCCESS: 'Configuración actualizada exitosamente',
+  UPDATE_ERROR: 'Error al actualizar configuración',
+  RESET_SUCCESS: 'Configuración restablecida',
+  RESET_ERROR: 'Error al restablecer configuración',
+  PASSWORD_CHANGED: 'Contraseña cambiada exitosamente',
+  PASSWORD_ERROR: 'Error al cambiar contraseña',
+  THEME_CHANGED: 'Tema actualizado',
+  LANGUAGE_CHANGED: 'Idioma actualizado'
+};
+
 
 // Export default para compatibilidad
 export default {
@@ -70,5 +122,11 @@ export default {
   NOTIFICATION_TYPES,
   CHANNEL_COLORS,
   TOUR_LIMITS,
-  DEFAULT_VALUES
+  DEFAULT_VALUES,
+  SETTING_CATEGORIES,
+  THEME_OPTIONS,
+  LANGUAGE_OPTIONS,
+  NOTIFICATION_SETTINGS,
+  PRIVACY_SETTINGS,
+  SETTINGS_MESSAGES
 };

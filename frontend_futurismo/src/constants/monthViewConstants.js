@@ -45,6 +45,46 @@ export const MONTH_LABELS = [
   'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
 ];
 
+// Event types
+export const EVENT_TYPES = {
+  PERSONAL: 'personal',
+  COMPANY_TOUR: 'company_tour',
+  OCCUPIED: 'occupied',
+  AVAILABLE: 'available',
+  TOUR: 'tour',
+  MEETING: 'meeting',
+  TRAINING: 'training',
+  MAINTENANCE: 'maintenance',
+  HOLIDAY: 'holiday'
+};
+
+// Calendar configuration
+export const CALENDAR_CONFIG = {
+  WEEK_START_DAY: 0, // 0 = Sunday, 1 = Monday
+  DATE_FORMAT: 'yyyy-MM-dd',
+  DISPLAY_FORMAT: 'dd/MM/yyyy',
+  MONTH_FORMAT: 'MMMM yyyy',
+  TIME_FORMAT: 'HH:mm',
+  DATETIME_FORMAT: 'dd/MM/yyyy HH:mm'
+};
+
+// Calendar views
+export const CALENDAR_VIEWS = {
+  MONTH: 'month',
+  WEEK: 'week',
+  DAY: 'day',
+  AGENDA: 'agenda'
+};
+
+// User roles
+export const USER_ROLES = {
+  ADMIN: 'admin',
+  AGENCY: 'agency',
+  GUIDE: 'guide',
+  CLIENT: 'client',
+  DRIVER: 'driver'
+};
+
 
 // Export default para compatibilidad
 export default {
@@ -52,5 +92,9 @@ export default {
   HOVER_CONFIG,
   EVENT_COLORS,
   WEEKDAY_LABELS,
-  MONTH_LABELS
+  MONTH_LABELS,
+  EVENT_TYPES,
+  CALENDAR_CONFIG,
+  CALENDAR_VIEWS,
+  USER_ROLES
 };

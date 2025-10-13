@@ -70,6 +70,44 @@ function App() {
   // Inicializar la aplicación
   useEffect(() => {
     try {
+      // MIGRACIÓN: Convertir claves antiguas a nuevas
+      const migrateStorageKeys = () => {
+        // Migrar localStorage
+        const oldTokenLocal = localStorage.getItem('futurismo_authToken');
+        const oldUserLocal = localStorage.getItem('futurismo_authUser');
+
+        if (oldTokenLocal) {
+          localStorage.setItem('futurismo_auth_token', oldTokenLocal);
+          localStorage.removeItem('futurismo_authToken');
+          console.log('[Migration] localStorage token migrated');
+        }
+
+        if (oldUserLocal) {
+          localStorage.setItem('futurismo_auth_user', oldUserLocal);
+          localStorage.removeItem('futurismo_authUser');
+          console.log('[Migration] localStorage user migrated');
+        }
+
+        // Migrar sessionStorage
+        const oldTokenSession = sessionStorage.getItem('futurismo_authToken');
+        const oldUserSession = sessionStorage.getItem('futurismo_authUser');
+
+        if (oldTokenSession) {
+          sessionStorage.setItem('futurismo_auth_token', oldTokenSession);
+          sessionStorage.removeItem('futurismo_authToken');
+          console.log('[Migration] sessionStorage token migrated');
+        }
+
+        if (oldUserSession) {
+          sessionStorage.setItem('futurismo_auth_user', oldUserSession);
+          sessionStorage.removeItem('futurismo_authUser');
+          console.log('[Migration] sessionStorage user migrated');
+        }
+      };
+
+      // Ejecutar migración antes de inicializar
+      migrateStorageKeys();
+
       initialize();
     } catch (error) {
       console.warn('Error al inicializar aplicación:', error);

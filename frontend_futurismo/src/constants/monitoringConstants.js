@@ -48,6 +48,55 @@ export const MAP_MOBILE_HEIGHT = '400px';
 
 export const MAX_PHOTOS_PER_STOP = 5;
 
+// Tour status colors
+export const TOUR_STATUS_COLORS = {
+  pending: 'bg-yellow-100 text-yellow-800',
+  in_progress: 'bg-blue-100 text-blue-800',
+  completed: 'bg-green-100 text-green-800',
+  cancelled: 'bg-red-100 text-red-800',
+  paused: 'bg-orange-100 text-orange-800'
+};
+
+// Guide status colors
+export const GUIDE_STATUS_COLORS = {
+  available: 'bg-green-100 text-green-800',
+  busy: 'bg-yellow-100 text-yellow-800',
+  offline: 'bg-gray-100 text-gray-800',
+  emergency: 'bg-red-100 text-red-800'
+};
+
+// Alert types
+export const ALERT_TYPES = {
+  DELAY: 'delay',
+  EMERGENCY: 'emergency',
+  LOCATION_LOST: 'location_lost',
+  LOW_BATTERY: 'low_battery',
+  INFO: 'info'
+};
+
+// Map settings
+export const MAP_SETTINGS = {
+  DEFAULT_ZOOM: 13,
+  DEFAULT_CENTER: [-12.0464, -77.0428], // Lima coordinates
+  UPDATE_INTERVAL: 30000, // 30 seconds
+  MARKER_COLORS: {
+    guide: '#3B82F6',
+    tourist: '#10B981',
+    waypoint: '#F59E0B',
+    emergency: '#EF4444'
+  }
+};
+
+// Monitoring messages
+export const MONITORING_MESSAGES = {
+  FETCH_ERROR: 'Error al cargar datos de monitoreo',
+  UPDATE_SUCCESS: 'Estado actualizado exitosamente',
+  UPDATE_ERROR: 'Error al actualizar estado',
+  LOCATION_UPDATED: 'Ubicación actualizada',
+  CONNECTION_LOST: 'Conexión perdida con el guía',
+  CONNECTION_RESTORED: 'Conexión restaurada'
+};
+
 
 // Export default para compatibilidad
 export default {
@@ -56,5 +105,10 @@ export default {
   TABS,
   PROGRESS_CIRCLE,
   MAP_MOBILE_HEIGHT,
-  MAX_PHOTOS_PER_STOP
+  MAX_PHOTOS_PER_STOP,
+  TOUR_STATUS_COLORS,
+  GUIDE_STATUS_COLORS,
+  ALERT_TYPES,
+  MAP_SETTINGS,
+  MONITORING_MESSAGES
 };

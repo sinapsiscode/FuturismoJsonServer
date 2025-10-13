@@ -11,7 +11,7 @@
       "last_name": "Sistema",
       "phone": "+51987654321",
       "avatar": "https://ui-avatars.com/api/?name=Admin&background=3B82F6&color=fff",
-      "last_login_at": "2025-10-12T19:09:43.418Z",
+      "last_login_at": "2025-10-13T06:24:20.805Z",
       "created_at": "2024-01-01T00:00:00Z",
       "updated_at": "2024-12-18T10:00:00Z"
     },
@@ -26,7 +26,7 @@
       "last_name": "González",
       "phone": "+51987654322",
       "avatar": "https://ui-avatars.com/api/?name=Maria+Gonzalez&background=10B981&color=fff",
-      "last_login_at": "2025-10-12T19:09:43.472Z",
+      "last_login_at": "2025-10-13T05:27:46.977Z",
       "created_at": "2024-02-01T00:00:00Z",
       "updated_at": "2024-12-18T09:30:00Z"
     },
@@ -41,7 +41,7 @@
       "last_name": "Mendoza",
       "phone": "+51987654323",
       "avatar": "https://ui-avatars.com/api/?name=Carlos+Mendoza&background=F59E0B&color=fff",
-      "last_login_at": "2025-10-12T19:09:43.501Z",
+      "last_login_at": "2025-10-13T05:41:37.855Z",
       "created_at": "2024-03-01T00:00:00Z",
       "updated_at": "2024-12-18T08:45:00Z"
     },
@@ -56,7 +56,7 @@
       "last_name": "Ruiz",
       "phone": "+51987654324",
       "avatar": "https://ui-avatars.com/api/?name=Ana+Ruiz&background=8B5CF6&color=fff",
-      "last_login_at": "2024-12-18T07:15:00Z",
+      "last_login_at": "2025-10-13T05:42:13.695Z",
       "created_at": "2024-04-01T00:00:00Z",
       "updated_at": "2024-12-18T07:15:00Z"
     }
@@ -181,40 +181,7 @@
       "updated_at": "2024-12-18T00:00:00Z"
     }
   ],
-  "reservations": [
-    {
-      "id": "reservation-1",
-      "tour_id": "tour-1",
-      "client_id": "client-1",
-      "guide_id": "guide-1",
-      "agency_id": "agency-1",
-      "date": "2024-12-25",
-      "time": "09:00",
-      "participants": 4,
-      "total_amount": 180,
-      "status": "confirmed",
-      "payment_status": "paid",
-      "special_requests": "Grupo familiar con niños",
-      "created_at": "2024-12-15T14:30:00Z",
-      "updated_at": "2024-12-15T14:30:00Z"
-    },
-    {
-      "id": "reservation-2",
-      "tour_id": "tour-2",
-      "client_id": "client-2",
-      "guide_id": "guide-2",
-      "agency_id": "agency-1",
-      "date": "2024-12-28",
-      "time": "11:00",
-      "participants": 2,
-      "total_amount": 170,
-      "status": "pending",
-      "payment_status": "pending",
-      "special_requests": "Vegetarianos",
-      "created_at": "2024-12-16T10:15:00Z",
-      "updated_at": "2024-12-16T10:15:00Z"
-    }
-  ],
+  "reservations": [],
   "clients": [
     {
       "id": "client-1",
@@ -304,21 +271,7 @@
       "updated_at": "2024-12-17T11:15:00Z"
     }
   ],
-  "financial_transactions": [
-    {
-      "id": "transaction-1",
-      "type": "booking_payment",
-      "amount": 180,
-      "currency": "PEN",
-      "reservation_id": "reservation-1",
-      "payer_id": "client-1",
-      "recipient_id": "agency-1",
-      "status": "completed",
-      "payment_method": "credit_card",
-      "created_at": "2024-12-15T14:35:00Z",
-      "updated_at": "2024-12-15T14:35:00Z"
-    }
-  ],
+  "financial_transactions": [],
   "notifications": [
     {
       "id": "notification-1",
@@ -1291,248 +1244,8 @@
       ]
     }
   ],
-  "reservations_extended": [
-    {
-      "id": "RES001",
-      "tourId": "1",
-      "tourName": "City Tour Lima Histórica",
-      "clientId": "1",
-      "clientName": "Viajes El Dorado SAC",
-      "clientContact": "Ana López",
-      "clientEmail": "ventas@viajeseldorado.com",
-      "clientPhone": "+51 912345678",
-      "date": "2024-02-15",
-      "time": "09:00",
-      "adults": 8,
-      "children": 2,
-      "total": 315,
-      "status": "confirmada",
-      "pickupLocation": "Hotel Marriott Miraflores",
-      "specialRequirements": "Un turista es vegetariano",
-      "guideId": "1",
-      "guideName": "Carlos Mendoza",
-      "createdAt": "2024-02-01",
-      "paymentStatus": "pagado",
-      "paymentMethod": "transferencia",
-      "commission": 31.5,
-      "notes": []
-    },
-    {
-      "id": "RES002",
-      "tourId": "2",
-      "tourName": "Tour Gastronómico Miraflores",
-      "clientId": "3",
-      "clientName": "Laura Martínez",
-      "clientEmail": "laura.martinez@gmail.com",
-      "clientPhone": "+51 934567890",
-      "date": "2024-02-16",
-      "time": "11:00",
-      "adults": 2,
-      "children": 0,
-      "total": 130,
-      "status": "pendiente",
-      "pickupLocation": "Parque Kennedy",
-      "specialRequirements": "",
-      "guideId": "2",
-      "guideName": "María García",
-      "createdAt": "2024-02-10",
-      "paymentStatus": "pendiente",
-      "paymentMethod": "tarjeta",
-      "commission": 13,
-      "notes": [
-        "Cliente frecuente",
-        "Prefiere comida picante"
-      ]
-    },
-    {
-      "id": "RES003",
-      "tourId": "3",
-      "tourName": "Islas Palomino - Lobos Marinos",
-      "clientId": "2",
-      "clientName": "Peru Travel Experience",
-      "clientContact": "Roberto Díaz",
-      "clientEmail": "roberto@perutravel.com",
-      "clientPhone": "+51 923456789",
-      "date": "2024-02-18",
-      "time": "06:00",
-      "adults": 12,
-      "children": 3,
-      "total": 1147.5,
-      "status": "confirmada",
-      "pickupLocation": "Hotel Hilton Lima",
-      "specialRequirements": "Incluir almuerzo vegetariano para 2 personas",
-      "guideId": "3",
-      "guideName": "Juan Pérez",
-      "createdAt": "2024-02-05",
-      "paymentStatus": "pagado",
-      "paymentMethod": "credito",
-      "commission": 114.75,
-      "notes": [
-        "Grupo corporativo",
-        "Solicitan factura"
-      ]
-    }
-  ],
-  "detailed_reservations": [
-    {
-      "id": "RES001",
-      "tourName": "City Tour Lima Histórica",
-      "clientName": "Juan Pérez",
-      "clientPhone": "+51 987654321",
-      "date": "2024-02-15",
-      "time": "09:00",
-      "adults": 2,
-      "children": 1,
-      "total": 105,
-      "status": "confirmada",
-      "pickupLocation": "Hotel Marriott Miraflores",
-      "createdAt": "2024-02-01",
-      "paymentStatus": "pagado",
-      "tourists": [
-        {
-          "id": "1",
-          "name": "Juan Pérez",
-          "documentType": "DNI",
-          "documentNumber": "12345678",
-          "phone": "+51 987654321"
-        },
-        {
-          "id": "2",
-          "name": "María Pérez",
-          "documentType": "DNI",
-          "documentNumber": "87654321",
-          "phone": "+51 987654321"
-        },
-        {
-          "id": "3",
-          "name": "Carlos García",
-          "documentType": "DNI",
-          "documentNumber": "11223344",
-          "phone": "+51 987654322"
-        }
-      ],
-      "groups": [
-        {
-          "representativeName": "Juan Pérez",
-          "representativePhone": "+51 987654321",
-          "companionsCount": 2
-        },
-        {
-          "representativeName": "Carlos García",
-          "representativePhone": "+51 987654322",
-          "companionsCount": 1
-        }
-      ],
-      "isRated": false
-    },
-    {
-      "id": "RES002",
-      "tourName": "Tour Gastronómico Miraflores",
-      "clientName": "María García",
-      "clientPhone": "+51 976543210",
-      "date": "2024-02-16",
-      "time": "12:00",
-      "adults": 4,
-      "children": 0,
-      "total": 260,
-      "status": "pendiente",
-      "pickupLocation": "Parque Kennedy",
-      "createdAt": "2024-02-05",
-      "paymentStatus": "pendiente",
-      "tourists": [
-        {
-          "id": "4",
-          "name": "María García",
-          "documentType": "DNI",
-          "documentNumber": "22334455",
-          "phone": "+51 976543210"
-        },
-        {
-          "id": "5",
-          "name": "Ana García",
-          "documentType": "DNI",
-          "documentNumber": "33445566",
-          "phone": "+51 976543210"
-        },
-        {
-          "id": "6",
-          "name": "Luis García",
-          "documentType": "DNI",
-          "documentNumber": "44556677",
-          "phone": "+51 976543210"
-        },
-        {
-          "id": "7",
-          "name": "Pedro García",
-          "documentType": "DNI",
-          "documentNumber": "55667788",
-          "phone": "+51 976543210"
-        }
-      ],
-      "groups": [
-        {
-          "representativeName": "María García",
-          "representativePhone": "+51 976543210",
-          "companionsCount": 3
-        }
-      ],
-      "isRated": true
-    },
-    {
-      "id": "RES003",
-      "tourName": "Islas Palomino",
-      "clientName": "Carlos Rodríguez",
-      "clientPhone": "+51 965432198",
-      "date": "2024-02-18",
-      "time": "06:00",
-      "adults": 3,
-      "children": 2,
-      "total": 340,
-      "status": "completada",
-      "pickupLocation": "Hotel Hilton",
-      "createdAt": "2024-02-08",
-      "paymentStatus": "pagado",
-      "tourists": [
-        {
-          "id": "8",
-          "name": "Carlos Rodríguez",
-          "documentType": "DNI",
-          "documentNumber": "66778899",
-          "phone": "+51 965432198"
-        },
-        {
-          "id": "9",
-          "name": "Sofia Rodríguez",
-          "documentType": "DNI",
-          "documentNumber": "77889900",
-          "phone": "+51 965432198"
-        },
-        {
-          "id": "10",
-          "name": "Miguel Rodríguez",
-          "documentType": "DNI",
-          "documentNumber": "88990011",
-          "phone": "+51 965432198"
-        },
-        {
-          "id": "11",
-          "name": "Elena Rodríguez",
-          "documentType": "DNI",
-          "documentNumber": "99001122",
-          "phone": "+51 965432198"
-        },
-        {
-          "id": "12",
-          "name": "Pablo Rodríguez",
-          "documentType": "DNI",
-          "documentNumber": "00112233",
-          "phone": "+51 965432198"
-        }
-      ],
-      "groups": [],
-      "isRated": false
-    }
-  ],
+  "reservations_extended": [],
+  "detailed_reservations": [],
   "notifications_extended": [
     {
       "id": "1",
@@ -13703,5 +13416,6 @@
       "height": 150,
       "quality": 0.7
     }
-  }
+  },
+  "suggestions": []
 }

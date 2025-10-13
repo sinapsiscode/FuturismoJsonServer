@@ -48,6 +48,34 @@ export const SESSION_CONFIG = (() => {
   return config.sessionConfig || {};
 })();
 
+// Initial state for auth store
+export const INITIAL_STATE = {
+  token: null,
+  user: null,
+  isAuthenticated: false,
+  isLoading: false,
+  error: null,
+  rememberMe: false
+};
+
+// Error messages
+export const ERROR_MESSAGES = {
+  INVALID_CREDENTIALS: 'Credenciales inválidas',
+  EMAIL_EXISTS: 'El email ya está registrado',
+  UPDATE_PROFILE_ERROR: 'Error al actualizar el perfil',
+  NETWORK_ERROR: 'Error de conexión',
+  UNAUTHORIZED: 'No autorizado',
+  SESSION_EXPIRED: 'Sesión expirada'
+};
+
+// Auth events for custom events
+export const AUTH_EVENTS = {
+  LOGIN_SUCCESS: 'auth:login:success',
+  LOGIN_FAILURE: 'auth:login:failure',
+  LOGOUT: 'auth:logout',
+  SESSION_EXPIRED: 'auth:session:expired',
+  TOKEN_REFRESHED: 'auth:token:refreshed'
+};
 
 // Export default para compatibilidad
 export default {
@@ -55,5 +83,8 @@ export default {
   GUIDE_TYPES,
   USER_STATUS,
   AUTH_STATES,
-  SESSION_CONFIG
+  SESSION_CONFIG,
+  INITIAL_STATE,
+  ERROR_MESSAGES,
+  AUTH_EVENTS
 };

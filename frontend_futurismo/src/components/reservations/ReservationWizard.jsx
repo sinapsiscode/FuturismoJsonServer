@@ -17,7 +17,7 @@ const TOUR_TYPES = {
   REGULAR: 'regular',
   FULLDAY: 'fullday'
 };
-import { WIZARD_STEPS, SERVICE_TYPES, MAX_COMPANIONS_PER_GROUP } from '../../constants/reservationConstants';
+import { WIZARD_STEPS, SERVICE_TYPES, MAX_COMPANIONS_PER_GROUP } from '../../constants/reservationsConstants';
 
 // Componentes del wizard
 import StepIndicator from './wizard/StepIndicator';

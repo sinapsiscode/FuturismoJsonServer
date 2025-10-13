@@ -19,7 +19,13 @@
       "Bash(timeout:*)",
       "Bash(python:*)",
       "Bash(del:*)",
-      "Read(//c/**)"
+      "Read(//c/**)",
+      "Bash(Get-Process node -ErrorAction SilentlyContinue)",
+      "Bash(Stop-Process -Force)",
+      "Bash(Stop-Process -Force -Id 25828)",
+      "mcp__ide__getDiagnostics",
+      "Bash(npm run dev)",
+      "Bash(npx kill-port:*)"
     ],
     "deny": [],
     "ask": []
