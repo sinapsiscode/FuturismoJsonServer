@@ -54,6 +54,33 @@ module.exports = (router) => {
     }
   });
 
+  // Get client types (specific route - MUST come before /:id)
+  clientsRouter.get('/types', (req, res) => {
+    try {
+      const db = router.db;
+      const clientTypes = db.get('client_types').value();
+
+      if (!clientTypes) {
+        return res.status(404).json({
+          success: false,
+          error: 'Tipos de clientes no encontrados'
+        });
+      }
+
+      res.json({
+        success: true,
+        data: clientTypes
+      });
+
+    } catch (error) {
+      console.error('Error fetching client types:', error);
+      res.status(500).json({
+        success: false,
+        error: 'Error al obtener tipos de clientes'
+      });
+    }
+  });
+
   // Get client by ID
   clientsRouter.get('/:id', (req, res) => {
     try {

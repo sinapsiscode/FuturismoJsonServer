@@ -4,65 +4,39 @@ const { generateId, paginate, filterBy, sortBy, calculatePrice, successResponse,
 module.exports = (router) => {
   const servicesRouter = express.Router();
 
+  // Get active services (monitoring)
+  servicesRouter.get('/active', (req, res) => {
+    try {
+      const db = router.db;
+      const monitoringTours = db.get('monitoring_tours').value() || [];
+
+      // Filter by provided filters if any
+      const { status, guide, date } = req.query;
+      let filteredTours = monitoringTours;
+
+      if (status) {
+        filteredTours = filteredTours.filter(t => t.status === status);
+      }
+      if (guide) {
+        filteredTours = filteredTours.filter(t => t.guideName === guide);
+      }
+      if (date) {
+        filteredTours = filteredTours.filter(t => t.date === date);
+      }
+
+      res.json(successResponse(filteredTours));
+
+    } catch (error) {
+      console.error('Error fetching active services:', error);
+      res.status(500).json(errorResponse('Error al obtener servicios activos'));
+    }
+  });
+
   // Get all services
   servicesRouter.get('/', (req, res) => {
     try {
       const db = router.db;
-      let services = db.get('services').value() || [];
-
-      // If no services in db.json, create some mock data
-      if (services.length === 0) {
-        services = [
-          {
-            id: 'service-1',
-            name: 'Tour Machu Picchu',
-            description: 'Visita guiada a Machu Picchu con transporte incluido',
-            category: 'tours',
-            price: 299.99,
-            currency: 'USD',
-            duration: '1 día',
-            status: 'active',
-            rating: 4.8,
-            max_group_size: 15,
-            included: ['Transporte', 'Guía', 'Entradas'],
-            excluded: ['Comidas', 'Propinas'],
-            location: 'Cusco',
-            created_at: new Date().toISOString()
-          },
-          {
-            id: 'service-2',
-            name: 'Hospedaje Lima',
-            description: 'Hotel 4 estrellas en el centro de Lima',
-            category: 'accommodation',
-            price: 89.99,
-            currency: 'USD',
-            duration: '1 noche',
-            status: 'active',
-            rating: 4.5,
-            max_group_size: 4,
-            included: ['Desayuno', 'WiFi', 'Gimnasio'],
-            excluded: ['Parking', 'Minibar'],
-            location: 'Lima',
-            created_at: new Date().toISOString()
-          },
-          {
-            id: 'service-3',
-            name: 'Transporte Aeropuerto',
-            description: 'Transporte privado desde/hacia el aeropuerto',
-            category: 'transport',
-            price: 25.00,
-            currency: 'USD',
-            duration: '1 hora',
-            status: 'active',
-            rating: 4.7,
-            max_group_size: 6,
-            included: ['Conductor', 'Vehículo', 'Combustible'],
-            excluded: ['Peajes', 'Equipaje extra'],
-            location: 'Lima',
-            created_at: new Date().toISOString()
-          }
-        ];
-      }
+      const services = db.get('services').value() || [];
 
       // Extract query parameters
       const {

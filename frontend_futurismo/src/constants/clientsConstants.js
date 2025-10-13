@@ -44,65 +44,86 @@ export const IDENTIFICATION_TYPES = (() => {
 })();
 
 // Client type labels for display
-export const CLIENT_TYPE_LABELS = {
-  agency: 'Agencia',
-  company: 'Empresa',
-  individual: 'Individual'
-};
+export const CLIENT_TYPE_LABELS = (() => {
+  const config = getClientsConfig();
+  return config.clientTypeLabels || {
+    agency: 'Agencia',
+    company: 'Empresa',
+    individual: 'Individual'
+  };
+})();
 
 // Client status labels for display
-export const CLIENT_STATUS_LABELS = {
-  active: 'Activo',
-  inactive: 'Inactivo',
-  suspended: 'Suspendido',
-  pending: 'Pendiente'
-};
+export const CLIENT_STATUS_LABELS = (() => {
+  const config = getClientsConfig();
+  return config.clientStatusLabels || {
+    active: 'Activo',
+    inactive: 'Inactivo',
+    suspended: 'Suspendido',
+    pending: 'Pendiente'
+  };
+})();
 
 // Client status colors for UI
-export const CLIENT_STATUS_COLORS = {
-  active: 'bg-green-100 text-green-800',
-  inactive: 'bg-gray-100 text-gray-800',
-  suspended: 'bg-red-100 text-red-800',
-  pending: 'bg-yellow-100 text-yellow-800'
-};
+export const CLIENT_STATUS_COLORS = (() => {
+  const config = getClientsConfig();
+  return config.clientStatusColors || {
+    active: 'bg-green-100 text-green-800',
+    inactive: 'bg-gray-100 text-gray-800',
+    suspended: 'bg-red-100 text-red-800',
+    pending: 'bg-yellow-100 text-yellow-800'
+  };
+})();
 
 // Document types
-export const DOCUMENT_TYPES = {
-  RUC: 'ruc',
-  DNI: 'dni',
-  CE: 'ce',
-  PASSPORT: 'passport'
-};
+export const DOCUMENT_TYPES = (() => {
+  const config = getClientsConfig();
+  return config.documentTypes || {
+    RUC: 'ruc',
+    DNI: 'dni',
+    CE: 'ce',
+    PASSPORT: 'passport'
+  };
+})();
 
 // Document type labels for display
-export const DOCUMENT_TYPE_LABELS = {
-  ruc: 'RUC',
-  dni: 'DNI',
-  ce: 'Carnet de Extranjería',
-  passport: 'Pasaporte'
-};
+export const DOCUMENT_TYPE_LABELS = (() => {
+  const config = getClientsConfig();
+  return config.documentTypeLabels || {
+    ruc: 'RUC',
+    dni: 'DNI',
+    ce: 'Carnet de Extranjería',
+    passport: 'Pasaporte'
+  };
+})();
 
 // Client validation rules
-export const CLIENT_VALIDATIONS = {
-  NAME_MIN_LENGTH: 3,
-  RUC_LENGTH: 11,
-  DNI_LENGTH: 8,
-  PHONE_LENGTH: 9,
-  EMAIL_REGEX: /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-};
+export const CLIENT_VALIDATIONS = (() => {
+  const config = getClientsConfig();
+  return config.clientValidations || {
+    NAME_MIN_LENGTH: 3,
+    RUC_LENGTH: 11,
+    DNI_LENGTH: 8,
+    PHONE_LENGTH: 9,
+    EMAIL_REGEX: /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+  };
+})();
 
 // Client messages for toast notifications
-export const CLIENT_MESSAGES = {
-  FETCH_ERROR: 'Error al cargar clientes',
-  CREATE_SUCCESS: 'Cliente creado exitosamente',
-  CREATE_ERROR: 'Error al crear cliente',
-  UPDATE_SUCCESS: 'Cliente actualizado exitosamente',
-  UPDATE_ERROR: 'Error al actualizar cliente',
-  DELETE_SUCCESS: 'Cliente eliminado exitosamente',
-  DELETE_ERROR: 'Error al eliminar cliente',
-  NOT_FOUND: 'Cliente no encontrado',
-  DUPLICATE_DOCUMENT: 'Este documento ya está registrado'
-};
+export const CLIENT_MESSAGES = (() => {
+  const config = getClientsConfig();
+  return config.clientMessages || {
+    FETCH_ERROR: 'Error al cargar clientes',
+    CREATE_SUCCESS: 'Cliente creado exitosamente',
+    CREATE_ERROR: 'Error al crear cliente',
+    UPDATE_SUCCESS: 'Cliente actualizado exitosamente',
+    UPDATE_ERROR: 'Error al actualizar cliente',
+    DELETE_SUCCESS: 'Cliente eliminado exitosamente',
+    DELETE_ERROR: 'Error al eliminar cliente',
+    NOT_FOUND: 'Cliente no encontrado',
+    DUPLICATE_DOCUMENT: 'Este documento ya está registrado'
+  };
+})();
 
 
 // Export default para compatibilidad

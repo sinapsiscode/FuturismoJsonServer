@@ -1,33 +1,9 @@
 {
   "permissions": {
     "allow": [
-      "Bash(npm start)",
-      "Bash(node server.js)",
-      "Bash(netstat:*)",
-      "Bash(findstr:*)",
-      "Bash(\"taskkill\" \"/F\" \"/PID\" \"17472\")",
-      "Bash(find:*)",
       "Bash(node:*)",
-      "Bash(tasklist)",
-      "Bash(taskkill:*)",
-      "Bash(copy authService.js authService.backup.js)",
-      "Bash(git add:*)",
-      "Bash(git rm:*)",
-      "Bash(curl:*)",
-      "Bash(npm run lint)",
-      "Bash(dir:*)",
-      "Bash(timeout:*)",
-      "Bash(python:*)",
-      "Bash(del:*)",
-      "Read(//c/**)",
-      "Bash(Get-Process node -ErrorAction SilentlyContinue)",
-      "Bash(Stop-Process -Force)",
-      "Bash(Stop-Process -Force -Id 25828)",
-      "mcp__ide__getDiagnostics",
-      "Bash(npm run dev)",
-      "Bash(npx kill-port:*)",
-      "Bash(powershell:*)",
-      "Bash(more)"
+      "Bash(find:*)",
+      "Bash(curl:*)"
     ],
     "deny": [],
     "ask": []

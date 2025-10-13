@@ -6,92 +6,15 @@ module.exports = (router) => {
   // Get all app constants and configurations
   configRouter.get('/constants', (req, res) => {
     try {
-      const constants = {
-        // User roles
-        USER_ROLES: {
-          ADMIN: 'admin',
-          AGENCY: 'agency',
-          GUIDE: 'guide',
-          CLIENT: 'client'
-        },
+      const db = router.db;
+      const constants = db.get('app_constants').value();
 
-        // Reservation statuses
-        RESERVATION_STATUS: {
-          PENDING: 'pending',
-          CONFIRMED: 'confirmed',
-          IN_PROGRESS: 'in_progress',
-          COMPLETED: 'completed',
-          CANCELLED: 'cancelled'
-        },
-
-        // Payment statuses
-        PAYMENT_STATUS: {
-          PENDING: 'pending',
-          PAID: 'paid',
-          FAILED: 'failed',
-          REFUNDED: 'refunded'
-        },
-
-        // Service categories
-        SERVICE_CATEGORIES: {
-          TOURS: 'tours',
-          ACCOMMODATION: 'accommodation',
-          TRANSPORT: 'transport',
-          ACTIVITIES: 'activities',
-          MEALS: 'meals'
-        },
-
-        // Tour types
-        TOUR_TYPES: {
-          CULTURAL: 'cultural',
-          ADVENTURE: 'adventure',
-          GASTRONOMIC: 'gastronomic',
-          NATURE: 'nature',
-          HISTORICAL: 'historical'
-        },
-
-        // Group types
-        GROUP_TYPES: {
-          INDIVIDUAL: 'individual',
-          COUPLE: 'couple',
-          FAMILY: 'family',
-          GROUP: 'group',
-          CORPORATE: 'corporate'
-        },
-
-        // Currencies
-        CURRENCIES: {
-          USD: 'USD',
-          PEN: 'PEN',
-          EUR: 'EUR'
-        },
-
-        // Languages
-        LANGUAGES: {
-          ES: 'es',
-          EN: 'en',
-          FR: 'fr',
-          PT: 'pt'
-        },
-
-        // Emergency types
-        EMERGENCY_TYPES: {
-          MEDICAL: 'medical',
-          SECURITY: 'security',
-          WEATHER: 'weather',
-          TRANSPORT: 'transport',
-          OTHER: 'other'
-        },
-
-        // Notification types
-        NOTIFICATION_TYPES: {
-          INFO: 'info',
-          WARNING: 'warning',
-          SUCCESS: 'success',
-          ERROR: 'error',
-          EMERGENCY: 'emergency'
-        }
-      };
+      if (!constants) {
+        return res.status(404).json({
+          success: false,
+          error: 'Constantes de aplicación no encontradas'
+        });
+      }
 
       res.json({
         success: true,
@@ -111,16 +34,13 @@ module.exports = (router) => {
   configRouter.get('/work-zones', (req, res) => {
     try {
       const db = router.db;
-      let workZones = db.get('work_zones').value();
+      const workZones = db.get('work_zones').value();
 
-      if (!workZones || workZones.length === 0) {
-        workZones = [
-          { id: 'zone-1', name: 'Lima Centro', code: 'LIM-C', active: true },
-          { id: 'zone-2', name: 'Cusco', code: 'CUS', active: true },
-          { id: 'zone-3', name: 'Arequipa', code: 'AQP', active: true },
-          { id: 'zone-4', name: 'Trujillo', code: 'TRU', active: true },
-          { id: 'zone-5', name: 'Piura', code: 'PIU', active: true }
-        ];
+      if (!workZones) {
+        return res.status(404).json({
+          success: false,
+          error: 'Zonas de trabajo no encontradas'
+        });
       }
 
       res.json({
@@ -140,46 +60,13 @@ module.exports = (router) => {
   configRouter.get('/tour-types', (req, res) => {
     try {
       const db = router.db;
-      let tourTypes = db.get('tour_types').value();
+      const tourTypes = db.get('tour_types').value();
 
-      if (!tourTypes || tourTypes.length === 0) {
-        tourTypes = [
-          {
-            id: 'cultural',
-            name: 'Cultural',
-            description: 'Tours enfocados en historia y cultura',
-            icon: '🏛️',
-            active: true
-          },
-          {
-            id: 'adventure',
-            name: 'Aventura',
-            description: 'Actividades de aventura y deportes extremos',
-            icon: '🏔️',
-            active: true
-          },
-          {
-            id: 'gastronomic',
-            name: 'Gastronómico',
-            description: 'Experiencias culinarias y gastronómicas',
-            icon: '🍽️',
-            active: true
-          },
-          {
-            id: 'nature',
-            name: 'Naturaleza',
-            description: 'Tours en contacto con la naturaleza',
-            icon: '🌿',
-            active: true
-          },
-          {
-            id: 'historical',
-            name: 'Histórico',
-            description: 'Sitios históricos y arqueológicos',
-            icon: '🏺',
-            active: true
-          }
-        ];
+      if (!tourTypes) {
+        return res.status(404).json({
+          success: false,
+          error: 'Tipos de tour no encontrados'
+        });
       }
 
       res.json({
@@ -199,46 +86,13 @@ module.exports = (router) => {
   configRouter.get('/group-types', (req, res) => {
     try {
       const db = router.db;
-      let groupTypes = db.get('group_types').value();
+      const groupTypes = db.get('group_types').value();
 
-      if (!groupTypes || groupTypes.length === 0) {
-        groupTypes = [
-          {
-            id: 'individual',
-            name: 'Individual',
-            min_size: 1,
-            max_size: 1,
-            active: true
-          },
-          {
-            id: 'couple',
-            name: 'Pareja',
-            min_size: 2,
-            max_size: 2,
-            active: true
-          },
-          {
-            id: 'family',
-            name: 'Familia',
-            min_size: 3,
-            max_size: 6,
-            active: true
-          },
-          {
-            id: 'group',
-            name: 'Grupo',
-            min_size: 7,
-            max_size: 15,
-            active: true
-          },
-          {
-            id: 'corporate',
-            name: 'Corporativo',
-            min_size: 10,
-            max_size: 50,
-            active: true
-          }
-        ];
+      if (!groupTypes) {
+        return res.status(404).json({
+          success: false,
+          error: 'Tipos de grupo no encontrados'
+        });
       }
 
       res.json({
@@ -258,46 +112,13 @@ module.exports = (router) => {
   configRouter.get('/languages', (req, res) => {
     try {
       const db = router.db;
-      let languages = db.get('languages').value();
+      const languages = db.get('languages').value();
 
-      if (!languages || languages.length === 0) {
-        languages = [
-          {
-            id: 'es',
-            name: 'Español',
-            native_name: 'Español',
-            flag: '🇪🇸',
-            active: true
-          },
-          {
-            id: 'en',
-            name: 'English',
-            native_name: 'English',
-            flag: '🇺🇸',
-            active: true
-          },
-          {
-            id: 'fr',
-            name: 'Français',
-            native_name: 'Français',
-            flag: '🇫🇷',
-            active: true
-          },
-          {
-            id: 'pt',
-            name: 'Português',
-            native_name: 'Português',
-            flag: '🇧🇷',
-            active: true
-          },
-          {
-            id: 'de',
-            name: 'Deutsch',
-            native_name: 'Deutsch',
-            flag: '🇩🇪',
-            active: false
-          }
-        ];
+      if (!languages) {
+        return res.status(404).json({
+          success: false,
+          error: 'Idiomas no encontrados'
+        });
       }
 
       res.json({
@@ -313,7 +134,11 @@ module.exports = (router) => {
     }
   });
 
-  // Get app settings/configuration
+  /**
+   * GET /api/config/settings
+   * @deprecated Usar /api/config/app o /api/config/system en su lugar
+   * Este endpoint es legacy y mezcla configuración hardcodeada con env vars
+   */
   configRouter.get('/settings', (req, res) => {
     try {
       const settings = {
@@ -1180,6 +1005,72 @@ module.exports = (router) => {
   });
 
   /**
+   * GET /api/config/shared
+   * Obtiene las constantes compartidas desde db.json
+   */
+  configRouter.get('/shared', (req, res) => {
+    try {
+      const db = router.db;
+      const sharedConfig = db.get('shared_config').value();
+
+      if (!sharedConfig) {
+        return res.status(404).json({
+          success: false,
+          error: 'Constantes compartidas no encontradas'
+        });
+      }
+
+      res.json({
+        success: true,
+        data: sharedConfig,
+        meta: {
+          version: sharedConfig.version
+        }
+      });
+
+    } catch (error) {
+      console.error('Shared config error:', error);
+      res.status(500).json({
+        success: false,
+        error: 'Error al obtener constantes compartidas'
+      });
+    }
+  });
+
+  /**
+   * GET /api/config/core-services
+   * Obtiene la configuración de servicios centrales desde db.json
+   */
+  configRouter.get('/core-services', (req, res) => {
+    try {
+      const db = router.db;
+      const coreServicesConfig = db.get('core_services_config').value();
+
+      if (!coreServicesConfig) {
+        return res.status(404).json({
+          success: false,
+          error: 'Configuración de servicios centrales no encontrada'
+        });
+      }
+
+      res.json({
+        success: true,
+        data: coreServicesConfig,
+        meta: {
+          version: coreServicesConfig.version
+        }
+      });
+
+    } catch (error) {
+      console.error('Core services config error:', error);
+      res.status(500).json({
+        success: false,
+        error: 'Error al obtener configuración de servicios centrales'
+      });
+    }
+  });
+
+  /**
    * GET /api/config/modules
    * Obtiene toda la configuración de módulos en una sola llamada
    */
@@ -1205,7 +1096,12 @@ module.exports = (router) => {
         settings: db.get('settings_config').value() || null,
         profile: db.get('profile_config').value() || null,
         upload: db.get('upload_config').value() || null,
-        system: db.get('system_config').value() || null
+        system: db.get('system_config').value() || null,
+        emergency: db.get('emergency_config').value() || null,
+        guides: db.get('guides_config').value() || null,
+        app: db.get('app_config').value() || null,
+        coreServices: db.get('core_services_config').value() || null,
+        shared: db.get('shared_config').value() || null
       };
 
       res.json({

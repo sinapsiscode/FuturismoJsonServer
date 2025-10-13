@@ -44,35 +44,47 @@ export const SERVICE_AREAS = (() => {
 })();
 
 // Date formats for agency store
-export const DATE_FORMATS = {
-  DATE_KEY: 'yyyy-MM-dd',
-  DISPLAY: 'dd/MM/yyyy',
-  DISPLAY_LONG: 'dd MMMM yyyy',
-  TIME: 'HH:mm',
-  DATETIME: 'dd/MM/yyyy HH:mm'
-};
+export const DATE_FORMATS = (() => {
+  const config = getAgenciesConfig();
+  return config.dateFormats || {
+    DATE_KEY: 'yyyy-MM-dd',
+    DISPLAY: 'dd/MM/yyyy',
+    DISPLAY_LONG: 'dd MMMM yyyy',
+    TIME: 'HH:mm',
+    DATETIME: 'dd/MM/yyyy HH:mm'
+  };
+})();
 
 // Default agency configuration
-export const DEFAULT_AGENCY = {
-  ID: 'agency-1',
-  NAME: 'Agencia Principal',
-  INITIAL_POINTS: 0
-};
+export const DEFAULT_AGENCY = (() => {
+  const config = getAgenciesConfig();
+  return config.defaultAgency || {
+    ID: 'agency-1',
+    NAME: 'Agencia Principal',
+    INITIAL_POINTS: 0
+  };
+})();
 
 // Storage configuration for persist middleware
-export const STORAGE_CONFIG = {
-  KEY: 'agency-storage',
-  VERSION: 1
-};
+export const STORAGE_CONFIG = (() => {
+  const config = getAgenciesConfig();
+  return config.storageConfig || {
+    KEY: 'agency-storage',
+    VERSION: 1
+  };
+})();
 
 // Reservation status constants
-export const RESERVATION_STATUS = {
-  PENDING: 'pending',
-  CONFIRMED: 'confirmed',
-  IN_PROGRESS: 'in_progress',
-  COMPLETED: 'completed',
-  CANCELLED: 'cancelled'
-};
+export const RESERVATION_STATUS = (() => {
+  const config = getAgenciesConfig();
+  return config.reservationStatus || {
+    PENDING: 'pending',
+    CONFIRMED: 'confirmed',
+    IN_PROGRESS: 'in_progress',
+    COMPLETED: 'completed',
+    CANCELLED: 'cancelled'
+  };
+})();
 
 // Export default para compatibilidad
 export default {

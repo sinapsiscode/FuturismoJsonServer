@@ -24,29 +24,38 @@ const getReservationsConfig = () => {
 
 
 // Default filter values
-export const DEFAULT_FILTER_VALUES = {
-  SEARCH_TERM: '',
-  STATUS: 'all',
-  DATE_FROM: '',
-  DATE_TO: '',
-  CUSTOMER: '',
-  MIN_PASSENGERS: '',
-  MAX_PASSENGERS: '',
-  CURRENT_PAGE: 1
-};
+export const DEFAULT_FILTER_VALUES = (() => {
+  const config = getReservationsConfig();
+  return config.defaultFilterValues || {
+    SEARCH_TERM: '',
+    STATUS: 'all',
+    DATE_FROM: '',
+    DATE_TO: '',
+    CUSTOMER: '',
+    MIN_PASSENGERS: '',
+    MAX_PASSENGERS: '',
+    CURRENT_PAGE: 1
+  };
+})();
 
 // Filter limits
-export const FILTER_LIMITS = {
-  MAX_PASSENGERS: 100,
-  MIN_PASSENGERS: 1,
-  MAX_SEARCH_LENGTH: 100
-};
+export const FILTER_LIMITS = (() => {
+  const config = getReservationsConfig();
+  return config.filterLimits || {
+    MAX_PASSENGERS: 100,
+    MIN_PASSENGERS: 1,
+    MAX_SEARCH_LENGTH: 100
+  };
+})();
 
 // Pagination config
-export const PAGINATION_CONFIG = {
-  DEFAULT_PAGE_SIZE: 10,
-  PAGE_SIZE_OPTIONS: [10, 20, 50, 100]
-};
+export const PAGINATION_CONFIG = (() => {
+  const config = getReservationsConfig();
+  return config.paginationConfig || {
+    DEFAULT_PAGE_SIZE: 10,
+    PAGE_SIZE_OPTIONS: [10, 20, 50, 100]
+  };
+})();
 
 // Status options
 export const STATUS_OPTIONS = {

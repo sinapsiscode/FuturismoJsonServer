@@ -34,121 +34,17 @@ module.exports = (router) => {
         }
       }
 
-      // Get constants
-      initData.constants = {
-        USER_ROLES: {
-          ADMIN: 'admin',
-          AGENCY: 'agency',
-          GUIDE: 'guide',
-          CLIENT: 'client'
-        },
-        RESERVATION_STATUS: {
-          PENDING: 'pending',
-          CONFIRMED: 'confirmed',
-          IN_PROGRESS: 'in_progress',
-          COMPLETED: 'completed',
-          CANCELLED: 'cancelled'
-        },
-        SERVICE_CATEGORIES: {
-          TOURS: 'tours',
-          ACCOMMODATION: 'accommodation',
-          TRANSPORT: 'transport',
-          ACTIVITIES: 'activities',
-          MEALS: 'meals'
-        },
-        TOUR_TYPES: [
-          { id: 'cultural', name: 'Cultural', icon: '🏛️' },
-          { id: 'adventure', name: 'Aventura', icon: '🏔️' },
-          { id: 'gastronomic', name: 'Gastronómico', icon: '🍽️' },
-          { id: 'nature', name: 'Naturaleza', icon: '🌿' },
-          { id: 'historical', name: 'Histórico', icon: '🏺' }
-        ],
-        LANGUAGES: [
-          { id: 'es', name: 'Español', flag: '🇪🇸' },
-          { id: 'en', name: 'English', flag: '🇺🇸' },
-          { id: 'fr', name: 'Français', flag: '🇫🇷' },
-          { id: 'pt', name: 'Português', flag: '🇧🇷' }
-        ]
-      };
+      // Get constants from database
+      const appConstants = db.get('app_constants').value();
+      initData.constants = appConstants || {};
 
-      // Get role-specific navigation
-      switch (role) {
-        case 'admin':
-          initData.navigation = [
-            { id: 'dashboard', name: 'Dashboard', icon: 'dashboard', path: '/dashboard' },
-            { id: 'users', name: 'Usuarios', icon: 'people', path: '/users' },
-            { id: 'agencies', name: 'Agencias', icon: 'business', path: '/agencies' },
-            { id: 'guides', name: 'Guías', icon: 'person', path: '/guides' },
-            { id: 'services', name: 'Servicios', icon: 'room_service', path: '/services' },
-            { id: 'reservations', name: 'Reservaciones', icon: 'event', path: '/reservations' },
-            { id: 'statistics', name: 'Estadísticas', icon: 'analytics', path: '/statistics' },
-            { id: 'emergency', name: 'Emergencias', icon: 'warning', path: '/emergency' }
-          ];
-          initData.permissions = {
-            can_create_users: true,
-            can_edit_services: true,
-            can_view_all_reservations: true,
-            can_manage_system: true
-          };
-          break;
+      // Get role-specific navigation from database
+      const roleNav = db.get('role_navigation').find({ role: role || 'default' }).value();
+      initData.navigation = roleNav ? roleNav.navigation : [];
 
-        case 'agency':
-          initData.navigation = [
-            { id: 'dashboard', name: 'Dashboard', icon: 'dashboard', path: '/dashboard' },
-            { id: 'marketplace', name: 'Marketplace', icon: 'store', path: '/marketplace' },
-            { id: 'reservations', name: 'Mis Reservaciones', icon: 'event', path: '/reservations' },
-            { id: 'services', name: 'Servicios', icon: 'room_service', path: '/services' },
-            { id: 'clients', name: 'Clientes', icon: 'people', path: '/clients' },
-            { id: 'profile', name: 'Perfil', icon: 'account_circle', path: '/profile' }
-          ];
-          initData.permissions = {
-            can_create_reservations: true,
-            can_search_guides: true,
-            can_manage_clients: true,
-            can_view_own_data: true
-          };
-          break;
-
-        case 'guide':
-          initData.navigation = [
-            { id: 'dashboard', name: 'Dashboard', icon: 'dashboard', path: '/dashboard' },
-            { id: 'marketplace', name: 'Solicitudes', icon: 'work', path: '/marketplace' },
-            { id: 'tours', name: 'Mis Tours', icon: 'map', path: '/tours' },
-            { id: 'schedule', name: 'Horarios', icon: 'schedule', path: '/schedule' },
-            { id: 'earnings', name: 'Ingresos', icon: 'monetization_on', path: '/earnings' },
-            { id: 'profile', name: 'Perfil', icon: 'account_circle', path: '/profile' }
-          ];
-          initData.permissions = {
-            can_respond_requests: true,
-            can_manage_tours: true,
-            can_view_earnings: true,
-            can_update_profile: true
-          };
-          break;
-
-        case 'client':
-          initData.navigation = [
-            { id: 'dashboard', name: 'Dashboard', icon: 'dashboard', path: '/dashboard' },
-            { id: 'services', name: 'Servicios', icon: 'room_service', path: '/services' },
-            { id: 'reservations', name: 'Mis Reservaciones', icon: 'event', path: '/reservations' },
-            { id: 'favorites', name: 'Favoritos', icon: 'favorite', path: '/favorites' },
-            { id: 'profile', name: 'Perfil', icon: 'account_circle', path: '/profile' }
-          ];
-          initData.permissions = {
-            can_make_reservations: true,
-            can_view_services: true,
-            can_manage_profile: true
-          };
-          break;
-
-        default:
-          initData.navigation = [
-            { id: 'services', name: 'Servicios', icon: 'room_service', path: '/services' }
-          ];
-          initData.permissions = {
-            can_view_services: true
-          };
-      }
+      // Get role-specific permissions from database
+      const rolePerms = db.get('role_permissions').find({ role: role || 'default' }).value();
+      initData.permissions = rolePerms ? rolePerms.permissions : {};
 
       // Get dashboard data based on role
       if (role && userId) {

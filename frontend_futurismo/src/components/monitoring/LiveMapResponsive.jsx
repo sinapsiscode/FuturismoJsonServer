@@ -4,7 +4,7 @@ import useServicesStore from '../../stores/servicesStore';
 import { useLayout } from '../../contexts/LayoutContext';
 
 const LiveMapResponsive = ({ filters, onServiceSelect }) => {
-  const { activeServices, loadServices } = useServicesStore();
+  const { activeServices, loadActiveServices } = useServicesStore();
   const { viewport, sidebarOpen } = useLayout();
   const [selectedService, setSelectedService] = useState(null);
   const mapRef = useRef(null);
@@ -87,9 +87,9 @@ const LiveMapResponsive = ({ filters, onServiceSelect }) => {
 
     leafletMapRef.current = map;
 
-    // Cargar servicios si es necesario
+    // Cargar servicios activos si es necesario
     if (activeServices.length === 0) {
-      loadServices();
+      loadActiveServices();
     }
   };
 

@@ -17,7 +17,7 @@ const TOUR_TYPES = {
   REGULAR: 'regular',
   FULLDAY: 'fullday'
 };
-import { WIZARD_STEPS, SERVICE_TYPES, MAX_COMPANIONS_PER_GROUP } from '../../constants/reservationsConstants';
+import { FORM_STEPS, SERVICE_TYPES, MAX_COMPANIONS_PER_GROUP } from '../../constants/reservationsConstants';
 
 // Componentes del wizard
 import StepIndicator from './wizard/StepIndicator';
@@ -65,7 +65,7 @@ const ReservationWizard = ({ onClose }) => {
   const navigate = useNavigate();
   const { submitReservation } = useReservationsStore();
   const { t } = useTranslation();
-  const [currentStep, setCurrentStep] = useState(WIZARD_STEPS.SERVICE);
+  const [currentStep, setCurrentStep] = useState(FORM_STEPS.SERVICE);
   const [formData, setFormData] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isFulldayTour, setIsFulldayTour] = useState(false);
@@ -222,8 +222,8 @@ const ReservationWizard = ({ onClose }) => {
               <div className="flex items-center">
                 <div className={`
                   w-10 h-10 rounded-full flex items-center justify-center text-sm font-medium
-                  ${currentStep >= step.number 
-                    ? 'bg-primary-500 text-white' 
+                  ${currentStep >= step.number
+                    ? 'bg-primary-500 text-white'
                     : 'bg-gray-200 text-gray-600'}
                 `}>
                   {currentStep > step.number ? (
@@ -248,8 +248,8 @@ const ReservationWizard = ({ onClose }) => {
         </div>
       </div>
 
-      {/* Form content */}
-      <form onSubmit={handleSubmit(handleNext)} className="bg-white rounded-lg shadow-lg p-6">
+      {/* Form content - Added max-height and overflow for scrollability */}
+      <form onSubmit={handleSubmit(handleNext)} className="bg-white rounded-lg shadow-lg p-6 max-h-[calc(100vh-300px)] overflow-y-auto">
         {/* Step 1: Service Selection */}
         {currentStep === 1 && (
           <div className="space-y-6">
@@ -269,14 +269,27 @@ const ReservationWizard = ({ onClose }) => {
 
             <div>
               <label className="label">Tour</label>
-              <select {...register('tourId')} className="input">
-                <option value="">Selecciona un tour</option>
-                {availableTours.map(tour => (
-                  <option key={tour.id} value={tour.id}>
-                    {tour.name} - S/. {tour.price}/persona
-                  </option>
-                ))}
-              </select>
+              {toursLoading ? (
+                <div className="flex items-center justify-center py-4">
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600"></div>
+                  <span className="ml-3 text-gray-600">Cargando tours...</span>
+                </div>
+              ) : availableTours.length === 0 ? (
+                <div className="border border-yellow-300 bg-yellow-50 rounded-lg p-4">
+                  <p className="text-sm text-yellow-800">
+                    No hay tours disponibles en este momento. Por favor intenta más tarde o contacta a soporte.
+                  </p>
+                </div>
+              ) : (
+                <select {...register('tourId')} className="input">
+                  <option value="">Selecciona un tour</option>
+                  {availableTours.map(tour => (
+                    <option key={tour.id} value={tour.id}>
+                      {tour.name} - S/. {tour.price}/persona
+                    </option>
+                  ))}
+                </select>
+              )}
               {errors.tourId && (
                 <p className="mt-1 text-sm text-red-600">{errors.tourId.message}</p>
               )}

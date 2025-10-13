@@ -58,7 +58,7 @@ const HistoryFilters = ({
         {/* Rango de fechas */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">
-            {t('history.filters.dateRange')}
+            {t('history.filters.dateRangeLabel')}
           </label>
           <select
             value={filters.dateRange}
@@ -77,7 +77,7 @@ const HistoryFilters = ({
         {/* Estado */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">
-            {t('history.filters.status')}
+            {t('history.filters.statusLabel')}
           </label>
           <select
             value={filters.status}
@@ -95,7 +95,7 @@ const HistoryFilters = ({
         {/* Tipo de servicio */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">
-            {t('history.filters.serviceType')}
+            {t('history.filters.serviceTypeLabel')}
           </label>
           <select
             value={filters.serviceType}
@@ -113,7 +113,7 @@ const HistoryFilters = ({
         {/* Guía */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">
-            {t('history.filters.guide')}
+            {t('history.filters.guideLabel')}
           </label>
           <select
             value={filters.guide}
@@ -134,7 +134,7 @@ const HistoryFilters = ({
         {/* Chofer */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">
-            {t('history.filters.driver')}
+            {t('history.filters.driverLabel')}
           </label>
           <select
             value={filters.driver}
@@ -152,7 +152,7 @@ const HistoryFilters = ({
         {/* Vehículo */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">
-            {t('history.filters.vehicle')}
+            {t('history.filters.vehicleLabel')}
           </label>
           <select
             value={filters.vehicle}

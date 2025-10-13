@@ -44,55 +44,67 @@ export const VEHICLE_CATEGORIES = (() => {
 })();
 
 // License categories (Peru driver's license categories)
-export const LICENSE_CATEGORIES = {
-  A_I: 'A-I',
-  A_IIA: 'A-IIA',
-  A_IIB: 'A-IIB',
-  A_IIIA: 'A-IIIA',
-  A_IIIB: 'A-IIIB',
-  A_IIIC: 'A-IIIC',
-  B_I: 'B-I',
-  B_IIA: 'B-IIA',
-  B_IIB: 'B-IIB',
-  B_IIC: 'B-IIC'
-};
+export const LICENSE_CATEGORIES = (() => {
+  const config = getDriversConfig();
+  return config.licenseCategories || {
+    A_I: 'A-I',
+    A_IIA: 'A-IIA',
+    A_IIB: 'A-IIB',
+    A_IIIA: 'A-IIIA',
+    A_IIIB: 'A-IIIB',
+    A_IIIC: 'A-IIIC',
+    B_I: 'B-I',
+    B_IIA: 'B-IIA',
+    B_IIB: 'B-IIB',
+    B_IIC: 'B-IIC'
+  };
+})();
 
 // License category labels for display
-export const LICENSE_CATEGORY_LABELS = {
-  'A-I': 'A-I (Motocicletas)',
-  'A-IIA': 'A-IIA (Vehículos ligeros)',
-  'A-IIB': 'A-IIB (Taxis y remises)',
-  'A-IIIA': 'A-IIIA (Transporte pesado)',
-  'A-IIIB': 'A-IIIB (Buses)',
-  'A-IIIC': 'A-IIIC (Transporte especial)',
-  'B-I': 'B-I (Particular motocicleta)',
-  'B-IIA': 'B-IIA (Particular automóvil)',
-  'B-IIB': 'B-IIB (Particular pesado)',
-  'B-IIC': 'B-IIC (Particular especial)'
-};
+export const LICENSE_CATEGORY_LABELS = (() => {
+  const config = getDriversConfig();
+  return config.licenseCategoryLabels || {
+    'A-I': 'A-I (Motocicletas)',
+    'A-IIA': 'A-IIA (Vehículos ligeros)',
+    'A-IIB': 'A-IIB (Taxis y remises)',
+    'A-IIIA': 'A-IIIA (Transporte pesado)',
+    'A-IIIB': 'A-IIIB (Buses)',
+    'A-IIIC': 'A-IIIC (Transporte especial)',
+    'B-I': 'B-I (Particular motocicleta)',
+    'B-IIA': 'B-IIA (Particular automóvil)',
+    'B-IIB': 'B-IIB (Particular pesado)',
+    'B-IIC': 'B-IIC (Particular especial)'
+  };
+})();
 
 // Driver validation rules
-export const DRIVER_VALIDATIONS = {
-  DNI_LENGTH: 8,
-  NAME_MIN_LENGTH: 2,
-  PHONE_LENGTH: 9,
-  LICENSE_MIN_LENGTH: 5
-};
+export const DRIVER_VALIDATIONS = (() => {
+  const config = getDriversConfig();
+  return config.driverValidations || {
+    DNI_LENGTH: 8,
+    NAME_MIN_LENGTH: 2,
+    PHONE_LENGTH: 9,
+    LICENSE_MIN_LENGTH: 5
+  };
+})();
 
 // Driver messages for toast notifications
-export const DRIVER_MESSAGES = {
-  FETCH_ERROR: 'Error al cargar choferes',
-  CREATE_SUCCESS: 'Chofer creado exitosamente',
-  CREATE_ERROR: 'Error al crear chofer',
-  UPDATE_SUCCESS: 'Chofer actualizado exitosamente',
-  UPDATE_ERROR: 'Error al actualizar chofer',
-  DELETE_SUCCESS: 'Chofer eliminado exitosamente',
-  DELETE_ERROR: 'Error al eliminar chofer',
-  ASSIGN_SUCCESS: 'Chofer asignado exitosamente',
-  ASSIGN_ERROR: 'Error al asignar chofer',
-  AVAILABILITY_ERROR: 'Error al verificar disponibilidad',
-  NOT_FOUND: 'Chofer no encontrado'
-};
+export const DRIVER_MESSAGES = (() => {
+  const config = getDriversConfig();
+  return config.driverMessages || {
+    FETCH_ERROR: 'Error al cargar choferes',
+    CREATE_SUCCESS: 'Chofer creado exitosamente',
+    CREATE_ERROR: 'Error al crear chofer',
+    UPDATE_SUCCESS: 'Chofer actualizado exitosamente',
+    UPDATE_ERROR: 'Error al actualizar chofer',
+    DELETE_SUCCESS: 'Chofer eliminado exitosamente',
+    DELETE_ERROR: 'Error al eliminar chofer',
+    ASSIGN_SUCCESS: 'Chofer asignado exitosamente',
+    ASSIGN_ERROR: 'Error al asignar chofer',
+    AVAILABILITY_ERROR: 'Error al verificar disponibilidad',
+    NOT_FOUND: 'Chofer no encontrado'
+  };
+})();
 
 // Export default para compatibilidad
 export default {

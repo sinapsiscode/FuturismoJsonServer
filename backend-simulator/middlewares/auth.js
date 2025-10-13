@@ -7,7 +7,12 @@ const authMiddleware = (req, res, next) => {
   const publicPaths = [
     '/auth/login',
     '/auth/register',
-    '/config/' // All config endpoints should be public
+    '/config/', // All config endpoints should be public
+    '/services/active', // Active services for monitoring map
+    '/clients/types', // Client types configuration
+    '/tours/categories', // Tour categories configuration
+    '/tours', // Tours catalog (browse tours without authentication)
+    '/app/init' // App initialization data
   ];
   if (publicPaths.some(path => req.path.includes(path))) {
     return next();

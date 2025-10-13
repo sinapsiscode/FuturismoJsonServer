@@ -28,22 +28,28 @@ export const LANGUAGES = (() => {
   return config.languages || [];
 })();
 
-export const SORT_OPTIONS = [
-  { value: 'rating', label: 'Calificación' },
-  { value: 'price', label: 'Precio' },
-  { value: 'experience', label: 'Experiencia' }
-];
+export const SORT_OPTIONS = (() => {
+  const config = getMarketplaceConfig();
+  return config.sortOptions || [
+    { value: 'rating', label: 'Calificación' },
+    { value: 'price', label: 'Precio' },
+    { value: 'experience', label: 'Experiencia' }
+  ];
+})();
 
 export const PRICE_RANGE_CONFIG = (() => {
   const config = getMarketplaceConfig();
   return config.priceRangeConfig || { min: 0, max: 500 };
 })();
 
-export const RATING_OPTIONS = [
-  { value: 5, label: '5 estrellas' },
-  { value: 4, label: '4+ estrellas' },
-  { value: 3, label: '3+ estrellas' }
-];
+export const RATING_OPTIONS = (() => {
+  const config = getMarketplaceConfig();
+  return config.ratingOptions || [
+    { value: 5, label: '5 estrellas' },
+    { value: 4, label: '4+ estrellas' },
+    { value: 3, label: '3+ estrellas' }
+  ];
+})();
 
 export const WORK_ZONES = (() => {
   const config = getMarketplaceConfig();
@@ -66,43 +72,55 @@ export const GROUP_TYPES = (() => {
 })();
 
 // Default filters for marketplace search
-export const DEFAULT_FILTERS = {
-  languages: [],
-  workZones: [],
-  tourTypes: [],
-  groupTypes: [],
-  priceRange: { min: 0, max: 500 },
-  minRating: 0,
-  verified: false,
-  availability: 'all' // all, available, unavailable
-};
+export const DEFAULT_FILTERS = (() => {
+  const config = getMarketplaceConfig();
+  return config.defaultFilters || {
+    languages: [],
+    workZones: [],
+    tourTypes: [],
+    groupTypes: [],
+    priceRange: { min: 0, max: 500 },
+    minRating: 0,
+    verified: false,
+    availability: 'all'
+  };
+})();
 
 // Marketplace view modes
-export const MARKETPLACE_VIEWS = {
-  GRID: 'grid',
-  LIST: 'list',
-  MAP: 'map'
-};
+export const MARKETPLACE_VIEWS = (() => {
+  const config = getMarketplaceConfig();
+  return config.marketplaceViews || {
+    GRID: 'grid',
+    LIST: 'list',
+    MAP: 'map'
+  };
+})();
 
 // Request status values
-export const REQUEST_STATUS = {
-  PENDING: 'pending',
-  ACCEPTED: 'accepted',
-  REJECTED: 'rejected',
-  COMPLETED: 'completed',
-  CANCELLED: 'cancelled'
-};
+export const REQUEST_STATUS = (() => {
+  const config = getMarketplaceConfig();
+  return config.requestStatus || {
+    PENDING: 'pending',
+    ACCEPTED: 'accepted',
+    REJECTED: 'rejected',
+    COMPLETED: 'completed',
+    CANCELLED: 'cancelled'
+  };
+})();
 
 // Marketplace messages for toast notifications
-export const MARKETPLACE_MESSAGES = {
-  FETCH_ERROR: 'Error al cargar guías del marketplace',
-  REQUEST_CREATED: 'Solicitud de servicio creada exitosamente',
-  REQUEST_ERROR: 'Error al crear solicitud',
-  RESPONSE_SENT: 'Respuesta enviada exitosamente',
-  RESPONSE_ERROR: 'Error al enviar respuesta',
-  REVIEW_CREATED: 'Reseña publicada exitosamente',
-  REVIEW_ERROR: 'Error al publicar reseña'
-};
+export const MARKETPLACE_MESSAGES = (() => {
+  const config = getMarketplaceConfig();
+  return config.marketplaceMessages || {
+    FETCH_ERROR: 'Error al cargar guías del marketplace',
+    REQUEST_CREATED: 'Solicitud de servicio creada exitosamente',
+    REQUEST_ERROR: 'Error al crear solicitud',
+    RESPONSE_SENT: 'Respuesta enviada exitosamente',
+    RESPONSE_ERROR: 'Error al enviar respuesta',
+    REVIEW_CREATED: 'Reseña publicada exitosamente',
+    REVIEW_ERROR: 'Error al publicar reseña'
+  };
+})();
 
 
 // Export default para compatibilidad

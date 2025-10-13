@@ -77,17 +77,39 @@
     "removeLanguageExperience": "Remove language"
   },
   "upload": {
-    "profilePhoto": "Upload certificates",
-    "dragOrClick": "Drag an image here or click to select",
-    "dropHere": "Drop the image here",
-    "supportedFormats": "JPG, PNG, GIF, WEBP up to 5MB",
-    "maxSize": "Maximum size: 5MB",
-    "uploading": "Uploading image...",
-    "changePhoto": "Change image",
-    "invalidFormat": "Invalid image format. Only JPG, PNG, GIF and WEBP are allowed",
+    "profilePhoto": "Profile photo",
+    "dragOrClick": "Drag an image or click to select",
+    "dropHere": "Drop here",
+    "supportedFormats": "JPG, PNG, GIF, WEBP",
+    "maxSize": "Maximum 5MB",
+    "uploading": "Uploading...",
+    "changePhoto": "Change photo",
+    "invalidFormat": "Invalid file format. Only JPG, PNG, GIF or WEBP images are allowed",
     "fileTooLarge": "File is too large. Maximum 5MB",
     "uploadError": "Error uploading image. Please try again",
-    "recommendation": "Upload your certificates, licenses or credentials as a tour guide"
+    "recommendation": "Square image of at least 300x300 pixels recommended",
+    "previewAlt": "Image preview",
+    "removePhoto": "Remove photo",
+    "selectFile": "Select image file",
+    "photos": {
+      "uploading": "Uploading...",
+      "addPhotos": "Add photos",
+      "counter": "{{current}}/{{max}} photos",
+      "selectFiles": "Select image files",
+      "noPhotos": "No photos added",
+      "photosHelp": "Photos are optional but help document the visit",
+      "viewPhoto": "View photo",
+      "removePhoto": "Remove photo",
+      "invalidType": "{{name}} is not a valid image",
+      "tooLarge": "{{name}} is too large (maximum 5MB)",
+      "maxExceeded": "Maximum {{max}} photos allowed",
+      "success": "{{count}} photo(s) added",
+      "error": "Error uploading photos",
+      "removed": "Photo removed",
+      "addPhotos": "Add Photos",
+      "takePhoto": "Take Photo",
+      "selectPhotos": "Select from Gallery"
+    }
   },
   "dashboard": {
     "goodMorning": "Good morning",
@@ -107,6 +129,9 @@
     "reservationsByMonth": "Reservations by Month",
     "touristsByMonth": "Tourists by Month",
     "incomeByMonth": "Income by Month",
+    "pending": "Pending",
+    "confirmed": "Confirmed",
+    "cancelled": "Cancelled",
     "activeToursNow": "Active Tours Now",
     "tour": "Tour",
     "guide": "Guide",
@@ -115,7 +140,104 @@
     "enRoute": "En route",
     "atStop": "At stop",
     "starting": "Starting",
-    "viewLiveMonitoring": "View live monitoring →"
+    "viewLiveMonitoring": "View live monitoring →",
+    "stats": {
+      "vsPreviousMonth": "vs previous month"
+    },
+    "export": {
+      "title": "Export Data",
+      "subtitle": "Download reports according to your needs",
+      "filterByStatus": "Filter by Status",
+      "activeFilter": "Active filter",
+      "dataPreview": "Data Preview",
+      "exportFormat": "Export Format",
+      "exportButton": "Export {{count}} reservation(s) as {{format}}",
+      "tip": "Tip",
+      "tipDescription": "Files will be automatically downloaded with the current date in the filename",
+      "reservations": "reservations",
+      "filterNote": "Only reservations with \"{{status}}\" status will be exported",
+      "success": "✅ {{status}} exported successfully!\n\n📊 Exported data:\n• {{count}} reservations\n• {{tourists}} tourists\n• S/{{revenue}} in revenue\n• Format: {{format}}\n\n📁 File downloaded automatically.",
+      "error": "Error exporting data. Please try again.",
+      "stats": {
+        "reservations": "Reservations",
+        "tourists": "Tourists",
+        "revenue": "Revenue",
+        "average": "Average",
+        "avgTicket": "Average Ticket"
+      },
+      "statusOptions": {
+        "all": "Complete Information",
+        "pending": "Pending Only",
+        "confirmed": "Confirmed Only",
+        "cancelled": "Cancelled Only"
+      },
+      "formats": {
+        "excel": {
+          "description": "Ideal for detailed analysis"
+        },
+        "pdf": {
+          "description": "Perfect for formal reports"
+        }
+      }
+    },
+    "chart": {
+      "title": "Service Analysis",
+      "selectTimeRange": "Select time range",
+      "selectChartType": "Select chart type",
+      "reservations": "Reservations",
+      "tourists": "Tourists",
+      "revenue": "Revenue (S/)",
+      "timeRange": {
+        "week": "Last week",
+        "month": "Last month",
+        "quarter": "Last quarter",
+        "year": "Last year"
+      },
+      "types": {
+        "line": "Line",
+        "bar": "Bar",
+        "pie": "Pie"
+      },
+      "kpis": {
+        "totalReservations": "Total Reservations",
+        "totalTourists": "Total Tourists",
+        "totalRevenue": "Total Revenue",
+        "occupancyRate": "Occupancy Rate",
+        "vs": "vs",
+        "previousMonth": "previous month"
+      },
+      "months": {
+        "jan": "Jan",
+        "feb": "Feb",
+        "mar": "Mar",
+        "apr": "Apr",
+        "may": "May",
+        "jun": "Jun",
+        "jul": "Jul",
+        "aug": "Aug",
+        "sep": "Sep",
+        "oct": "Oct",
+        "nov": "Nov",
+        "dec": "Dec"
+      },
+      "tours": {
+        "gastronomic": "Gastronomic Tour",
+        "palomino": "Palomino Islands",
+        "nazca": "Nazca Lines"
+      },
+      "categories": {
+        "regular": "Regular Tours",
+        "private": "Private Tours",
+        "transfers": "Transfers"
+      },
+      "summary": {
+        "popularTour": "Most popular tour",
+        "avgPerBooking": "Average per booking",
+        "bestDay": "Best day",
+        "conversionRate": "Conversion rate",
+        "saturday": "Saturdays"
+      }
+    }
   },
   "reservations": {
     "reservations": "Reservations",
@@ -221,26 +343,376 @@
     "termsAndConditions": "terms and conditions"
   },
   "monitoring": {
+    "title": "Service Monitoring",
+    "description": "Real-time tracking of active tours and guides",
+    "guideDescription": "Monitor your active tours progress",
     "myTours": "My Tours",
-    "liveMonitoring": "Live Monitoring",
-    "myLocation": "My Location",
-    "liveMap": "Live Map",
-    "guides": "Guides",
-    "myActiveTours": "My Active Tours",
-    "activeTours": "Active Tours",
-    "filters": "Filters",
-    "activeGuides": "Active Guides",
-    "onService": "On service - Historic Center Tour",
-    "selectGuide": "Select a guide to view their details",
-    "myToursInProgress": "My Tours in Progress",
-    "toursInProgress": "Tours in Progress",
-    "completedPercentage": "completed",
-    "selectTour": "Select a tour to view its progress"
+    "myToursTitle": "My Active Tours",
+    "date": "Date",
+    "time": "Time",
+    "location": "Location",
+    "tourists": "Tourists",
+    "toursTotal": "Total Tours",
+    "noToursAssigned": "No tours assigned for today",
+    "views": {
+      "liveMap": "Live Map",
+      "activeTours": "Active Tours",
+      "myTours": "My Tours",
+      "photos": "Photos"
+    },
+    "map": {
+      "enterFullscreen": "Enter fullscreen",
+      "exitFullscreen": "Exit fullscreen"
+    },
+    "actions": {
+      "start": "Start",
+      "pause": "Pause",
+      "resume": "Resume",
+      "complete": "Complete"
+    },
+    "tour": {
+      "checkIn": "Check-in",
+      "checkOut": "Check-out",
+      "checkedIn": "Check-in completed successfully",
+      "checkedOut": "Check-out completed successfully",
+      "nextStop": "Next stop: {{stopName}}",
+      "inProgress": "In progress",
+      "timeElapsed": "Time elapsed",
+      "reportIncident": "Report incident",
+      "incidentPrompt": "Describe the incident:",
+      "incidentReported": "Incident reported successfully",
+      "startTime": "Start time",
+      "tourists": "Tourists",
+      "progress": "Progress",
+      "completed": "completed",
+      "sendMessage": "Send Message",
+      "itinerary": "Itinerary",
+      "estimatedEndTime": "Estimated end time",
+      "estimatedTime": "Estimated time",
+      "actualTime": "Actual time",
+      "delay": "Delay",
+      "withCurrentDelay": "with current delay",
+      "minutes": "minutes",
+      "arrival": "Arrival",
+      "arrivalTime": "Arrival time",
+      "departureTime": "Departure time",
+      "photo": "Photo",
+      "stopPhotos": "Stop photos",
+      "noPhotos": "No photos",
+      "notVisitedYet": "Not visited yet",
+      "optional": "Optional"
+    },
+    "guide": {
+      "active": "Active",
+      "inactive": "Inactive",
+      "connected": "Connected",
+      "disconnected": "Disconnected",
+      "currentTour": "Current tour",
+      "startTime": "Start time",
+      "tourists": "Tourists",
+      "progress": "Progress",
+      "battery": "Battery",
+      "gps": "GPS",
+      "signal": {
+        "label": "Signal"
+      },
+      "lastUpdate": "Last update",
+      "totalTours": "Total tours",
+      "toursToday": "Tours today",
+      "rating": "Rating",
+      "punctuality": "Punctuality",
+      "deviceStatus": "Device Status",
+      "internetConnection": "Internet Connection",
+      "batterySaverMode": "Battery saver mode",
+      "enabled": "Enabled",
+      "disabled": "Disabled",
+      "tabs": {
+        "info": "Information",
+        "activity": "Activity",
+        "stats": "Statistics"
+      }
+    },
+    "photos": {
+      "filters": "Filters",
+      "clearFilters": "Clear filters",
+      "searchPlaceholder": "Search by tour, stop, guide or agency...",
+      "allGuides": "All guides",
+      "allTours": "All tours",
+      "showingResults": "Showing {{count}} photos",
+      "view": "View",
+      "download": "Download",
+      "delete": "Delete",
+      "confirmDelete": "Are you sure you want to delete this photo?",
+      "noPhotos": "No photos available",
+      "noPhotosDescription": "Photos taken by guides during tours will appear here"
+    },
+    "notifications": {
+      "checkIn": "Check-in completed",
+      "checkInMessage": "The guide has arrived at: {{stopName}}",
+      "checkOut": "Check-out completed",
+      "checkOutMessage": "The guide has finished at: {{stopName}}",
+      "incident": "Incident reported",
+      "incidentMessage": "Incident at {{stopName}}: {{incident}}"
+    },
+    "incidents": {
+      "generic": "Incident reported by guide"
+    }
   },
   "chat": {
     "welcome": "Welcome to Futurismo Chat",
-    "selectConversation": "Select a conversation from the list to start chatting with guides and clients",
-    "agendaCoordination": "Agenda coordination"
+    "selectConversation": "Select a conversation from the list to start chatting with guides and agencies",
+    "agendaCoordination": "Coordination from agenda",
+    "fromAgenda": "Coordination from agenda",
+    "searchConversation": "Search conversation...",
+    "noConversations": "No conversations found",
+    "members": "{{count}} members",
+    "conversationCount": "{{count}} conversations",
+    "unreadCount": "{{count}} unread",
+    "selectToStart": "Select a conversation to start",
+    "coordination": "Coordination",
+    "fromAgendaDescription": "Chat started from coordination agenda",
+    "online": "Online",
+    "lastSeen": "Last seen {{time}}",
+    "makeCall": "Make call",
+    "makeVideoCall": "Make video call",
+    "showInfo": "Show information",
+    "close": "Close",
+    "typeMessage": "Type a message...",
+    "attachFile": "Attach file",
+    "selectFile": "Select file",
+    "toggleEmojis": "Show emojis",
+    "sendMessage": "Send message",
+    "map": "Map",
+    "image": "Image",
+    "system": {
+      "coordinationStarted": "Coordination chat started with {{name}}"
+    },
+    "messages": {
+      "leavingHotel": "We are leaving the hotel now",
+      "seeTomorrow": "Perfect, see you tomorrow",
+      "includeLunch": "Does the tour include lunch?",
+      "thanksInfo": "Ana: Thanks for the information",
+      "tourCompleted": "Tour completed with no incidents",
+      "howIsEveryone": "Hello, how is everyone?",
+      "readyForTour": "Hello! All good, we are ready for tomorrow's tour",
+      "meetingPoint": "Perfect! Remember the meeting point is at Plaza de Armas at 9:00 AM",
+      "understood": "Understood, we'll be there",
+      "shareItinerary": "I'm sharing the tour itinerary"
+    },
+    "typing": {
+      "pedro": "Pedro is typing..."
+    }
+  },
+  "calendar": {
+    "sidebar": {
+      "calendars": "Calendars",
+      "myAgenda": "My Agenda",
+      "personalEvents": "Personal events",
+      "assignedTours": "Assigned Tours",
+      "companyTours": "Company tours",
+      "reservations": "Reservations",
+      "reservationCalendar": "Reservation calendar",
+      "addCalendar": "Add calendar",
+      "guides": "Guides",
+      "online": "Online",
+      "filters": "Filters",
+      "syncedAgo": "Synced {{time}} ago",
+      "upcomingEvents": "{{count}} upcoming events",
+      "syncNow": "Sync now"
+    },
+    "filters": {
+      "period": "Period",
+      "all": "All",
+      "today": "Today",
+      "thisWeek": "This week",
+      "thisMonth": "This month",
+      "show": "Show",
+      "weekends": "Weekends",
+      "personalEvents": "Personal events",
+      "companyTours": "Company tours",
+      "occupiedTime": "Occupied time",
+      "options": "Options",
+      "workingHoursOnly": "Working hours only",
+      "pastEvents": "Past events",
+      "clearFilters": "Clear filters"
+    },
+    "miniCalendar": {
+      "weekDays": ["M", "T", "W", "T", "F", "S", "S"],
+      "previousMonth": "Previous month",
+      "nextMonth": "Next month",
+      "personal": "Personal",
+      "tours": "Tours"
+    },
+    "hide": "Hide",
+    "show": "Show",
+    "available": "Available",
+    "clickToViewPersonalEvents": "Click to view personal events",
+    "onePersonalEvent": "1 personal",
+    "personalEventCount": "{{count}} pers.",
+    "clickToViewCompanyTours": "Click to view company tours",
+    "oneTour": "1 tour",
+    "tourCount": "{{count}} tours",
+    "clickToViewOccupiedTime": "Click to view occupied time",
+    "ctrlClickToAddEvent": "Ctrl/Cmd + Click to quickly add event",
+    "assignTour": "Assign tour",
+    "monthView": {
+      "weekDays": ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"],
+      "availabilityView": "Availability view",
+      "monthlyView": "Monthly view",
+      "availableDays": "{{count}} available days",
+      "events": "events",
+      "totalEvents": "{{count}} total events",
+      "daysWithAvailability": "{{count}} days with availability"
+    },
+    "eventTypes": {
+      "personal": "Personal",
+      "tours": "Tours"
+    },
+    "weekView": {
+      "moreEvents": "+{{count}} more events",
+      "moveHere": "Move here",
+      "weekOf": "Week of {{date}}",
+      "eventCount": "{{count}} events"
+    },
+    "views": {
+      "day": "Day",
+      "week": "Week",
+      "month": "Month",
+      "year": "Year"
+    },
+    "layout": {
+      "user": "User",
+      "userRole": "user",
+      "loadingSidebar": "Loading sidebar...",
+      "previousPeriod": "Previous period",
+      "nextPeriod": "Next period",
+      "loadingView": "Loading calendar view..."
+    },
+    "editEvent": "Edit Event",
+    "addEvent": "Add Event",
+    "createEvent": "Create Event",
+    "copy": "Copy",
+    "duplicate": "Duplicate",
+    "confirmDelete": "Are you sure you want to delete this event?",
+    "confirmDiscardChanges": "You have unsaved changes. Do you want to discard them?",
+    "markTimeOccupied": "Mark Time Occupied",
+    "markAsOccupied": "Mark as Occupied",
+    "fields": {
+      "title": "Title",
+      "description": "Description",
+      "date": "Date",
+      "startTime": "Start time",
+      "endTime": "End time",
+      "location": "Location",
+      "allDay": "All day",
+      "category": "Category",
+      "priority": "Priority",
+      "reminder": "Reminder",
+      "recurring": "Recurring",
+      "reason": "Reason",
+      "personalNote": "Personal note (optional)"
+    },
+    "placeholders": {
+      "title": "Event title",
+      "location": "Event location",
+      "description": "Event description",
+      "reason": "E.g: Doctor's appointment, Personal matter...",
+      "personalNote": "For your reference only..."
+    },
+    "categories": {
+      "personal": "Personal",
+      "work": "Work",
+      "meeting": "Meeting",
+      "tour": "Tour",
+      "other": "Other"
+    },
+    "priorities": {
+      "low": "Low",
+      "medium": "Medium",
+      "high": "High"
+    },
+    "reminders": {
+      "none": "No reminder",
+      "5min": "5 minutes before",
+      "15min": "15 minutes before",
+      "30min": "30 minutes before",
+      "1hour": "1 hour before",
+      "1day": "1 day before"
+    },
+    "messages": {
+      "eventUpdated": "Event updated successfully",
+      "updateError": "Error updating event",
+      "eventDeleted": "Event deleted successfully",
+      "deleteError": "Error deleting event",
+      "eventDuplicated": "Event duplicated successfully",
+      "duplicateError": "Error duplicating event",
+      "eventCreated": "Event created successfully",
+      "createError": "Error creating event",
+      "timeMarkedOccupied": "Time marked as occupied",
+      "markOccupiedError": "Error marking time as occupied"
+    },
+    "errors": {
+      "titleRequired": "Title is required",
+      "titleTooLong": "Title cannot exceed 100 characters",
+      "dateRequired": "Date is required",
+      "startTimeRequired": "Start time is required",
+      "endTimeRequired": "End time is required",
+      "invalidTimeRange": "End time must be after start time",
+      "descriptionTooLong": "Description cannot exceed 500 characters",
+      "locationTooLong": "Location cannot exceed 200 characters"
+    },
+    "allDayEvents": "All day events",
+    "noEvents": "No scheduled events",
+    "clickToAdd": "Click on a time slot to add an event",
+    "showMore": "Show {{count}} more",
+    "more": "more",
+    "addEventAt": "Add event at {{time}}",
+    "hoverForDetails": "Hover for details",
+    "doubleClickToEdit": "Double click to edit",
+    "occupied": "Occupied",
+    "untitled": "Untitled",
+    "timeNotDefined": "Time not defined",
+    "dateNotAvailable": "Date not available",
+    "created": "Created",
+    "client": "Agency",
+    "notAvailable": "Not available",
+    "eventPrivate": "Private event",
+    "dayOccupied": "Day occupied",
+    "companyTour": "Company tour",
+    "eventTypes": {
+      "personal": "Personal Event",
+      "companyTour": "Company Tour",
+      "occupied": "Occupied Time"
+    },
+    "visibility": {
+      "private": "Private",
+      "occupied": "Admin only sees 'Occupied'",
+      "company": "Visible to company",
+      "public": "Public"
+    },
+    "status": {
+      "confirmed": "Confirmed",
+      "pending": "Pending",
+      "cancelled": "Cancelled"
+    },
+    "addPersonalEvent": "Add personal event",
+    "addEventButton": "Add new event",
+    "shortcuts": "Shortcuts: Ctrl+N for event, Ctrl+Shift+N for occupied",
+    "configureWorkingHours": "Configure Schedule",
+    "workingHoursDescription": "Define your weekly working hours. This will help show your availability.",
+    "active": "Active",
+    "startTime": "Start",
+    "endTime": "End",
+    "saveWorkingHours": "Save Schedule",
+    "days": {
+      "monday": "Monday",
+      "tuesday": "Tuesday",
+      "wednesday": "Wednesday",
+      "thursday": "Thursday",
+      "friday": "Friday",
+      "saturday": "Saturday",
+      "sunday": "Sunday"
+    }
   },
   "profile": {
     "administration": "Administration",
@@ -287,7 +759,8 @@
     "providers": "Providers",
     "coordination": "Coordination",
     "users": "Users",
-    "settings": "Settings"
+    "settings": "Settings",
+    "services": "Services"
   },
   "quickActions": {
     "quickActions": "Quick Actions",
@@ -430,7 +903,9 @@
     "sessionExpired": "Your session has expired. Please login again.",
     "unexpectedError": "An unexpected error occurred. Please try again.",
     "validateData": "Please verify the entered data.",
-    "fileTooLarge": "File is too large. Maximum 5MB."
+    "fileTooLarge": "File is too large. Maximum 5MB.",
+    "loadingStats": "Error loading statistics",
+    "loadingAgenda": "Error loading agenda"
   },
   "whatsapp": {
     "fullDayAfter5": "Hello, I need to check availability for a full day tour after 5 PM"
@@ -455,15 +930,32 @@
     }
   },
   "common": {
+    "loading": "Loading...",
+    "statistics": "Statistics",
+    "noData": "No data",
+    "actions": "Actions",
+    "changeLanguage": "Change language",
+    "requiredFields": "Required fields",
     "cancel": "Cancel",
+    "add": "Add",
+    "update": "Update",
     "save": "Save",
     "saving": "Saving...",
     "saveChanges": "Save Changes",
+    "delete": "Delete",
+    "close": "Close",
+    "edit": "Edit",
+    "view": "View",
+    "create": "Create",
+    "createService": "Create Service",
+    "updateService": "Update Service",
     "min": "Minimum",
     "max": "Maximum"
   },
   "settings": {
+    "title": "Settings",
     "general": {
+      "description": "Company information and basic settings",
       "title": "General Settings",
       "companyInfo": "Company Information",
       "companyName": "Company Name",
@@ -496,7 +988,8 @@
       }
     },
     "tours": {
-      "title": "Tours and Services Settings",
+      "title": "Tours",
+      "description": "Tours and services settings",
       "basicSettings": "Basic Settings",
       "maxCapacity": "Maximum Capacity per Tour",
       "defaultDuration": "Default Duration (hours)",
@@ -570,6 +1063,8 @@
     }
   },
   "users": {
+    "management": "User Management",
+    "details": "Details of",
     "stats": {
       "totalUsers": "Total Users",
       "administrators": "Administrators",
@@ -708,6 +1203,501 @@
       "ecotourism": "Ecotourism",
       "religion": "Religion",
       "museums": "Museums"
+    }
+  },
+  "history": {
+    "title": "Service History",
+    "description": {
+      "admin": "Manage and review all services performed in the system",
+      "agency": "Check your agency's complete service history",
+      "guide": "Review your personal service history"
+    },
+    "stats": {
+      "filtered": "Filtered",
+      "completed": "Completed",
+      "pending": "Pending"
+    },
+    "filters": {
+      "title": "Search Filters",
+      "clear": "Clear filters",
+      "searchPlaceholder": "Search by service, agency, guide or driver...",
+      "dateRangeLabel": "Date range",
+      "statusLabel": "Status",
+      "serviceTypeLabel": "Service type",
+      "guideLabel": "Guide",
+      "driverLabel": "Driver",
+      "vehicleLabel": "Vehicle",
+      "dateRange": {
+        "all": "All dates",
+        "today": "Today",
+        "week": "Last week",
+        "month": "Last month",
+        "year": "Last year"
+      },
+      "status": {
+        "all": "All statuses",
+        "completed": "Completed",
+        "cancelled": "Cancelled",
+        "pending": "Pending"
+      },
+      "serviceType": {
+        "all": "All types",
+        "regular": "Regular Tour",
+        "private": "Private Tour",
+        "transfer": "Transfer"
+      },
+      "guide": {
+        "all": "All guides"
+      },
+      "driver": {
+        "all": "All drivers"
+      },
+      "vehicle": {
+        "all": "All vehicles"
+      }
+    },
+    "table": {
+      "headers": {
+        "date": "Date",
+        "service": "Service",
+        "client": "Agency",
+        "type": "Type",
+        "status": "Status",
+        "guide": "Guide",
+        "amount": "Amount",
+        "rating": "Rating",
+        "actions": "Actions"
+      },
+      "driver": "Driver",
+      "status": {
+        "completed": "Completed",
+        "cancelled": "Cancelled",
+        "pending": "Pending"
+      },
+      "serviceType": {
+        "regular": "Regular",
+        "private": "Private",
+        "transfer": "Transfer"
+      },
+      "actions": {
+        "viewDetails": "View details",
+        "rate": "Rate"
+      },
+      "notRated": "Not rated",
+      "noResults": "No results found",
+      "noResultsDescription": "Try adjusting your search filters"
+    },
+    "pagination": {
+      "previous": "Previous",
+      "next": "Next",
+      "pageInfo": "Page {{current}} of {{total}}",
+      "showing": "Showing",
+      "to": "to",
+      "of": "of",
+      "results": "results"
+    },
+    "details": {
+      "title": "Service Details",
+      "basicInfo": "Basic Information",
+      "serviceName": "Service Name",
+      "client": "Agency",
+      "date": "Date",
+      "status": "Status",
+      "type": "Type",
+      "serviceDetails": "Service Details",
+      "duration": "Duration",
+      "passengers": "Passengers",
+      "amount": "Amount",
+      "guide": "Guide",
+      "transport": "Transport",
+      "driver": "Driver",
+      "vehicle": "Vehicle",
+      "notes": "Notes",
+      "serviceType": {
+        "regular": "Regular Tour",
+        "private": "Private Tour",
+        "transfer": "Transfer"
+      },
+      "status": {
+        "completed": "Completed",
+        "cancelled": "Cancelled",
+        "pending": "Pending"
+      }
+    },
+    "error": {
+      "title": "Error loading history",
+      "retry": "Retry"
+    }
+  },
+  "stats": {
+    "totalClients": "Total Agencies",
+    "completedReservations": "Completed reservations",
+    "totalClientsAria": "Total agencies with completed reservations",
+    "totalTourists": "Total Tourists",
+    "peopleServed": "People served",
+    "totalTouristsAria": "Total number of tourists served",
+    "totalRevenue": "Total Revenue",
+    "accumulatedSales": "Accumulated sales",
+    "totalRevenueAria": "Total accumulated revenue",
+    "avgGroupSize": "Average per Group",
+    "peoplePerReservation": "People per reservation",
+    "avgGroupSizeAria": "Average group size per reservation",
+    "avgPerClient": "Average per Agency",
+    "avgReservationValue": "Average reservation value",
+    "avgPerClientAria": "Average value spent per agency",
+    "activeDestinations": "Active Destinations",
+    "availableLocations": "Available locations",
+    "activeDestinationsAria": "Number of currently active destinations",
+    "topDestinations": "Top Destinations",
+    "topGuides": "Top Guides",
+    "tourTypes": "Tour Types",
+    "monthlyTrend": "Monthly Trend",
+    "reservations": "reservations",
+    "tours": "tours"
+  },
+  "agenda": {
+    "myAgenda": "My Agenda",
+    "calendar": "Calendar",
+    "available": "Available",
+    "notAvailable": "Not available",
+    "today": "Today",
+    "past": "Past",
+    "week": "Week",
+    "month": "Month",
+    "addTimeSlot": "Add time slot",
+    "editTimeSlot": "Edit time slot",
+    "removeTimeSlot": "Remove time slot",
+    "startTime": "Start time",
+    "endTime": "End time",
+    "forDate": "For {{date}}",
+    "slots": "slots",
+    "dayAriaLabel": "{{date}}, status: {{status}}",
+    "goToToday": "Go to today",
+    "previousWeek": "Previous week",
+    "nextWeek": "Next week",
+    "previousMonth": "Previous month",
+    "nextMonth": "Next month",
+    "viewMode": "View mode",
+    "errors": {
+      "requiredTimes": "Please enter both times",
+      "invalidTimeRange": "End time must be after start time"
+    }
+  },
+  "pdf": {
+    "tourOperator": "Tour Operator",
+    "assignmentBrochure": "ASSIGNMENT BROCHURE",
+    "tourInformation": "Tour Information",
+    "date": "Date",
+    "time": "Time",
+    "tour": "Tour",
+    "groupSize": "Group Size",
+    "people": "people",
+    "language": "Language",
+    "spanish": "Spanish",
+    "agency": "Agency",
+    "contact": "Contact",
+    "guide": "Guide",
+    "driver": "Driver",
+    "vehicle": "Vehicle",
+    "notAssigned": "Not assigned",
+    "pickupPoint": "Pickup Point",
+    "pickupTime": "Pickup Time",
+    "assignedTeam": "Assigned Team",
+    "tourGuide": "Tour Guide",
+    "phone": "Phone",
+    "notAvailable": "Not available",
+    "languages": "Languages",
+    "specialties": "Specialties",
+    "licenseType": "License Type",
+    "vehicleType": "Vehicle Type",
+    "touristList": "Tourist List",
+    "name": "Name",
+    "document": "Document",
+    "age": "Age",
+    "totalTourists": "Total Tourists",
+    "importantNotes": "IMPORTANT NOTES",
+    "emergencyProtocol": "EMERGENCY PROTOCOL",
+    "inCaseOfEmergency": "In Case of Emergency",
+    "callEmergency": "Call",
+    "notifyOffice": "Notify office",
+    "assistTourists": "Assist tourists",
+    "documentIncident": "Document incident",
+    "medicalCenters": "Medical Centers",
+    "officeContact": "Office Contact",
+    "email": "Email",
+    "address": "Address",
+    "emergencyNumbers": "Emergency Numbers",
+    "emergency": "Emergency",
+    "officeEmergency": "24h Office",
+    "coordinator": "Coordinator",
+    "documentInfo": "Document Information",
+    "generatedOn": "Generated on",
+    "validFor": "Valid for",
+    "confidentialDocument": "This document contains confidential information for internal use only",
+    "allRightsReserved": "All rights reserved",
+    "remove": "Remove",
+    "previousDay": "Previous day",
+    "nextDay": "Next day",
+    "selectDate": "Select date",
+    "toggleSidebar": "Toggle sidebar",
+    "changeLanguage": "Change language",
+    "currentLanguage": "Current language",
+    "yes": "Yes",
+    "no": "No",
+    "back": "Back"
+  },
+  "guides": {
+    "availability": {
+      "title": "Availability Schedule",
+      "freelanceTitle": "Freelance Guide Availability",
+      "available": "Available",
+      "notAvailable": "Not Available",
+      "busy": "Busy",
+      "markAvailable": "Mark Available",
+      "markUnavailable": "Mark Not Available",
+      "timeSlots": "Available Time Slots",
+      "addSlot": "Add Time Slot",
+      "enterTimeSlot": "Enter time slot (e.g: 09:00-13:00)",
+      "slotFormat": "Format: HH:MM-HH:MM (example: 09:00-17:00)",
+      "noSlots": "No specific time slots defined",
+      "freeSlots": "{{count}} free slots"
+    },
+    "tours": "tours",
+    "defaultSpecialty": "Tour guide",
+    "form": {
+      "sections": {
+        "museumKnowledge": "Museum Experience"
+      },
+      "buttons": {
+        "addMuseum": "Add Museum"
+      },
+      "museum": "Museum",
+      "fields": {
+        "museumName": "Museum Name",
+        "yearsOfExperience": "Years of Experience",
+        "expertiseLevel": "Expertise Level",
+        "certificates": "Certificates"
+      },
+      "placeholders": {
+        "museumName": "E.g: Lima Art Museum"
+      },
+      "years": "years",
+      "uploading": "Uploading...",
+      "uploadCertificate": "Upload Certificate",
+      "acceptedFormats": "PDF, JPG, PNG (max. 5MB)"
+    },
+    "levels": {
+      "basic": "Basic",
+      "intermediate": "Intermediate",
+      "advanced": "Advanced",
+      "expert": "Expert"
+    }
+  },
+  "emergency": {
+    "materials": {
+      "title": "Materials Management",
+      "subtitle": "Manage materials and equipment needed for emergencies",
+      "material": "Material",
+      "newMaterial": "New Material",
+      "editMaterial": "Edit Material",
+      "deleteMaterial": "Delete material",
+      "printMandatory": "Print Mandatory",
+      "copyMandatory": "Copy Mandatory",
+      "materialName": "Material Name",
+      "namePlaceholder": "E.g: Basic First Aid Kit",
+      "nameRequired": "Name is required",
+      "category": "Category",
+      "selectCategory": "Select category",
+      "categoryRequired": "Category is required",
+      "mandatoryForAllTours": "Mandatory material for all tours",
+      "materialElements": "Material Elements",
+      "addElement": "Add Element",
+      "elementPlaceholder": "E.g: Elastic bandages (2 rolls)",
+      "confirmDelete": "Are you sure you want to delete this material?",
+      "totalMaterials": "Total Materials",
+      "mandatory": "Mandatory",
+      "mandatoryBadge": "MANDATORY",
+      "categories": "Categories",
+      "filtered": "Filtered",
+      "materialsSummary": "Materials Summary",
+      "searchPlaceholder": "Search materials...",
+      "allCategories": "All categories",
+      "onlyMandatory": "Mandatory only",
+      "noMaterialsFound": "No materials found",
+      "adjustFilters": "Adjust search filters or create a new material.",
+      "elements": "Elements",
+      "elementsCount": "Elements ({{count}})",
+      "seeLess": "See less",
+      "seeAll": "See all",
+      "moreElements": "more elements",
+      "collapse": "Collapse",
+      "viewDetail": "View detail",
+      "copyToClipboard": "Copy list to clipboard",
+      "printList": "Print list",
+      "mandatoryMaterials": "Mandatory Materials",
+      "mandatoryDescription": "The following materials are mandatory for all tours:",
+      "copiedToClipboard": "Materials list copied to clipboard",
+      "copyError": "Error copying list",
+      "mandatoryMaterial": "MANDATORY MATERIAL",
+      "necessaryElements": "Necessary elements ({{count}})",
+      "listGeneratedBy": "List generated by Futurismo Tours",
+      "noMandatoryToPrint": "No mandatory materials to print",
+      "noMandatoryToCopy": "No mandatory materials to copy",
+      "mandatoryChecklistTitle": "Mandatory Materials - Checklist",
+      "mandatoryListTitle": "MANDATORY MATERIALS LIST",
+      "checklistForGuides": "Checklist for guides - Futurismo Tours",
+      "important": "IMPORTANT",
+      "verifyBeforeTour": "Verify all elements before each tour",
+      "mandatoryCopiedToClipboard": "Mandatory materials list copied to clipboard"
+    },
+    "protocol": {
+      "newProtocol": "New Protocol",
+      "editProtocol": "Edit Protocol",
+      "protocol": "Protocol",
+      "protocolTitle": "Protocol Title",
+      "titlePlaceholder": "E.g: Medical Emergency Protocol",
+      "titleRequired": "Title is required",
+      "category": "Category",
+      "selectCategory": "Select category",
+      "categoryRequired": "Category is required",
+      "priority": "Priority",
+      "priorities": {
+        "low": "Low",
+        "medium": "Medium",
+        "high": "High"
+      },
+      "icon": "Icon",
+      "description": "Description",
+      "descriptionPlaceholder": "Describe when and how to apply this protocol...",
+      "descriptionRequired": "Description is required",
+      "protocolSteps": "Protocol Steps",
+      "addStep": "Add Step",
+      "stepPlaceholder": "Describe the step to follow...",
+      "stepRequired": "Step is required",
+      "emergencyContacts": "Emergency Contacts",
+      "addContact": "Add Contact",
+      "contactName": "Contact Name",
+      "contactNamePlaceholder": "E.g: National Emergency",
+      "phone": "Phone",
+      "phonePlaceholder": "E.g: +51 999 888 777",
+      "type": "Type",
+      "contactTypes": {
+        "emergency": "Emergency",
+        "coordinator": "Coordinator",
+        "management": "Management",
+        "police": "Police",
+        "medical": "Medical",
+        "insurance": "Insurance",
+        "towing": "Towing",
+        "weather": "Weather",
+        "local": "Local",
+        "operations": "Operations"
+      },
+      "necessaryMaterials": "Necessary Materials",
+      "addMaterial": "Add Material",
+      "materialPlaceholder": "E.g: First aid kit",
+      "important": "Important",
+      "importantNote": "Make sure all steps are clear and specific. Emergency protocols should be easy to follow under stressful situations."
+    }
+  },
+  "services": {
+    "management": "Services Management",
+    "newService": "New Service",
+    "editService": "Edit Service",
+    "serviceDetails": "Service Details",
+    "clearDuplicates": "Clear Duplicates",
+    "totalServices": "Total Services"
+  },
+  "providers": {
+    "title": "Providers",
+    "subtitle": "Manage tourism service providers",
+    "form": {
+      "createTitle": "Create New Provider",
+      "editTitle": "Edit Provider",
+      "cancel": "Cancel",
+      "save": "Save",
+      "sections": {
+        "basicInfo": "Basic Information",
+        "contactInfo": "Contact Information",
+        "services": "Services",
+        "pricing": "Pricing"
+      },
+      "fields": {
+        "name": "Provider Name",
+        "category": "Category",
+        "location": "Location",
+        "rating": "Rating",
+        "contactPerson": "Contact Person",
+        "phone": "Phone",
+        "email": "Email",
+        "address": "Address",
+        "basePrice": "Base Price",
+        "pricingType": "Price Type",
+        "currency": "Currency",
+        "capacity": "Capacity"
+      },
+      "placeholders": {
+        "selectLocation": "Select location",
+        "contactPerson": "Main contact name",
+        "phone": "Phone number",
+        "email": "email@example.com",
+        "address": "Provider full address",
+        "selectService": "Select service",
+        "capacity": "Maximum number of people"
+      },
+      "actions": {
+        "addService": "Add Service"
+      }
+    },
+    "categories": {
+      "restaurant": "Restaurant",
+      "hotel": "Hotel",
+      "transport": "Transport",
+      "guide": "Tour Guide",
+      "activity": "Activity",
+      "attraction": "Attraction"
+    },
+    "pricing": {
+      "types": {
+        "per_person": "Per Person",
+        "per_group": "Per Group",
+        "fixed": "Fixed Price",
+        "hourly": "Per Hour"
+      },
+      "currencies": {
+        "USD": "US Dollar",
+        "PEN": "Peruvian Sol",
+        "EUR": "Euro"
+      }
+    },
+    "status": {
+      "active": "Active",
+      "inactive": "Inactive",
+      "pending": "Pending"
+    }
+  },
+  "rating": {
+    "modal": {
+      "title": {
+        "service": "Rate Service",
+        "guide": "Rate Guide",
+        "tour": "Rate Tour"
+      },
+      "guide": "Guide",
+      "rateExperience": "How would you rate your experience?",
+      "levels": {
+        "terrible": "Terrible",
+        "bad": "Bad",
+        "okay": "Okay",
+        "good": "Good",
+        "excellent": "Excellent"
+      },
+      "comments": "Comments (optional)",
+      "commentsPlaceholder": "Share your experience to help other users...",
+      "submit": "Submit Rating"
+    },
+    "errors": {
+      "ratingRequired": "Rating is required"
     }
   }
 }

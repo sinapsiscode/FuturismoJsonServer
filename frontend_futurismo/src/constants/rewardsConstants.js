@@ -29,62 +29,80 @@ export const SERVICE_POINTS = (() => {
 })();
 
 // Service type points mapping (alias for compatibility)
-export const SERVICE_TYPE_POINTS = {
-  city_tour: 100,
-  museum: 80,
-  adventure: 150,
-  cultural: 120,
-  gastronomic: 90,
-  nature: 130,
-  custom: 100
-};
+export const SERVICE_TYPE_POINTS = (() => {
+  const config = getRewardsConfig();
+  return config.serviceTypePoints || {
+    city_tour: 100,
+    museum: 80,
+    adventure: 150,
+    cultural: 120,
+    gastronomic: 90,
+    nature: 130,
+    custom: 100
+  };
+})();
 
 // Reward categories as object (for use in components)
-export const REWARD_CATEGORIES = {
-  ELECTRONICS: 'electronics',
-  TRAVEL: 'travel',
-  GIFT_CARDS: 'gift_cards',
-  EXPERIENCES: 'experiences',
-  MERCHANDISE: 'merchandise',
-  SERVICES: 'services'
-};
+export const REWARD_CATEGORIES = (() => {
+  const config = getRewardsConfig();
+  return config.rewardCategories || {
+    ELECTRONICS: 'electronics',
+    TRAVEL: 'travel',
+    GIFT_CARDS: 'gift_cards',
+    EXPERIENCES: 'experiences',
+    MERCHANDISE: 'merchandise',
+    SERVICES: 'services'
+  };
+})();
 
 // Reward category labels
-export const REWARD_CATEGORY_LABELS = {
-  electronics: 'Electrónica',
-  travel: 'Viajes',
-  gift_cards: 'Tarjetas Regalo',
-  experiences: 'Experiencias',
-  merchandise: 'Merchandising',
-  services: 'Servicios'
-};
+export const REWARD_CATEGORY_LABELS = (() => {
+  const config = getRewardsConfig();
+  return config.rewardCategoryLabels || {
+    electronics: 'Electrónica',
+    travel: 'Viajes',
+    gift_cards: 'Tarjetas Regalo',
+    experiences: 'Experiencias',
+    merchandise: 'Merchandising',
+    services: 'Servicios'
+  };
+})();
 
 // Redemption status as object (for use in components)
-export const REDEMPTION_STATUS = {
-  PENDING: 'pending',
-  APPROVED: 'approved',
-  REJECTED: 'rejected',
-  DELIVERED: 'delivered',
-  CANCELLED: 'cancelled'
-};
+export const REDEMPTION_STATUS = (() => {
+  const config = getRewardsConfig();
+  return config.redemptionStatus || {
+    PENDING: 'pending',
+    APPROVED: 'approved',
+    REJECTED: 'rejected',
+    DELIVERED: 'delivered',
+    CANCELLED: 'cancelled'
+  };
+})();
 
 // Redemption status labels
-export const REDEMPTION_STATUS_LABELS = {
-  pending: 'Pendiente',
-  approved: 'Aprobado',
-  rejected: 'Rechazado',
-  delivered: 'Entregado',
-  cancelled: 'Cancelado'
-};
+export const REDEMPTION_STATUS_LABELS = (() => {
+  const config = getRewardsConfig();
+  return config.redemptionStatusLabels || {
+    pending: 'Pendiente',
+    approved: 'Aprobado',
+    rejected: 'Rechazado',
+    delivered: 'Entregado',
+    cancelled: 'Cancelado'
+  };
+})();
 
 // Redemption status colors
-export const REDEMPTION_STATUS_COLORS = {
-  pending: 'bg-yellow-100 text-yellow-800',
-  approved: 'bg-blue-100 text-blue-800',
-  rejected: 'bg-red-100 text-red-800',
-  delivered: 'bg-green-100 text-green-800',
-  cancelled: 'bg-gray-100 text-gray-800'
-};
+export const REDEMPTION_STATUS_COLORS = (() => {
+  const config = getRewardsConfig();
+  return config.redemptionStatusColors || {
+    pending: 'bg-yellow-100 text-yellow-800',
+    approved: 'bg-blue-100 text-blue-800',
+    rejected: 'bg-red-100 text-red-800',
+    delivered: 'bg-green-100 text-green-800',
+    cancelled: 'bg-gray-100 text-gray-800'
+  };
+})();
 
 export const POINTS_LIMITS = (() => {
   const config = getRewardsConfig();
@@ -106,19 +124,22 @@ export const TIER_LEVELS = (() => {
 })();
 
 // Rewards messages for toast notifications
-export const REWARDS_MESSAGES = {
-  FETCH_ERROR: 'Error al cargar premios',
-  CREATE_SUCCESS: 'Premio creado exitosamente',
-  CREATE_ERROR: 'Error al crear premio',
-  UPDATE_SUCCESS: 'Premio actualizado exitosamente',
-  UPDATE_ERROR: 'Error al actualizar premio',
-  DELETE_SUCCESS: 'Premio eliminado exitosamente',
-  DELETE_ERROR: 'Error al eliminar premio',
-  REDEMPTION_SUCCESS: 'Canje realizado exitosamente',
-  REDEMPTION_ERROR: 'Error al realizar el canje',
-  INSUFFICIENT_POINTS: 'Puntos insuficientes para este canje',
-  OUT_OF_STOCK: 'Premio sin stock disponible'
-};
+export const REWARDS_MESSAGES = (() => {
+  const config = getRewardsConfig();
+  return config.rewardsMessages || {
+    FETCH_ERROR: 'Error al cargar premios',
+    CREATE_SUCCESS: 'Premio creado exitosamente',
+    CREATE_ERROR: 'Error al crear premio',
+    UPDATE_SUCCESS: 'Premio actualizado exitosamente',
+    UPDATE_ERROR: 'Error al actualizar premio',
+    DELETE_SUCCESS: 'Premio eliminado exitosamente',
+    DELETE_ERROR: 'Error al eliminar premio',
+    REDEMPTION_SUCCESS: 'Canje realizado exitosamente',
+    REDEMPTION_ERROR: 'Error al realizar el canje',
+    INSUFFICIENT_POINTS: 'Puntos insuficientes para este canje',
+    OUT_OF_STOCK: 'Premio sin stock disponible'
+  };
+})();
 
 
 // Export default para compatibilidad

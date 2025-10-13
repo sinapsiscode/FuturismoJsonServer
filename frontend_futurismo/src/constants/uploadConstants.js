@@ -49,33 +49,45 @@ export const IMAGE_CONSTRAINTS = (() => {
 })();
 
 // Additional constants for useImageUpload hook
-export const ACCEPTED_IMAGE_TYPES = [
-  'image/jpeg',
-  'image/jpg',
-  'image/png',
-  'image/gif',
-  'image/webp'
-];
+export const ACCEPTED_IMAGE_TYPES = (() => {
+  const config = getUploadConfig();
+  return config.acceptedImageTypes || [
+    'image/jpeg',
+    'image/jpg',
+    'image/png',
+    'image/gif',
+    'image/webp'
+  ];
+})();
 
-export const FILE_SIZE_LIMITS = {
-  IMAGE: 5242880, // 5MB in bytes
-  DOCUMENT: 10485760, // 10MB
-  VIDEO: 52428800 // 50MB
-};
+export const FILE_SIZE_LIMITS = (() => {
+  const config = getUploadConfig();
+  return config.fileSizeLimits || {
+    IMAGE: 5242880, // 5MB in bytes
+    DOCUMENT: 10485760, // 10MB
+    VIDEO: 52428800 // 50MB
+  };
+})();
 
-export const UPLOAD_CONFIG = {
-  UPLOAD_DELAY: 500, // milliseconds
-  MAX_FILES: 10,
-  CHUNK_SIZE: 1048576 // 1MB chunks for large files
-};
+export const UPLOAD_CONFIG = (() => {
+  const config = getUploadConfig();
+  return config.uploadConfig || {
+    UPLOAD_DELAY: 500, // milliseconds
+    MAX_FILES: 10,
+    CHUNK_SIZE: 1048576 // 1MB chunks for large files
+  };
+})();
 
-export const UPLOAD_ERROR_KEYS = {
-  INVALID_FORMAT: 'upload.errors.invalidFormat',
-  FILE_TOO_LARGE: 'upload.errors.fileTooLarge',
-  UPLOAD_ERROR: 'upload.errors.uploadError',
-  TOO_MANY_FILES: 'upload.errors.tooManyFiles',
-  NETWORK_ERROR: 'upload.errors.networkError'
-};
+export const UPLOAD_ERROR_KEYS = (() => {
+  const config = getUploadConfig();
+  return config.uploadErrorKeys || {
+    INVALID_FORMAT: 'upload.errors.invalidFormat',
+    FILE_TOO_LARGE: 'upload.errors.fileTooLarge',
+    UPLOAD_ERROR: 'upload.errors.uploadError',
+    TOO_MANY_FILES: 'upload.errors.tooManyFiles',
+    NETWORK_ERROR: 'upload.errors.networkError'
+  };
+})();
 
 // Export default para compatibilidad
 export default {

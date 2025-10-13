@@ -33,69 +33,96 @@ export const TOUR_STATUS = (() => {
   return config.tourStatus || [];
 })();
 
-export const TABS = [
-  { id: 'map', label: 'Mapa', icon: '🗺️' },
-  { id: 'info', label: 'Información', icon: 'ℹ️' },
-  { id: 'chat', label: 'Chat', icon: '💬' }
-];
+export const TABS = (() => {
+  const config = getMonitoringConfig();
+  return config.tabs || [
+    { id: 'map', label: 'Mapa', icon: '🗺️' },
+    { id: 'info', label: 'Información', icon: 'ℹ️' },
+    { id: 'chat', label: 'Chat', icon: '💬' }
+  ];
+})();
 
-export const PROGRESS_CIRCLE = {
-  size: 120,
-  strokeWidth: 8
-};
+export const PROGRESS_CIRCLE = (() => {
+  const config = getMonitoringConfig();
+  return config.progressCircle || {
+    size: 120,
+    strokeWidth: 8
+  };
+})();
 
-export const MAP_MOBILE_HEIGHT = '400px';
+export const MAP_MOBILE_HEIGHT = (() => {
+  const config = getMonitoringConfig();
+  return config.mapMobileHeight || '400px';
+})();
 
-export const MAX_PHOTOS_PER_STOP = 5;
+export const MAX_PHOTOS_PER_STOP = (() => {
+  const config = getMonitoringConfig();
+  return config.maxPhotosPerStop || 5;
+})();
 
 // Tour status colors
-export const TOUR_STATUS_COLORS = {
-  pending: 'bg-yellow-100 text-yellow-800',
-  in_progress: 'bg-blue-100 text-blue-800',
-  completed: 'bg-green-100 text-green-800',
-  cancelled: 'bg-red-100 text-red-800',
-  paused: 'bg-orange-100 text-orange-800'
-};
+export const TOUR_STATUS_COLORS = (() => {
+  const config = getMonitoringConfig();
+  return config.tourStatusColors || {
+    pending: 'bg-yellow-100 text-yellow-800',
+    in_progress: 'bg-blue-100 text-blue-800',
+    completed: 'bg-green-100 text-green-800',
+    cancelled: 'bg-red-100 text-red-800',
+    paused: 'bg-orange-100 text-orange-800'
+  };
+})();
 
 // Guide status colors
-export const GUIDE_STATUS_COLORS = {
-  available: 'bg-green-100 text-green-800',
-  busy: 'bg-yellow-100 text-yellow-800',
-  offline: 'bg-gray-100 text-gray-800',
-  emergency: 'bg-red-100 text-red-800'
-};
+export const GUIDE_STATUS_COLORS = (() => {
+  const config = getMonitoringConfig();
+  return config.guideStatusColors || {
+    available: 'bg-green-100 text-green-800',
+    busy: 'bg-yellow-100 text-yellow-800',
+    offline: 'bg-gray-100 text-gray-800',
+    emergency: 'bg-red-100 text-red-800'
+  };
+})();
 
 // Alert types
-export const ALERT_TYPES = {
-  DELAY: 'delay',
-  EMERGENCY: 'emergency',
-  LOCATION_LOST: 'location_lost',
-  LOW_BATTERY: 'low_battery',
-  INFO: 'info'
-};
+export const ALERT_TYPES = (() => {
+  const config = getMonitoringConfig();
+  return config.alertTypes || {
+    DELAY: 'delay',
+    EMERGENCY: 'emergency',
+    LOCATION_LOST: 'location_lost',
+    LOW_BATTERY: 'low_battery',
+    INFO: 'info'
+  };
+})();
 
 // Map settings
-export const MAP_SETTINGS = {
-  DEFAULT_ZOOM: 13,
-  DEFAULT_CENTER: [-12.0464, -77.0428], // Lima coordinates
-  UPDATE_INTERVAL: 30000, // 30 seconds
-  MARKER_COLORS: {
-    guide: '#3B82F6',
-    tourist: '#10B981',
-    waypoint: '#F59E0B',
-    emergency: '#EF4444'
-  }
-};
+export const MAP_SETTINGS = (() => {
+  const config = getMonitoringConfig();
+  return config.mapSettings || {
+    DEFAULT_ZOOM: 13,
+    DEFAULT_CENTER: [-12.0464, -77.0428],
+    UPDATE_INTERVAL: 30000,
+    MARKER_COLORS: {
+      guide: '#3B82F6',
+      tourist: '#10B981',
+      waypoint: '#F59E0B',
+      emergency: '#EF4444'
+    }
+  };
+})();
 
 // Monitoring messages
-export const MONITORING_MESSAGES = {
-  FETCH_ERROR: 'Error al cargar datos de monitoreo',
-  UPDATE_SUCCESS: 'Estado actualizado exitosamente',
-  UPDATE_ERROR: 'Error al actualizar estado',
-  LOCATION_UPDATED: 'Ubicación actualizada',
-  CONNECTION_LOST: 'Conexión perdida con el guía',
-  CONNECTION_RESTORED: 'Conexión restaurada'
-};
+export const MONITORING_MESSAGES = (() => {
+  const config = getMonitoringConfig();
+  return config.monitoringMessages || {
+    FETCH_ERROR: 'Error al cargar datos de monitoreo',
+    UPDATE_SUCCESS: 'Estado actualizado exitosamente',
+    UPDATE_ERROR: 'Error al actualizar estado',
+    LOCATION_UPDATED: 'Ubicación actualizada',
+    CONNECTION_LOST: 'Conexión perdida con el guía',
+    CONNECTION_RESTORED: 'Conexión restaurada'
+  };
+})();
 
 
 // Export default para compatibilidad

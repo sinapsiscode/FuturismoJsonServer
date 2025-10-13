@@ -51,6 +51,33 @@ module.exports = (router) => {
     }
   });
 
+  // Get tour categories (specific route - MUST come before /:id)
+  toursRouter.get('/categories', (req, res) => {
+    try {
+      const db = router.db;
+      const tourCategories = db.get('tour_categories').value();
+
+      if (!tourCategories) {
+        return res.status(404).json({
+          success: false,
+          error: 'Categorías de tours no encontradas'
+        });
+      }
+
+      res.json({
+        success: true,
+        data: tourCategories
+      });
+
+    } catch (error) {
+      console.error('Error fetching tour categories:', error);
+      res.status(500).json({
+        success: false,
+        error: 'Error al obtener categorías de tours'
+      });
+    }
+  });
+
   // Get all tours (base endpoint)
   toursRouter.get('/', (req, res) => {
     try {

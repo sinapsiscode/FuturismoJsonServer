@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { api } from '../services';
+import useModulesConfigStore from '../stores/modulesConfigStore';
 
 // Default configuration fallback
 const defaultConfig = {
@@ -63,6 +64,7 @@ export const useAppConfig = () => {
   const [config, setConfig] = useState(defaultConfig);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const { loadModules } = useModulesConfigStore();
 
   useEffect(() => {
     let mounted = true;
@@ -74,12 +76,16 @@ export const useAppConfig = () => {
         setLoading(true);
         setError(null);
 
-        const response = await api.get('/config/settings');
+        // Load both app settings and modules config in parallel
+        const [settingsResponse] = await Promise.all([
+          api.get('/config/settings'),
+          loadModules() // Load all module configurations
+        ]);
 
         if (!mounted) return;
 
-        if (response.data.success) {
-          setConfig(response.data.data);
+        if (settingsResponse.data.success) {
+          setConfig(settingsResponse.data.data);
         }
       } catch (error) {
         if (!mounted) return;
@@ -97,13 +103,19 @@ export const useAppConfig = () => {
     return () => {
       mounted = false;
     };
-  }, []);
+  }, [loadModules]);
 
   const refreshConfig = async () => {
     try {
       setLoading(true);
       setError(null);
-      const response = await api.get('/config/settings');
+
+      // Reload both app settings and modules config in parallel
+      const [response] = await Promise.all([
+        api.get('/config/settings'),
+        loadModules()
+      ]);
+
       if (response.data.success) {
         setConfig(response.data.data);
       }

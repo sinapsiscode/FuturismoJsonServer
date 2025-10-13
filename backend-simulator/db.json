@@ -12,7 +12,8 @@
       "phone": "+51987654321",
       "avatar": "https://ui-avatars.com/api/?name=Admin&background=3B82F6&color=fff",
       "created_at": "2024-01-01T00:00:00Z",
-      "updated_at": "2024-01-01T00:00:00Z"
+      "updated_at": "2024-01-01T00:00:00Z",
+      "last_login_at": "2025-10-13T15:01:05.812Z"
     },
     {
       "id": "user-agency-1",
@@ -59,7 +60,268 @@
   ],
   "agencies": [],
   "guides": [],
-  "tours": [],
+  "tours": [
+    {
+      "id": "tour-001",
+      "name": "City Tour Lima Colonial",
+      "description": "Recorrido por el centro histórico de Lima, visitando la Plaza Mayor, Catedral, Palacio de Gobierno y más",
+      "category": "city",
+      "type": "regular",
+      "duration": "4 horas",
+      "price": 85,
+      "max_capacity": 15,
+      "status": "activo",
+      "languages": [
+        "es",
+        "en"
+      ],
+      "includes": [
+        "Guía certificado",
+        "Transporte turístico",
+        "Entradas a museos",
+        "Agua embotellada"
+      ],
+      "meeting_point": "Plaza San Martín",
+      "image": "https://images.unsplash.com/photo-1531968455001-5c5272a41129",
+      "created_at": "2024-01-15T10:00:00Z"
+    },
+    {
+      "id": "tour-002",
+      "name": "Tour Gastronómico Lima",
+      "description": "Experiencia culinaria recorriendo mercados locales y degustando platos típicos peruanos",
+      "category": "gastronomic",
+      "type": "regular",
+      "duration": "5 horas",
+      "price": 120,
+      "max_capacity": 12,
+      "status": "activo",
+      "languages": [
+        "es",
+        "en"
+      ],
+      "includes": [
+        "Guía gastronómico",
+        "Degustaciones en 6 locales",
+        "Bebidas incluidas",
+        "Recetario digital"
+      ],
+      "meeting_point": "Mercado Surquillo",
+      "image": "https://images.unsplash.com/photo-1555939594-58d7cb561ad1",
+      "created_at": "2024-01-15T10:00:00Z"
+    },
+    {
+      "id": "tour-003",
+      "name": "Cusco Místico",
+      "description": "Tour cultural por Cusco visitando Qoricancha, Sacsayhuamán, Q'enqo y Tambomachay",
+      "category": "cultural",
+      "type": "fullday",
+      "duration": "8 horas",
+      "price": 180,
+      "max_capacity": 20,
+      "status": "activo",
+      "languages": [
+        "es",
+        "en",
+        "fr"
+      ],
+      "includes": [
+        "Guía profesional",
+        "Transporte privado",
+        "Entradas a todos los sitios",
+        "Almuerzo buffet",
+        "Seguro de viaje"
+      ],
+      "meeting_point": "Plaza de Armas Cusco",
+      "image": "https://images.unsplash.com/photo-1587595431973-160d0d94add1",
+      "created_at": "2024-01-15T10:00:00Z"
+    },
+    {
+      "id": "tour-004",
+      "name": "Aventura en Paracas",
+      "description": "Tour de aventura con paseo en bote a las Islas Ballestas y sandboard en las dunas de Paracas",
+      "category": "adventure",
+      "type": "fullday",
+      "duration": "10 horas",
+      "price": 195,
+      "max_capacity": 16,
+      "status": "activo",
+      "languages": [
+        "es",
+        "en"
+      ],
+      "includes": [
+        "Guía de aventura certificado",
+        "Transporte desde Lima",
+        "Paseo en bote",
+        "Equipo de sandboard",
+        "Almuerzo marino",
+        "Seguro de accidentes"
+      ],
+      "meeting_point": "Terminal Plaza Norte",
+      "image": "https://images.unsplash.com/photo-1502933691298-84fc14542831",
+      "created_at": "2024-01-15T10:00:00Z"
+    },
+    {
+      "id": "tour-005",
+      "name": "Valle Sagrado Completo",
+      "description": "Recorrido por Pisac, Ollantaytambo y Chinchero con mercados artesanales y sitios arqueológicos",
+      "category": "historical",
+      "type": "fullday",
+      "duration": "12 horas",
+      "price": 210,
+      "max_capacity": 18,
+      "status": "activo",
+      "languages": [
+        "es",
+        "en",
+        "pt"
+      ],
+      "includes": [
+        "Guía arqueólogo",
+        "Transporte turístico",
+        "Entradas a sitios arqueológicos",
+        "Almuerzo en Urubamba",
+        "Demostración textil",
+        "Tiempo libre para compras"
+      ],
+      "meeting_point": "Plaza de Armas Cusco",
+      "image": "https://images.unsplash.com/photo-1526392060635-9d6019884377",
+      "created_at": "2024-01-15T10:00:00Z"
+    },
+    {
+      "id": "tour-006",
+      "name": "Naturaleza en Tambopata",
+      "description": "Expedición de 3 días en la selva amazónica con avistamiento de fauna y caminatas nocturnas",
+      "category": "nature",
+      "type": "multiday",
+      "duration": "3 días / 2 noches",
+      "price": 650,
+      "max_capacity": 10,
+      "status": "activo",
+      "languages": [
+        "es",
+        "en"
+      ],
+      "includes": [
+        "Guía naturalista",
+        "Transporte Puerto Maldonado",
+        "Alojamiento en lodge",
+        "Todas las comidas",
+        "Actividades programadas",
+        "Equipo de selva",
+        "Seguro de viaje"
+      ],
+      "meeting_point": "Aeropuerto Puerto Maldonado",
+      "image": "https://images.unsplash.com/photo-1516426122078-c23e76319801",
+      "created_at": "2024-01-15T10:00:00Z"
+    },
+    {
+      "id": "tour-007",
+      "name": "Lima Nocturna VIP",
+      "description": "Tour nocturno por Miraflores y Barranco con cena show y visita a bares con música en vivo",
+      "category": "night",
+      "type": "regular",
+      "duration": "5 horas",
+      "price": 165,
+      "max_capacity": 12,
+      "status": "activo",
+      "languages": [
+        "es",
+        "en"
+      ],
+      "includes": [
+        "Guía de entretenimiento",
+        "Transporte privado",
+        "Cena en restaurante exclusivo",
+        "Cover en 2 bares",
+        "2 bebidas por persona",
+        "Seguridad personalizada"
+      ],
+      "meeting_point": "Hotel Miraflores Park",
+      "image": "https://images.unsplash.com/photo-1514933651103-005eec06c04b",
+      "created_at": "2024-01-15T10:00:00Z"
+    },
+    {
+      "id": "tour-008",
+      "name": "Playas del Norte - Máncora",
+      "description": "Escapada de playa con surf, snorkel y relax en las mejores playas de Piura",
+      "category": "beach",
+      "type": "multiday",
+      "duration": "4 días / 3 noches",
+      "price": 580,
+      "max_capacity": 14,
+      "status": "activo",
+      "languages": [
+        "es",
+        "en"
+      ],
+      "includes": [
+        "Guía de actividades",
+        "Transporte desde Lima",
+        "Alojamiento frente al mar",
+        "Desayunos incluidos",
+        "Clase de surf",
+        "Equipo de snorkel",
+        "Tour en bote"
+      ],
+      "meeting_point": "Terminal Javier Prado",
+      "image": "https://images.unsplash.com/photo-1559827260-dc66d52bef19",
+      "created_at": "2024-01-15T10:00:00Z"
+    },
+    {
+      "id": "tour-009",
+      "name": "Camino Inca Clásico",
+      "description": "Trek de 4 días por el famoso Camino Inca hasta llegar a Machu Picchu por la Puerta del Sol",
+      "category": "adventure",
+      "type": "multiday",
+      "duration": "4 días / 3 noches",
+      "price": 850,
+      "max_capacity": 12,
+      "status": "activo",
+      "languages": [
+        "es",
+        "en"
+      ],
+      "includes": [
+        "Guía profesional certificado",
+        "Porteadores y cocinero",
+        "Carpas y equipo de campamento",
+        "Todas las comidas",
+        "Entrada a Machu Picchu",
+        "Tren de retorno a Cusco",
+        "Seguro de trek"
+      ],
+      "meeting_point": "Plaza de Armas Cusco",
+      "image": "https://images.unsplash.com/photo-1587595431973-160d0d94add1",
+      "created_at": "2024-01-15T10:00:00Z"
+    },
+    {
+      "id": "tour-010",
+      "name": "Arequipa Colonial",
+      "description": "Tour histórico por la Ciudad Blanca visitando el Monasterio de Santa Catalina y miradores",
+      "category": "historical",
+      "type": "regular",
+      "duration": "6 horas",
+      "price": 95,
+      "max_capacity": 16,
+      "status": "activo",
+      "languages": [
+        "es",
+        "en",
+        "fr"
+      ],
+      "includes": [
+        "Guía historiador",
+        "Transporte turístico",
+        "Entradas a monumentos",
+        "Degustación de queso helado",
+        "Almuerzo típico arequipeño"
+      ],
+      "meeting_point": "Plaza de Armas Arequipa",
+      "image": "https://images.unsplash.com/photo-1531968455001-5c5272a41129",
+      "created_at": "2024-01-15T10:00:00Z"
+    }
+  ],
   "reservations": [],
   "clients": [],
   "marketplace_requests": [],
@@ -521,7 +783,83 @@
     }
   ],
   "emergency_incidents": [],
-  "monitoring_tours": [],
+  "monitoring_tours": [
+    {
+      "id": "tour-active-1",
+      "tourName": "City Tour Centro Histórico",
+      "guideName": "Carlos Mendoza",
+      "guideId": "guide-1",
+      "tourists": 8,
+      "status": "enroute",
+      "currentLocation": {
+        "lat": -12.0464,
+        "lng": -77.0428
+      },
+      "startTime": "09:00",
+      "date": "2024-03-15",
+      "destination": "Plaza Mayor"
+    },
+    {
+      "id": "tour-active-2",
+      "tourName": "Tour Miraflores",
+      "guideName": "Ana García",
+      "guideId": "guide-2",
+      "tourists": 12,
+      "status": "stopped",
+      "currentLocation": {
+        "lat": -12.1207,
+        "lng": -77.0282
+      },
+      "startTime": "10:30",
+      "date": "2024-03-15",
+      "destination": "Malecón de Miraflores"
+    },
+    {
+      "id": "tour-active-3",
+      "tourName": "Museo Larco",
+      "guideName": "Pedro Ramírez",
+      "guideId": "guide-3",
+      "tourists": 6,
+      "status": "enroute",
+      "currentLocation": {
+        "lat": -12.0697,
+        "lng": -77.0715
+      },
+      "startTime": "11:00",
+      "date": "2024-03-15",
+      "destination": "Museo Larco"
+    },
+    {
+      "id": "tour-active-4",
+      "tourName": "Barranco Tour",
+      "guideName": "María López",
+      "guideId": "guide-4",
+      "tourists": 10,
+      "status": "enroute",
+      "currentLocation": {
+        "lat": -12.1493,
+        "lng": -77.0211
+      },
+      "startTime": "14:00",
+      "date": "2024-03-15",
+      "destination": "Puente de los Suspiros"
+    },
+    {
+      "id": "tour-active-5",
+      "tourName": "Tour San Isidro",
+      "guideName": "Jorge Vega",
+      "guideId": "guide-5",
+      "tourists": 5,
+      "status": "delayed",
+      "currentLocation": {
+        "lat": -12.0931,
+        "lng": -77.0365
+      },
+      "startTime": "15:30",
+      "date": "2024-03-15",
+      "destination": "Huaca Huallamarca"
+    }
+  ],
   "monitoring_guides": [],
   "monitoring_config": {
     "version": "1.0.0",
@@ -664,7 +1002,7 @@
       "FULLDAY": "fullday"
     }
   },
-  "shared_constants": {
+  "shared_config": {
     "LANGUAGES": [
       {
         "code": "es",
@@ -9989,5 +10327,379 @@
   "maintenance_records": [],
   "rewards_catalog": [],
   "agency_ratings": [],
-  "agency_reviews": []
+  "agency_reviews": [],
+  "app_constants": {
+    "USER_ROLES": {
+      "ADMIN": "admin",
+      "AGENCY": "agency",
+      "GUIDE": "guide",
+      "CLIENT": "client"
+    },
+    "RESERVATION_STATUS": {
+      "PENDING": "pending",
+      "CONFIRMED": "confirmed",
+      "IN_PROGRESS": "in_progress",
+      "COMPLETED": "completed",
+      "CANCELLED": "cancelled"
+    },
+    "SERVICE_CATEGORIES": {
+      "TOURS": "tours",
+      "ACCOMMODATION": "accommodation",
+      "TRANSPORT": "transport",
+      "ACTIVITIES": "activities",
+      "MEALS": "meals"
+    },
+    "TOUR_TYPES": [
+      {
+        "id": "cultural",
+        "name": "Cultural",
+        "icon": "🏛️"
+      },
+      {
+        "id": "adventure",
+        "name": "Aventura",
+        "icon": "🏔️"
+      },
+      {
+        "id": "gastronomic",
+        "name": "Gastronómico",
+        "icon": "🍽️"
+      },
+      {
+        "id": "nature",
+        "name": "Naturaleza",
+        "icon": "🌿"
+      },
+      {
+        "id": "historical",
+        "name": "Histórico",
+        "icon": "🏺"
+      }
+    ],
+    "LANGUAGES": [
+      {
+        "id": "es",
+        "name": "Español",
+        "flag": "🇪🇸"
+      },
+      {
+        "id": "en",
+        "name": "English",
+        "flag": "🇺🇸"
+      },
+      {
+        "id": "fr",
+        "name": "Français",
+        "flag": "🇫🇷"
+      },
+      {
+        "id": "pt",
+        "name": "Português",
+        "flag": "🇧🇷"
+      }
+    ]
+  },
+  "role_navigation": [
+    {
+      "role": "admin",
+      "navigation": [
+        {
+          "id": "dashboard",
+          "name": "Dashboard",
+          "icon": "dashboard",
+          "path": "/dashboard"
+        },
+        {
+          "id": "users",
+          "name": "Usuarios",
+          "icon": "people",
+          "path": "/users"
+        },
+        {
+          "id": "agencies",
+          "name": "Agencias",
+          "icon": "business",
+          "path": "/agencies"
+        },
+        {
+          "id": "guides",
+          "name": "Guías",
+          "icon": "person",
+          "path": "/guides"
+        },
+        {
+          "id": "services",
+          "name": "Servicios",
+          "icon": "room_service",
+          "path": "/services"
+        },
+        {
+          "id": "reservations",
+          "name": "Reservaciones",
+          "icon": "event",
+          "path": "/reservations"
+        },
+        {
+          "id": "statistics",
+          "name": "Estadísticas",
+          "icon": "analytics",
+          "path": "/statistics"
+        },
+        {
+          "id": "emergency",
+          "name": "Emergencias",
+          "icon": "warning",
+          "path": "/emergency"
+        }
+      ]
+    },
+    {
+      "role": "agency",
+      "navigation": [
+        {
+          "id": "dashboard",
+          "name": "Dashboard",
+          "icon": "dashboard",
+          "path": "/dashboard"
+        },
+        {
+          "id": "marketplace",
+          "name": "Marketplace",
+          "icon": "store",
+          "path": "/marketplace"
+        },
+        {
+          "id": "reservations",
+          "name": "Mis Reservaciones",
+          "icon": "event",
+          "path": "/reservations"
+        },
+        {
+          "id": "services",
+          "name": "Servicios",
+          "icon": "room_service",
+          "path": "/services"
+        },
+        {
+          "id": "clients",
+          "name": "Clientes",
+          "icon": "people",
+          "path": "/clients"
+        },
+        {
+          "id": "profile",
+          "name": "Perfil",
+          "icon": "account_circle",
+          "path": "/profile"
+        }
+      ]
+    },
+    {
+      "role": "guide",
+      "navigation": [
+        {
+          "id": "dashboard",
+          "name": "Dashboard",
+          "icon": "dashboard",
+          "path": "/dashboard"
+        },
+        {
+          "id": "marketplace",
+          "name": "Solicitudes",
+          "icon": "work",
+          "path": "/marketplace"
+        },
+        {
+          "id": "tours",
+          "name": "Mis Tours",
+          "icon": "map",
+          "path": "/tours"
+        },
+        {
+          "id": "schedule",
+          "name": "Horarios",
+          "icon": "schedule",
+          "path": "/schedule"
+        },
+        {
+          "id": "earnings",
+          "name": "Ingresos",
+          "icon": "monetization_on",
+          "path": "/earnings"
+        },
+        {
+          "id": "profile",
+          "name": "Perfil",
+          "icon": "account_circle",
+          "path": "/profile"
+        }
+      ]
+    },
+    {
+      "role": "client",
+      "navigation": [
+        {
+          "id": "dashboard",
+          "name": "Dashboard",
+          "icon": "dashboard",
+          "path": "/dashboard"
+        },
+        {
+          "id": "services",
+          "name": "Servicios",
+          "icon": "room_service",
+          "path": "/services"
+        },
+        {
+          "id": "reservations",
+          "name": "Mis Reservaciones",
+          "icon": "event",
+          "path": "/reservations"
+        },
+        {
+          "id": "favorites",
+          "name": "Favoritos",
+          "icon": "favorite",
+          "path": "/favorites"
+        },
+        {
+          "id": "profile",
+          "name": "Perfil",
+          "icon": "account_circle",
+          "path": "/profile"
+        }
+      ]
+    },
+    {
+      "role": "default",
+      "navigation": [
+        {
+          "id": "services",
+          "name": "Servicios",
+          "icon": "room_service",
+          "path": "/services"
+        }
+      ]
+    }
+  ],
+  "role_permissions": [
+    {
+      "role": "admin",
+      "permissions": {
+        "can_create_users": true,
+        "can_edit_services": true,
+        "can_view_all_reservations": true,
+        "can_manage_system": true
+      }
+    },
+    {
+      "role": "agency",
+      "permissions": {
+        "can_create_reservations": true,
+        "can_search_guides": true,
+        "can_manage_clients": true,
+        "can_view_own_data": true
+      }
+    },
+    {
+      "role": "guide",
+      "permissions": {
+        "can_respond_requests": true,
+        "can_manage_tours": true,
+        "can_view_earnings": true,
+        "can_update_profile": true
+      }
+    },
+    {
+      "role": "client",
+      "permissions": {
+        "can_make_reservations": true,
+        "can_view_services": true,
+        "can_manage_profile": true
+      }
+    },
+    {
+      "role": "default",
+      "permissions": {
+        "can_view_services": true
+      }
+    }
+  ],
+  "client_types": [
+    {
+      "id": "corporate",
+      "name": "Corporativo",
+      "description": "Empresas y corporaciones"
+    },
+    {
+      "id": "individual",
+      "name": "Individual",
+      "description": "Clientes particulares"
+    },
+    {
+      "id": "agency",
+      "name": "Agencia",
+      "description": "Agencias de viajes"
+    },
+    {
+      "id": "group",
+      "name": "Grupo",
+      "description": "Grupos organizados"
+    },
+    {
+      "id": "vip",
+      "name": "VIP",
+      "description": "Clientes premium"
+    }
+  ],
+  "tour_categories": [
+    {
+      "id": "cultural",
+      "name": "Cultural",
+      "description": "Tours culturales y museos",
+      "icon": "museum"
+    },
+    {
+      "id": "adventure",
+      "name": "Aventura",
+      "description": "Tours de aventura y deportes extremos",
+      "icon": "mountain"
+    },
+    {
+      "id": "gastronomic",
+      "name": "Gastronómico",
+      "description": "Tours gastronómicos y culinarios",
+      "icon": "restaurant"
+    },
+    {
+      "id": "nature",
+      "name": "Naturaleza",
+      "description": "Tours de naturaleza y ecoturismo",
+      "icon": "nature"
+    },
+    {
+      "id": "historical",
+      "name": "Histórico",
+      "description": "Tours históricos y arqueológicos",
+      "icon": "history"
+    },
+    {
+      "id": "city",
+      "name": "Ciudad",
+      "description": "City tours urbanos",
+      "icon": "city"
+    },
+    {
+      "id": "beach",
+      "name": "Playa",
+      "description": "Tours de playa y costa",
+      "icon": "beach"
+    },
+    {
+      "id": "night",
+      "name": "Nocturno",
+      "description": "Tours nocturnos",
+      "icon": "night"
+    }
+  ]
 }

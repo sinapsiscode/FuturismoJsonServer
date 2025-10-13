@@ -1525,12 +1525,12 @@
       "title": "Filtros de Búsqueda",
       "clear": "Limpiar filtros",
       "searchPlaceholder": "Buscar por servicio, agencia, guía o chofer...",
-      "dateRange": "Rango de fechas",
-      "status": "Estado",
-      "serviceType": "Tipo de servicio",
-      "guide": "Guía",
-      "driver": "Chofer",
-      "vehicle": "Vehículo",
+      "dateRangeLabel": "Rango de fechas",
+      "statusLabel": "Estado",
+      "serviceTypeLabel": "Tipo de servicio",
+      "guideLabel": "Guía",
+      "driverLabel": "Chofer",
+      "vehicleLabel": "Vehículo",
       "dateRange": {
         "all": "Todas las fechas",
         "today": "Hoy",
@@ -1541,7 +1541,7 @@
       "status": {
         "all": "Todos los estados",
         "completed": "Completado",
-        "cancelled": "Cancelado", 
+        "cancelled": "Cancelado",
         "pending": "Pendiente"
       },
       "serviceType": {
@@ -1634,9 +1634,36 @@
     }
   },
   "monitoring": {
+    "title": "Monitoreo de Servicios",
+    "description": "Seguimiento en tiempo real de tours activos y guías",
+    "guideDescription": "Monitorea el progreso de tus tours activos",
+    "myTours": "Mis Tours",
+    "myToursTitle": "Mis Tours Activos",
+    "date": "Fecha",
+    "time": "Hora",
+    "location": "Ubicación",
+    "tourists": "Turistas",
+    "toursTotal": "Total Tours",
+    "noToursAssigned": "No tienes tours asignados para hoy",
+    "views": {
+      "liveMap": "Mapa en Vivo",
+      "activeTours": "Tours Activos",
+      "myTours": "Mis Tours",
+      "photos": "Fotos"
+    },
+    "map": {
+      "enterFullscreen": "Pantalla completa",
+      "exitFullscreen": "Salir de pantalla completa"
+    },
+    "actions": {
+      "start": "Iniciar",
+      "pause": "Pausar",
+      "resume": "Reanudar",
+      "complete": "Completar"
+    },
     "tour": {
       "checkIn": "Check-in",
-      "checkOut": "Check-out", 
+      "checkOut": "Check-out",
       "checkedIn": "Check-in realizado exitosamente",
       "checkedOut": "Check-out completado exitosamente",
       "nextStop": "Siguiente parada: {{stopName}}",
@@ -1644,7 +1671,71 @@
       "timeElapsed": "Tiempo transcurrido",
       "reportIncident": "Reportar incidencia",
       "incidentPrompt": "Describe la incidencia:",
-      "incidentReported": "Incidencia reportada exitosamente"
+      "incidentReported": "Incidencia reportada exitosamente",
+      "startTime": "Hora de inicio",
+      "tourists": "Turistas",
+      "progress": "Progreso",
+      "completed": "completado",
+      "sendMessage": "Enviar Mensaje",
+      "itinerary": "Itinerario",
+      "estimatedEndTime": "Hora estimada de fin",
+      "estimatedTime": "Tiempo estimado",
+      "actualTime": "Tiempo real",
+      "delay": "Retraso",
+      "withCurrentDelay": "con el retraso actual",
+      "minutes": "minutos",
+      "arrival": "Llegada",
+      "arrivalTime": "Hora de llegada",
+      "departureTime": "Hora de salida",
+      "photo": "Foto",
+      "stopPhotos": "Fotos de la parada",
+      "noPhotos": "Sin fotos",
+      "notVisitedYet": "Aún no visitado",
+      "optional": "Opcional"
+    },
+    "guide": {
+      "active": "Activo",
+      "inactive": "Inactivo",
+      "connected": "Conectado",
+      "disconnected": "Desconectado",
+      "currentTour": "Tour actual",
+      "startTime": "Hora de inicio",
+      "tourists": "Turistas",
+      "progress": "Progreso",
+      "battery": "Batería",
+      "gps": "GPS",
+      "signal": {
+        "label": "Señal"
+      },
+      "lastUpdate": "Última actualización",
+      "totalTours": "Total de tours",
+      "toursToday": "Tours hoy",
+      "rating": "Calificación",
+      "punctuality": "Puntualidad",
+      "deviceStatus": "Estado del Dispositivo",
+      "internetConnection": "Conexión a Internet",
+      "batterySaverMode": "Modo de ahorro de batería",
+      "enabled": "Habilitado",
+      "disabled": "Deshabilitado",
+      "tabs": {
+        "info": "Información",
+        "activity": "Actividad",
+        "stats": "Estadísticas"
+      }
+    },
+    "photos": {
+      "filters": "Filtros",
+      "clearFilters": "Limpiar filtros",
+      "searchPlaceholder": "Buscar por tour, parada, guía o agencia...",
+      "allGuides": "Todos los guías",
+      "allTours": "Todos los tours",
+      "showingResults": "Mostrando {{count}} fotos",
+      "view": "Ver",
+      "download": "Descargar",
+      "delete": "Eliminar",
+      "confirmDelete": "¿Estás seguro de eliminar esta foto?",
+      "noPhotos": "No hay fotos disponibles",
+      "noPhotosDescription": "Las fotos tomadas por los guías durante los tours aparecerán aquí"
     },
     "notifications": {
       "checkIn": "Check-in realizado",

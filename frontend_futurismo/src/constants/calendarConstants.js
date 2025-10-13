@@ -23,11 +23,14 @@ const getCalendarConfig = () => {
 };
 
 
-export const VIEW_OPTIONS = [
-  { value: 'month', label: 'Mes' },
-  { value: 'week', label: 'Semana' },
-  { value: 'day', label: 'Día' }
-];
+export const VIEW_OPTIONS = (() => {
+  const config = getCalendarConfig();
+  return config.viewOptions || [
+    { value: 'month', label: 'Mes' },
+    { value: 'week', label: 'Semana' },
+    { value: 'day', label: 'Día' }
+  ];
+})();
 
 export const EVENT_TYPES = (() => {
   const config = getCalendarConfig();
@@ -44,101 +47,134 @@ export const TIME_SLOTS = (() => {
   return config.timeSlots || [];
 })();
 
-export const DEFAULT_EVENT_DURATION = 60;
+export const DEFAULT_EVENT_DURATION = (() => {
+  const config = getCalendarConfig();
+  return config.defaultEventDuration || 60;
+})();
 
-export const CALENDAR_COLORS = {
-  tour: '#3B82F6',
-  meeting: '#8B5CF6',
-  training: '#10B981',
-  maintenance: '#F59E0B',
-  personal: '#6B7280',
-  holiday: '#EF4444'
-};
+export const CALENDAR_COLORS = (() => {
+  const config = getCalendarConfig();
+  return config.calendarColors || {
+    tour: '#3B82F6',
+    meeting: '#8B5CF6',
+    training: '#10B981',
+    maintenance: '#F59E0B',
+    personal: '#6B7280',
+    holiday: '#EF4444'
+  };
+})();
 
 // Event status colors
-export const EVENT_STATUS_COLORS = {
-  scheduled: 'bg-blue-100 text-blue-800',
-  confirmed: 'bg-green-100 text-green-800',
-  cancelled: 'bg-red-100 text-red-800',
-  completed: 'bg-gray-100 text-gray-800',
-  pending: 'bg-yellow-100 text-yellow-800'
-};
+export const EVENT_STATUS_COLORS = (() => {
+  const config = getCalendarConfig();
+  return config.eventStatusColors || {
+    scheduled: 'bg-blue-100 text-blue-800',
+    confirmed: 'bg-green-100 text-green-800',
+    cancelled: 'bg-red-100 text-red-800',
+    completed: 'bg-gray-100 text-gray-800',
+    pending: 'bg-yellow-100 text-yellow-800'
+  };
+})();
 
 // Days of week
-export const DAYS_OF_WEEK = [
-  { value: 0, label: 'Domingo', short: 'Dom' },
-  { value: 1, label: 'Lunes', short: 'Lun' },
-  { value: 2, label: 'Martes', short: 'Mar' },
-  { value: 3, label: 'Miércoles', short: 'Mié' },
-  { value: 4, label: 'Jueves', short: 'Jue' },
-  { value: 5, label: 'Viernes', short: 'Vie' },
-  { value: 6, label: 'Sábado', short: 'Sáb' }
-];
+export const DAYS_OF_WEEK = (() => {
+  const config = getCalendarConfig();
+  return config.daysOfWeek || [
+    { value: 0, label: 'Domingo', short: 'Dom' },
+    { value: 1, label: 'Lunes', short: 'Lun' },
+    { value: 2, label: 'Martes', short: 'Mar' },
+    { value: 3, label: 'Miércoles', short: 'Mié' },
+    { value: 4, label: 'Jueves', short: 'Jue' },
+    { value: 5, label: 'Viernes', short: 'Vie' },
+    { value: 6, label: 'Sábado', short: 'Sáb' }
+  ];
+})();
 
 // Time formats
-export const TIME_FORMATS = {
-  HOUR_12: 'h:mm a',
-  HOUR_24: 'HH:mm',
-  DATE: 'DD/MM/YYYY',
-  DATE_TIME: 'DD/MM/YYYY HH:mm',
-  MONTH_YEAR: 'MMMM YYYY'
-};
+export const TIME_FORMATS = (() => {
+  const config = getCalendarConfig();
+  return config.timeFormats || {
+    HOUR_12: 'h:mm a',
+    HOUR_24: 'HH:mm',
+    DATE: 'DD/MM/YYYY',
+    DATE_TIME: 'DD/MM/YYYY HH:mm',
+    MONTH_YEAR: 'MMMM YYYY'
+  };
+})();
 
 // Calendar view modes
-export const CALENDAR_VIEWS = {
-  MONTH: 'month',
-  WEEK: 'week',
-  DAY: 'day',
-  AGENDA: 'agenda'
-};
+export const CALENDAR_VIEWS = (() => {
+  const config = getCalendarConfig();
+  return config.calendarViews || {
+    MONTH: 'month',
+    WEEK: 'week',
+    DAY: 'day',
+    AGENDA: 'agenda'
+  };
+})();
 
 // Availability status
-export const AVAILABILITY_STATUS = {
-  AVAILABLE: 'available',
-  BUSY: 'busy',
-  TENTATIVE: 'tentative',
-  OUT_OF_OFFICE: 'out_of_office'
-};
+export const AVAILABILITY_STATUS = (() => {
+  const config = getCalendarConfig();
+  return config.availabilityStatus || {
+    AVAILABLE: 'available',
+    BUSY: 'busy',
+    TENTATIVE: 'tentative',
+    OUT_OF_OFFICE: 'out_of_office'
+  };
+})();
 
 // Calendar messages
-export const CALENDAR_MESSAGES = {
-  EVENT_CREATED: 'Evento creado exitosamente',
-  EVENT_UPDATED: 'Evento actualizado exitosamente',
-  EVENT_DELETED: 'Evento eliminado exitosamente',
-  EVENT_ERROR: 'Error al procesar evento',
-  CONFLICT_DETECTED: 'Conflicto detectado con otro evento',
-  FETCH_ERROR: 'Error al cargar calendario'
-};
+export const CALENDAR_MESSAGES = (() => {
+  const config = getCalendarConfig();
+  return config.calendarMessages || {
+    EVENT_CREATED: 'Evento creado exitosamente',
+    EVENT_UPDATED: 'Evento actualizado exitosamente',
+    EVENT_DELETED: 'Evento eliminado exitosamente',
+    EVENT_ERROR: 'Error al procesar evento',
+    CONFLICT_DETECTED: 'Conflicto detectado con otro evento',
+    FETCH_ERROR: 'Error al cargar calendario'
+  };
+})();
 
 // Calendar filters
-export const CALENDAR_FILTERS = {
-  SHOW_TOURS: 'showTours',
-  SHOW_MEETINGS: 'showMeetings',
-  SHOW_TRAINING: 'showTraining',
-  SHOW_MAINTENANCE: 'showMaintenance',
-  SHOW_PERSONAL: 'showPersonal',
-  SHOW_HOLIDAYS: 'showHolidays'
-};
+export const CALENDAR_FILTERS = (() => {
+  const config = getCalendarConfig();
+  return config.calendarFilters || {
+    SHOW_TOURS: 'showTours',
+    SHOW_MEETINGS: 'showMeetings',
+    SHOW_TRAINING: 'showTraining',
+    SHOW_MAINTENANCE: 'showMaintenance',
+    SHOW_PERSONAL: 'showPersonal',
+    SHOW_HOLIDAYS: 'showHolidays'
+  };
+})();
 
 // Default calendar filters
-export const DEFAULT_CALENDAR_FILTERS = {
-  showTours: true,
-  showMeetings: true,
-  showTraining: true,
-  showMaintenance: true,
-  showPersonal: true,
-  showHolidays: true
-};
+export const DEFAULT_CALENDAR_FILTERS = (() => {
+  const config = getCalendarConfig();
+  return config.defaultCalendarFilters || {
+    showTours: true,
+    showMeetings: true,
+    showTraining: true,
+    showMaintenance: true,
+    showPersonal: true,
+    showHolidays: true
+  };
+})();
 
 // Time filters
-export const TIME_FILTERS = {
-  ALL: 'all',
-  TODAY: 'today',
-  THIS_WEEK: 'this_week',
-  THIS_MONTH: 'this_month',
-  UPCOMING: 'upcoming',
-  PAST: 'past'
-};
+export const TIME_FILTERS = (() => {
+  const config = getCalendarConfig();
+  return config.timeFilters || {
+    ALL: 'all',
+    TODAY: 'today',
+    THIS_WEEK: 'this_week',
+    THIS_MONTH: 'this_month',
+    UPCOMING: 'upcoming',
+    PAST: 'past'
+  };
+})();
 
 
 // Export default para compatibilidad

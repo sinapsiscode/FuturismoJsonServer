@@ -23,16 +23,19 @@ const getSettingsConfig = () => {
 };
 
 
-export const VALIDATION_PATTERNS = {
-  email: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-  phone: /^9\d{8}$/,
-  url: /^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/
-};
+export const VALIDATION_PATTERNS = (() => {
+  const config = getSettingsConfig();
+  return config.validationPatterns || {
+    email: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+    phone: /^9\d{8}$/,
+    url: /^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/
+  };
+})();
 
-export const FORM_LIMITS = {
-  maxLength: 255,
-  minLength: 3
-};
+export const FORM_LIMITS = (() => {
+  const config = getSettingsConfig();
+  return config.formLimits || { maxLength: 255, minLength: 3 };
+})();
 
 export const NOTIFICATION_CHANNELS = (() => {
   const config = getSettingsConfig();
@@ -44,74 +47,95 @@ export const NOTIFICATION_TYPES = (() => {
   return config.notificationTypes || [];
 })();
 
-export const CHANNEL_COLORS = {
-  email: 'blue',
-  sms: 'green',
-  push: 'purple',
-  whatsapp: 'green'
-};
+export const CHANNEL_COLORS = (() => {
+  const config = getSettingsConfig();
+  return config.channelColors || {
+    email: 'blue',
+    sms: 'green',
+    push: 'purple',
+    whatsapp: 'green'
+  };
+})();
 
 export const TOUR_LIMITS = (() => {
   const config = getSettingsConfig();
   return config.tourLimits || {};
 })();
 
-export const DEFAULT_VALUES = {
-  maxParticipants: 20,
-  duration: 4
-};
+export const DEFAULT_VALUES = (() => {
+  const config = getSettingsConfig();
+  return config.defaultValues || { maxParticipants: 20, duration: 4 };
+})();
 
 // Setting categories
-export const SETTING_CATEGORIES = {
-  GENERAL: 'general',
-  NOTIFICATIONS: 'notifications',
-  PRIVACY: 'privacy',
-  APPEARANCE: 'appearance',
-  LANGUAGE: 'language',
-  SECURITY: 'security'
-};
+export const SETTING_CATEGORIES = (() => {
+  const config = getSettingsConfig();
+  return config.settingCategories || {
+    GENERAL: 'general',
+    NOTIFICATIONS: 'notifications',
+    PRIVACY: 'privacy',
+    APPEARANCE: 'appearance',
+    LANGUAGE: 'language',
+    SECURITY: 'security'
+  };
+})();
 
 // Theme options
-export const THEME_OPTIONS = {
-  LIGHT: 'light',
-  DARK: 'dark',
-  AUTO: 'auto'
-};
+export const THEME_OPTIONS = (() => {
+  const config = getSettingsConfig();
+  return config.themeOptions || {
+    LIGHT: 'light',
+    DARK: 'dark',
+    AUTO: 'auto'
+  };
+})();
 
 // Language options
-export const LANGUAGE_OPTIONS = [
-  { value: 'es', label: 'Español', flag: '🇪🇸' },
-  { value: 'en', label: 'English', flag: '🇺🇸' }
-];
+export const LANGUAGE_OPTIONS = (() => {
+  const config = getSettingsConfig();
+  return config.languageOptions || [
+    { value: 'es', label: 'Español', flag: '🇪🇸' },
+    { value: 'en', label: 'English', flag: '🇺🇸' }
+  ];
+})();
 
 // Notification settings
-export const NOTIFICATION_SETTINGS = {
-  EMAIL: 'email',
-  SMS: 'sms',
-  PUSH: 'push',
-  WHATSAPP: 'whatsapp'
-};
+export const NOTIFICATION_SETTINGS = (() => {
+  const config = getSettingsConfig();
+  return config.notificationSettings || {
+    EMAIL: 'email',
+    SMS: 'sms',
+    PUSH: 'push',
+    WHATSAPP: 'whatsapp'
+  };
+})();
 
 // Privacy settings
-export const PRIVACY_SETTINGS = {
-  PUBLIC: 'public',
-  PRIVATE: 'private',
-  FRIENDS: 'friends',
-  CUSTOM: 'custom'
-};
+export const PRIVACY_SETTINGS = (() => {
+  const config = getSettingsConfig();
+  return config.privacySettings || {
+    PUBLIC: 'public',
+    PRIVATE: 'private',
+    FRIENDS: 'friends',
+    CUSTOM: 'custom'
+  };
+})();
 
 // Settings messages
-export const SETTINGS_MESSAGES = {
-  FETCH_ERROR: 'Error al cargar configuración',
-  UPDATE_SUCCESS: 'Configuración actualizada exitosamente',
-  UPDATE_ERROR: 'Error al actualizar configuración',
-  RESET_SUCCESS: 'Configuración restablecida',
-  RESET_ERROR: 'Error al restablecer configuración',
-  PASSWORD_CHANGED: 'Contraseña cambiada exitosamente',
-  PASSWORD_ERROR: 'Error al cambiar contraseña',
-  THEME_CHANGED: 'Tema actualizado',
-  LANGUAGE_CHANGED: 'Idioma actualizado'
-};
+export const SETTINGS_MESSAGES = (() => {
+  const config = getSettingsConfig();
+  return config.settingsMessages || {
+    FETCH_ERROR: 'Error al cargar configuración',
+    UPDATE_SUCCESS: 'Configuración actualizada exitosamente',
+    UPDATE_ERROR: 'Error al actualizar configuración',
+    RESET_SUCCESS: 'Configuración restablecida',
+    RESET_ERROR: 'Error al restablecer configuración',
+    PASSWORD_CHANGED: 'Contraseña cambiada exitosamente',
+    PASSWORD_ERROR: 'Error al cambiar contraseña',
+    THEME_CHANGED: 'Tema actualizado',
+    LANGUAGE_CHANGED: 'Idioma actualizado'
+  };
+})();
 
 
 // Export default para compatibilidad
