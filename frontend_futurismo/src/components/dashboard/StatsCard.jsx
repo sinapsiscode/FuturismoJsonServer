@@ -3,41 +3,17 @@ import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 import { ArrowTrendingUpIcon, ArrowTrendingDownIcon } from '@heroicons/react/24/outline';
 
-const StatsCard = ({ 
-  title, 
-  value, 
-  icon: Icon, 
-  trend, 
+const StatsCard = ({
+  title,
+  value,
+  icon: Icon,
+  trend,
   color = 'primary',
   subtitle = null,
-  loading = false 
+  loading = false,
+  showTrendComparison = false
 }) => {
-  const { t, i18n } = useTranslation();
-  const [translationText, setTranslationText] = useState('vs mes anterior');
-  
-  useEffect(() => {
-    const checkTranslation = () => {
-      const translated = t('dashboard.stats.vsPreviousMonth');
-      console.log('Traducción obtenida:', translated);
-      console.log('Recursos disponibles:', i18n.hasResourceBundle('es', 'translation'));
-      console.log('Idioma actual:', i18n.language);
-      
-      if (translated !== 'dashboard.stats.vsPreviousMonth') {
-        setTranslationText(translated);
-      }
-    };
-    
-    checkTranslation();
-    
-    // Escuchar cambios en las traducciones
-    i18n.on('loaded', checkTranslation);
-    i18n.on('languageChanged', checkTranslation);
-    
-    return () => {
-      i18n.off('loaded', checkTranslation);
-      i18n.off('languageChanged', checkTranslation);
-    };
-  }, [t, i18n]);
+  const { t } = useTranslation();
   
   const colorClasses = {
     primary: 'bg-gradient-to-br from-secondary-100 to-secondary-200 text-secondary-700',
@@ -90,9 +66,11 @@ const StatsCard = ({
                   {trend}
                 </span>
               </div>
-              <span className="text-sm text-neutral-500 truncate">
-                {translationText}
-              </span>
+              {showTrendComparison && (
+                <span className="text-sm text-neutral-500 truncate">
+                  {t('dashboard.stats.vsPreviousMonth', 'vs mes anterior')}
+                </span>
+              )}
             </div>
           )}
         </div>
@@ -110,9 +88,10 @@ StatsCard.propTypes = {
   value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
   icon: PropTypes.elementType.isRequired,
   trend: PropTypes.string,
-  color: PropTypes.oneOf(['primary', 'secondary', 'success', 'danger']),
+  color: PropTypes.oneOf(['primary', 'secondary', 'success', 'danger', 'warning', 'neutral']),
   subtitle: PropTypes.string,
-  loading: PropTypes.bool
+  loading: PropTypes.bool,
+  showTrendComparison: PropTypes.bool
 };
 
 export default StatsCard;

@@ -65,7 +65,7 @@ const ReservationStats = ({
           subtitle={t('stats.completedReservations')}
           icon={Users}
           color="blue"
-          trend="+12%"
+          trend={stats.trends?.totalClients?.trendLabel || '0%'}
           ariaLabel={t('stats.totalClientsAria')}
         />
         <StatCard
@@ -74,7 +74,7 @@ const ReservationStats = ({
           subtitle={t('stats.peopleServed')}
           icon={TrendingUp}
           color="green"
-          trend="+18%"
+          trend={stats.trends?.totalTourists?.trendLabel || '0%'}
           ariaLabel={t('stats.totalTouristsAria')}
         />
         <StatCard
@@ -83,7 +83,7 @@ const ReservationStats = ({
           subtitle={t('stats.accumulatedSales')}
           icon={DollarSign}
           color="purple"
-          trend="+23%"
+          trend={stats.trends?.totalRevenue?.trendLabel || '0%'}
           ariaLabel={t('stats.totalRevenueAria')}
         />
         <StatCard
@@ -92,7 +92,7 @@ const ReservationStats = ({
           subtitle={t('stats.peoplePerReservation')}
           icon={BarChart3}
           color="orange"
-          trend="+5%"
+          trend={stats.trends?.avgGroupSize?.trendLabel || '0%'}
           ariaLabel={t('stats.avgGroupSizeAria')}
         />
       </div>
@@ -105,7 +105,7 @@ const ReservationStats = ({
           subtitle={t('stats.avgReservationValue')}
           icon={Star}
           color="yellow"
-          trend="+8%"
+          trend={stats.trends?.avgRevenuePerClient?.trendLabel || '0%'}
           ariaLabel={t('stats.avgPerClientAria')}
         />
         <StatCard
@@ -114,6 +114,7 @@ const ReservationStats = ({
           subtitle={t('stats.availableLocations')}
           icon={MapPin}
           color="indigo"
+          trend={stats.trends?.activeDestinations?.trendLabel || '0%'}
           ariaLabel={t('stats.activeDestinationsAria')}
         />
       </div>

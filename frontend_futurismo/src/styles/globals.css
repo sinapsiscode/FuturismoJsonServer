@@ -9,20 +9,23 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Transiciones globales suaves para todos los elementos */
+/* ===== TRANSICIONES DESACTIVADAS PARA MEJOR RENDIMIENTO ===== */
+/* Desactivar TODAS las transiciones y animaciones */
 *, *::before, *::after {
-  transition: all 1s ease-in-out;
+  transition: none !important;
+  animation: none !important;
+  animation-duration: 0s !important;
+  animation-delay: 0s !important;
 }
 
-/* Excepciones para animaciones que no necesitan transición */
-.no-transition, .no-transition *, 
+/* Desactivar específicamente animaciones de Tailwind */
 .animate-spin, .animate-ping, .animate-pulse, .animate-bounce {
-  transition: none !important;
+  animation: none !important;
 }
 
 @layer base {
   html {
-    scroll-behavior: smooth;
+    scroll-behavior: auto; /* Desactivado para mejor rendimiento */
   }
   
   body {
@@ -567,22 +570,14 @@
     right: 0;
     bottom: 0;
     z-index: 1040;
-    
-    background: linear-gradient(135deg, 
-      rgba(15, 23, 42, 0.6), 
-      rgba(15, 23, 42, 0.4)
-    );
-    backdrop-filter: blur(var(--blur-light));
-    -webkit-backdrop-filter: blur(var(--blur-light));
-    
+
+    background: rgba(15, 23, 42, 0.7);
+    /* backdrop-filter desactivado para mejor rendimiento */
+
     display: flex;
     align-items: center;
     justify-content: center;
     padding: var(--spacing-lg);
-    
-    /* Transiciones suaves de 1 segundo */
-    animation: modal-fade-in 1s ease-out;
-    transition: all 1s ease-in-out;
   }
 
   .modal-dialog {
@@ -591,11 +586,6 @@
     max-width: 500px;
     margin: auto;
     max-height: 90vh;
-    
-    /* Transiciones cinematográficas de 1 segundo */
-    animation: modal-scale-in 1s ease-out;
-    transition: all 1s cubic-bezier(0.4, 0, 0.2, 1);
-    transform-origin: center center;
   }
   
   .modal-sm .modal-dialog {
@@ -616,18 +606,15 @@
     flex-direction: column;
     width: 100%;
     max-height: inherit;
-    
+
     background: white;
     background-clip: padding-box;
     border: var(--border-width-thin) solid var(--color-neutral-200);
     border-radius: var(--border-radius-2xl);
-    
+
     box-shadow: var(--shadow-2xl);
     outline: 0;
     overflow: hidden;
-    
-    /* Transiciones suaves para todos los cambios internos */
-    transition: all 1s ease-in-out;
   }
 
   .modal-header {
@@ -635,13 +622,9 @@
     align-items: center;
     justify-content: space-between;
     padding: var(--spacing-xl);
-    
-    background: linear-gradient(135deg, var(--color-neutral-50), white);
+
+    background: var(--color-neutral-50);
     border-bottom: var(--border-width-thin) solid var(--color-neutral-200);
-    
-    /* Transiciones suaves y animación de entrada */
-    transition: all 1s ease-in-out;
-    animation: modal-slide-down 1s ease-out 0.2s both;
   }
 
   .modal-title {
@@ -659,28 +642,18 @@
     justify-content: center;
     width: 32px;
     height: 32px;
-    
+
     background: transparent;
     border: none;
     border-radius: var(--border-radius-lg);
-    
+
     color: var(--color-neutral-500);
     cursor: pointer;
-    
-    /* Transición ultra-suave de 1 segundo */
-    transition: all 1s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   .modal-close:hover {
     background: var(--color-neutral-100);
     color: var(--color-neutral-700);
-    transform: scale(1.2) rotate(90deg);
-    box-shadow: 0 0 15px rgba(124, 58, 237, 0.3);
-  }
-  
-  .modal-close:active {
-    transform: scale(0.9) rotate(180deg);
-    transition: all 0.3s ease-in-out;
   }
 
   .modal-body {
@@ -690,62 +663,6 @@
     color: var(--color-neutral-700);
     line-height: var(--line-height-relaxed);
     overflow-y: auto;
-    
-    /* Transiciones suaves y animación de entrada */
-    transition: all 1s ease-in-out;
-    animation: modal-slide-up 1s ease-out 0.4s both;
-  }
-  
-  /* Transiciones escalonadas para elementos dentro del modal-body */
-  .modal-body > * {
-    transition: all 1s ease-in-out;
-    animation: modal-slide-left 1s ease-out both;
-  }
-  
-  .modal-body > *:nth-child(1) { animation-delay: 0.5s; }
-  .modal-body > *:nth-child(2) { animation-delay: 0.6s; }
-  .modal-body > *:nth-child(3) { animation-delay: 0.7s; }
-  .modal-body > *:nth-child(4) { animation-delay: 0.8s; }
-  .modal-body > *:nth-child(5) { animation-delay: 0.9s; }
-  
-  .modal-body .form-group {
-    transition: all 1s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  }
-  
-  .modal-body .form-group:hover {
-    transform: translateX(5px) scale(1.01);
-    box-shadow: var(--shadow-md);
-  }
-  
-  .modal-body .form-control,
-  .modal-body .input {
-    transition: all 1s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  }
-  
-  .modal-body .form-control:focus,
-  .modal-body .input:focus {
-    transform: scale(1.02);
-    box-shadow: var(--shadow-lg), 0 0 0 4px rgba(124, 58, 237, 0.2);
-  }
-  
-  /* Transiciones para botones dentro del modal-body */
-  .modal-body .btn {
-    transition: all 1s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  }
-  
-  .modal-body .btn:hover {
-    transform: translateY(-2px) scale(1.03);
-  }
-  
-  /* Transiciones para tabs y navegación en modales */
-  .modal-body .nav-item,
-  .modal-body .tab-item {
-    transition: all 1s ease-in-out;
-  }
-  
-  .modal-body .nav-item:hover,
-  .modal-body .tab-item:hover {
-    transform: translateY(-2px) scale(1.02);
   }
 
   .modal-footer {
@@ -755,264 +672,9 @@
     justify-content: flex-end;
     gap: var(--spacing-md);
     padding: var(--spacing-xl);
-    
+
     background: var(--color-neutral-50);
     border-top: var(--border-width-thin) solid var(--color-neutral-200);
-    
-    /* Transiciones suaves y animación de entrada */
-    transition: all 1s ease-in-out;
-    animation: modal-slide-up 1s ease-out 0.6s both;
-  }
-  
-  /* Transiciones escalonadas para botones del footer */
-  .modal-footer .btn {
-    transition: all 1s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-    animation: modal-slide-up 1s ease-out both;
-  }
-  
-  .modal-footer .btn:nth-child(1) { animation-delay: 0.7s; }
-  .modal-footer .btn:nth-child(2) { animation-delay: 0.8s; }
-  .modal-footer .btn:nth-child(3) { animation-delay: 0.9s; }
-  
-  .modal-footer .btn:hover {
-    transform: translateY(-4px) scale(1.08);
-    box-shadow: var(--shadow-xl), 0 0 20px rgba(124, 58, 237, 0.3);
-  }
-  
-  .modal-footer .btn:active {
-    transform: translateY(-1px) scale(1.02);
-    transition: all 0.2s ease-in-out;
-  }
-  
-  /* ===== ANIMACIONES DE MODALES ===== */
-  /* ===== ANIMACIONES CINEMATOGRÁFICAS ===== */
-  @keyframes modal-fade-in {
-    0% {
-      opacity: 0;
-      backdrop-filter: blur(0px);
-      -webkit-backdrop-filter: blur(0px);
-    }
-    50% {
-      opacity: 0.5;
-      backdrop-filter: blur(4px);
-      -webkit-backdrop-filter: blur(4px);
-    }
-    100% {
-      opacity: 1;
-      backdrop-filter: blur(var(--blur-light));
-      -webkit-backdrop-filter: blur(var(--blur-light));
-    }
-  }
-
-  @keyframes modal-scale-in {
-    0% {
-      opacity: 0;
-      transform: scale(0.8) translateY(-50px) rotate(-3deg);
-    }
-    30% {
-      opacity: 0.3;
-      transform: scale(0.95) translateY(-20px) rotate(-1deg);
-    }
-    70% {
-      opacity: 0.8;
-      transform: scale(1.02) translateY(5px) rotate(0.5deg);
-    }
-    100% {
-      opacity: 1;
-      transform: scale(1) translateY(0) rotate(0deg);
-    }
-  }
-  
-  @keyframes modal-slide-down {
-    0% {
-      opacity: 0;
-      transform: translateY(-30px);
-    }
-    100% {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-  
-  @keyframes modal-slide-up {
-    0% {
-      opacity: 0;
-      transform: translateY(30px);
-    }
-    100% {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-  
-  @keyframes modal-slide-left {
-    0% {
-      opacity: 0;
-      transform: translateX(-30px);
-    }
-    100% {
-      opacity: 1;
-      transform: translateX(0);
-    }
-  }
-  
-  /* Animaciones de salida para cerrar modales */
-  @keyframes modal-fade-out {
-    0% {
-      opacity: 1;
-      backdrop-filter: blur(var(--blur-light));
-      -webkit-backdrop-filter: blur(var(--blur-light));
-    }
-    100% {
-      opacity: 0;
-      backdrop-filter: blur(0px);
-      -webkit-backdrop-filter: blur(0px);
-    }
-  }
-  
-  @keyframes modal-scale-out {
-    0% {
-      opacity: 1;
-      transform: scale(1) translateY(0) rotate(0deg);
-    }
-    100% {
-      opacity: 0;
-      transform: scale(0.9) translateY(20px) rotate(2deg);
-    }
-  }
-  
-  /* Clases para controlar las transiciones de cierre */
-  .modal-closing .modal-overlay {
-    animation: modal-fade-out 1s ease-in forwards;
-  }
-  
-  .modal-closing .modal-dialog {
-    animation: modal-scale-out 1s ease-in forwards;
-  }
-  
-  /* Transiciones entre diferentes modales */
-  .modal-transition-enter {
-    opacity: 0;
-    transform: scale(0.95) translateX(-20px);
-  }
-  
-  .modal-transition-enter-active {
-    opacity: 1;
-    transform: scale(1) translateX(0px);
-    transition: all 1s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  }
-  
-  .modal-transition-exit {
-    opacity: 1;
-    transform: scale(1) translateX(0px);
-  }
-  
-  .modal-transition-exit-active {
-    opacity: 0;
-    transform: scale(0.95) translateX(20px);
-    transition: all 1s cubic-bezier(0.55, 0.06, 0.68, 0.19);
-  }
-  
-  /* ===== ESTADOS ESPECIALES DE MODAL ===== */
-  
-  /* Modal que se está abriendo */
-  .modal-open .modal-header {
-    animation-delay: 0.1s;
-  }
-  
-  .modal-open .modal-body {
-    animation-delay: 0.3s;
-  }
-  
-  .modal-open .modal-footer {
-    animation-delay: 0.5s;
-  }
-  
-  /* Transiciones para cambios dinámicos de contenido */
-  .modal-content-changing {
-    opacity: 0.7;
-    transform: scale(0.98);
-    transition: all 1s ease-in-out;
-  }
-  
-  .modal-content-changed {
-    opacity: 1;
-    transform: scale(1);
-    transition: all 1s ease-in-out;
-  }
-  
-  /* Efectos especiales para interacciones */
-  .modal-body:hover {
-    background: linear-gradient(135deg, 
-      rgba(255, 255, 255, 0.98), 
-      rgba(248, 250, 252, 0.95)
-    );
-    transition: all 1s ease-in-out;
-  }
-  
-  .modal-footer:hover {
-    background: linear-gradient(135deg, 
-      var(--color-neutral-50), 
-      rgba(241, 245, 249, 0.8)
-    );
-    transition: all 1s ease-in-out;
-  }
-  
-  /* Efectos de focus mejorados */
-  .modal-body .form-control:focus,
-  .modal-body .input:focus {
-    background: linear-gradient(135deg, 
-      rgba(255, 255, 255, 1), 
-      rgba(124, 58, 237, 0.02)
-    );
-    border-color: var(--color-secondary);
-    box-shadow: 
-      var(--shadow-lg), 
-      0 0 0 4px rgba(124, 58, 237, 0.15),
-      inset 0 1px 3px rgba(124, 58, 237, 0.1);
-    transform: scale(1.02) translateY(-1px);
-    transition: all 1s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  }
-  
-  /* Animaciones para diferentes tipos de contenido */
-  .modal-body .card {
-    transition: all 1s ease-in-out;
-    animation: modal-slide-left 1s ease-out 0.6s both;
-  }
-  
-  .modal-body .table {
-    transition: all 1s ease-in-out;
-    animation: modal-slide-up 1s ease-out 0.7s both;
-  }
-  
-  .modal-body .alert {
-    transition: all 1s ease-in-out;
-    animation: modal-slide-down 1s ease-out 0.5s both;
-  }
-  
-  /* Transiciones para pestañas/tabs */
-  .modal-body .tab-content {
-    transition: all 1s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  }
-  
-  .modal-body .tab-pane {
-    transition: all 1s ease-in-out;
-  }
-  
-  .modal-body .tab-pane.active {
-    animation: modal-slide-left 1s ease-out both;
-  }
-  
-  /* Mejoras específicas para formularios largos */
-  .modal-body .form-row {
-    transition: all 1s ease-in-out;
-  }
-  
-  .modal-body .form-row:hover {
-    background: rgba(124, 58, 237, 0.02);
-    border-radius: var(--border-radius-lg);
-    padding: var(--spacing-sm);
-    margin: calc(var(--spacing-sm) * -1);
   }
 }
 
@@ -1048,21 +710,6 @@
   .modal-footer .btn {
     width: 100%;
     justify-content: center;
-  }
-  
-  /* Animaciones más rápidas en móvil */
-  .modal-overlay {
-    animation-duration: 0.8s;
-  }
-  
-  .modal-dialog {
-    animation-duration: 0.8s;
-  }
-  
-  .modal-header,
-  .modal-body,
-  .modal-footer {
-    animation-duration: 0.8s;
   }
 }
 
@@ -1100,17 +747,5 @@
   .modal-body {
     flex: 1;
     overflow-y: auto;
-  }
-}
-
-/* Animación del dropdown de notificaciones */
-@keyframes dropdownSlideIn {
-  from {
-    opacity: 0;
-    transform: translateY(-10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
   }
 }

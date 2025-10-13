@@ -71,26 +71,84 @@ const useDashboard = () => {
     switch (user?.role) {
       case 'guide':
         return {
-          card1: { value: stats.toursThisWeek ?? 0, label: 'Tours esta semana', icon: 'calendar' },
-          card2: { value: getFormattedNextTour(), label: 'Siguiente tour', icon: 'clock' },
-          card3: { value: stats.personalRating ? stats.personalRating.toFixed(1) : '0.0', label: 'Rating personal', icon: 'star' },
-          card4: { value: stats.monthlyIncome ?? 0, label: 'Ingresos mensuales', icon: 'dollar', format: 'currency' }
+          card1: {
+            value: stats.toursThisWeek ?? 0,
+            label: 'Tours esta semana',
+            icon: 'calendar',
+            trend: stats.toursThisWeekTrend || null
+          },
+          card2: {
+            value: getFormattedNextTour(),
+            label: 'Siguiente tour',
+            icon: 'clock',
+            trend: null // No aplica trend para fecha
+          },
+          card3: {
+            value: stats.personalRating ? stats.personalRating.toFixed(1) : '0.0',
+            label: 'Rating personal',
+            icon: 'star',
+            trend: stats.ratingTrend || null
+          },
+          card4: {
+            value: stats.monthlyIncome ?? 0,
+            label: 'Ingresos mensuales',
+            icon: 'dollar',
+            format: 'currency',
+            trend: stats.monthlyIncomeTrend || null
+          }
         };
 
       case 'agency':
         return {
-          card1: { value: stats.activeServices ?? 0, label: 'Servicios activos', icon: 'service' },
-          card2: { value: stats.completedToday ?? 0, label: 'Completados hoy', icon: 'check' },
-          card3: { value: stats.totalRevenue ?? 0, label: 'Ingresos totales', icon: 'dollar', format: 'currency' },
-          card4: { value: stats.punctualityRate ? stats.punctualityRate.toFixed(1) : '0.0', label: 'Puntualidad %', icon: 'clock' }
+          card1: {
+            value: stats.activeServices ?? 0,
+            label: 'Servicios activos',
+            icon: 'service',
+            trend: stats.activeServicesTrend || null
+          },
+          card2: {
+            value: stats.completedToday ?? 0,
+            label: 'Completados hoy',
+            icon: 'check',
+            trend: stats.completedTodayTrend || null
+          },
+          card3: {
+            value: stats.totalRevenue ?? 0,
+            label: 'Ingresos totales',
+            icon: 'dollar',
+            format: 'currency',
+            trend: stats.totalRevenueTrend || null
+          },
+          card4: {
+            value: stats.punctualityRate ? stats.punctualityRate.toFixed(1) : '0.0',
+            label: 'Puntualidad %',
+            icon: 'clock',
+            trend: stats.punctualityRateTrend || null
+          }
         };
 
       case 'admin':
       default:
         return {
-          card1: { value: stats.activeServices ?? 0, label: 'Servicios activos', icon: 'service' },
-          card2: { value: stats.totalAgencies ?? 0, label: 'Agencias totales', icon: 'building' },
-          card3: { value: stats.totalRevenue ?? 0, label: 'Ingresos totales', icon: 'dollar', format: 'currency' }
+          card1: {
+            value: stats.activeServices ?? 0,
+            label: 'Servicios activos',
+            icon: 'service',
+            trend: stats.activeServicesTrend || null
+          },
+          card2: {
+            value: stats.totalAgencies ?? 0,
+            label: 'Agencias totales',
+            icon: 'building',
+            trend: stats.totalAgenciesTrend || null
+          },
+          card3: {
+            value: stats.totalRevenue ?? 0,
+            label: 'Ingresos totales',
+            icon: 'dollar',
+            format: 'currency',
+            trend: stats.totalRevenueTrend || null
+          }
         };
     }
   };

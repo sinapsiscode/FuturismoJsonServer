@@ -27,7 +27,9 @@ const FeedbackDashboard = () => {
     staffFeedback,
     handleExport,
     serviceFeedbackByArea,
-    statusDistribution
+    statusDistribution,
+    loading,
+    error
   } = useFeedbackDashboard();
 
   return (
@@ -44,32 +46,43 @@ const FeedbackDashboard = () => {
         </div>
 
         {/* Stats Overview */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-          <StatCard
-            title={t('feedback.stats.totalFeedback')}
-            value={stats.totalFeedback}
-            subtitle={t('feedback.stats.thisMonth')}
-            icon={ChatBubbleLeftRightIcon}
-            trend="+23%"
-            color="blue"
-          />
-          <StatCard
-            title={t('feedback.stats.serviceFeedback')}
-            value={stats.serviceFeedback}
-            subtitle={t('feedback.stats.areasEvaluated')}
-            icon={ChartBarIcon}
-            trend="+18%"
-            color="green"
-          />
-          <StatCard
-            title={t('feedback.stats.staffFeedback')}
-            value={stats.staffFeedback}
-            subtitle={t('feedback.stats.staffEvaluations')}
-            icon={UsersIcon}
-            trend="+12%"
-            color="purple"
-          />
-        </div>
+        {loading ? (
+          <div className="flex items-center justify-center py-12">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+            <span className="ml-3 text-gray-600">{t('common.loading')}</span>
+          </div>
+        ) : error ? (
+          <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-8">
+            <p className="text-red-800">{t('errors.loadingStats')}: {error}</p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+            <StatCard
+              title={t('feedback.stats.totalFeedback')}
+              value={stats.totalFeedback}
+              subtitle={t('feedback.stats.thisMonth')}
+              icon={ChatBubbleLeftRightIcon}
+              trend={stats.totalFeedbackTrend || '0%'}
+              color="blue"
+            />
+            <StatCard
+              title={t('feedback.stats.serviceFeedback')}
+              value={stats.serviceFeedback}
+              subtitle={t('feedback.stats.areasEvaluated')}
+              icon={ChartBarIcon}
+              trend={stats.serviceFeedbackTrend || '0%'}
+              color="green"
+            />
+            <StatCard
+              title={t('feedback.stats.staffFeedback')}
+              value={stats.staffFeedback}
+              subtitle={t('feedback.stats.staffEvaluations')}
+              icon={UsersIcon}
+              trend={stats.staffFeedbackTrend || '0%'}
+              color="purple"
+            />
+          </div>
+        )}
 
         {/* Filters */}
         <FeedbackFilters

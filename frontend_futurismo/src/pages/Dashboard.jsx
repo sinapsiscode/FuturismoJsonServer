@@ -85,7 +85,7 @@ const Dashboard = () => {
                 title={card.label}
                 value={card.format === 'currency' ? `S/. ${(card.value ?? 0).toLocaleString()}` : (card.value ?? 0)}
                 icon={getIconForType(card.icon)}
-                trend="+2"
+                trend={card.trend || null}
                 color="primary"
               />
             );

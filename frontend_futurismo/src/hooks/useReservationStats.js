@@ -1,6 +1,35 @@
-import { useMemo } from 'react';
+import { useMemo, useState, useEffect } from 'react';
+import api from '../services/api';
 
 const useReservationStats = (reservations = []) => {
+  const [trends, setTrends] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  // Fetch trends from API
+  useEffect(() => {
+    const fetchTrends = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+
+        const response = await api.get('/statistics/reservations/trends');
+
+        if (response.data.success) {
+          setTrends(response.data.data);
+        }
+      } catch (err) {
+        console.error('Error fetching reservation trends:', err);
+        setError(err.message);
+        setTrends(null);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchTrends();
+  }, [reservations.length]); // Re-fetch when reservations change
+
   const stats = useMemo(() => {
     // Estado inicial si no hay reservaciones
     if (!reservations.length) {
@@ -13,17 +42,27 @@ const useReservationStats = (reservations = []) => {
         topDestinations: [],
         topGuides: [],
         monthlyTrend: [],
-        tourTypeDistribution: []
+        tourTypeDistribution: [],
+        trends: {
+          totalClients: { trendLabel: '0%' },
+          totalTourists: { trendLabel: '0%' },
+          totalRevenue: { trendLabel: '0%' },
+          avgGroupSize: { trendLabel: '0%' },
+          avgRevenuePerClient: { trendLabel: '0%' },
+          activeDestinations: { trendLabel: '0%' }
+        },
+        loading,
+        error
       };
     }
 
     try {
       // Cálculos básicos
       const totalClients = reservations.length;
-      const totalTourists = reservations.reduce((sum, res) => 
+      const totalTourists = reservations.reduce((sum, res) =>
         sum + (res.tourists || 0), 0
       );
-      const totalRevenue = reservations.reduce((sum, res) => 
+      const totalRevenue = reservations.reduce((sum, res) =>
         sum + (res.totalAmount || 0), 0
       );
       const avgGroupSize = totalClients > 0 ? (totalTourists / totalClients) : 0;
@@ -36,10 +75,10 @@ const useReservationStats = (reservations = []) => {
         }
         return acc;
       }, {});
-      
+
       const topDestinations = Object.entries(destinationCounts)
-        .map(([destination, count]) => ({ 
-          destination, 
+        .map(([destination, count]) => ({
+          destination,
           count,
           name: destination // Para compatibilidad con TopItemsList
         }))
@@ -53,10 +92,10 @@ const useReservationStats = (reservations = []) => {
         }
         return acc;
       }, {});
-      
+
       const topGuides = Object.entries(guideCounts)
-        .map(([guide, count]) => ({ 
-          guide, 
+        .map(([guide, count]) => ({
+          guide,
           count,
           name: guide // Para compatibilidad con TopItemsList
         }))
@@ -70,18 +109,17 @@ const useReservationStats = (reservations = []) => {
         }
         return acc;
       }, {});
-      
+
       const tourTypeDistribution = Object.entries(tourTypeCounts)
-        .map(([type, count]) => ({ 
-          type: type.charAt(0).toUpperCase() + type.slice(1), 
+        .map(([type, count]) => ({
+          type: type.charAt(0).toUpperCase() + type.slice(1),
           count,
           percentage: ((count / totalClients) * 100).toFixed(1),
           name: type.charAt(0).toUpperCase() + type.slice(1) // Para compatibilidad
         }));
 
-      // Tendencia mensual (simplificada para ejemplo)
-      // En producción, esto debería calcularse basándose en fechas reales
-      const monthlyTrend = generateMonthlyTrend(totalClients, totalRevenue);
+      // Tendencia mensual (calculada desde el API)
+      const monthlyTrend = generateMonthlyTrend(reservations);
 
       return {
         totalClients,
@@ -92,9 +130,19 @@ const useReservationStats = (reservations = []) => {
         topDestinations,
         topGuides,
         monthlyTrend,
-        tourTypeDistribution
+        tourTypeDistribution,
+        trends: trends || {
+          totalClients: { trendLabel: '0%' },
+          totalTourists: { trendLabel: '0%' },
+          totalRevenue: { trendLabel: '0%' },
+          avgGroupSize: { trendLabel: '0%' },
+          avgRevenuePerClient: { trendLabel: '0%' },
+          activeDestinations: { trendLabel: '0%' }
+        },
+        loading,
+        error
       };
-      
+
     } catch (error) {
       console.error('Error calculating reservation stats:', error);
       // Retornar valores por defecto en caso de error
@@ -108,24 +156,60 @@ const useReservationStats = (reservations = []) => {
         topGuides: [],
         monthlyTrend: [],
         tourTypeDistribution: [],
-        error: true
+        trends: {
+          totalClients: { trendLabel: '0%' },
+          totalTourists: { trendLabel: '0%' },
+          totalRevenue: { trendLabel: '0%' },
+          avgGroupSize: { trendLabel: '0%' },
+          avgRevenuePerClient: { trendLabel: '0%' },
+          activeDestinations: { trendLabel: '0%' }
+        },
+        error: true,
+        loading: false
       };
     }
-  }, [reservations]);
+  }, [reservations, trends, loading, error]);
 
   return stats;
 };
 
-// Función auxiliar para generar tendencia mensual
-const generateMonthlyTrend = (totalClients, totalRevenue) => {
-  // En producción, esto debería basarse en datos reales
-  const months = ['Ene', 'Feb', 'Mar'];
-  const factors = [0.8, 0.9, 1.0];
-  
-  return months.map((month, index) => ({
-    month,
-    clients: Math.floor(totalClients * factors[index]),
-    revenue: Math.round(totalRevenue * factors[index])
+// Función auxiliar para generar tendencia mensual desde datos reales
+const generateMonthlyTrend = (reservations) => {
+  if (!reservations.length) {
+    return [];
+  }
+
+  // Agrupar reservaciones por mes
+  const monthlyData = {};
+  const monthNames = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
+
+  reservations.forEach(res => {
+    const date = new Date(res.created_at || res.date || new Date());
+    const monthKey = `${date.getFullYear()}-${date.getMonth()}`;
+    const monthLabel = `${monthNames[date.getMonth()]} ${date.getFullYear().toString().slice(-2)}`;
+
+    if (!monthlyData[monthKey]) {
+      monthlyData[monthKey] = {
+        month: monthLabel,
+        clients: 0,
+        revenue: 0,
+        date: date
+      };
+    }
+
+    monthlyData[monthKey].clients += 1;
+    monthlyData[monthKey].revenue += res.totalAmount || res.total_amount || 0;
+  });
+
+  // Convertir a array y ordenar por fecha
+  const monthlyArray = Object.values(monthlyData)
+    .sort((a, b) => a.date - b.date)
+    .slice(-6); // Últimos 6 meses
+
+  return monthlyArray.map(item => ({
+    month: item.month,
+    clients: item.clients,
+    revenue: Math.round(item.revenue)
   }));
 };
 

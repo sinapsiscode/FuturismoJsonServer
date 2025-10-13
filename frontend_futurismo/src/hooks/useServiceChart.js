@@ -16,19 +16,19 @@ const useServiceChart = () => {
   const [error, setError] = useState(null);
   const { t } = useTranslation();
 
-  // Estados para los datos
+  // Estados para los datos - INICIALIZADOS VACÍOS, NO HARDCODEADOS
   const [lineData, setLineData] = useState([]);
   const [barData, setBarData] = useState([]);
   const [kpiData, setKpiData] = useState({
-    totalReservas: { actual: 112, anterior: 98, crecimiento: 14.3 },
-    totalTuristas: { actual: 1344, anterior: 1176, crecimiento: 14.3 },
-    ingresosTotales: { actual: 47040, anterior: 41160, crecimiento: 14.3 }
+    totalReservas: { actual: 0, anterior: 0, crecimiento: 0 },
+    totalTuristas: { actual: 0, anterior: 0, crecimiento: 0 },
+    ingresosTotales: { actual: 0, anterior: 0, crecimiento: 0 }
   });
   const [summaryData, setSummaryData] = useState({
-    popularTour: 'City Tour Lima',
-    avgPerBooking: 420,
-    bestDay: 'Sábados',
-    conversionRate: 23.5
+    popularTour: 'Sin datos',
+    avgPerBooking: 0,
+    bestDay: 'Sin datos',
+    conversionRate: 0
   });
 
   // Cargar datos cuando cambia el timeRange

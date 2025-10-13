@@ -4,9 +4,14 @@
       "Bash(node:*)",
       "Bash(find:*)",
       "Bash(curl:*)",
-      "Read(//c//**)"
+      "Read(//c//**)",
+      "Bash(netstat:*)",
+      "Bash(findstr:*)",
+      "Bash(tasklist)",
+      "Bash(dir server.js)",
+      "Bash(cat:*)"
     ],
-    "deny": [],
+    "deny": [], 
     "ask": []
   }
 }

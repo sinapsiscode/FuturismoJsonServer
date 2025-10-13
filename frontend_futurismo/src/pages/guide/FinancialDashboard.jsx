@@ -17,6 +17,7 @@ import {
   UsersIcon
 } from '@heroicons/react/24/outline';
 import { useFinancialStore } from '../../stores/financialStore';
+import useAuthStore from '../../stores/authStore';
 import toast from 'react-hot-toast';
 
 const FinancialDashboard = () => {
@@ -56,8 +57,11 @@ const FinancialDashboard = () => {
 
   // Inicializar datos al montar el componente
   useEffect(() => {
-    const guideId = 'guide-1'; // En una implementación real, obtener del auth
-    initialize(guideId);
+    // Obtener guide ID del usuario autenticado
+    const guideId = useAuthStore.getState().user?.id;
+    if (guideId) {
+      initialize(guideId);
+    }
   }, [initialize]);
 
   // Calcular estadísticas locales si no están disponibles del store
@@ -591,7 +595,7 @@ const FinancialDashboard = () => {
                 subtitle="Este mes"
                 icon={ArrowTrendingUpIcon}
                 color="green"
-                trend={12.5}
+                trend={financialStats?.incomeTrend || null}
               />
               <StatCard
                 title="Gastos Totales"
@@ -599,7 +603,7 @@ const FinancialDashboard = () => {
                 subtitle="Este mes"
                 icon={ArrowTrendingDownIcon}
                 color="red"
-                trend={-8.2}
+                trend={financialStats?.expensesTrend || null}
               />
               <StatCard
                 title="Ganancia Neta"
