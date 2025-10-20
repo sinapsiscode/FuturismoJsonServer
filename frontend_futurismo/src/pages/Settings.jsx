@@ -16,6 +16,7 @@ import {
 import GeneralSettings from '../components/settings/GeneralSettings';
 import ToursSettings from '../components/settings/ToursSettings';
 import NotificationsSettings from '../components/settings/NotificationsSettings';
+import ServiceTypesSettings from '../components/settings/ServiceTypesSettings';
 import { useSettingsStore } from '../stores/settingsStore';
 
 const Settings = () => {
@@ -35,6 +36,12 @@ const Settings = () => {
       name: t('settings.tours.title') || 'Tours',
       icon: MapIcon,
       description: t('settings.tours.description') || 'Configuración de tours y servicios'
+    },
+    {
+      id: 'services',
+      name: 'Servicios',
+      icon: CogIcon,
+      description: 'Tipos de servicio y configuraciones relacionadas'
     },
     {
       id: 'agencies',
@@ -102,6 +109,8 @@ const Settings = () => {
         return <GeneralSettings />;
       case 'tours':
         return <ToursSettings />;
+      case 'services':
+        return <ServiceTypesSettings />;
       case 'notifications':
         return <NotificationsSettings />;
       case 'agencies':

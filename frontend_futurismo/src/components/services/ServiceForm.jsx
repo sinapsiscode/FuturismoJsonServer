@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -77,11 +77,37 @@ const ServiceForm = ({ service = null, onSubmit, onCancel, isLoading = false }) 
   const { t } = useTranslation();
   const { createService, updateService } = useServicesStore();
   const { modules } = useModulesConfigStore();
+  const [serviceTypes, setServiceTypes] = useState([]);
+  const [loadingTypes, setLoadingTypes] = useState(true);
 
   const isEdit = !!service;
 
-  // Obtener tipos de servicio desde la configuración
-  const serviceTypes = modules?.serviceTypes?.serviceTypes || [];
+  // Cargar tipos de servicio desde la API
+  useEffect(() => {
+    const loadServiceTypes = async () => {
+      try {
+        const response = await fetch('/api/config/service-types');
+        const result = await response.json();
+
+        if (result.success && result.data.serviceTypes) {
+          setServiceTypes(result.data.serviceTypes);
+        } else {
+          // Fallback a tipos desde modules config si existen
+          const fallbackTypes = modules?.serviceTypes?.serviceTypes || [];
+          setServiceTypes(fallbackTypes);
+        }
+      } catch (error) {
+        console.error('Error loading service types:', error);
+        // Fallback a tipos desde modules config
+        const fallbackTypes = modules?.serviceTypes?.serviceTypes || [];
+        setServiceTypes(fallbackTypes);
+      } finally {
+        setLoadingTypes(false);
+      }
+    };
+
+    loadServiceTypes();
+  }, [modules]);
 
   const {
     register,
@@ -195,19 +221,26 @@ const ServiceForm = ({ service = null, onSubmit, onCancel, isLoading = false }) 
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Tipo de Servicio *
               </label>
-              <select
-                {...register('serviceType')}
-                className={`px-4 py-2.5 w-full border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all ${
-                  errors.serviceType ? 'border-red-300 bg-red-50' : 'border-gray-300 bg-white'
-                }`}
-              >
-                <option value="">Seleccionar tipo</option>
-                {serviceTypes.map((type) => (
-                  <option key={type.value} value={type.value}>
-                    {type.label}
-                  </option>
-                ))}
-              </select>
+              {loadingTypes ? (
+                <div className="px-4 py-2.5 w-full border border-gray-300 rounded-lg bg-gray-50 text-gray-500">
+                  Cargando tipos de servicio...
+                </div>
+              ) : (
+                <select
+                  {...register('serviceType')}
+                  className={`px-4 py-2.5 w-full border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all ${
+                    errors.serviceType ? 'border-red-300 bg-red-50' : 'border-gray-300 bg-white'
+                  }`}
+                  disabled={loadingTypes}
+                >
+                  <option value="">Seleccionar tipo</option>
+                  {serviceTypes.map((type) => (
+                    <option key={type.value} value={type.value}>
+                      {type.label}
+                    </option>
+                  ))}
+                </select>
+              )}
               {errors.serviceType && (
                 <p className="mt-1.5 text-sm text-red-600 flex items-center">
                   <span className="mr-1">⚠</span> {errors.serviceType.message}

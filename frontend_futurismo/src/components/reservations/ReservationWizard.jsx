@@ -87,9 +87,37 @@ const ReservationWizard = ({ onClose }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isFulldayTour, setIsFulldayTour] = useState(false);
   const [canBookDirectReservation, setCanBookDirectReservation] = useState(true);
-  
+  const [serviceTypes, setServiceTypes] = useState([]);
+  const [loadingTypes, setLoadingTypes] = useState(true);
+
   // Obtener servicios del catálogo (NO tours activos)
   const { services: availableServices, loadServices, isLoading: servicesLoading } = useServicesStore();
+
+  // Cargar tipos de servicio desde la API
+  useEffect(() => {
+    const loadServiceTypes = async () => {
+      try {
+        const response = await fetch('/api/config/service-types');
+        const result = await response.json();
+
+        if (result.success && result.data.serviceTypes) {
+          setServiceTypes(result.data.serviceTypes);
+        }
+      } catch (error) {
+        console.error('Error loading service types:', error);
+        // Fallback a tipos por defecto
+        setServiceTypes([
+          { value: 'tour', label: 'Tour Regular' },
+          { value: 'private', label: 'Tour Privado' },
+          { value: 'transfer', label: 'Traslado' }
+        ]);
+      } finally {
+        setLoadingTypes(false);
+      }
+    };
+
+    loadServiceTypes();
+  }, []);
 
   // Cargar catálogo de servicios al montar el componente
   useEffect(() => {
@@ -273,14 +301,23 @@ const ReservationWizard = ({ onClose }) => {
 
             <div>
               <label className="block text-sm font-semibold text-gray-800 mb-2">Tipo de Servicio *</label>
-              <select
-                {...register('serviceType')}
-                className="w-full px-4 py-2.5 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 bg-white text-gray-900 font-medium"
-              >
-                <option value="tour">Tour Regular</option>
-                <option value="private">Tour Privado</option>
-                <option value="transfer">Traslado</option>
-              </select>
+              {loadingTypes ? (
+                <div className="w-full px-4 py-2.5 border-2 border-gray-300 rounded-lg bg-gray-50 text-gray-500">
+                  Cargando tipos...
+                </div>
+              ) : (
+                <select
+                  {...register('serviceType')}
+                  className="w-full px-4 py-2.5 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 bg-white text-gray-900 font-medium"
+                >
+                  <option value="">Selecciona un tipo</option>
+                  {serviceTypes.map((type) => (
+                    <option key={type.value} value={type.value}>
+                      {type.label}
+                    </option>
+                  ))}
+                </select>
+              )}
               {errors.serviceType && (
                 <p className="mt-1.5 text-sm text-red-600 font-medium">{errors.serviceType.message}</p>
               )}

@@ -1038,6 +1038,143 @@ module.exports = (router) => {
   });
 
   /**
+   * POST /api/config/service-types
+   * Crea un nuevo tipo de servicio
+   */
+  configRouter.post('/service-types', (req, res) => {
+    try {
+      const db = router.db;
+      const { value, label, description, icon, category } = req.body;
+
+      if (!value || !label) {
+        return res.status(400).json({
+          success: false,
+          error: 'Los campos value y label son requeridos'
+        });
+      }
+
+      const serviceTypesConfig = db.get('service_types_config').value();
+
+      // Verificar si ya existe
+      const exists = serviceTypesConfig.serviceTypes.some(st => st.value === value);
+      if (exists) {
+        return res.status(409).json({
+          success: false,
+          error: 'Ya existe un tipo de servicio con ese valor'
+        });
+      }
+
+      const newServiceType = {
+        value,
+        label,
+        description: description || '',
+        icon: icon || 'briefcase',
+        category: category || 'general'
+      };
+
+      serviceTypesConfig.serviceTypes.push(newServiceType);
+      db.get('service_types_config').assign(serviceTypesConfig).write();
+
+      res.status(201).json({
+        success: true,
+        data: newServiceType,
+        message: 'Tipo de servicio creado exitosamente'
+      });
+
+    } catch (error) {
+      console.error('Error creating service type:', error);
+      res.status(500).json({
+        success: false,
+        error: 'Error al crear tipo de servicio'
+      });
+    }
+  });
+
+  /**
+   * PUT /api/config/service-types/:value
+   * Actualiza un tipo de servicio existente
+   */
+  configRouter.put('/service-types/:value', (req, res) => {
+    try {
+      const db = router.db;
+      const { value: oldValue } = req.params;
+      const { value, label, description, icon, category } = req.body;
+
+      const serviceTypesConfig = db.get('service_types_config').value();
+      const index = serviceTypesConfig.serviceTypes.findIndex(st => st.value === oldValue);
+
+      if (index === -1) {
+        return res.status(404).json({
+          success: false,
+          error: 'Tipo de servicio no encontrado'
+        });
+      }
+
+      const updatedServiceType = {
+        value: value || oldValue,
+        label: label || serviceTypesConfig.serviceTypes[index].label,
+        description: description !== undefined ? description : serviceTypesConfig.serviceTypes[index].description,
+        icon: icon || serviceTypesConfig.serviceTypes[index].icon,
+        category: category || serviceTypesConfig.serviceTypes[index].category
+      };
+
+      serviceTypesConfig.serviceTypes[index] = updatedServiceType;
+      db.get('service_types_config').assign(serviceTypesConfig).write();
+
+      res.json({
+        success: true,
+        data: updatedServiceType,
+        message: 'Tipo de servicio actualizado exitosamente'
+      });
+
+    } catch (error) {
+      console.error('Error updating service type:', error);
+      res.status(500).json({
+        success: false,
+        error: 'Error al actualizar tipo de servicio'
+      });
+    }
+  });
+
+  /**
+   * DELETE /api/config/service-types/:value
+   * Elimina un tipo de servicio
+   */
+  configRouter.delete('/service-types/:value', (req, res) => {
+    try {
+      const db = router.db;
+      const { value } = req.params;
+
+      const serviceTypesConfig = db.get('service_types_config').value();
+      const initialLength = serviceTypesConfig.serviceTypes.length;
+
+      serviceTypesConfig.serviceTypes = serviceTypesConfig.serviceTypes.filter(st => st.value !== value);
+
+      if (serviceTypesConfig.serviceTypes.length === initialLength) {
+        return res.status(404).json({
+          success: false,
+          error: 'Tipo de servicio no encontrado'
+        });
+      }
+
+      db.get('service_types_config').assign(serviceTypesConfig).write();
+
+      res.json({
+        success: true,
+        message: 'Tipo de servicio eliminado exitosamente',
+        data: { value }
+      });
+
+    } catch (error) {
+      console.error('Error deleting service type:', error);
+      res.status(500).json({
+        success: false,
+        error: 'Error al eliminar tipo de servicio'
+      });
+    }
+  });
+
+  /**
    * GET /api/config/shared
    * Obtiene las constantes compartidas desde db.json
    */

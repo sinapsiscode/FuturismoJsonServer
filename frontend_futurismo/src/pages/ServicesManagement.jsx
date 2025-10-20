@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { 
-  PlusIcon, 
+import {
+  PlusIcon,
   Cog6ToothIcon,
   ArrowLeftIcon,
   InformationCircleIcon,
@@ -9,12 +9,13 @@ import {
 } from '@heroicons/react/24/outline';
 import ServicesList from '../components/services/ServicesList';
 import ServiceForm from '../components/services/ServiceForm';
+import ServiceTypesSettings from '../components/settings/ServiceTypesSettings';
 import { useServicesStore } from '../stores/servicesStore';
 import { useAuthStore } from '../stores/authStore';
 
 const ServicesManagement = () => {
   const { t } = useTranslation();
-  const [currentView, setCurrentView] = useState('list'); // 'list', 'create', 'edit', 'view'
+  const [currentView, setCurrentView] = useState('list'); // 'list', 'create', 'edit', 'view', 'config'
   const [selectedService, setSelectedService] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -72,7 +73,8 @@ const ServicesManagement = () => {
       list: t('services.management') || 'Gestión de Servicios',
       create: t('services.newService') || 'Nuevo Servicio',
       edit: t('services.editService') || 'Editar Servicio',
-      view: t('services.serviceDetails') || 'Detalles del Servicio'
+      view: t('services.serviceDetails') || 'Detalles del Servicio',
+      config: 'Configuración de Tipos de Servicio'
     };
 
     return (
@@ -95,19 +97,29 @@ const ServicesManagement = () => {
               {currentView === 'create' && 'Registra una nueva solicitud de servicio'}
               {currentView === 'edit' && `Editando: ${selectedService?.code}`}
               {currentView === 'view' && `Código: ${selectedService?.code}`}
+              {currentView === 'config' && 'Configura los tipos de servicio disponibles'}
             </p>
           </div>
         </div>
 
-        {/* Botón Nuevo Servicio - solo visible en vista de lista y para admin */}
+        {/* Botones de acción - solo visible en vista de lista y para admin */}
         {currentView === 'list' && user?.role === 'admin' && (
-          <button
-            onClick={handleCreateService}
-            className="inline-flex items-center px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors"
-          >
-            <PlusIcon className="h-5 w-5 mr-2" />
-            {t('services.newService') || 'Nuevo Servicio'}
-          </button>
+          <div className="flex gap-3">
+            <button
+              onClick={() => setCurrentView('config')}
+              className="inline-flex items-center px-4 py-2 bg-gray-600 text-white text-sm font-medium rounded-lg hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-colors"
+            >
+              <Cog6ToothIcon className="h-5 w-5 mr-2" />
+              Configurar Tipos
+            </button>
+            <button
+              onClick={handleCreateService}
+              className="inline-flex items-center px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors"
+            >
+              <PlusIcon className="h-5 w-5 mr-2" />
+              {t('services.newService') || 'Nuevo Servicio'}
+            </button>
+          </div>
         )}
       </div>
     );
@@ -178,6 +190,10 @@ const ServicesManagement = () => {
   };
 
   const renderContent = () => {
+    if (currentView === 'config') {
+      return <ServiceTypesSettings />;
+    }
+
     return (
       <ServicesList
         onEdit={handleEditService}
