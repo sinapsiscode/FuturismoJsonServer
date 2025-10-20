@@ -33,16 +33,30 @@ module.exports = (router) => {
         vehicles = vehicles.filter(v => v.is_available === isAvailable);
       }
 
-      // Add driver information
+      // Add driver information and transform documents structure
       const drivers = db.get('drivers').value() || [];
       vehicles = vehicles.map(vehicle => {
         const driver = drivers.find(d => d.id === vehicle.current_driver_id);
+
+        // Transform documents structure for frontend compatibility
+        const documents = {
+          soat: vehicle.documents?.soat || {
+            number: vehicle.insurance?.policy_number || '',
+            expiry: vehicle.soat_expiry || ''
+          },
+          technicalReview: vehicle.documents?.technicalReview || {
+            number: vehicle.technical_review_number || '',
+            expiry: vehicle.technical_review_expiry || ''
+          }
+        };
+
         return {
           ...vehicle,
+          documents, // Add transformed documents structure
           fullName: `${vehicle.brand || ''} ${vehicle.model || ''} - ${vehicle.plate || ''}`.trim(),
           driver: driver ? {
             id: driver.id,
-            fullName: `${driver.firstName || ''} ${driver.lastName || ''}`.trim(),
+            fullName: `${driver.first_name || driver.firstName || ''} ${driver.last_name || driver.lastName || ''}`.trim(),
             license_number: driver.license_number,
             phone: driver.phone
           } : null
@@ -89,6 +103,77 @@ module.exports = (router) => {
     }
   });
 
+  // Get available vehicles for a specific date
+  vehiclesRouter.get('/available', (req, res) => {
+    try {
+      const db = router.db;
+      const { date, minCapacity, vehicleType } = req.query;
+
+      // Get all active vehicles (if is_available doesn't exist, consider it available)
+      let vehicles = db.get('vehicles').filter({ status: 'active' }).value() || [];
+      vehicles = vehicles.filter(v => v.is_available !== false); // Only exclude if explicitly false
+
+      // Filter by minimum capacity if provided
+      if (minCapacity) {
+        const capacity = parseInt(minCapacity);
+        vehicles = vehicles.filter(v => v.capacity >= capacity);
+      }
+
+      // Filter by vehicle type if provided
+      if (vehicleType) {
+        vehicles = vehicles.filter(v => v.type === vehicleType);
+      }
+
+      // If date is provided, filter by availability on that date
+      if (date) {
+        const assignments = db.get('vehicle_assignments')
+          .filter({ date, status: 'active' })
+          .value() || [];
+
+        const busyVehicleIds = assignments.map(a => a.vehicle_id);
+        vehicles = vehicles.filter(v => !busyVehicleIds.includes(v.id));
+      }
+
+      // Add transformed documents structure
+      const drivers = db.get('drivers').value() || [];
+      vehicles = vehicles.map(vehicle => {
+        const driver = drivers.find(d => d.id === vehicle.current_driver_id);
+
+        const documents = {
+          soat: vehicle.documents?.soat || {
+            number: vehicle.insurance?.policy_number || '',
+            expiry: vehicle.soat_expiry || ''
+          },
+          technicalReview: vehicle.documents?.technicalReview || {
+            number: vehicle.technical_review_number || '',
+            expiry: vehicle.technical_review_expiry || ''
+          }
+        };
+
+        return {
+          ...vehicle,
+          documents,
+          fullName: `${vehicle.brand || ''} ${vehicle.model || ''} - ${vehicle.plate || ''}`.trim(),
+          driver: driver ? {
+            id: driver.id,
+            fullName: `${driver.first_name || driver.firstName || ''} ${driver.last_name || driver.lastName || ''}`.trim()
+          } : null
+        };
+      });
+
+      res.json({
+        success: true,
+        data: vehicles
+      });
+    } catch (error) {
+      console.error('Error getting available vehicles:', error);
+      res.status(500).json({
+        success: false,
+        error: 'Error al obtener vehículos disponibles'
+      });
+    }
+  });
+
   // Get vehicle by ID
   vehiclesRouter.get('/:id', (req, res) => {
     try {
@@ -118,10 +203,23 @@ module.exports = (router) => {
         .take(10)
         .value() || [];
 
+      // Transform documents structure for frontend compatibility
+      const documents = {
+        soat: vehicle.documents?.soat || {
+          number: vehicle.insurance?.policy_number || '',
+          expiry: vehicle.soat_expiry || ''
+        },
+        technicalReview: vehicle.documents?.technicalReview || {
+          number: vehicle.technical_review_number || '',
+          expiry: vehicle.technical_review_expiry || ''
+        }
+      };
+
       res.json({
         success: true,
         data: {
           ...vehicle,
+          documents, // Add transformed documents structure
           driver: driver ? {
             id: driver.id,
             name: driver.name,
@@ -440,6 +538,77 @@ module.exports = (router) => {
       res.status(500).json({
         success: false,
         error: 'Error al obtener disponibilidad'
+      });
+    }
+  });
+
+  // Assign vehicle to tour/service
+  vehiclesRouter.post('/:id/assignments', (req, res) => {
+    try {
+      const db = router.db;
+      const { tourId, tourCode, date, passengers, driverId } = req.body;
+
+      const vehicle = db.get('vehicles').find({ id: req.params.id });
+
+      if (!vehicle.value()) {
+        return res.status(404).json({
+          success: false,
+          error: 'Vehículo no encontrado'
+        });
+      }
+
+      // Check if vehicle has enough capacity
+      const vehicleData = vehicle.value();
+      if (passengers && vehicleData.capacity < passengers) {
+        return res.status(400).json({
+          success: false,
+          error: `El vehículo solo tiene capacidad para ${vehicleData.capacity} pasajeros, pero se necesita ${passengers}`
+        });
+      }
+
+      // Check if tour exists and assign vehicle
+      if (tourId) {
+        const tour = db.get('tours').find({ id: tourId });
+
+        if (tour.value()) {
+          tour.assign({
+            assignedVehicle: req.params.id,
+            updated_at: new Date().toISOString()
+          }).write();
+        }
+      }
+
+      // Create vehicle assignment record
+      const assignment = {
+        id: `vehicle-assignment-${Date.now()}`,
+        vehicle_id: req.params.id,
+        tour_id: tourId,
+        tour_code: tourCode,
+        driver_id: driverId || null,
+        date: date || new Date().toISOString(),
+        passengers: passengers || 0,
+        status: 'active',
+        created_at: new Date().toISOString()
+      };
+
+      db.get('vehicle_assignments').push(assignment).write();
+
+      // Update vehicle availability status
+      vehicle.assign({
+        is_available: false,
+        updated_at: new Date().toISOString()
+      }).write();
+
+      res.status(201).json({
+        success: true,
+        data: assignment,
+        message: 'Vehículo asignado exitosamente'
+      });
+    } catch (error) {
+      console.error('Error assigning vehicle:', error);
+      res.status(500).json({
+        success: false,
+        error: 'Error al asignar vehículo'
       });
     }
   });

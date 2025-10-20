@@ -44,7 +44,7 @@ module.exports = (router) => {
 
         return {
           ...driver,
-          fullName: `${driver.firstName || ''} ${driver.lastName || ''}`.trim(),
+          fullName: `${driver.first_name || driver.firstName || ''} ${driver.last_name || driver.lastName || ''}`.trim(),
           user: user ? {
             id: user.id,
             name: user.name,
@@ -97,6 +97,57 @@ module.exports = (router) => {
       res.status(500).json({
         success: false,
         error: 'Error al obtener conductores'
+      });
+    }
+  });
+
+  // Get available drivers for a specific date
+  driversRouter.get('/available', (req, res) => {
+    try {
+      const db = router.db;
+      const { date, vehicleType } = req.query;
+
+      // Get all active drivers
+      let drivers = db.get('drivers').filter({ status: 'active' }).value() || [];
+
+      // If date is provided, filter by availability
+      if (date) {
+        // Check driver assignments on that date
+        const assignments = db.get('driver_assignments')
+          .filter({ date, status: 'active' })
+          .value() || [];
+
+        const busyDriverIds = assignments.map(a => a.driver_id);
+        drivers = drivers.filter(d => !busyDriverIds.includes(d.id));
+      }
+
+      // Filter by vehicle type if provided
+      if (vehicleType) {
+        drivers = drivers.filter(d => {
+          const licenseCategory = d.license_category || d.licenseCategory;
+          // Map license categories to vehicle types
+          if (vehicleType === 'bus' && licenseCategory === 'A-III') return true;
+          if (vehicleType === 'van' && ['A-I', 'A-II', 'A-III'].includes(licenseCategory)) return true;
+          if (vehicleType === 'car' && ['A-I', 'A-II'].includes(licenseCategory)) return true;
+          return false;
+        });
+      }
+
+      // Add full name
+      drivers = drivers.map(driver => ({
+        ...driver,
+        fullName: `${driver.first_name || driver.firstName || ''} ${driver.last_name || driver.lastName || ''}`.trim()
+      }));
+
+      res.json({
+        success: true,
+        data: drivers
+      });
+    } catch (error) {
+      console.error('Error getting available drivers:', error);
+      res.status(500).json({
+        success: false,
+        error: 'Error al obtener conductores disponibles'
       });
     }
   });
@@ -647,6 +698,67 @@ module.exports = (router) => {
       res.status(500).json({
         success: false,
         error: 'Error al obtener métricas de rendimiento'
+      });
+    }
+  });
+
+  // Assign driver to tour/service
+  driversRouter.post('/:id/assignments', (req, res) => {
+    try {
+      const db = router.db;
+      const { tourId, tourCode, date, vehicleId } = req.body;
+
+      const driver = db.get('drivers').find({ id: req.params.id });
+
+      if (!driver.value()) {
+        return res.status(404).json({
+          success: false,
+          error: 'Conductor no encontrado'
+        });
+      }
+
+      // Check if tour exists and assign driver
+      if (tourId) {
+        const tour = db.get('tours').find({ id: tourId });
+
+        if (tour.value()) {
+          tour.assign({
+            assignedDriver: req.params.id,
+            updated_at: new Date().toISOString()
+          }).write();
+        }
+      }
+
+      // Create driver assignment record
+      const assignment = {
+        id: `driver-assignment-${Date.now()}`,
+        driver_id: req.params.id,
+        tour_id: tourId,
+        tour_code: tourCode,
+        date: date || new Date().toISOString(),
+        vehicle_id: vehicleId || null,
+        status: 'active',
+        created_at: new Date().toISOString()
+      };
+
+      db.get('driver_assignments').push(assignment).write();
+
+      // Update driver current assignment status
+      driver.assign({
+        is_available: false,
+        updated_at: new Date().toISOString()
+      }).write();
+
+      res.status(201).json({
+        success: true,
+        data: assignment,
+        message: 'Conductor asignado exitosamente'
+      });
+    } catch (error) {
+      console.error('Error assigning driver:', error);
+      res.status(500).json({
+        success: false,
+        error: 'Error al asignar conductor'
       });
     }
   });

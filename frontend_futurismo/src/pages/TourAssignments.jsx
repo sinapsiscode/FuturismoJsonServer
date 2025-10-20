@@ -14,7 +14,8 @@ import {
   XMarkIcon,
   InformationCircleIcon,
   ChevronRightIcon,
-  BuildingOffice2Icon
+  BuildingOffice2Icon,
+  ArrowDownTrayIcon
 } from '@heroicons/react/24/outline';
 import { CheckIcon } from '@heroicons/react/24/solid';
 import useToursStore from '../stores/toursStore';
@@ -24,6 +25,7 @@ import useDriversStore from '../stores/driversStore';
 import useVehiclesStore from '../stores/vehiclesStore';
 import { formatters } from '../utils/formatters';
 import toast from 'react-hot-toast';
+import exportService from '../services/exportService';
 
 const TourAssignments = () => {
   const navigate = useNavigate();
@@ -40,6 +42,8 @@ const TourAssignments = () => {
   const [checkingAvailability, setCheckingAvailability] = useState(false);
   const [filter, setFilter] = useState('all');
   const [searchTerm, setSearchTerm] = useState('');
+  const [showExportMenu, setShowExportMenu] = useState(false);
+  const [isExporting, setIsExporting] = useState(false);
   
   // Stores
   const { 
@@ -252,6 +256,27 @@ const TourAssignments = () => {
     }
   };
 
+  // Exportar asignaciones
+  const handleExport = async (format) => {
+    setIsExporting(true);
+    setShowExportMenu(false);
+
+    try {
+      // Determinar el estado para exportar basado en el filtro actual
+      let exportStatus = 'all';
+      if (filter === 'assigned') exportStatus = 'completed';
+      if (filter === 'pending') exportStatus = 'pending';
+
+      await exportService.exportAssignments(format, exportStatus);
+      toast.success(`Reporte exportado exitosamente como ${format.toUpperCase()}`);
+    } catch (error) {
+      console.error('Error exportando asignaciones:', error);
+      toast.error('Error al exportar el reporte');
+    } finally {
+      setIsExporting(false);
+    }
+  };
+
   return (
     <div className="p-6 max-w-7xl mx-auto">
       {/* Header */}
@@ -385,15 +410,55 @@ const TourAssignments = () => {
             </div>
           </div>
 
-          <div className="relative">
-            <MagnifyingGlassIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
-            <input
-              type="text"
-              placeholder="Buscar por nombre, código o categoría..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent w-80"
-            />
+          <div className="flex items-center space-x-3">
+            <div className="relative">
+              <MagnifyingGlassIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+              <input
+                type="text"
+                placeholder="Buscar por nombre, código o categoría..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent w-80"
+              />
+            </div>
+
+            {/* Export Button */}
+            <div className="relative">
+              <button
+                onClick={() => setShowExportMenu(!showExportMenu)}
+                disabled={isExporting || tours.length === 0}
+                className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors flex items-center disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                <ArrowDownTrayIcon className="h-4 w-4 mr-2" />
+                {isExporting ? 'Exportando...' : 'Exportar'}
+              </button>
+
+              {/* Export Dropdown Menu */}
+              {showExportMenu && (
+                <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border z-10">
+                  <div className="py-1">
+                    <button
+                      onClick={() => handleExport('excel')}
+                      className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center"
+                    >
+                      <svg className="w-4 h-4 mr-2 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M9 2a2 2 0 00-2 2v8a2 2 0 002 2h6a2 2 0 002-2V6.414A2 2 0 0016.414 5L13 1.586A2 2 0 0011.586 1H9z" />
+                      </svg>
+                      Exportar a Excel
+                    </button>
+                    <button
+                      onClick={() => handleExport('pdf')}
+                      className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center"
+                    >
+                      <svg className="w-4 h-4 mr-2 text-red-600" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M9 2a2 2 0 00-2 2v8a2 2 0 002 2h6a2 2 0 002-2V6.414A2 2 0 0016.414 5L13 1.586A2 2 0 0011.586 1H9z" />
+                      </svg>
+                      Exportar a PDF
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </div>

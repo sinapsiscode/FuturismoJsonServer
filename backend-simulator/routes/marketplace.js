@@ -6,6 +6,82 @@ const { authenticated, adminOrAgency, freelanceGuidesOnly } = require('../middle
 module.exports = (router) => {
   const marketplaceRouter = express.Router();
 
+  // Get all freelance guides
+  // Accessible to all authenticated users
+  marketplaceRouter.get('/guides', authenticated(), (req, res) => {
+    try {
+      const db = router.db;
+      let guides = db.get('guides').value() || [];
+      const users = db.get('users').value() || [];
+
+      // Filter only freelance guides
+      guides = guides.filter(guide => guide.type === 'freelance');
+
+      // Apply additional filters if provided
+      const { status, language, specialization, minRating, maxPrice } = req.query;
+
+      if (status) {
+        guides = guides.filter(guide => guide.status === status);
+      }
+
+      if (language) {
+        guides = guides.filter(guide =>
+          guide.languages && Array.isArray(guide.languages) && guide.languages.includes(language)
+        );
+      }
+
+      if (specialization) {
+        guides = guides.filter(guide =>
+          (guide.specializations && Array.isArray(guide.specializations) && guide.specializations.includes(specialization)) ||
+          (guide.specialties && Array.isArray(guide.specialties) && guide.specialties.includes(specialization))
+        );
+      }
+
+      if (minRating) {
+        guides = guides.filter(guide =>
+          (guide.rating || 0) >= parseFloat(minRating)
+        );
+      }
+
+      if (maxPrice) {
+        guides = guides.filter(guide => {
+          const price = guide.marketplace_profile?.hourly_rate || guide.base_price || 0;
+          return price <= parseFloat(maxPrice);
+        });
+      }
+
+      // Enrich with user data and marketplace info
+      const guidesWithUsers = guides.map(guide => {
+        const user = users.find(u => u.id === guide.user_id);
+        return {
+          ...guide,
+          name: user ? `${user.first_name} ${user.last_name}` : (guide.name || 'Unknown'),
+          avatar: user?.avatar || guide.avatar || null,
+          phone: user?.phone || guide.phone || null,
+          email: user?.email || guide.email || null,
+          // Include marketplace profile info
+          hourly_rate: guide.marketplace_profile?.hourly_rate,
+          daily_rate: guide.marketplace_profile?.daily_rate,
+          half_day_rate: guide.marketplace_profile?.half_day_rate,
+          available_for_booking: guide.marketplace_profile?.available !== false
+        };
+      });
+
+      res.json({
+        success: true,
+        data: guidesWithUsers,
+        total: guidesWithUsers.length
+      });
+
+    } catch (error) {
+      console.error('Error fetching marketplace guides:', error);
+      res.status(500).json({
+        success: false,
+        error: 'Error al obtener guías del marketplace'
+      });
+    }
+  });
+
   // Search guides
   // Accessible to all authenticated users
   marketplaceRouter.get('/search', authenticated(), (req, res) => {

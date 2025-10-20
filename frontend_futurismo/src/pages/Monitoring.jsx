@@ -205,14 +205,14 @@ const Monitoring = () => {
       ];
 
   return (
-    <div className="p-4 sm:p-6 lg:p-8 space-y-4 sm:space-y-6">
+    <div className="p-4 space-y-4 sm:p-6 lg:p-8 sm:space-y-6">
       {/* Header */}
       <div className="flex flex-col gap-3 sm:gap-0 sm:flex-row sm:items-center sm:justify-between">
         <div className="text-center sm:text-left">
-          <h1 className="text-xl sm:text-2xl font-bold text-gray-900 break-words">
+          <h1 className="text-xl font-bold text-gray-900 break-words sm:text-2xl">
             {isGuide ? t('monitoring.myToursTitle') : t('monitoring.title')}
           </h1>
-          <p className="mt-1 sm:mt-2 text-sm sm:text-base text-gray-700">
+          <p className="mt-1 text-sm text-gray-700 sm:mt-2 sm:text-base">
             {isGuide 
               ? t('monitoring.guideDescription') 
               : t('monitoring.description')
@@ -222,8 +222,8 @@ const Monitoring = () => {
       </div>
 
       {/* Navigation Tabs */}
-      <div className="border-b border-gray-200 overflow-x-auto">
-        <nav className="-mb-px flex space-x-4 sm:space-x-8 min-w-max px-1">
+      <div className="overflow-x-auto border-b border-gray-200">
+        <nav className="flex px-1 -mb-px space-x-4 sm:space-x-8 min-w-max">
           {viewConfig.map((view) => {
             const Icon = view.icon;
             return (
@@ -237,9 +237,9 @@ const Monitoring = () => {
                 }`}
               >
                 <div className="flex items-center space-x-1 sm:space-x-2">
-                  <Icon className="w-4 h-4 sm:w-5 sm:h-5 flex-shrink-0" />
+                  <Icon className="flex-shrink-0 w-4 h-4 sm:w-5 sm:h-5" />
                   <span className="hidden sm:inline">{view.label}</span>
-                  <span className="sm:hidden text-xs">{view.key === 'map' ? 'Mapa' : view.key === 'tours' ? 'Tours' : 'Fotos'}</span>
+                  <span className="text-xs sm:hidden">{view.key === 'map' ? 'Mapa' : view.key === 'tours' ? 'Tours' : 'Fotos'}</span>
                 </div>
               </button>
             );
@@ -248,7 +248,7 @@ const Monitoring = () => {
       </div>
 
       {/* Content Area */}
-      <div className="bg-white rounded-lg shadow overflow-hidden">
+      <div className="overflow-hidden bg-white rounded-lg shadow">
         {/* Vista de Mapa - Para todos los roles */}
         {activeView === 'map' && (
           <div className="p-4 sm:p-6 h-[calc(100vh-16rem)]">
@@ -262,32 +262,32 @@ const Monitoring = () => {
             {isGuide ? (
               /* Vista de guía - Sus propios tours */
               <div className="space-y-4 sm:space-y-6">
-                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
-                  <h3 className="text-base sm:text-lg font-medium text-gray-900">
+                <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                  <h3 className="text-base font-medium text-gray-900 sm:text-lg">
                     {t('monitoring.myTours')}
                   </h3>
-                  <div className="text-xs sm:text-sm text-gray-500">
+                  <div className="text-xs text-gray-500 sm:text-sm">
                     {toursLoading ? t('common.loading') : `${guideTours.length} ${t('monitoring.toursTotal')}`}
                   </div>
                 </div>
 
                 {toursLoading ? (
                   <div className="flex justify-center py-8">
-                    <div className="animate-spin w-6 h-6 sm:w-8 sm:h-8 border-2 border-blue-500 border-t-transparent rounded-full"></div>
+                    <div className="w-6 h-6 border-2 border-blue-500 rounded-full animate-spin sm:w-8 sm:h-8 border-t-transparent"></div>
                   </div>
                 ) : guideTours.length === 0 ? (
-                  <div className="text-center py-8 text-gray-500">
-                    <UserGroupIcon className="w-8 h-8 sm:w-12 sm:h-12 mx-auto mb-3 sm:mb-4 text-gray-300" />
+                  <div className="py-8 text-center text-gray-500">
+                    <UserGroupIcon className="w-8 h-8 mx-auto mb-3 text-gray-300 sm:w-12 sm:h-12 sm:mb-4" />
                     <p className="text-sm sm:text-base">{t('monitoring.noToursAssigned')}</p>
                   </div>
                 ) : (
                   <div className="grid gap-4 sm:gap-4 md:grid-cols-2 xl:grid-cols-3">
                     {guideTours.map((tour) => (
-                      <div key={tour.id} className="border rounded-lg p-3 sm:p-4 hover:shadow-md transition-shadow">
-                        <div className="flex items-start justify-between mb-3 gap-2">
+                      <div key={tour.id} className="p-3 transition-shadow border rounded-lg sm:p-4 hover:shadow-md">
+                        <div className="flex items-start justify-between gap-2 mb-3">
                           <div className="flex-1 min-w-0">
-                            <h4 className="text-sm sm:text-base font-medium text-gray-900 break-words">{tour.name}</h4>
-                            <p className="text-xs sm:text-sm text-gray-500 truncate">{tour.agency}</p>
+                            <h4 className="text-sm font-medium text-gray-900 break-words sm:text-base">{tour.name}</h4>
+                            <p className="text-xs text-gray-500 truncate sm:text-sm">{tour.agency}</p>
                           </div>
                           <span className={`px-2 py-1 text-xs rounded-full whitespace-nowrap flex-shrink-0 ${
                             tour.status === 'completado'
@@ -302,7 +302,7 @@ const Monitoring = () => {
                           </span>
                         </div>
 
-                        <div className="space-y-1 sm:space-y-2 text-xs sm:text-sm text-gray-600">
+                        <div className="space-y-1 text-xs text-gray-600 sm:space-y-2 sm:text-sm">
                           <div className="flex justify-between">
                             <span>{t('monitoring.date')}:</span>
                             <span>{tour.date}</span>
@@ -317,17 +317,17 @@ const Monitoring = () => {
                           </div>
                           <div className="flex justify-between gap-2">
                             <span className="flex-shrink-0">{t('monitoring.location')}:</span>
-                            <span className="truncate text-right">{tour.location}</span>
+                            <span className="text-right truncate">{tour.location}</span>
                           </div>
                         </div>
 
                         {/* Controles del tour */}
-                        <div className="space-y-2 sm:space-y-3 mt-3 sm:mt-4">
+                        <div className="mt-3 space-y-2 sm:space-y-3 sm:mt-4">
                           <div className="flex gap-1 sm:gap-2">
                             {tour.status === 'asignado' && (
                               <button
                                 onClick={() => handleStartTour(tour.id)}
-                                className="flex-1 flex items-center justify-center gap-1 px-2 sm:px-3 py-2 bg-green-600 text-white text-xs sm:text-sm rounded hover:bg-green-700 transition-colors"
+                                className="flex items-center justify-center flex-1 gap-1 px-2 py-2 text-xs text-white transition-colors bg-green-600 rounded sm:px-3 sm:text-sm hover:bg-green-700"
                               >
                                 <PlayIcon className="w-3 h-3 sm:w-4 sm:h-4" />
                                 <span className="hidden sm:inline">{t('monitoring.actions.start')}</span>
@@ -339,7 +339,7 @@ const Monitoring = () => {
                               <>
                                 <button
                                   onClick={() => handlePauseTour(tour.id)}
-                                  className="flex-1 flex items-center justify-center gap-1 px-2 sm:px-3 py-2 bg-yellow-600 text-white text-xs sm:text-sm rounded hover:bg-yellow-700 transition-colors"
+                                  className="flex items-center justify-center flex-1 gap-1 px-2 py-2 text-xs text-white transition-colors bg-yellow-600 rounded sm:px-3 sm:text-sm hover:bg-yellow-700"
                                 >
                                   <PauseIcon className="w-3 h-3 sm:w-4 sm:h-4" />
                                   <span className="hidden sm:inline">{t('monitoring.actions.pause')}</span>
@@ -347,7 +347,7 @@ const Monitoring = () => {
                                 </button>
                                 <button
                                   onClick={() => handleCompleteTour(tour.id)}
-                                  className="flex-1 flex items-center justify-center gap-1 px-2 sm:px-3 py-2 bg-blue-600 text-white text-xs sm:text-sm rounded hover:bg-blue-700 transition-colors"
+                                  className="flex items-center justify-center flex-1 gap-1 px-2 py-2 text-xs text-white transition-colors bg-blue-600 rounded sm:px-3 sm:text-sm hover:bg-blue-700"
                                 >
                                   <CheckIcon className="w-3 h-3 sm:w-4 sm:h-4" />
                                   <span className="hidden sm:inline">{t('monitoring.actions.complete')}</span>
@@ -359,7 +359,7 @@ const Monitoring = () => {
                             {tour.status === 'pausado' && (
                               <button
                                 onClick={() => handleStartTour(tour.id)}
-                                className="flex-1 flex items-center justify-center gap-1 px-3 py-2 bg-green-600 text-white text-sm rounded hover:bg-green-700"
+                                className="flex items-center justify-center flex-1 gap-1 px-3 py-2 text-sm text-white bg-green-600 rounded hover:bg-green-700"
                               >
                                 <PlayIcon className="w-4 h-4" />
                                 {t('monitoring.actions.resume')}
@@ -371,7 +371,7 @@ const Monitoring = () => {
                           {tour.checkpoints && tour.checkpoints.length > 0 && (
                             <button
                               onClick={() => toggleCheckpoints(tour.id)}
-                              className="w-full flex items-center justify-center gap-2 px-3 py-2 bg-purple-100 text-purple-700 text-xs sm:text-sm rounded hover:bg-purple-200 transition-colors"
+                              className="flex items-center justify-center w-full gap-2 px-3 py-2 text-xs text-purple-700 transition-colors bg-purple-100 rounded sm:text-sm hover:bg-purple-200"
                             >
                               <CameraIcon className="w-3 h-3 sm:w-4 sm:h-4" />
                               <span className="text-center">
@@ -383,9 +383,9 @@ const Monitoring = () => {
 
                         {/* Lista de checkpoints expandible */}
                         {showCheckpoints[tour.id] && tour.checkpoints && (
-                          <div className="mt-3 sm:mt-4 border-t pt-3 sm:pt-4 space-y-2 sm:space-y-3">
-                            <h5 className="text-xs sm:text-sm font-medium text-gray-900 flex items-center gap-1">
-                              <MapPinIcon className="w-3 h-3 sm:w-4 sm:h-4 text-purple-600" />
+                          <div className="pt-3 mt-3 space-y-2 border-t sm:mt-4 sm:pt-4 sm:space-y-3">
+                            <h5 className="flex items-center gap-1 text-xs font-medium text-gray-900 sm:text-sm">
+                              <MapPinIcon className="w-3 h-3 text-purple-600 sm:w-4 sm:h-4" />
                               Puntos de Control
                             </h5>
                             {tour.checkpoints.map((checkpoint, index) => {
@@ -404,8 +404,8 @@ const Monitoring = () => {
                                       : 'border-gray-200 bg-gray-50'
                                   }`}
                                 >
-                                  <div className="flex items-center justify-between mb-2 gap-2">
-                                    <div className="flex items-center gap-2 flex-1 min-w-0">
+                                  <div className="flex items-center justify-between gap-2 mb-2">
+                                    <div className="flex items-center flex-1 min-w-0 gap-2">
                                       <span className={`w-5 h-5 sm:w-6 sm:h-6 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0 ${
                                         hasPhoto 
                                           ? 'bg-green-600 text-white'
@@ -415,10 +415,10 @@ const Monitoring = () => {
                                       }`}>
                                         {checkpoint.order}
                                       </span>
-                                      <span className="text-xs sm:text-sm font-medium text-gray-900 truncate">
+                                      <span className="text-xs font-medium text-gray-900 truncate sm:text-sm">
                                         {checkpoint.name}
                                       </span>
-                                      <div className="flex flex-col sm:flex-row gap-1 flex-shrink-0">
+                                      <div className="flex flex-col flex-shrink-0 gap-1 sm:flex-row">
                                         {isRecommended && !hasPhoto && (
                                           <span className="text-xs bg-purple-100 text-purple-700 px-1.5 py-0.5 rounded-full whitespace-nowrap">
                                             Recomendado
@@ -433,7 +433,7 @@ const Monitoring = () => {
                                     </div>
                                   </div>
                                   
-                                  <p className="text-xs sm:text-sm text-gray-600 mb-2 sm:mb-3">
+                                  <p className="mb-2 text-xs text-gray-600 sm:text-sm sm:mb-3">
                                     {checkpoint.description}
                                   </p>
                                   
@@ -443,7 +443,7 @@ const Monitoring = () => {
                                       <img 
                                         src={capturedPhotos[photoKey].url}
                                         alt={`Foto de ${checkpoint.name}`}
-                                        className="w-full h-24 sm:h-32 object-cover rounded border"
+                                        className="object-cover w-full h-24 border rounded sm:h-32"
                                       />
                                       <div className="flex items-center justify-between text-xs text-gray-500">
                                         <span className="flex items-center gap-1">
@@ -452,7 +452,7 @@ const Monitoring = () => {
                                         </span>
                                         <button 
                                           onClick={() => handleTakePhoto(tour.id, checkpoint.id)}
-                                          className="text-purple-600 hover:text-purple-800 text-xs px-2 py-1 hover:bg-purple-50 rounded transition-colors"
+                                          className="px-2 py-1 text-xs text-purple-600 transition-colors rounded hover:text-purple-800 hover:bg-purple-50"
                                         >
                                           Retomar
                                         </button>
@@ -477,7 +477,7 @@ const Monitoring = () => {
                             })}
                             
                             {/* Resumen de progreso */}
-                            <div className="mt-2 sm:mt-3 p-2 bg-gray-100 rounded text-center">
+                            <div className="p-2 mt-2 text-center bg-gray-100 rounded sm:mt-3">
                               <span className="text-xs text-gray-600">
                                 Fotos: {tour.checkpoints.filter(cp => capturedPhotos[`${tour.id}-${cp.id}`]).length} / {tour.checkpoints.length}
                               </span>
@@ -503,23 +503,23 @@ const Monitoring = () => {
 
                 {servicesLoading ? (
                   <div className="flex justify-center py-12">
-                    <div className="animate-spin w-8 h-8 border-2 border-blue-500 border-t-transparent rounded-full"></div>
+                    <div className="w-8 h-8 border-2 border-blue-500 rounded-full animate-spin border-t-transparent"></div>
                   </div>
                 ) : !Array.isArray(activeServices) || activeServices.length === 0 ? (
-                  <div className="border-2 border-dashed border-gray-300 rounded-lg p-12 flex flex-col items-center justify-center text-gray-400">
+                  <div className="flex flex-col items-center justify-center p-12 text-gray-400 border-2 border-gray-300 border-dashed rounded-lg">
                     <UserGroupIcon className="w-16 h-16 mb-4" />
                     <p className="text-lg font-medium">No hay tours activos en este momento</p>
-                    <p className="text-sm mt-1">Los tours activos aparecerán aquí cuando los guías inicien sus servicios</p>
+                    <p className="mt-1 text-sm">Los tours activos aparecerán aquí cuando los guías inicien sus servicios</p>
                   </div>
                 ) : (
                   /* Lista de tours activos del sistema */
                   <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
                     {activeServices.map((service) => (
-                      <div key={service.id} className="border-2 border-gray-200 rounded-xl p-5 bg-white shadow-sm hover:shadow-lg hover:border-blue-300 transition-all">
+                      <div key={service.id} className="p-5 transition-all bg-white border-2 border-gray-200 shadow-sm rounded-xl hover:shadow-lg hover:border-blue-300">
                         <div className="flex items-start justify-between mb-4">
                           <div className="flex-1">
-                            <h4 className="text-base font-semibold text-gray-900 mb-1">{service.tourName || 'Tour sin nombre'}</h4>
-                            <p className="text-sm text-gray-600 flex items-center gap-1">
+                            <h4 className="mb-1 text-base font-semibold text-gray-900">{service.tourName || 'Tour sin nombre'}</h4>
+                            <p className="flex items-center gap-1 text-sm text-gray-600">
                               <UserGroupIcon className="w-4 h-4" />
                               Guía: {service.guideName || 'No asignado'}
                             </p>
@@ -541,16 +541,16 @@ const Monitoring = () => {
 
                         <div className="space-y-2.5 text-sm text-gray-600 mb-4">
                           <div className="flex items-center gap-2">
-                            <ClockIcon className="w-4 h-4 text-gray-400 flex-shrink-0" />
+                            <ClockIcon className="flex-shrink-0 w-4 h-4 text-gray-400" />
                             <span>Hora de inicio: {service.startTime || 'N/A'}</span>
                           </div>
                           <div className="flex items-center gap-2">
-                            <UserGroupIcon className="w-4 h-4 text-gray-400 flex-shrink-0" />
+                            <UserGroupIcon className="flex-shrink-0 w-4 h-4 text-gray-400" />
                             <span>{service.tourists || 0} turistas</span>
                           </div>
                           {service.currentLocation && (
                             <div className="flex items-center gap-2">
-                              <MapPinIcon className="w-4 h-4 text-gray-400 flex-shrink-0" />
+                              <MapPinIcon className="flex-shrink-0 w-4 h-4 text-gray-400" />
                               <span className="truncate">
                                 Ubicación: {service.currentLocation.name || 'En tránsito'}
                               </span>
@@ -560,7 +560,7 @@ const Monitoring = () => {
 
                         {service.progress !== undefined && (
                           <div className="mb-4">
-                            <div className="flex items-center justify-between text-xs text-gray-500 mb-2">
+                            <div className="flex items-center justify-between mb-2 text-xs text-gray-500">
                               <span className="font-medium">Progreso del tour</span>
                               <span className="font-semibold">{Math.round(service.progress || 0)}% completado</span>
                             </div>
@@ -578,10 +578,10 @@ const Monitoring = () => {
                         )}
 
                         <div className="pt-4 border-t border-gray-200">
-                          <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg p-3">
+                          <div className="p-3 rounded-lg bg-gradient-to-r from-blue-50 to-indigo-50">
                             <div className="flex items-center justify-between">
                               <div>
-                                <h5 className="text-xs font-semibold text-blue-900 mb-1">Estado del servicio</h5>
+                                <h5 className="mb-1 text-xs font-semibold text-blue-900">Estado del servicio</h5>
                                 <p className="text-xs text-blue-700">
                                   {service.estimatedEndTime || 'Calculando...'}
                                 </p>
@@ -598,7 +598,7 @@ const Monitoring = () => {
 
                         <button
                           onClick={() => handleOpenTourDetails(service)}
-                          className="w-full mt-4 py-2 px-4 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-colors shadow-md hover:shadow-lg"
+                          className="w-full px-4 py-2 mt-4 text-sm font-medium text-white transition-colors bg-blue-600 rounded-lg shadow-md hover:bg-blue-700 hover:shadow-lg"
                         >
                           Ver detalles
                         </button>

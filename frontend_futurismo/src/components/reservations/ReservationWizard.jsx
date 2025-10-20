@@ -10,7 +10,7 @@ import { formatters, canBookDirectly, generateWhatsAppURL } from '../../utils/fo
 import { validators } from '../../utils/validators';
 import WhatsAppConsultButton from './WhatsAppConsultButton';
 import toast from 'react-hot-toast';
-import { useToursStore } from '../../stores/toursStore';
+import { useServicesStore } from '../../stores/servicesStore';
 
 // Tour types constants
 const TOUR_TYPES = {
@@ -88,12 +88,12 @@ const ReservationWizard = ({ onClose }) => {
   const [isFulldayTour, setIsFulldayTour] = useState(false);
   const [canBookDirectReservation, setCanBookDirectReservation] = useState(true);
   
-  // Obtener tours del store
-  const { tours: availableTours, loadTours, isLoading: toursLoading } = useToursStore();
-  
-  // Cargar tours al montar el componente
+  // Obtener servicios del catálogo (NO tours activos)
+  const { services: availableServices, loadServices, isLoading: servicesLoading } = useServicesStore();
+
+  // Cargar catálogo de servicios al montar el componente
   useEffect(() => {
-    loadTours({ status: 'activo' });
+    loadServices({ status: 'active' });
   }, []);
 
 
@@ -107,7 +107,7 @@ const ReservationWizard = ({ onClose }) => {
   // Verificar si es tour fullday y horario de reserva
   useEffect(() => {
     if (formData.tourId) {
-      const selectedTour = availableTours.find(t => t.id === formData.tourId);
+      const selectedTour = availableServices.find(t => t.id === formData.tourId);
       const isFullday = selectedTour?.type === 'fullday';
       setIsFulldayTour(isFullday);
       
@@ -183,7 +183,7 @@ const ReservationWizard = ({ onClose }) => {
   const children = watch('children') || 0;
 
   const calculateTotal = () => {
-    const tour = availableTours.find(t => t.id === selectedTour);
+    const tour = availableServices.find(t => t.id === selectedTour);
     if (!tour) return 0;
     return (adults * tour.price) + (children * tour.price * 0.5);
   };
@@ -230,18 +230,18 @@ const ReservationWizard = ({ onClose }) => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto">
+    <div className="bg-white rounded-2xl shadow-2xl overflow-hidden w-full">
       {/* Progress indicator */}
-      <div className="mb-8">
-        <div className="flex items-center justify-between">
+      <div className="bg-gradient-to-r from-blue-50 to-indigo-50 px-8 py-6 border-b border-gray-200">
+        <div className="flex items-center justify-center">
           {steps.map((step, index) => (
-            <div key={step.number} className="flex items-center flex-1">
-              <div className="flex items-center">
+            <div key={step.number} className="flex items-center">
+              <div className="flex flex-col items-center">
                 <div className={`
-                  w-10 h-10 rounded-full flex items-center justify-center text-sm font-medium
+                  w-11 h-11 rounded-full flex items-center justify-center text-sm font-bold transition-all duration-300 border-2
                   ${currentStep >= step.number
-                    ? 'bg-primary-500 text-white'
-                    : 'bg-gray-200 text-gray-600'}
+                    ? 'bg-blue-600 text-white border-blue-600 shadow-lg scale-110'
+                    : 'bg-white text-gray-400 border-gray-300'}
                 `}>
                   {currentStep > step.number ? (
                     <CheckIcon className="w-5 h-5" />
@@ -249,15 +249,15 @@ const ReservationWizard = ({ onClose }) => {
                     step.number
                   )}
                 </div>
-                <span className={`ml-3 text-sm font-medium ${
-                  currentStep >= step.number ? 'text-gray-900' : 'text-gray-500'
+                <span className={`mt-2 text-xs font-semibold text-center whitespace-nowrap ${
+                  currentStep >= step.number ? 'text-blue-700' : 'text-gray-500'
                 }`}>
                   {step.title}
                 </span>
               </div>
               {index < steps.length - 1 && (
-                <div className={`flex-1 h-0.5 mx-4 ${
-                  currentStep > step.number ? 'bg-primary-500' : 'bg-gray-200'
+                <div className={`w-20 h-1 mx-4 rounded-full transition-all duration-300 ${
+                  currentStep > step.number ? 'bg-blue-600' : 'bg-gray-300'
                 }`} />
               )}
             </div>
@@ -266,47 +266,46 @@ const ReservationWizard = ({ onClose }) => {
       </div>
 
       {/* Form content */}
-      <form onSubmit={handleSubmit(handleNext)} className="bg-white rounded-lg shadow-lg p-6">
+      <form onSubmit={handleSubmit(handleNext)} className="px-8 py-6">
         {/* Step 1: Service Selection */}
         {currentStep === 1 && (
-          <div className="space-y-6">
-            <h3 className="text-lg font-semibold mb-4 text-gray-900">Selecciona el Servicio</h3>
+          <div className="space-y-5">
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Tipo de Servicio *</label>
+              <label className="block text-sm font-semibold text-gray-800 mb-2">Tipo de Servicio *</label>
               <select
                 {...register('serviceType')}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-4 py-2.5 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 bg-white text-gray-900 font-medium"
               >
                 <option value="tour">Tour Regular</option>
                 <option value="private">Tour Privado</option>
                 <option value="transfer">Traslado</option>
               </select>
               {errors.serviceType && (
-                <p className="mt-1 text-sm text-red-600">{errors.serviceType.message}</p>
+                <p className="mt-1.5 text-sm text-red-600 font-medium">{errors.serviceType.message}</p>
               )}
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Tour *</label>
-              {toursLoading ? (
-                <div className="flex items-center justify-center py-4">
-                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-                  <span className="ml-3 text-gray-600">Cargando tours...</span>
+              <label className="block text-sm font-semibold text-gray-800 mb-2">Tour *</label>
+              {servicesLoading ? (
+                <div className="flex items-center justify-center py-6 bg-gray-50 rounded-lg">
+                  <div className="animate-spin rounded-full h-8 w-8 border-3 border-blue-600 border-t-transparent"></div>
+                  <span className="ml-3 text-gray-700 font-medium">Cargando tours...</span>
                 </div>
-              ) : availableTours.length === 0 ? (
-                <div className="border border-yellow-300 bg-yellow-50 rounded-lg p-4">
-                  <p className="text-sm text-yellow-800">
+              ) : availableServices.length === 0 ? (
+                <div className="border-2 border-yellow-300 bg-yellow-50 rounded-lg p-4">
+                  <p className="text-sm text-yellow-800 font-medium">
                     No hay tours disponibles en este momento. Por favor intenta más tarde o contacta a soporte.
                   </p>
                 </div>
               ) : (
                 <select
                   {...register('tourId')}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-4 py-2.5 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 bg-white text-gray-900 font-medium"
                 >
                   <option value="">Selecciona un tour</option>
-                  {availableTours.map(tour => (
+                  {availableServices.map(tour => (
                     <option key={tour.id} value={tour.id}>
                       {tour.name} - S/. {tour.price}/persona
                     </option>
@@ -314,33 +313,33 @@ const ReservationWizard = ({ onClose }) => {
                 </select>
               )}
               {errors.tourId && (
-                <p className="mt-1 text-sm text-red-600">{errors.tourId.message}</p>
+                <p className="mt-1.5 text-sm text-red-600 font-medium">{errors.tourId.message}</p>
               )}
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Fecha *</label>
+                <label className="block text-sm font-semibold text-gray-800 mb-2">Fecha *</label>
                 <input
                   type="date"
                   {...register('date')}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-4 py-2.5 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 bg-white text-gray-900 font-medium"
                   min={new Date().toISOString().split('T')[0]}
                 />
                 {errors.date && (
-                  <p className="mt-1 text-sm text-red-600">{errors.date.message}</p>
+                  <p className="mt-1.5 text-sm text-red-600 font-medium">{errors.date.message}</p>
                 )}
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Hora *</label>
+                <label className="block text-sm font-semibold text-gray-800 mb-2">Hora *</label>
                 <input
                   type="time"
                   {...register('time')}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-4 py-2.5 border-2 border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 bg-white text-gray-900 font-medium"
                 />
                 {errors.time && (
-                  <p className="mt-1 text-sm text-red-600">{errors.time.message}</p>
+                  <p className="mt-1.5 text-sm text-red-600 font-medium">{errors.time.message}</p>
                 )}
               </div>
             </div>
@@ -359,7 +358,7 @@ const ReservationWizard = ({ onClose }) => {
                       antes de realizar la reserva.
                     </p>
                     <WhatsAppConsultButton 
-                      message={`Hola, necesito consultar disponibilidad para el tour "${availableTours.find(t => t.id === selectedTour)?.name}" para la fecha ${watch('date')} a las ${watch('time')}`}
+                      message={`Hola, necesito consultar disponibilidad para el tour "${availableServices.find(t => t.id === selectedTour)?.name}" para la fecha ${watch('date')} a las ${watch('time')}`}
                       variant="secondary"
                       size="sm"
                       className="w-full sm:w-auto"
@@ -597,7 +596,7 @@ const ReservationWizard = ({ onClose }) => {
                 <div className="flex justify-between">
                   <span className="text-gray-600">Tour:</span>
                   <span className="font-medium">
-                    {availableTours.find(t => t.id === formData.tourId)?.name}
+                    {availableServices.find(t => t.id === formData.tourId)?.name}
                   </span>
                 </div>
                 <div className="flex justify-between">
@@ -741,11 +740,11 @@ const ReservationWizard = ({ onClose }) => {
         )}
 
         {/* Navigation buttons */}
-        <div className="flex justify-between items-center mt-8 pt-6 border-t">
+        <div className="bg-gray-50 -mx-8 -mb-6 mt-8 px-8 py-5 border-t border-gray-200 flex justify-between items-center">
           <button
             type="button"
             onClick={handleBack}
-            className="flex items-center gap-2 px-6 py-2.5 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="flex items-center gap-2 px-6 py-2.5 border-2 border-gray-300 text-gray-700 rounded-lg hover:bg-white hover:border-gray-400 transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed font-semibold shadow-sm bg-white"
             disabled={currentStep === 1}
           >
             <ChevronLeftIcon className="w-4 h-4" />
@@ -754,7 +753,7 @@ const ReservationWizard = ({ onClose }) => {
 
           <button
             type="submit"
-            className="flex items-center gap-2 px-6 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="flex items-center gap-2 px-8 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 hover:shadow-xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed font-semibold shadow-md"
             disabled={isSubmitting || (currentStep === 1 && isFulldayTour && !canBookDirectReservation)}
           >
             {currentStep === 3 ? (

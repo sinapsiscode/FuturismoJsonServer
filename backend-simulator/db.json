@@ -13,7 +13,7 @@
       "avatar": "https://ui-avatars.com/api/?name=Admin&background=3B82F6&color=fff",
       "created_at": "2024-01-01T00:00:00Z",
       "updated_at": "2024-01-01T00:00:00Z",
-      "last_login_at": "2025-10-20T13:37:22.094Z"
+      "last_login_at": "2025-10-20T15:59:47.370Z"
     },
     {
       "id": "user-agency-1",
@@ -174,8 +174,492 @@
       "last_login": null
     }
   ],
-  "agencies": [],
-  "guides": [],
+  "agencies": [
+    {
+      "id": "agency-001",
+      "user_id": "user-agency-1",
+      "name": "Tours Lima Premium",
+      "business_name": "Tours Lima Premium S.A.C.",
+      "ruc": "20543218765",
+      "email": "contacto@tourslima.com",
+      "phone": "+51987654322",
+      "address": "Av. José Larco 1234, Miraflores, Lima",
+      "description": "Agencia especializada en tours premium por Lima y alrededores con más de 10 años de experiencia",
+      "website": "https://tourslimapremium.com",
+      "logo": "https://ui-avatars.com/api/?name=Tours+Lima&background=10B981&color=fff&size=200",
+      "rating": 4.7,
+      "total_reviews": 128,
+      "total_tours": 456,
+      "status": "active",
+      "subscription_plan": "premium",
+      "verified": true,
+      "points": 3450,
+      "level": "gold",
+      "contact_person": {
+        "name": "María González",
+        "position": "Gerente General",
+        "phone": "+51987654322",
+        "email": "maria.gonzalez@tourslima.com"
+      },
+      "bank_details": {
+        "bank_name": "BCP",
+        "account_number": "191-2345678-0-12",
+        "cci": "00219100234567801212"
+      },
+      "certifications": [
+        "ISO 9001:2015",
+        "CALTUR"
+      ],
+      "specialties": [
+        "city-tours",
+        "gastronomy",
+        "culture",
+        "history"
+      ],
+      "languages": [
+        "es",
+        "en",
+        "pt"
+      ],
+      "created_at": "2024-02-01T00:00:00Z",
+      "updated_at": "2025-10-20T00:00:00Z"
+    },
+    {
+      "id": "agency-002",
+      "user_id": "user-1760400982923",
+      "name": "Aventura Perú",
+      "business_name": "Aventura Perú E.I.R.L.",
+      "ruc": "20598765432",
+      "email": "je@gmail.com",
+      "phone": "+51923456789",
+      "address": "Calle Los Tulipanes 456, San Isidro, Lima",
+      "description": "Tours de aventura y naturaleza por todo el Perú",
+      "website": "https://aventuraperu.com",
+      "logo": "https://ui-avatars.com/api/?name=Aventura+Peru&background=F59E0B&color=fff&size=200",
+      "rating": 4.5,
+      "total_reviews": 87,
+      "total_tours": 234,
+      "status": "active",
+      "subscription_plan": "standard",
+      "verified": true,
+      "points": 1850,
+      "level": "silver",
+      "contact_person": {
+        "name": "Jorge Espinoza",
+        "position": "Director",
+        "phone": "+51923456789",
+        "email": "je@gmail.com"
+      },
+      "bank_details": {
+        "bank_name": "BBVA",
+        "account_number": "0011-0234-5678901234",
+        "cci": "01101100234567890123456"
+      },
+      "certifications": [
+        "CALTUR"
+      ],
+      "specialties": [
+        "adventure",
+        "nature",
+        "trekking",
+        "camping"
+      ],
+      "languages": [
+        "es",
+        "en"
+      ],
+      "created_at": "2025-10-14T00:09:42.923Z",
+      "updated_at": "2025-10-20T00:00:00Z"
+    }
+  ],
+  "guides": [
+    {
+      "id": "guide-001",
+      "user_id": "user-guide-1",
+      "agency_id": "agency-001",
+      "name": "Carlos Mendoza",
+      "first_name": "Carlos",
+      "last_name": "Mendoza",
+      "email": "carlos@guia.com",
+      "phone": "+51987654323",
+      "type": "employed",
+      "status": "active",
+      "avatar": "https://ui-avatars.com/api/?name=Carlos+Mendoza&background=F59E0B&color=fff&size=200",
+      "rating": 4.8,
+      "total_reviews": 156,
+      "total_tours": 342,
+      "languages": [
+        "es",
+        "en",
+        "fr"
+      ],
+      "specialties": [
+        "history",
+        "culture",
+        "gastronomy",
+        "colonial-architecture"
+      ],
+      "certifications": [
+        "Guía Oficial de Turismo - MINCETUR",
+        "First Aid Certification",
+        "Tourist Transport License"
+      ],
+      "experience_years": 8,
+      "bio": "Guía turístico especializado en historia colonial y gastronomía peruana con más de 8 años de experiencia. Apasionado por mostrar lo mejor de Lima y sus alrededores.",
+      "education": "Licenciado en Turismo - Universidad San Martín de Porres",
+      "availability": {
+        "monday": {
+          "available": true,
+          "hours": "08:00-18:00"
+        },
+        "tuesday": {
+          "available": true,
+          "hours": "08:00-18:00"
+        },
+        "wednesday": {
+          "available": true,
+          "hours": "08:00-18:00"
+        },
+        "thursday": {
+          "available": true,
+          "hours": "08:00-18:00"
+        },
+        "friday": {
+          "available": true,
+          "hours": "08:00-18:00"
+        },
+        "saturday": {
+          "available": true,
+          "hours": "09:00-17:00"
+        },
+        "sunday": {
+          "available": false,
+          "hours": null
+        }
+      },
+      "documents": {
+        "dni": "12345678",
+        "license_number": "GT-2024-001234",
+        "license_expiry": "2026-12-31"
+      },
+      "created_at": "2024-03-01T00:00:00Z",
+      "updated_at": "2025-10-20T00:00:00Z"
+    },
+    {
+      "id": "guide-002",
+      "user_id": "user-1760400618945",
+      "agency_id": "agency-002",
+      "name": "Marco Pérez",
+      "first_name": "Marco",
+      "last_name": "Pérez",
+      "email": "alfaldfa@gmail.com",
+      "phone": "+51987654332",
+      "type": "employed",
+      "status": "active",
+      "avatar": "https://ui-avatars.com/api/?name=Marco+Perez&background=3B82F6&color=fff&size=200",
+      "rating": 4.6,
+      "total_reviews": 98,
+      "total_tours": 187,
+      "languages": [
+        "es",
+        "en"
+      ],
+      "specialties": [
+        "adventure",
+        "trekking",
+        "nature",
+        "camping"
+      ],
+      "certifications": [
+        "Guía Oficial de Turismo - MINCETUR",
+        "Mountain Guide Certification",
+        "Wilderness First Responder"
+      ],
+      "experience_years": 5,
+      "bio": "Guía especializado en turismo de aventura y naturaleza. Experto en trekking en los Andes y expediciones en la selva peruana.",
+      "education": "Técnico en Ecoturismo - CENFOTUR",
+      "availability": {
+        "monday": {
+          "available": true,
+          "hours": "07:00-19:00"
+        },
+        "tuesday": {
+          "available": true,
+          "hours": "07:00-19:00"
+        },
+        "wednesday": {
+          "available": true,
+          "hours": "07:00-19:00"
+        },
+        "thursday": {
+          "available": true,
+          "hours": "07:00-19:00"
+        },
+        "friday": {
+          "available": true,
+          "hours": "07:00-19:00"
+        },
+        "saturday": {
+          "available": true,
+          "hours": "07:00-19:00"
+        },
+        "sunday": {
+          "available": true,
+          "hours": "07:00-19:00"
+        }
+      },
+      "documents": {
+        "dni": "23456789",
+        "license_number": "GT-2024-002345",
+        "license_expiry": "2027-06-30"
+      },
+      "created_at": "2025-10-14T00:10:18.945Z",
+      "updated_at": "2025-10-20T00:00:00Z"
+    },
+    {
+      "id": "guide-003",
+      "user_id": "user-guide-freelance-1",
+      "agency_id": null,
+      "name": "Ana Torres",
+      "first_name": "Ana",
+      "last_name": "Torres",
+      "email": "ana@freelance.com",
+      "phone": "+51987654324",
+      "type": "freelance",
+      "status": "active",
+      "avatar": "https://ui-avatars.com/api/?name=Ana+Torres&background=EC4899&color=fff&size=200",
+      "rating": 4.9,
+      "total_reviews": 203,
+      "total_tours": 412,
+      "languages": [
+        "es",
+        "en",
+        "it",
+        "pt"
+      ],
+      "specialties": [
+        "gastronomy",
+        "wine-tours",
+        "culinary-experiences",
+        "local-markets"
+      ],
+      "certifications": [
+        "Guía Oficial de Turismo - MINCETUR",
+        "Sommelier Certificate",
+        "Culinary Tourism Expert"
+      ],
+      "experience_years": 10,
+      "bio": "Guía freelance especializada en turismo gastronómico y experiencias culinarias. Sommelier certificada con amplio conocimiento de la cocina peruana y vinos locales.",
+      "education": "Licenciada en Gastronomía - Le Cordon Bleu Perú",
+      "marketplace_profile": {
+        "available": true,
+        "hourly_rate": 45,
+        "daily_rate": 180,
+        "half_day_rate": 100,
+        "minimum_booking_hours": 3,
+        "cancellation_policy": "24 horas de anticipación",
+        "response_time": "2 horas promedio"
+      },
+      "availability": {
+        "monday": {
+          "available": true,
+          "hours": "flexible"
+        },
+        "tuesday": {
+          "available": true,
+          "hours": "flexible"
+        },
+        "wednesday": {
+          "available": true,
+          "hours": "flexible"
+        },
+        "thursday": {
+          "available": true,
+          "hours": "flexible"
+        },
+        "friday": {
+          "available": true,
+          "hours": "flexible"
+        },
+        "saturday": {
+          "available": true,
+          "hours": "flexible"
+        },
+        "sunday": {
+          "available": true,
+          "hours": "flexible"
+        }
+      },
+      "documents": {
+        "dni": "34567890",
+        "license_number": "GT-2023-003456",
+        "license_expiry": "2026-03-31"
+      },
+      "bank_details": {
+        "bank_name": "Interbank",
+        "account_number": "200-3456789012",
+        "cci": "00320000345678901234"
+      },
+      "created_at": "2024-04-01T00:00:00Z",
+      "updated_at": "2025-10-20T00:00:00Z"
+    },
+    {
+      "id": "guide-004",
+      "user_id": "user-1760400019346",
+      "agency_id": null,
+      "name": "Gian Terrazas",
+      "first_name": "Gian",
+      "last_name": "Terrazas",
+      "email": "pier_terrazas@hotmail.com",
+      "phone": "+51961170946",
+      "type": "freelance",
+      "status": "active",
+      "avatar": "https://ui-avatars.com/api/?name=Gian+Terrazas&background=8B5CF6&color=fff&size=200",
+      "rating": 4.7,
+      "total_reviews": 134,
+      "total_tours": 267,
+      "languages": [
+        "es",
+        "en",
+        "de"
+      ],
+      "specialties": [
+        "archaeology",
+        "pre-columbian-history",
+        "cusco",
+        "machu-picchu"
+      ],
+      "certifications": [
+        "Guía Oficial de Turismo - MINCETUR",
+        "Specialized Archaeological Guide",
+        "Inca Trail Certified"
+      ],
+      "experience_years": 7,
+      "bio": "Guía freelance especializado en arqueología y culturas pre-colombinas. Experto en tours a Cusco, Machu Picchu y el Valle Sagrado.",
+      "education": "Licenciado en Arqueología - UNMSM",
+      "marketplace_profile": {
+        "available": true,
+        "hourly_rate": 40,
+        "daily_rate": 160,
+        "half_day_rate": 90,
+        "minimum_booking_hours": 4,
+        "cancellation_policy": "48 horas de anticipación",
+        "response_time": "3 horas promedio"
+      },
+      "availability": {
+        "monday": {
+          "available": true,
+          "hours": "flexible"
+        },
+        "tuesday": {
+          "available": true,
+          "hours": "flexible"
+        },
+        "wednesday": {
+          "available": true,
+          "hours": "flexible"
+        },
+        "thursday": {
+          "available": true,
+          "hours": "flexible"
+        },
+        "friday": {
+          "available": true,
+          "hours": "flexible"
+        },
+        "saturday": {
+          "available": true,
+          "hours": "flexible"
+        },
+        "sunday": {
+          "available": false,
+          "hours": null
+        }
+      },
+      "documents": {
+        "dni": "45678901",
+        "license_number": "GT-2024-004567",
+        "license_expiry": "2027-09-30"
+      },
+      "bank_details": {
+        "bank_name": "BCP",
+        "account_number": "191-4567890-1-23",
+        "cci": "00219100456789012323"
+      },
+      "created_at": "2025-10-14T00:00:19.346Z",
+      "updated_at": "2025-10-20T00:00:00Z"
+    },
+    {
+      "id": "guide-005",
+      "user_id": "user-1760403013660",
+      "agency_id": "agency-001",
+      "name": "David Rodriguez",
+      "first_name": "David",
+      "last_name": "Rodriguez",
+      "email": "d@gmail.com",
+      "phone": "+51987345212",
+      "type": "employed",
+      "status": "active",
+      "avatar": "https://ui-avatars.com/api/?name=David+Rodriguez&background=10B981&color=fff&size=200",
+      "rating": 4.5,
+      "total_reviews": 76,
+      "total_tours": 142,
+      "languages": [
+        "es",
+        "en"
+      ],
+      "specialties": [
+        "museums",
+        "art",
+        "modern-lima",
+        "bohemian-districts"
+      ],
+      "certifications": [
+        "Guía Oficial de Turismo - MINCETUR",
+        "Art History Specialist"
+      ],
+      "experience_years": 4,
+      "bio": "Guía joven especializado en arte y cultura contemporánea de Lima. Experto en barrios bohemios, galerías y escena artística local.",
+      "education": "Licenciado en Historia del Arte - PUCP",
+      "availability": {
+        "monday": {
+          "available": true,
+          "hours": "09:00-18:00"
+        },
+        "tuesday": {
+          "available": true,
+          "hours": "09:00-18:00"
+        },
+        "wednesday": {
+          "available": true,
+          "hours": "09:00-18:00"
+        },
+        "thursday": {
+          "available": true,
+          "hours": "09:00-18:00"
+        },
+        "friday": {
+          "available": true,
+          "hours": "09:00-18:00"
+        },
+        "saturday": {
+          "available": true,
+          "hours": "10:00-16:00"
+        },
+        "sunday": {
+          "available": false,
+          "hours": null
+        }
+      },
+      "documents": {
+        "dni": "56789012",
+        "license_number": "GT-2025-005678",
+        "license_expiry": "2028-01-31"
+      },
+      "created_at": "2025-10-14T00:50:13.660Z",
+      "updated_at": "2025-10-20T00:00:00Z"
+    }
+  ],
   "tours": [
     {
       "id": "tour-001",
@@ -438,7 +922,26 @@
       "created_at": "2024-01-15T10:00:00Z"
     }
   ],
-  "reservations": [],
+  "reservations": [
+    {"id": "res-001", "reservation_code": "FUT-2025-001", "service_id": "tour-001", "client_id": 1, "agency_id": "agency-001", "guide_id": "guide-001", "tour_date": "2025-05-15", "group_size": 8, "status": "completed", "payment_status": "paid", "total_amount": 803.20, "base_amount": 680, "tax_amount": 123.20, "created_at": "2025-05-10T10:00:00Z", "updated_at": "2025-05-16T14:00:00Z"},
+    {"id": "res-002", "reservation_code": "FUT-2025-002", "service_id": "tour-002", "client_id": 1, "agency_id": "agency-001", "guide_id": "guide-003", "tour_date": "2025-05-22", "group_size": 4, "status": "completed", "payment_status": "paid", "total_amount": 566.40, "base_amount": 480, "tax_amount": 86.40, "created_at": "2025-05-18T14:30:00Z", "updated_at": "2025-05-23T18:00:00Z"},
+    {"id": "res-003", "reservation_code": "FUT-2025-003", "service_id": "tour-003", "client_id": 5, "agency_id": "agency-002", "guide_id": "guide-004", "tour_date": "2025-06-05", "group_size": 2, "status": "completed", "payment_status": "paid", "total_amount": 424.80, "base_amount": 360, "tax_amount": 64.80, "created_at": "2025-05-28T09:15:00Z", "updated_at": "2025-06-06T20:00:00Z"},
+    {"id": "res-004", "reservation_code": "FUT-2025-004", "service_id": "tour-004", "client_id": 2, "agency_id": "agency-002", "guide_id": "guide-002", "tour_date": "2025-06-12", "group_size": 6, "status": "completed", "payment_status": "paid", "total_amount": 1381.20, "base_amount": 1170, "tax_amount": 211.20, "created_at": "2025-06-07T11:45:00Z", "updated_at": "2025-06-13T19:30:00Z"},
+    {"id": "res-005", "reservation_code": "FUT-2025-005", "service_id": "tour-001", "client_id": 5, "agency_id": "agency-001", "guide_id": "guide-005", "tour_date": "2025-06-20", "group_size": 12, "status": "completed", "payment_status": "paid", "total_amount": 1204.80, "base_amount": 1020, "tax_amount": 184.80, "created_at": "2025-06-15T08:20:00Z", "updated_at": "2025-06-21T16:00:00Z"},
+    {"id": "res-006", "reservation_code": "FUT-2025-006", "service_id": "tour-007", "client_id": 1, "agency_id": "agency-001", "guide_id": "guide-001", "tour_date": "2025-07-03", "group_size": 2, "status": "confirmed", "payment_status": "partial", "total_amount": 389.40, "base_amount": 330, "tax_amount": 59.40, "created_at": "2025-06-28T16:30:00Z", "updated_at": "2025-06-29T10:00:00Z"},
+    {"id": "res-007", "reservation_code": "FUT-2025-007", "service_id": "tour-006", "client_id": 2, "agency_id": "agency-002", "guide_id": "guide-002", "tour_date": "2025-07-15", "group_size": 4, "status": "confirmed", "payment_status": "partial", "total_amount": 3068.00, "base_amount": 2600, "tax_amount": 468.00, "created_at": "2025-07-05T10:00:00Z", "updated_at": "2025-07-06T14:00:00Z"},
+    {"id": "res-008", "reservation_code": "FUT-2025-008", "service_id": "tour-010", "client_id": 5, "agency_id": "agency-001", "guide_id": "guide-005", "tour_date": "2025-07-25", "group_size": 5, "status": "confirmed", "payment_status": "paid", "total_amount": 560.50, "base_amount": 475, "tax_amount": 85.50, "created_at": "2025-07-20T12:00:00Z", "updated_at": "2025-07-21T09:00:00Z"},
+    {"id": "res-009", "reservation_code": "FUT-2025-009", "service_id": "tour-002", "client_id": 1, "agency_id": "agency-001", "guide_id": "guide-003", "tour_date": "2025-08-08", "group_size": 6, "status": "confirmed", "payment_status": "paid", "total_amount": 849.60, "base_amount": 720, "tax_amount": 129.60, "created_at": "2025-08-01T15:30:00Z", "updated_at": "2025-08-02T11:00:00Z"},
+    {"id": "res-010", "reservation_code": "FUT-2025-010", "service_id": "tour-005", "client_id": 1, "agency_id": "agency-002", "guide_id": "guide-004", "tour_date": "2025-08-18", "group_size": 3, "status": "confirmed", "payment_status": "partial", "total_amount": 744.60, "base_amount": 630, "tax_amount": 114.60, "created_at": "2025-08-10T09:00:00Z", "updated_at": "2025-08-11T10:30:00Z"},
+    {"id": "res-011", "reservation_code": "FUT-2025-011", "service_id": "tour-001", "client_id": 2, "agency_id": "agency-001", "guide_id": "guide-001", "tour_date": "2025-08-28", "group_size": 10, "status": "confirmed", "payment_status": "paid", "total_amount": 1003.00, "base_amount": 850, "tax_amount": 153.00, "created_at": "2025-08-22T14:00:00Z", "updated_at": "2025-08-23T09:00:00Z"},
+    {"id": "res-012", "reservation_code": "FUT-2025-012", "service_id": "tour-009", "client_id": 5, "agency_id": "agency-002", "guide_id": "guide-004", "tour_date": "2025-09-10", "group_size": 2, "status": "pending", "payment_status": "pending", "total_amount": 2006.00, "base_amount": 1700, "tax_amount": 306.00, "created_at": "2025-09-05T10:00:00Z", "updated_at": "2025-09-05T10:00:00Z"},
+    {"id": "res-013", "reservation_code": "FUT-2025-013", "service_id": "tour-003", "client_id": 2, "agency_id": "agency-001", "guide_id": "guide-004", "tour_date": "2025-09-20", "group_size": 4, "status": "pending", "payment_status": "pending", "total_amount": 849.60, "base_amount": 720, "tax_amount": 129.60, "created_at": "2025-09-15T11:30:00Z", "updated_at": "2025-09-15T11:30:00Z"},
+    {"id": "res-014", "reservation_code": "FUT-2025-014", "service_id": "tour-007", "client_id": 5, "agency_id": "agency-001", "guide_id": "guide-003", "tour_date": "2025-10-02", "group_size": 3, "status": "pending", "payment_status": "pending", "total_amount": 584.10, "base_amount": 495, "tax_amount": 89.10, "created_at": "2025-09-28T16:00:00Z", "updated_at": "2025-09-28T16:00:00Z"},
+    {"id": "res-015", "reservation_code": "FUT-2025-015", "service_id": "tour-010", "client_id": 1, "agency_id": "agency-002", "guide_id": "guide-002", "tour_date": "2025-10-15", "group_size": 7, "status": "pending", "payment_status": "pending", "total_amount": 783.65, "base_amount": 665, "tax_amount": 118.65, "created_at": "2025-10-10T09:00:00Z", "updated_at": "2025-10-10T09:00:00Z"},
+    {"id": "res-016", "reservation_code": "FUT-2025-016", "service_id": "tour-002", "client_id": 1, "agency_id": "agency-001", "guide_id": "guide-003", "tour_date": "2025-10-25", "group_size": 5, "status": "pending", "payment_status": "pending", "total_amount": 708.00, "base_amount": 600, "tax_amount": 108.00, "created_at": "2025-10-18T13:00:00Z", "updated_at": "2025-10-18T13:00:00Z"},
+    {"id": "res-017", "reservation_code": "FUT-2025-017", "service_id": "tour-004", "client_id": 2, "agency_id": "agency-002", "guide_id": "guide-002", "tour_date": "2025-07-10", "group_size": 4, "status": "cancelled", "payment_status": "refunded", "total_amount": 920.40, "base_amount": 780, "tax_amount": 140.40, "cancellation_reason": "Cliente solicitó cancelación por motivos personales", "created_at": "2025-07-01T10:00:00Z", "updated_at": "2025-07-08T15:30:00Z"},
+    {"id": "res-018", "reservation_code": "FUT-2025-018", "service_id": "tour-008", "client_id": 2, "agency_id": "agency-001", "guide_id": "guide-002", "tour_date": "2025-08-20", "group_size": 2, "status": "cancelled", "payment_status": "refunded", "total_amount": 1368.80, "base_amount": 1160, "tax_amount": 208.80, "cancellation_reason": "Problemas climáticos - cancelado por la agencia", "created_at": "2025-08-10T14:00:00Z", "updated_at": "2025-08-18T10:00:00Z"}
+  ],
   "clients": [
     {
       "type": "agency",
@@ -459,6 +962,17 @@
       "address": "asdfasfasfasf",
       "contact": "cayeco",
       "id": 2
+    },
+    {
+      "type": "agency",
+      "name": "Viajes Globales S.A.",
+      "documentNumber": "20456789012",
+      "email": "reservas@viajglobales.com",
+      "phone": "+51912345678",
+      "address": "Jr. de la Unión 456, Cercado de Lima",
+      "contact": "Roberto Campos",
+      "created_at": "2025-03-10T09:00:00Z",
+      "id": 5
     }
   ],
   "marketplace_requests": [],
@@ -10563,8 +11077,269 @@
     ]
   },
   "suggestions": [],
-  "drivers": [],
-  "vehicles": [],
+  "drivers": [
+    {
+      "id": "driver-001",
+      "user_id": null,
+      "name": "Luis Vargas",
+      "first_name": "Luis",
+      "last_name": "Vargas",
+      "email": "luis.vargas@futurismo.com",
+      "phone": "+51987234567",
+      "dni": "18765432",
+      "license_number": "A1-B2C-987654",
+      "license_type": "A-IIB",
+      "license_expiry": "2027-12-31",
+      "status": "active",
+      "rating": 4.7,
+      "total_reviews": 89,
+      "total_trips": 234,
+      "experience_years": 12,
+      "languages": ["es", "en"],
+      "specialties": ["city-tours", "long-distance", "mountain-roads"],
+      "certifications": [
+        "Licencia Profesional Clase A",
+        "Certificado de Transporte Turístico",
+        "First Aid Certification"
+      ],
+      "availability": {
+        "monday": true,
+        "tuesday": true,
+        "wednesday": true,
+        "thursday": true,
+        "friday": true,
+        "saturday": true,
+        "sunday": false
+      },
+      "agency_id": "agency-001",
+      "avatar": "https://ui-avatars.com/api/?name=Luis+Vargas&background=3B82F6&color=fff&size=200",
+      "created_at": "2024-06-01T00:00:00Z",
+      "updated_at": "2025-10-20T00:00:00Z"
+    },
+    {
+      "id": "driver-002",
+      "user_id": null,
+      "name": "Pedro Sánchez",
+      "first_name": "Pedro",
+      "last_name": "Sánchez",
+      "email": "pedro.sanchez@futurismo.com",
+      "phone": "+51923456789",
+      "dni": "28765433",
+      "license_number": "A1-B2C-876543",
+      "license_type": "A-IIB",
+      "license_expiry": "2028-06-30",
+      "status": "active",
+      "rating": 4.8,
+      "total_reviews": 112,
+      "total_trips": 298,
+      "experience_years": 15,
+      "languages": ["es"],
+      "specialties": ["adventure-tours", "4x4-driving", "off-road"],
+      "certifications": [
+        "Licencia Profesional Clase A",
+        "Certificado de Transporte Turístico",
+        "4x4 Specialist Certification"
+      ],
+      "availability": {
+        "monday": true,
+        "tuesday": true,
+        "wednesday": true,
+        "thursday": true,
+        "friday": true,
+        "saturday": true,
+        "sunday": true
+      },
+      "agency_id": "agency-002",
+      "avatar": "https://ui-avatars.com/api/?name=Pedro+Sanchez&background=F59E0B&color=fff&size=200",
+      "created_at": "2024-05-15T00:00:00Z",
+      "updated_at": "2025-10-20T00:00:00Z"
+    },
+    {
+      "id": "driver-003",
+      "user_id": null,
+      "name": "Miguel Torres",
+      "first_name": "Miguel",
+      "last_name": "Torres",
+      "email": "miguel.torres@futurismo.com",
+      "phone": "+51998765432",
+      "dni": "38765434",
+      "license_number": "A1-B2C-765432",
+      "license_type": "A-IIA",
+      "license_expiry": "2026-09-30",
+      "status": "active",
+      "rating": 4.6,
+      "total_reviews": 67,
+      "total_trips": 156,
+      "experience_years": 8,
+      "languages": ["es", "en"],
+      "specialties": ["city-tours", "airport-transfers", "group-transport"],
+      "certifications": [
+        "Licencia Profesional Clase A",
+        "Certificado de Transporte Turístico"
+      ],
+      "availability": {
+        "monday": true,
+        "tuesday": true,
+        "wednesday": true,
+        "thursday": true,
+        "friday": true,
+        "saturday": false,
+        "sunday": false
+      },
+      "agency_id": "agency-001",
+      "avatar": "https://ui-avatars.com/api/?name=Miguel+Torres&background=10B981&color=fff&size=200",
+      "created_at": "2024-08-10T00:00:00Z",
+      "updated_at": "2025-10-20T00:00:00Z"
+    }
+  ],
+  "vehicles": [
+    {
+      "id": "vehicle-001",
+      "agency_id": "agency-001",
+      "type": "van",
+      "brand": "Toyota",
+      "model": "Hiace",
+      "year": 2022,
+      "plate": "ABC-123",
+      "color": "Blanco",
+      "capacity": 12,
+      "status": "active",
+      "condition": "excellent",
+      "features": [
+        "Aire acondicionado",
+        "Asientos reclinables",
+        "USB charging ports",
+        "Wi-Fi",
+        "Música"
+      ],
+      "insurance": {
+        "company": "Pacífico Seguros",
+        "policy_number": "POL-2024-001234",
+        "expiry_date": "2026-12-31",
+        "coverage": "comprehensive"
+      },
+      "maintenance": {
+        "last_service_date": "2025-09-15",
+        "next_service_date": "2025-12-15",
+        "mileage": 45000
+      },
+      "soat_expiry": "2026-06-30",
+      "technical_review_expiry": "2026-03-31",
+      "fuel_type": "diesel",
+      "created_at": "2024-01-15T00:00:00Z",
+      "updated_at": "2025-10-20T00:00:00Z"
+    },
+    {
+      "id": "vehicle-002",
+      "agency_id": "agency-001",
+      "type": "minibus",
+      "brand": "Mercedes-Benz",
+      "model": "Sprinter",
+      "year": 2023,
+      "plate": "DEF-456",
+      "color": "Gris",
+      "capacity": 19,
+      "status": "active",
+      "condition": "excellent",
+      "features": [
+        "Aire acondicionado",
+        "Asientos premium",
+        "TV/DVD",
+        "Wi-Fi",
+        "Baño",
+        "Refrigerador"
+      ],
+      "insurance": {
+        "company": "Rímac Seguros",
+        "policy_number": "POL-2023-005678",
+        "expiry_date": "2026-08-31",
+        "coverage": "comprehensive"
+      },
+      "maintenance": {
+        "last_service_date": "2025-10-01",
+        "next_service_date": "2026-01-01",
+        "mileage": 28000
+      },
+      "soat_expiry": "2026-08-31",
+      "technical_review_expiry": "2026-05-31",
+      "fuel_type": "diesel",
+      "created_at": "2023-09-01T00:00:00Z",
+      "updated_at": "2025-10-20T00:00:00Z"
+    },
+    {
+      "id": "vehicle-003",
+      "agency_id": "agency-002",
+      "type": "4x4",
+      "brand": "Toyota",
+      "model": "Land Cruiser",
+      "year": 2021,
+      "plate": "GHI-789",
+      "color": "Negro",
+      "capacity": 7,
+      "status": "active",
+      "condition": "good",
+      "features": [
+        "Aire acondicionado",
+        "4x4 system",
+        "GPS",
+        "Cooler",
+        "Roof rack",
+        "Camping equipment storage"
+      ],
+      "insurance": {
+        "company": "Pacífico Seguros",
+        "policy_number": "POL-2024-009012",
+        "expiry_date": "2026-11-30",
+        "coverage": "comprehensive"
+      },
+      "maintenance": {
+        "last_service_date": "2025-08-20",
+        "next_service_date": "2025-11-20",
+        "mileage": 62000
+      },
+      "soat_expiry": "2026-07-31",
+      "technical_review_expiry": "2026-04-30",
+      "fuel_type": "diesel",
+      "created_at": "2024-03-10T00:00:00Z",
+      "updated_at": "2025-10-20T00:00:00Z"
+    },
+    {
+      "id": "vehicle-004",
+      "agency_id": "agency-002",
+      "type": "sedan",
+      "brand": "Hyundai",
+      "model": "Elantra",
+      "year": 2023,
+      "plate": "JKL-012",
+      "color": "Azul",
+      "capacity": 4,
+      "status": "active",
+      "condition": "excellent",
+      "features": [
+        "Aire acondicionado",
+        "Asientos de cuero",
+        "GPS",
+        "Bluetooth",
+        "USB ports"
+      ],
+      "insurance": {
+        "company": "Rímac Seguros",
+        "policy_number": "POL-2023-012345",
+        "expiry_date": "2026-10-31",
+        "coverage": "comprehensive"
+      },
+      "maintenance": {
+        "last_service_date": "2025-09-10",
+        "next_service_date": "2025-12-10",
+        "mileage": 18000
+      },
+      "soat_expiry": "2026-09-30",
+      "technical_review_expiry": "2026-06-30",
+      "fuel_type": "gasoline",
+      "created_at": "2023-10-15T00:00:00Z",
+      "updated_at": "2025-10-20T00:00:00Z"
+    }
+  ],
   "driver_evaluations": [],
   "driver_license_history": [],
   "vehicle_assignments": [],
@@ -11213,5 +11988,9 @@
       "created_at": "2025-10-19T21:16:45.698Z",
       "updated_at": "2025-10-19T21:16:45.698Z"
     }
-  ]
+  ],
+  "tour_assignments": [],
+  "driver_assignments": [],
+  "vehicle_assignments": [],
+  "guide_availability": []
 }

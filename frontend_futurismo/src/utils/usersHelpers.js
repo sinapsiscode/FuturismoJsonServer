@@ -71,8 +71,8 @@ export const getRoleName = (roleId, roles = []) => {
 // Status helpers
 export const getStatusClasses = (status) => {
   const colors = STATUS_COLORS[status];
-  if (!colors) return STATUS_COLORS[USER_STATUS.INACTIVE];
-  return `${colors.bg} ${colors.text}`;
+  if (!colors) return STATUS_COLORS['inactive'] || 'bg-gray-100 text-gray-800';
+  return colors;
 };
 
 // Array helpers

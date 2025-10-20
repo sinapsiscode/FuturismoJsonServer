@@ -41,7 +41,7 @@ const useUsersStore = create((set, get) => ({
       }
       
       set({
-        users: usersResult.data,
+        users: usersResult.data.users || usersResult.data || [],
         roles: rolesResult.data,
         isLoading: false,
         hasInitialized: true
@@ -57,6 +57,13 @@ const useUsersStore = create((set, get) => ({
   
   getUsers: (filters = {}) => {
     const { users } = get();
+
+    // Validar que users sea un array antes de intentar iterarlo
+    if (!Array.isArray(users)) {
+      console.warn('[usersStore] users is not an array:', users);
+      return [];
+    }
+
     let filtered = [...users];
     
     if (filters.role) {
@@ -188,11 +195,22 @@ const useUsersStore = create((set, get) => ({
 
   getUsersStatistics: () => {
     const { users } = get();
-    
+
+    // Validar que users sea un array
+    if (!Array.isArray(users)) {
+      console.warn('[usersStore] users is not an array in getUsersStatistics:', users);
+      return {
+        total: 0,
+        active: 0,
+        inactive: 0,
+        activeRate: 0
+      };
+    }
+
     const total = users.length;
     const active = users.filter(u => u.status === 'activo').length;
     const inactive = users.filter(u => u.status === 'inactivo').length;
-    
+
     return {
       total,
       active,
@@ -221,16 +239,28 @@ const useUsersStore = create((set, get) => ({
   // Funciones específicas por tipo de usuario
   getAdministrators: () => {
     const { users } = get();
+    if (!Array.isArray(users)) {
+      console.warn('[usersStore] users is not an array in getAdministrators:', users);
+      return [];
+    }
     return users.filter(user => user.role === 'administrador');
   },
 
   getAgencies: () => {
     const { users } = get();
+    if (!Array.isArray(users)) {
+      console.warn('[usersStore] users is not an array in getAgencies:', users);
+      return [];
+    }
     return users.filter(user => user.role === 'agencia');
   },
 
   getGuides: (type = null) => {
     const { users } = get();
+    if (!Array.isArray(users)) {
+      console.warn('[usersStore] users is not an array in getGuides:', users);
+      return [];
+    }
     const guides = users.filter(user => user.role === 'guia');
     if (type) {
       return guides.filter(guide => guide.guideType === type);
@@ -240,6 +270,10 @@ const useUsersStore = create((set, get) => ({
 
   getGuidesByType: () => {
     const { users } = get();
+    if (!Array.isArray(users)) {
+      console.warn('[usersStore] users is not an array in getGuidesByType:', users);
+      return { planta: [], freelance: [] };
+    }
     const guides = users.filter(user => user.role === 'guia');
     return {
       planta: guides.filter(guide => guide.guideType === 'planta'),
@@ -250,6 +284,19 @@ const useUsersStore = create((set, get) => ({
   // Estadísticas específicas por rol
   getRoleStatistics: () => {
     const { users } = get();
+
+    if (!Array.isArray(users)) {
+      console.warn('[usersStore] users is not an array in getRoleStatistics:', users);
+      return {
+        total: 0,
+        administradores: 0,
+        agencias: 0,
+        guias: 0,
+        guiasPlanta: 0,
+        guiasFreelance: 0
+      };
+    }
+
     const total = users.length;
     const administradores = users.filter(u => u.role === 'administrador').length;
     const agencias = users.filter(u => u.role === 'agencia').length;

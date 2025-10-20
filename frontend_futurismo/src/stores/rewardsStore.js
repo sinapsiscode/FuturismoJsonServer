@@ -4,6 +4,7 @@ import {
   REDEMPTION_STATUS,
   SERVICE_TYPE_POINTS
 } from '../constants/rewardsConstants';
+import { useAuthStore } from './authStore';
 
 const useRewardsStore = create((set, get) => ({
   // Estado
@@ -13,11 +14,21 @@ const useRewardsStore = create((set, get) => ({
   loading: false,
   error: null,
 
+  // Helper para obtener headers con token
+  getAuthHeaders: () => {
+    const token = useAuthStore.getState().token;
+    return {
+      'Content-Type': 'application/json',
+      ...(token && { 'Authorization': `Bearer ${token}` })
+    };
+  },
+
   // Acciones para premios
   fetchRewards: async () => {
     set({ loading: true, error: null });
     try {
-      const response = await fetch('/api/data/section/rewards_catalog');
+      const headers = get().getAuthHeaders();
+      const response = await fetch('/api/data/section/rewards_catalog', { headers });
       const result = await response.json();
 
       if (result.success) {
@@ -89,7 +100,8 @@ const useRewardsStore = create((set, get) => ({
   fetchAgencies: async () => {
     set({ loading: true, error: null });
     try {
-      const response = await fetch('/api/agencies');
+      const headers = get().getAuthHeaders();
+      const response = await fetch('/api/agencies', { headers });
       const result = await response.json();
 
       if (result.success) {

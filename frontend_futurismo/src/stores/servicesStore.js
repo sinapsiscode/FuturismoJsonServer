@@ -4,7 +4,7 @@ import { servicesService } from '../services/servicesService';
 
 const useServicesStore = create((set, get) => ({
   // Estado
-  services: [],
+  services: [], // Catálogo de servicios que ofrecemos
   activeServices: [],
   historicalServices: [],
   filters: {
@@ -18,7 +18,7 @@ const useServicesStore = create((set, get) => ({
   isLoading: false,
   error: null,
   selectedService: null,
-  mapView: true, // true = vista mapa, false = vista tarjetas
+  mapView: false,
 
   // Paginación
   pagination: {
@@ -31,7 +31,7 @@ const useServicesStore = create((set, get) => ({
   // Acciones
   loadServices: async (filters = {}) => {
     set({ isLoading: true, error: null });
-    
+
     try {
       const { filters: storeFilters, pagination } = get();
       const params = {
@@ -40,20 +40,30 @@ const useServicesStore = create((set, get) => ({
         page: pagination.page,
         pageSize: pagination.pageSize
       };
-      
+
+      // Cargar desde /api/services (catálogo)
       const result = await servicesService.getServices(params);
-      
+
       if (!result.success) {
         throw new Error(result.error || 'Error al cargar servicios');
       }
-      
-      const services = result.data;
-      // Como ahora son plantillas de servicios, no hay servicios activos/históricos
-      const active = services; // Todos los servicios están "activos" (disponibles)
-      const historical = []; // No hay histórico de plantillas
-      
-      set({ 
-        services, 
+
+      // Manejar respuesta paginada o array directo
+      let services = [];
+      if (Array.isArray(result.data)) {
+        services = result.data;
+      } else if (result.data && Array.isArray(result.data.items)) {
+        services = result.data.items;
+      } else if (result.data && typeof result.data === 'object') {
+        services = result.data.services || result.data.data || [];
+      }
+
+      // Todos los servicios del catálogo están "activos" (disponibles para vender)
+      const active = services.filter(s => s.status === 'active');
+      const historical = services.filter(s => s.status !== 'active');
+
+      set({
+        services,
         activeServices: active,
         historicalServices: historical,
         pagination: {
@@ -64,10 +74,10 @@ const useServicesStore = create((set, get) => ({
         },
         isLoading: false
       });
-      
+
       return result.data;
     } catch (error) {
-      set({ 
+      set({
         isLoading: false,
         error: error.message
       });

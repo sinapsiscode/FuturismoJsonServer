@@ -3,6 +3,44 @@ const express = require('express');
 module.exports = (router) => {
   const providersRouter = express.Router();
 
+  // Get all locations
+  providersRouter.get('/locations', (req, res) => {
+    try {
+      const db = router.db;
+      const locations = db.get('provider_locations').value() || [];
+
+      res.json({
+        success: true,
+        data: locations
+      });
+    } catch (error) {
+      console.error('Error fetching provider locations:', error);
+      res.status(500).json({
+        success: false,
+        error: 'Error al obtener ubicaciones de proveedores'
+      });
+    }
+  });
+
+  // Get all categories
+  providersRouter.get('/categories', (req, res) => {
+    try {
+      const db = router.db;
+      const categories = db.get('provider_categories').value() || [];
+
+      res.json({
+        success: true,
+        data: categories
+      });
+    } catch (error) {
+      console.error('Error fetching provider categories:', error);
+      res.status(500).json({
+        success: false,
+        error: 'Error al obtener categorías de proveedores'
+      });
+    }
+  });
+
   // Get all providers with filtering
   providersRouter.get('/', (req, res) => {
     try {
