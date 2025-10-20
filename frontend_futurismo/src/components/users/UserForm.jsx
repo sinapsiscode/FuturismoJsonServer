@@ -5,16 +5,14 @@ import * as yup from 'yup';
 import { CheckIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import { useUsersStore } from '../../stores/usersStore';
 import { useTranslation } from 'react-i18next';
-import { 
-  FORM_LIMITS, 
-  VALIDATION_PATTERNS, 
-  DEFAULT_PERMISSIONS,
+import {
+  FORM_LIMITS,
+  VALIDATION_PATTERNS,
   USER_STATUS,
   DEFAULT_PREFERENCES
 } from '../../constants/usersConstants';
 import UserFormTabs from './UserFormTabs';
 import UserBasicInfoForm from './UserBasicInfoForm';
-import UserPermissionsForm from './UserPermissionsForm';
 
 // Esquema de validación
 const createUserSchema = (t) => yup.object({
@@ -42,12 +40,6 @@ const createUserSchema = (t) => yup.object({
   role: yup
     .string()
     .required(t('users.form.errors.roleRequired')),
-  department: yup
-    .string()
-    .required(t('users.form.errors.departmentRequired')),
-  position: yup
-    .string()
-    .required(t('users.form.errors.positionRequired')),
   status: yup
     .string()
     .required(t('users.form.errors.statusRequired')),
@@ -72,14 +64,11 @@ const UserForm = ({ user = null, onSubmit, onCancel, isLoading = false }) => {
   const { t } = useTranslation();
   const {
     getRoles,
-    getPermissionsByModule,
     createUser,
     updateUser
   } = useUsersStore();
 
   const [roles, setRoles] = useState([]);
-  const [permissionsByModule, setPermissionsByModule] = useState({});
-  const [selectedPermissions, setSelectedPermissions] = useState([]);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [activeTab, setActiveTab] = useState('basic');
@@ -103,22 +92,16 @@ const UserForm = ({ user = null, onSubmit, onCancel, isLoading = false }) => {
       lastName: user?.lastName || '',
       phone: user?.phone || '',
       role: user?.role || '',
-      department: user?.department || '',
-      position: user?.position || '',
       status: user?.status || USER_STATUS.ACTIVE,
       avatar: user?.avatar || '',
       isEdit
     }
   });
 
-  const selectedRole = watch('role');
-
   useEffect(() => {
     const systemRoles = getRoles();
-    const permissions = getPermissionsByModule();
     console.log('Roles obtenidos:', systemRoles);
-    console.log('Permisos obtenidos:', permissions);
-    
+
     // Fallback si getRoles() no devuelve nada
     const finalRoles = systemRoles?.length ? systemRoles : [
       { id: 'admin', name: 'Administrador', description: 'Acceso total al sistema' },
@@ -126,43 +109,15 @@ const UserForm = ({ user = null, onSubmit, onCancel, isLoading = false }) => {
       { id: 'guide-planta', name: 'Guía Planta', description: 'Guía empleado fijo de la empresa' },
       { id: 'guide-freelance', name: 'Guía Freelance', description: 'Guía independiente por servicios' }
     ];
-    
+
     setRoles(finalRoles);
-    setPermissionsByModule(permissions);
-    
-    if (user?.permissions) {
-      setSelectedPermissions(user.permissions);
-    }
   }, []);
-
-  // Auto-asignar permisos según el rol seleccionado
-  useEffect(() => {
-    if (selectedRole && !isEdit) {
-      const rolePermissions = getRoleDefaultPermissions(selectedRole);
-      setSelectedPermissions(rolePermissions);
-    }
-  }, [selectedRole, isEdit]);
-
-  const getRoleDefaultPermissions = (roleId) => {
-    return DEFAULT_PERMISSIONS[roleId] || [];
-  };
-
-  const handlePermissionChange = (permissionId, checked) => {
-    if (checked) {
-      setSelectedPermissions(prev => [...prev, permissionId]);
-    } else {
-      setSelectedPermissions(prev => prev.filter(id => id !== permissionId));
-    }
-  };
 
   const handleFormSubmit = async (data) => {
     const userData = {
       ...data,
-      permissions: selectedPermissions,
       preferences: user?.preferences || DEFAULT_PREFERENCES
     };
-
-    // La validación ya está hecha por yup
 
     try {
       if (isEdit) {
@@ -170,7 +125,7 @@ const UserForm = ({ user = null, onSubmit, onCancel, isLoading = false }) => {
       } else {
         createUser(userData);
       }
-      
+
       if (onSubmit) {
         onSubmit(userData);
       }
@@ -215,15 +170,6 @@ const UserForm = ({ user = null, onSubmit, onCancel, isLoading = false }) => {
             setShowPassword={setShowPassword}
             showConfirmPassword={showConfirmPassword}
             setShowConfirmPassword={setShowConfirmPassword}
-          />
-        )}
-
-        {/* Permissions */}
-        {activeTab === 'permissions' && (
-          <UserPermissionsForm
-            permissionsByModule={permissionsByModule}
-            selectedPermissions={selectedPermissions}
-            handlePermissionChange={handlePermissionChange}
           />
         )}
 

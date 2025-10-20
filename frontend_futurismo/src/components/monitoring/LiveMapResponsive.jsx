@@ -14,13 +14,8 @@ const LiveMapResponsive = ({ filters, onServiceSelect }) => {
 
   // Calcular altura dinámica según viewport
   const getMapHeight = () => {
-    if (viewport.isMobile) {
-      return 'calc(100vh - 10rem)';
-    } else if (viewport.isTablet) {
-      return 'calc(70vh - 4rem)';
-    } else {
-      return 'calc(100vh - 14rem)';
-    }
+    // El contenedor padre ya tiene altura, así que usamos 100%
+    return '100%';
   };
 
   // Cargar Leaflet desde CDN
@@ -31,16 +26,35 @@ const LiveMapResponsive = ({ filters, onServiceSelect }) => {
       return;
     }
 
+    let cssLoaded = false;
+    let jsLoaded = false;
+
+    const tryInitialize = () => {
+      if (cssLoaded && jsLoaded && window.L) {
+        console.log('✅ Leaflet CSS y JS cargados, inicializando mapa...');
+        initializeMap();
+      }
+    };
+
     // Cargar CSS
     const link = document.createElement('link');
     link.rel = 'stylesheet';
     link.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';
+    link.onload = () => {
+      console.log('✅ Leaflet CSS cargado');
+      cssLoaded = true;
+      tryInitialize();
+    };
+    link.onerror = () => {
+      console.error('❌ Error al cargar Leaflet CSS');
+    };
     document.head.appendChild(link);
 
     // Cargar JS
     const script = document.createElement('script');
     script.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
     script.onload = () => {
+      console.log('✅ Leaflet JS cargado');
       // Fix para iconos por defecto
       delete window.L.Icon.Default.prototype._getIconUrl;
       window.L.Icon.Default.mergeOptions({
@@ -48,8 +62,12 @@ const LiveMapResponsive = ({ filters, onServiceSelect }) => {
         iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
         shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
       });
-      
-      initializeMap();
+
+      jsLoaded = true;
+      tryInitialize();
+    };
+    script.onerror = () => {
+      console.error('❌ Error al cargar Leaflet JS');
     };
     document.head.appendChild(script);
 
@@ -87,6 +105,21 @@ const LiveMapResponsive = ({ filters, onServiceSelect }) => {
 
     leafletMapRef.current = map;
 
+    // IMPORTANTE: Forzar redimensionamiento después de inicializar
+    // Esto asegura que Leaflet calcule correctamente el tamaño del contenedor
+    setTimeout(() => {
+      if (map) {
+        map.invalidateSize();
+      }
+    }, 100);
+
+    // Segundo invalidate para asegurar que se ajuste completamente
+    setTimeout(() => {
+      if (map) {
+        map.invalidateSize({ animate: false });
+      }
+    }, 300);
+
     // Cargar servicios activos si es necesario
     if (activeServices.length === 0) {
       loadActiveServices();
@@ -108,6 +141,23 @@ const LiveMapResponsive = ({ filters, onServiceSelect }) => {
       });
     }, 350);
   }, [sidebarOpen, viewport]);
+
+  // Observador de redimensionamiento del contenedor
+  useEffect(() => {
+    if (!mapRef.current || !leafletMapRef.current) return;
+
+    const resizeObserver = new ResizeObserver(() => {
+      if (leafletMapRef.current) {
+        leafletMapRef.current.invalidateSize();
+      }
+    });
+
+    resizeObserver.observe(mapRef.current);
+
+    return () => {
+      resizeObserver.disconnect();
+    };
+  }, [leafletMapRef.current]);
 
   // Actualizar marcadores
   useEffect(() => {
@@ -239,9 +289,9 @@ const LiveMapResponsive = ({ filters, onServiceSelect }) => {
   };
 
   return (
-    <div className="relative w-full" style={{ height: getMapHeight() }}>
-      <div className="relative bg-gray-100 rounded-lg overflow-hidden shadow-inner h-full">
-        <div ref={mapRef} className="w-full h-full" style={{ position: 'relative', zIndex: 1 }} />
+    <div className="relative w-full h-full" style={{ minHeight: '500px' }}>
+      <div className="relative bg-gray-100 rounded-xl overflow-hidden shadow-lg border border-gray-200 h-full">
+        <div ref={mapRef} className="w-full h-full" style={{ minHeight: '500px' }} />
         
         {/* Controles personalizados para móvil */}
         <div className="absolute top-4 right-4 z-[10] flex flex-col gap-2">

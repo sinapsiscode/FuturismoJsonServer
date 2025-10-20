@@ -48,12 +48,12 @@ module.exports = (router) => {
 
       res.json({
         success: true,
-        data: users,
-        pagination: {
+        data: {
+          users: users,
           page: parseInt(page),
-          limit: parseInt(limit),
+          pageSize: parseInt(limit),
           total: totalUsers,
-          pages: Math.ceil(totalUsers / parseInt(limit))
+          totalPages: Math.ceil(totalUsers / parseInt(limit))
         }
       });
     } catch (error) {

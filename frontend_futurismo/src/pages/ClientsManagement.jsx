@@ -126,7 +126,7 @@ const ClientsManagement = () => {
   // Manejar envío del formulario
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     if (!validateForm()) return;
 
     try {
@@ -137,7 +137,10 @@ const ClientsManagement = () => {
         await createClient(formData);
         toast.success(CLIENT_MESSAGES.CREATE_SUCCESS);
       }
-      
+
+      // Recargar los datos después de guardar
+      await loadClients();
+
       setShowForm(false);
       resetForm();
     } catch (error) {
@@ -286,19 +289,19 @@ const ClientsManagement = () => {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Gestión de Agencias</h1>
-          <p className="text-gray-600">Administra agencias y empresas</p>
+          <h1 className="text-xl sm:text-2xl font-bold text-gray-900">Gestión de Agencias</h1>
+          <p className="text-sm sm:text-base text-gray-600">Administra agencias y empresas</p>
         </div>
         <button
           onClick={() => {
             resetForm();
             setShowForm(true);
           }}
-          className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center space-x-2"
+          className="w-full sm:w-auto px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center space-x-2"
         >
           <PlusIcon className="h-5 w-5" />
           <span>Nueva Agencia</span>
@@ -306,7 +309,7 @@ const ClientsManagement = () => {
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
         <div className="bg-white p-6 rounded-lg shadow-sm border">
           <div className="flex items-center">
             <UserGroupIcon className="h-8 w-8 text-blue-600" />
@@ -340,14 +343,14 @@ const ClientsManagement = () => {
       </div>
 
       {/* Filters */}
-      <div className="bg-white rounded-lg shadow-sm border p-6">
-        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
-          <div className="flex items-center space-x-4">
-            <FunnelIcon className="h-5 w-5 text-gray-400" />
+      <div className="bg-white rounded-lg shadow-sm border p-4 sm:p-6">
+        <div className="flex flex-col gap-4">
+          <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
+            <FunnelIcon className="h-5 w-5 text-gray-400 hidden sm:block" />
             <select
               value={filters.type}
               onChange={(e) => setFilters({ type: e.target.value })}
-              className="border border-gray-300 rounded-lg px-3 py-2"
+              className="w-full sm:w-auto border border-gray-300 rounded-lg px-3 py-2 text-sm"
             >
               <option value="">Todos los tipos</option>
               {Object.entries(CLIENT_TYPE_LABELS).map(([value, label]) => (
@@ -358,7 +361,7 @@ const ClientsManagement = () => {
             <select
               value={filters.status}
               onChange={(e) => setFilters({ status: e.target.value })}
-              className="border border-gray-300 rounded-lg px-3 py-2"
+              className="w-full sm:w-auto border border-gray-300 rounded-lg px-3 py-2 text-sm"
             >
               <option value="">Todos los estados</option>
               {Object.entries(CLIENT_STATUS_LABELS).map(([value, label]) => (
@@ -368,7 +371,7 @@ const ClientsManagement = () => {
 
             <button
               onClick={clearFilters}
-              className="text-sm text-gray-500 hover:text-gray-700"
+              className="text-sm text-gray-500 hover:text-gray-700 text-center sm:text-left"
             >
               Limpiar filtros
             </button>
@@ -381,7 +384,7 @@ const ClientsManagement = () => {
               placeholder="Buscar por nombre, RUC o email..."
               value={filters.search}
               onChange={(e) => setFilters({ search: e.target.value })}
-              className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent w-80"
+              className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
             />
           </div>
         </div>
@@ -545,22 +548,22 @@ const ClientsManagement = () => {
       {/* Form Modal */}
       {showForm && (
         <div className="modal-overlay">
-          <div className="modal-content p-6 max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
-            <h3 className="text-lg font-semibold text-gray-900 mb-6">
+          <div className="modal-content p-4 sm:p-6 max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+            <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-4 sm:mb-6">
               {editingClient ? 'Editar Agencia' : 'Nueva Agencia'}
             </h3>
 
-            <form onSubmit={handleSubmit} className="space-y-6">
+            <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
               {/* Tipo de cliente */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Tipo de Agencia
                 </label>
-                <div className="grid grid-cols-3 gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-3">
                   {Object.entries(CLIENT_TYPE_LABELS).map(([value, label]) => (
                     <label
                       key={value}
-                      className={`p-3 border rounded-lg cursor-pointer text-center transition-colors ${
+                      className={`p-2.5 sm:p-3 border rounded-lg cursor-pointer text-center transition-colors ${
                         formData.type === value
                           ? 'border-blue-600 bg-blue-50 text-blue-600'
                           : 'border-gray-300 hover:border-gray-400'
@@ -580,7 +583,7 @@ const ClientsManagement = () => {
               </div>
 
               {/* Datos básicos */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
                     Nombre / Razón Social *
@@ -598,15 +601,15 @@ const ClientsManagement = () => {
                   )}
                 </div>
 
-                <div>
+                <div className="md:col-span-2">
                   <label className="block text-sm font-medium text-gray-700 mb-1">
                     Tipo y Número de Documento *
                   </label>
-                  <div className="flex space-x-2">
+                  <div className="grid grid-cols-1 sm:grid-cols-[120px_1fr] gap-2">
                     <select
                       value={formData.documentType}
                       onChange={(e) => setFormData({ ...formData, documentType: e.target.value })}
-                      className="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     >
                       {Object.entries(DOCUMENT_TYPE_LABELS).map(([value, label]) => (
                         <option key={value} value={value}>{label}</option>
@@ -616,7 +619,7 @@ const ClientsManagement = () => {
                       type="text"
                       value={formData.documentNumber}
                       onChange={(e) => handleDocumentChange(e.target.value)}
-                      className={`flex-1 px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
+                      className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
                         errors.documentNumber ? 'border-red-500' : 'border-gray-300'
                       }`}
                     />
@@ -720,21 +723,21 @@ const ClientsManagement = () => {
               </div>
 
               {/* Actions */}
-              <div className="flex justify-end space-x-3 pt-4 border-t">
+              <div className="flex flex-col sm:flex-row justify-end space-y-2 sm:space-y-0 sm:space-x-3 pt-4 border-t">
                 <button
                   type="button"
                   onClick={() => {
                     setShowForm(false);
                     resetForm();
                   }}
-                  className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
+                  className="w-full sm:w-auto px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
                 >
                   Cancelar
                 </button>
                 <button
                   type="submit"
                   disabled={isLoading}
-                  className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed"
+                  className="w-full sm:w-auto px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed"
                 >
                   {isLoading ? 'Guardando...' : (editingClient ? 'Actualizar' : 'Crear')}
                 </button>
@@ -747,9 +750,9 @@ const ClientsManagement = () => {
       {/* Details Modal */}
       {showDetails && selectedClient && (
         <div className="modal-overlay">
-          <div className="modal-content p-6 max-w-3xl w-full mx-4 max-h-[90vh] overflow-y-auto">
-            <div className="flex items-center justify-between mb-6">
-              <h3 className="text-lg font-semibold text-gray-900">
+          <div className="modal-content p-4 sm:p-6 max-w-3xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between mb-4 sm:mb-6">
+              <h3 className="text-base sm:text-lg font-semibold text-gray-900">
                 Detalles de la Agencia
               </h3>
               <button
@@ -763,9 +766,9 @@ const ClientsManagement = () => {
               </button>
             </div>
 
-            <div className="space-y-6">
+            <div className="space-y-4 sm:space-y-6">
               {/* Info básica */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
                 <div>
                   <h4 className="text-sm font-medium text-gray-500 mb-2">Información General</h4>
                   <div className="space-y-2">
@@ -825,14 +828,14 @@ const ClientsManagement = () => {
 
               {/* Estadísticas */}
               <div>
-                <h4 className="text-sm font-medium text-gray-500 mb-2">{t('common.statistics')}</h4>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <h4 className="text-sm font-medium text-gray-500 mb-2">Estadísticas</h4>
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
                   <div className="bg-gray-50 p-3 rounded-lg">
-                    <p className="text-sm text-gray-600">{t('dashboard.totalReservations')}</p>
+                    <p className="text-sm text-gray-600">Total Reservas</p>
                     <p className="text-lg font-semibold">{selectedClient.totalBookings || 0}</p>
                   </div>
                   <div className="bg-gray-50 p-3 rounded-lg">
-                    <p className="text-sm text-gray-600">{t('dashboard.totalIncome')}</p>
+                    <p className="text-sm text-gray-600">Ingresos Totales</p>
                     <p className="text-lg font-semibold">
                       S/ {(selectedClient.totalRevenue || 0).toLocaleString()}
                     </p>
@@ -880,7 +883,7 @@ const ClientsManagement = () => {
               )}
 
               {/* Fechas */}
-              <div className="flex items-center justify-between text-sm text-gray-500 pt-4 border-t">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 text-xs sm:text-sm text-gray-500 pt-4 border-t">
                 <span>Agencia desde: {new Date(selectedClient.since || selectedClient.createdAt).toLocaleDateString()}</span>
                 <span>Última actualización: {new Date(selectedClient.updatedAt).toLocaleDateString()}</span>
               </div>
@@ -892,11 +895,11 @@ const ClientsManagement = () => {
       {/* Warning Modal */}
       {warningModal.show && (
         <div className="modal-overlay">
-          <div className="modal-content p-6 max-w-md w-full mx-4">
+          <div className="modal-content p-4 sm:p-6 max-w-md w-full mx-4">
             <div className="flex items-center justify-between mb-4">
-              <div className="flex items-center gap-3">
-                <ExclamationTriangleIcon className="h-6 w-6 text-yellow-500" />
-                <h3 className="text-lg font-semibold text-gray-900">Advertencia</h3>
+              <div className="flex items-center gap-2 sm:gap-3">
+                <ExclamationTriangleIcon className="h-5 w-5 sm:h-6 sm:w-6 text-yellow-500" />
+                <h3 className="text-base sm:text-lg font-semibold text-gray-900">Advertencia</h3>
               </div>
               <button
                 onClick={() => setWarningModal({ show: false, message: '' })}
@@ -923,11 +926,11 @@ const ClientsManagement = () => {
       {/* Delete Confirmation Modal */}
       {deleteModal.show && deleteModal.client && (
         <div className="modal-overlay">
-          <div className="modal-content p-6 max-w-md w-full mx-4">
+          <div className="modal-content p-4 sm:p-6 max-w-md w-full mx-4">
             <div className="flex items-center justify-between mb-4">
-              <div className="flex items-center gap-3">
-                <ExclamationTriangleIcon className="h-6 w-6 text-red-500" />
-                <h3 className="text-lg font-semibold text-gray-900">Confirmar Eliminación</h3>
+              <div className="flex items-center gap-2 sm:gap-3">
+                <ExclamationTriangleIcon className="h-5 w-5 sm:h-6 sm:w-6 text-red-500" />
+                <h3 className="text-base sm:text-lg font-semibold text-gray-900">Confirmar Eliminación</h3>
               </div>
               <button
                 onClick={() => setDeleteModal({ show: false, client: null })}
@@ -937,21 +940,21 @@ const ClientsManagement = () => {
               </button>
             </div>
             
-            <p className="text-gray-600 mb-6">
-              ¿Está seguro de que desea eliminar a <span className="font-semibold">{deleteModal.client.name}</span>? 
+            <p className="text-sm sm:text-base text-gray-600 mb-6">
+              ¿Está seguro de que desea eliminar a <span className="font-semibold">{deleteModal.client.name}</span>?
               Esta acción no se puede deshacer.
             </p>
-            
-            <div className="flex justify-end gap-3">
+
+            <div className="flex flex-col sm:flex-row justify-end gap-2 sm:gap-3">
               <button
                 onClick={() => setDeleteModal({ show: false, client: null })}
-                className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
+                className="w-full sm:w-auto px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
               >
                 Cancelar
               </button>
               <button
                 onClick={confirmDelete}
-                className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+                className="w-full sm:w-auto px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
               >
                 Eliminar
               </button>
@@ -963,11 +966,11 @@ const ClientsManagement = () => {
       {/* Points Modal */}
       {pointsModal.show && pointsModal.client && (
         <div className="modal-overlay">
-          <div className="modal-content p-6 max-w-md w-full mx-4">
-            <div className="flex items-center justify-between mb-6">
-              <div className="flex items-center gap-3">
-                <GiftIcon className="h-6 w-6 text-purple-500" />
-                <h3 className="text-lg font-semibold text-gray-900">Agregar Puntos</h3>
+          <div className="modal-content p-4 sm:p-6 max-w-md w-full mx-4">
+            <div className="flex items-center justify-between mb-4 sm:mb-6">
+              <div className="flex items-center gap-2 sm:gap-3">
+                <GiftIcon className="h-5 w-5 sm:h-6 sm:w-6 text-purple-500" />
+                <h3 className="text-base sm:text-lg font-semibold text-gray-900">Agregar Puntos</h3>
               </div>
               <button
                 onClick={() => {
@@ -1035,20 +1038,20 @@ const ClientsManagement = () => {
                 </div>
               </div>
 
-              <div className="flex justify-end gap-3 pt-4">
+              <div className="flex flex-col sm:flex-row justify-end gap-2 sm:gap-3 pt-4">
                 <button
                   type="button"
                   onClick={() => {
                     setPointsModal({ show: false, client: null });
                     setPointsData({ amount: '', reason: '' });
                   }}
-                  className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
+                  className="w-full sm:w-auto px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
                 >
                   Cancelar
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
+                  className="w-full sm:w-auto px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
                 >
                   Agregar Puntos
                 </button>

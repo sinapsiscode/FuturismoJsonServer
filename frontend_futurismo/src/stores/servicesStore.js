@@ -102,23 +102,29 @@ const useServicesStore = create((set, get) => ({
 
   createService: async (serviceData) => {
     set({ isLoading: true, error: null });
-    
+
     try {
       const result = await servicesService.createService(serviceData);
-      
+
       if (!result.success) {
         throw new Error(result.error || 'Error al crear servicio');
       }
-      
-      set((state) => ({
-        services: [...state.services, result.data],
-        activeServices: [...state.activeServices, result.data], // Todos los servicios son activos
-        isLoading: false
-      }));
-      
+
+      set((state) => {
+        // Validación defensiva: asegurar que services y activeServices son arrays
+        const currentServices = Array.isArray(state.services) ? state.services : [];
+        const currentActiveServices = Array.isArray(state.activeServices) ? state.activeServices : [];
+
+        return {
+          services: [...currentServices, result.data],
+          activeServices: [...currentActiveServices, result.data],
+          isLoading: false
+        };
+      });
+
       return result.data;
     } catch (error) {
-      set({ 
+      set({
         isLoading: false,
         error: error.message
       });

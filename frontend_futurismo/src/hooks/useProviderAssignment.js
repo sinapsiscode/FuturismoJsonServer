@@ -3,13 +3,22 @@ import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import toast from 'react-hot-toast';
 import useProvidersStore from '../stores/providersStore';
-import { getMockTours, getEmptyAssignment } from '../data/mockProvidersData';
 import { TIME_SLOTS } from '../constants/providersConstants';
+
+// Helper para crear assignment vacío
+const getEmptyAssignment = () => ({
+  tourId: '',
+  tourName: '',
+  date: '',
+  notes: '',
+  providers: [],
+  status: 'draft'
+});
 
 const useProviderAssignment = (existingAssignment, onClose) => {
   const { t } = useTranslation();
   const { locations, categories, actions } = useProvidersStore();
-  
+
   const [selectedTour, setSelectedTour] = useState(existingAssignment?.tourId || '');
   const [selectedDate, setSelectedDate] = useState(existingAssignment?.date || '');
   const [selectedLocation, setSelectedLocation] = useState('');
@@ -17,6 +26,8 @@ const useProviderAssignment = (existingAssignment, onClose) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [assignedProviders, setAssignedProviders] = useState(existingAssignment?.providers || []);
   const [availableProviders, setAvailableProviders] = useState([]);
+  const [availableTours, setAvailableTours] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   const defaultValues = existingAssignment || getEmptyAssignment();
 
@@ -28,23 +39,44 @@ const useProviderAssignment = (existingAssignment, onClose) => {
     watch
   } = useForm({ defaultValues });
 
-  // Get translated tours
-  const availableTours = getMockTours().map(tour => ({
-    ...tour,
-    name: t(tour.name)
-  }));
+  // Cargar tours desde la API
+  useEffect(() => {
+    const fetchTours = async () => {
+      try {
+        setLoading(true);
+        const response = await fetch('/api/tours');
+        const result = await response.json();
+
+        if (result.success) {
+          // Mapear tours con traducción
+          const tours = result.data.map(tour => ({
+            ...tour,
+            name: t(tour.name) || tour.name
+          }));
+          setAvailableTours(tours);
+        }
+
+        setLoading(false);
+      } catch (error) {
+        console.error('Error loading tours:', error);
+        setLoading(false);
+      }
+    };
+
+    fetchTours();
+  }, [t]);
 
   useEffect(() => {
     const loadProviders = async () => {
       try {
         // Get providers from store (use stored providers directly for filtering)
         const storeProviders = actions.getProvidersByLocationAndCategory(selectedLocation, selectedCategory);
-        
+
         let providers = storeProviders;
 
         // Apply search filter if there's a search query
         if (searchQuery && searchQuery.trim()) {
-          providers = providers.filter(p => 
+          providers = providers.filter(p =>
             p.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
             p.description?.toLowerCase().includes(searchQuery.toLowerCase())
           );
@@ -177,7 +209,8 @@ const useProviderAssignment = (existingAssignment, onClose) => {
     handleProviderTimeChange,
     handleSaveAssignment,
     handleFinalizeAssignment,
-    handleExportPDF
+    handleExportPDF,
+    loading
   };
 };
 

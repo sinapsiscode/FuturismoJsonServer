@@ -12,7 +12,9 @@ export const useUserList = () => {
     resetUserPassword,
     filters,
     setFilters,
-    clearFilters
+    clearFilters,
+    initialize,
+    hasInitialized
   } = useUsersStore();
 
   const [users, setUsers] = useState([]);
@@ -21,16 +23,23 @@ export const useUserList = () => {
   const [roles, setRoles] = useState([]);
   const [showFilters, setShowFilters] = useState(false);
 
+  // Inicializar el store al montar el componente
+  useEffect(() => {
+    if (!hasInitialized) {
+      initialize().catch(err => console.error('Error initializing users:', err));
+    }
+  }, []);
+
   useEffect(() => {
     loadData();
-  }, [filters]);
+  }, [filters, hasInitialized]);
 
   const loadData = () => {
     const filteredUsers = getFilteredUsers();
     const userStats = getUsersStatistics();
     const roleStatistics = getRoleStatistics();
     const systemRoles = getRoles();
-    
+
     setUsers(filteredUsers);
     setStats(userStats);
     setRoleStats(roleStatistics);

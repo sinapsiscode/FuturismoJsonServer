@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { UserGroupIcon, PlusIcon, MagnifyingGlassIcon, FunnelIcon, PencilIcon, EyeIcon, TrashIcon, GlobeAltIcon, AcademicCapIcon, TrophyIcon, PhoneIcon, EnvelopeIcon, MapPinIcon } from '@heroicons/react/24/outline';
+import { UserGroupIcon, MagnifyingGlassIcon, FunnelIcon, PencilIcon, EyeIcon, TrashIcon, GlobeAltIcon, TrophyIcon, PhoneIcon, EnvelopeIcon, MapPinIcon, InformationCircleIcon } from '@heroicons/react/24/outline';
 import useGuidesStore from '../stores/guidesStore';
 import GuideForm from '../components/guides/GuideForm';
 import GuideProfile from '../components/guides/GuideProfile';
@@ -17,28 +17,23 @@ const GuidesManagement = () => {
 
   // Filtrar guías
   const filteredGuides = guides.filter(guide => {
-    const matchesSearch = !searchQuery || 
+    const matchesSearch = !searchQuery ||
       guide?.fullName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
       guide?.email?.toLowerCase().includes(searchQuery.toLowerCase()) ||
       guide?.dni?.includes(searchQuery);
-    
+
     const matchesType = !filterType || guide?.guideType === filterType;
-    
-    const matchesLanguage = !filterLanguage || 
+
+    const matchesLanguage = !filterLanguage ||
       guide?.specializations?.languages?.some(lang => lang.code === filterLanguage);
-    
+
     const matchesMuseum = !filterMuseum ||
-      guide?.specializations?.museums?.some(museum => 
+      guide?.specializations?.museums?.some(museum =>
         museum.name?.toLowerCase().includes(filterMuseum.toLowerCase())
       );
-    
+
     return matchesSearch && matchesType && matchesLanguage && matchesMuseum;
   });
-
-  const handleAddGuide = () => {
-    setEditingGuide(null);
-    setIsEditing(true);
-  };
 
   const handleEditGuide = (guide) => {
     setEditingGuide(guide);
@@ -57,13 +52,12 @@ const GuidesManagement = () => {
   };
 
   const handleSaveGuide = (guideData) => {
+    // Solo permite edición, no creación
     if (editingGuide) {
       actions.updateGuide(editingGuide.id, guideData);
-    } else {
-      actions.addGuide(guideData);
+      setIsEditing(false);
+      setEditingGuide(null);
     }
-    setIsEditing(false);
-    setEditingGuide(null);
   };
 
   const getLanguageLabel = (langCode) => {
@@ -82,7 +76,7 @@ const GuidesManagement = () => {
       'experto': { color: 'bg-purple-100 text-purple-800', text: 'Experto' },
       'nativo': { color: 'bg-indigo-100 text-indigo-800', text: 'Nativo' }
     };
-    
+
     const levelInfo = levels[level] || { color: 'bg-gray-100 text-gray-800', text: level };
     return (
       <span className={`px-2 py-1 text-xs font-medium rounded-full ${levelInfo.color}`}>
@@ -113,8 +107,8 @@ const GuidesManagement = () => {
                   </button>
                 </div>
                 <div className="modal-body">
-                  <GuideProfile 
-                    guide={selectedGuide} 
+                  <GuideProfile
+                    guide={selectedGuide}
                     onClose={() => {
                       setViewMode('grid');
                       setSelectedGuide(null);
@@ -127,8 +121,8 @@ const GuidesManagement = () => {
           </div>
         )}
 
-        {/* Modal de formulario de guía */}
-        {isEditing && (
+        {/* Modal de formulario de guía - SOLO para edición */}
+        {isEditing && editingGuide && (
           <GuideForm
             guide={editingGuide}
             onSave={handleSaveGuide}
@@ -145,32 +139,39 @@ const GuidesManagement = () => {
   return (
     <div className="p-6">
       {/* Header */}
-      <div className="flex items-center justify-between mb-6">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900 flex items-center">
-            <UserGroupIcon className="w-8 h-8 mr-3 text-blue-500" />
-            Gestión de Guías
-          </h1>
-          <p className="text-gray-600 mt-1">
-            Administra la información de guías, idiomas y conocimientos de museos
-          </p>
+      <div className="mb-6">
+        <div className="flex items-center justify-between mb-4">
+          <div>
+            <h1 className="text-2xl font-bold text-gray-900 flex items-center">
+              <UserGroupIcon className="w-8 h-8 mr-3 text-blue-500" />
+              Gestión de Guías
+            </h1>
+            <p className="text-gray-600 mt-1">
+              Visualiza y administra la información de guías registrados
+            </p>
+          </div>
         </div>
 
-        <div className="flex items-center space-x-3">
-          <button
-            onClick={handleAddGuide}
-            className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors flex items-center space-x-2"
-          >
-            <PlusIcon className="w-4 h-4" />
-            <span>Nuevo Guía</span>
-          </button>
+        {/* Mensaje informativo */}
+        <div className="bg-blue-50 border-l-4 border-blue-400 p-4 rounded">
+          <div className="flex items-start">
+            <InformationCircleIcon className="w-5 h-5 text-blue-600 mr-3 mt-0.5 flex-shrink-0" />
+            <div>
+              <p className="text-sm text-blue-800 font-medium">
+                Para crear nuevos guías, dirígete a la sección de <strong>Usuarios</strong>
+              </p>
+              <p className="text-xs text-blue-700 mt-1">
+                Los guías necesitan credenciales de acceso al sistema, por lo que deben ser creados desde el módulo de Usuarios con el rol de "Guía".
+              </p>
+            </div>
+          </div>
         </div>
       </div>
 
       {/* Estadísticas rápidas */}
       <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 mb-6">
         <h3 className="text-lg font-medium text-gray-900 mb-4">Resumen de Guías</h3>
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="bg-blue-50 p-4 rounded-lg">
             <div className="flex items-center space-x-3">
               <UserGroupIcon className="w-8 h-8 text-blue-600" />
@@ -180,7 +181,7 @@ const GuidesManagement = () => {
               </div>
             </div>
           </div>
-          
+
           <div className="bg-green-50 p-4 rounded-lg">
             <div className="flex items-center space-x-3">
               <TrophyIcon className="w-8 h-8 text-green-600" />
@@ -190,23 +191,13 @@ const GuidesManagement = () => {
               </div>
             </div>
           </div>
-          
+
           <div className="bg-yellow-50 p-4 rounded-lg">
             <div className="flex items-center space-x-3">
               <GlobeAltIcon className="w-8 h-8 text-yellow-600" />
               <div>
                 <p className="text-2xl font-bold text-yellow-600">{guides.filter(g => g.guideType === 'freelance').length}</p>
                 <p className="text-sm text-yellow-700">Freelance</p>
-              </div>
-            </div>
-          </div>
-          
-          <div className="bg-purple-50 p-4 rounded-lg">
-            <div className="flex items-center space-x-3">
-              <AcademicCapIcon className="w-8 h-8 text-purple-600" />
-              <div>
-                <p className="text-2xl font-bold text-purple-600">{languages.length}</p>
-                <p className="text-sm text-purple-700">Idiomas</p>
               </div>
             </div>
           </div>
@@ -275,7 +266,7 @@ const GuidesManagement = () => {
             No se encontraron guías
           </h3>
           <p className="mt-1 text-sm text-gray-500">
-            Ajusta los filtros de búsqueda o crea un nuevo guía.
+            Ajusta los filtros de búsqueda o crea guías desde la sección de Usuarios.
           </p>
         </div>
       ) : (
@@ -289,7 +280,7 @@ const GuidesManagement = () => {
                 {/* Header del guía */}
                 <div className="flex items-start justify-between mb-4">
                   <div className="flex items-center space-x-3">
-                    <div 
+                    <div
                       className="w-12 h-12 rounded-full bg-blue-500 flex items-center justify-center text-white font-semibold text-lg"
                     >
                       {(guide?.fullName || 'G').split(' ').map(name => name[0]).join('').substring(0, 2)}
@@ -300,8 +291,8 @@ const GuidesManagement = () => {
                       </h3>
                       <div className="flex items-center space-x-2 mt-1">
                         <span className={`px-2 py-1 text-xs font-medium rounded-full ${
-                          guide?.guideType === 'planta' 
-                            ? 'bg-green-100 text-green-800' 
+                          guide?.guideType === 'planta'
+                            ? 'bg-green-100 text-green-800'
                             : 'bg-yellow-100 text-yellow-800'
                         }`}>
                           {guide?.guideType === 'planta' ? 'Planta' : 'Freelance'}
@@ -396,7 +387,7 @@ const GuidesManagement = () => {
                     <EyeIcon className="w-4 h-4" />
                     <span>Ver Perfil</span>
                   </button>
-                  
+
                   <button
                     onClick={() => handleEditGuide(guide)}
                     className="px-3 py-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 transition-colors"
@@ -404,7 +395,7 @@ const GuidesManagement = () => {
                   >
                     <PencilIcon className="w-4 h-4" />
                   </button>
-                  
+
                   <button
                     onClick={() => handleDeleteGuide(guide.id)}
                     className="px-3 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors"

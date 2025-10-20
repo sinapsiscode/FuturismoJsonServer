@@ -127,7 +127,10 @@ const ServicesList = ({
   };
 
   const formatDate = (dateString) => {
-    return new Date(dateString).toLocaleDateString('es-ES', {
+    if (!dateString) return 'Sin fecha';
+    const date = new Date(dateString);
+    if (isNaN(date.getTime())) return 'Fecha inválida';
+    return date.toLocaleDateString('es-ES', {
       day: '2-digit',
       month: '2-digit',
       year: 'numeric'
@@ -136,6 +139,11 @@ const ServicesList = ({
 
   const formatTime = (timeString) => {
     return timeString?.slice(0, 5) || '--:--';
+  };
+
+  const formatDuration = (hours) => {
+    if (!hours) return '--';
+    return `${hours}h`;
   };
 
   if (error) {
@@ -272,48 +280,39 @@ const ServicesList = ({
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-gray-50">
               <tr>
-                <th 
+                <th
                   className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
-                  onClick={() => handleSort('code')}
+                  onClick={() => handleSort('id')}
                 >
                   <div className="flex items-center">
                     Código
                     <ChevronUpDownIcon className="ml-1 h-4 w-4" />
                   </div>
                 </th>
-                <th 
+                <th
                   className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
-                  onClick={() => handleSort('date')}
+                  onClick={() => handleSort('name')}
                 >
                   <div className="flex items-center">
-                    Fecha/Hora
+                    Título del Servicio
                     <ChevronUpDownIcon className="ml-1 h-4 w-4" />
                   </div>
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Cliente
+                  Destino
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Servicio
+                  Duración
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Guía
+                  Capacidad
                 </th>
-                <th 
-                  className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
-                  onClick={() => handleSort('status')}
-                >
-                  <div className="flex items-center">
-                    Estado
-                    <ChevronUpDownIcon className="ml-1 h-4 w-4" />
-                  </div>
-                </th>
-                <th 
+                <th
                   className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
                   onClick={() => handleSort('price')}
                 >
                   <div className="flex items-center">
-                    Precio
+                    Precio Base
                     <ChevronUpDownIcon className="ml-1 h-4 w-4" />
                   </div>
                 </th>
@@ -325,7 +324,7 @@ const ServicesList = ({
             <tbody className="bg-white divide-y divide-gray-200">
               {isLoading ? (
                 <tr>
-                  <td colSpan="8" className="px-6 py-12 text-center">
+                  <td colSpan="7" className="px-6 py-12 text-center">
                     <div className="flex items-center justify-center">
                       <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
                       <span className="ml-3 text-gray-500">Cargando servicios...</span>
@@ -334,7 +333,7 @@ const ServicesList = ({
                 </tr>
               ) : getSortedServices().length === 0 ? (
                 <tr>
-                  <td colSpan="8" className="px-6 py-12 text-center">
+                  <td colSpan="7" className="px-6 py-12 text-center">
                     <div className="text-gray-500">
                       <CalendarDaysIcon className="mx-auto h-12 w-12 text-gray-400" />
                       <h3 className="mt-2 text-sm font-medium text-gray-900">
@@ -349,73 +348,58 @@ const ServicesList = ({
               ) : (
                 getSortedServices().map((service) => (
                   <tr key={service.id} className="hover:bg-gray-50">
+                    {/* Código */}
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="flex items-center">
-                        <div className="text-sm font-medium text-gray-900">
-                          {service.code}
-                        </div>
+                      <div className="text-sm font-medium text-gray-900">
+                        {service.id || 'N/A'}
                       </div>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-900">
-                        <div className="flex items-center">
-                          <CalendarDaysIcon className="h-4 w-4 text-gray-400 mr-1" />
-                          {formatDate(service.date)}
-                        </div>
-                        <div className="flex items-center mt-1">
-                          <ClockIcon className="h-4 w-4 text-gray-400 mr-1" />
-                          {formatTime(service.startTime)} - {formatTime(service.endTime)}
-                        </div>
+
+                    {/* Título del Servicio */}
+                    <td className="px-6 py-4">
+                      <div className="text-sm font-medium text-gray-900">
+                        {service.name || 'Sin título'}
                       </div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-900">
-                        <div className="flex items-center">
-                          <UserIcon className="h-4 w-4 text-gray-400 mr-1" />
-                          {service.client?.name || 'Sin asignar'}
+                      {service.description && (
+                        <div className="text-xs text-gray-500 mt-1 truncate max-w-xs">
+                          {service.description}
                         </div>
-                        {service.client?.phone && (
-                          <div className="flex items-center mt-1">
-                            <PhoneIcon className="h-4 w-4 text-gray-400 mr-1" />
-                            <span className="text-xs text-gray-500">
-                              {service.client.phone}
-                            </span>
-                          </div>
-                        )}
-                      </div>
+                      )}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-900">
-                        <div className="flex items-center">
-                          <MapPinIcon className="h-4 w-4 text-gray-400 mr-1" />
-                          {service.destination}
-                        </div>
-                        {service.participants && (
-                          <div className="flex items-center mt-1">
-                            <UsersIcon className="h-4 w-4 text-gray-400 mr-1" />
-                            <span className="text-xs text-gray-500">
-                              {service.participants} pax
-                            </span>
-                          </div>
-                        )}
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-900">
-                        {service.guide?.name || (
-                          <span className="text-gray-400 italic">Sin asignar</span>
-                        )}
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      {getStatusBadge(service.status)}
-                    </td>
+
+                    {/* Destino */}
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center text-sm text-gray-900">
+                        <MapPinIcon className="h-4 w-4 text-gray-400 mr-1" />
+                        {service.destination || service.location || 'Sin destino'}
+                      </div>
+                    </td>
+
+                    {/* Duración */}
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="flex items-center text-sm text-gray-900">
+                        <ClockIcon className="h-4 w-4 text-gray-400 mr-1" />
+                        {formatDuration(service.duration)}
+                      </div>
+                    </td>
+
+                    {/* Capacidad */}
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="flex items-center text-sm text-gray-900">
+                        <UsersIcon className="h-4 w-4 text-gray-400 mr-1" />
+                        {service.max_group_size || service.maxParticipants || '--'}
+                      </div>
+                    </td>
+
+                    {/* Precio Base */}
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="flex items-center text-sm font-medium text-gray-900">
                         <CurrencyDollarIcon className="h-4 w-4 text-gray-400 mr-1" />
                         {service.price?.toFixed(2) || '0.00'}
                       </div>
                     </td>
+
+                    {/* Acciones */}
                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                       <div className="flex items-center justify-end space-x-2">
                         {onView && (

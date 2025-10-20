@@ -29,6 +29,7 @@ const usersRoutes = require('./routes/users');
 const driversRoutes = require('./routes/drivers');
 const agenciesRoutes = require('./routes/agencies');
 const filesRoutes = require('./routes/files');
+const ratingsRoutes = require('./routes/ratings');
 const { addHelpers } = require('./middlewares/helpers');
 const { authMiddleware } = require('./middlewares/auth');
 
@@ -82,6 +83,7 @@ server.use('/api/users', usersRoutes(router));
 server.use('/api/drivers', driversRoutes(router));
 server.use('/api/agencies', agenciesRoutes(router));
 server.use('/api/files', filesRoutes(router));
+server.use('/api/ratings', ratingsRoutes(router));
 
 // JSON Server router (handles CRUD for all other endpoints)
 server.use('/api', router);

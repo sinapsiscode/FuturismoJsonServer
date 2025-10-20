@@ -829,22 +829,9 @@ const ReservationManagement = () => {
 
       {/* Modal de Nueva Reserva */}
       {showWizard && (
-        <div className="fixed inset-0 z-50 overflow-y-auto">
-          <div className="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
-            {/* Background overlay */}
-            <div 
-              className="fixed inset-0 transition-opacity bg-gray-500 bg-opacity-75" 
-              onClick={() => setShowWizard(false)}
-            />
-
-            {/* Modal panel */}
-            <div className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-4xl sm:w-full">
-              <div className="bg-white">
-                <div className="p-6">
-                  <ReservationWizard onClose={() => setShowWizard(false)} />
-                </div>
-              </div>
-            </div>
+        <div className="modal-overlay">
+          <div className="modal-content p-6 max-w-4xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+            <ReservationWizard onClose={() => setShowWizard(false)} />
           </div>
         </div>
       )}

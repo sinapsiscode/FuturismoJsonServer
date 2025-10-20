@@ -64,8 +64,23 @@ const FreelancerRegister = lazy(() => import('./pages/FreelancerRegister'));
 import webSocketService from './services/websocket';
 
 function App() {
-  const { isAuthenticated, token, initialize, user } = useAuthStore();
+  const { isAuthenticated, token, initialize, user, logout } = useAuthStore();
   const { addNotification, fetchNotifications } = useNotificationsStore();
+
+  // Listener para sesión expirada
+  useEffect(() => {
+    const handleSessionExpired = () => {
+      console.warn('⚠️ [App] Session expired, logging out...');
+      logout();
+      window.location.href = '/login';
+    };
+
+    window.addEventListener('auth:session:expired', handleSessionExpired);
+
+    return () => {
+      window.removeEventListener('auth:session:expired', handleSessionExpired);
+    };
+  }, [logout]);
 
   // Inicializar la aplicación
   useEffect(() => {

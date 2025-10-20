@@ -80,7 +80,29 @@ export const MAX_COMPANIONS_PER_GROUP = (() => {
 // Form steps for reservation store
 export const FORM_STEPS = (() => {
   const config = getReservationsConfig();
-  return config.formSteps || {
+
+  // Si formSteps es un array, transformarlo al formato esperado
+  if (Array.isArray(config.formSteps)) {
+    const steps = {
+      MIN_STEP: 1,
+      MAX_STEP: config.formSteps.length || 3
+    };
+
+    config.formSteps.forEach(step => {
+      const key = step.name.toUpperCase();
+      steps[key] = step.step;
+    });
+
+    return steps;
+  }
+
+  // Si ya es un objeto, retornarlo
+  if (config.formSteps && typeof config.formSteps === 'object') {
+    return config.formSteps;
+  }
+
+  // Fallback por defecto
+  return {
     SERVICE: 1,
     TOURISTS: 2,
     CONFIRMATION: 3,

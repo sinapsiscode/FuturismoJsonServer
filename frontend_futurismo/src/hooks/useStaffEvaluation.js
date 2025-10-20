@@ -1,6 +1,28 @@
-import { useState } from 'react';
-import { getEmptyEvaluation, getMockEvaluationCriteria, getMockRecommendationOptions } from '../data/mockRatingsData';
-import { DEFAULT_FEEDBACK, RECOMMENDATION_TYPES } from '../constants/ratingsConstants';
+import { useState, useEffect } from 'react';
+
+// Helper para crear evaluación vacía
+const getEmptyEvaluation = () => ({
+  punctuality: 0,
+  knowledge: 0,
+  communication: 0,
+  professionalism: 0,
+  problemSolving: 0
+});
+
+// Constante para feedback por defecto
+const DEFAULT_FEEDBACK = {
+  strengths: '',
+  improvements: '',
+  additionalComments: ''
+};
+
+// Tipos de recomendación
+const RECOMMENDATION_TYPES = {
+  HIGHLY_RECOMMEND: 'highly-recommend',
+  RECOMMEND: 'recommend',
+  NEUTRAL: 'neutral',
+  NOT_RECOMMEND: 'not-recommend'
+};
 
 export const useStaffEvaluation = (existingEvaluation = null, onEvaluationSubmit) => {
   const [evaluation, setEvaluation] = useState(
@@ -15,8 +37,44 @@ export const useStaffEvaluation = (existingEvaluation = null, onEvaluationSubmit
     existingEvaluation?.recommendation || RECOMMENDATION_TYPES.HIGHLY_RECOMMEND
   );
 
-  const evaluationCriteria = getMockEvaluationCriteria();
-  const recommendationOptions = getMockRecommendationOptions();
+  // Estados para datos de la API
+  const [evaluationCriteria, setEvaluationCriteria] = useState([]);
+  const [recommendationOptions, setRecommendationOptions] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  // Cargar datos desde la API
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+
+        const [criteriaRes, recommendationsRes] = await Promise.all([
+          fetch('/api/evaluations/criteria'),
+          fetch('/api/evaluations/recommendations')
+        ]);
+
+        const [criteria, recommendations] = await Promise.all([
+          criteriaRes.json(),
+          recommendationsRes.json()
+        ]);
+
+        if (criteria.success) {
+          setEvaluationCriteria(criteria.data);
+        }
+
+        if (recommendations.success) {
+          setRecommendationOptions(recommendations.data);
+        }
+
+        setLoading(false);
+      } catch (error) {
+        console.error('Error loading evaluation data:', error);
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   const handleRatingChange = (criterion, rating) => {
     setEvaluation(prev => ({
@@ -34,7 +92,11 @@ export const useStaffEvaluation = (existingEvaluation = null, onEvaluationSubmit
 
   const calculateAverageRating = () => {
     const ratings = Object.values(evaluation);
-    return ratings.reduce((sum, rating) => sum + rating, 0) / ratings.length;
+    const validRatings = ratings.filter(r => r > 0);
+
+    if (validRatings.length === 0) return 0;
+
+    return validRatings.reduce((sum, rating) => sum + rating, 0) / validRatings.length;
   };
 
   const isComplete = Object.values(evaluation).every(rating => rating > 0);
@@ -49,7 +111,7 @@ export const useStaffEvaluation = (existingEvaluation = null, onEvaluationSubmit
       averageRating: calculateAverageRating(),
       evaluatedBy: 'current_user_id' // Should be replaced with actual user ID
     };
-    
+
     onEvaluationSubmit(evaluationData);
   };
 
@@ -64,6 +126,7 @@ export const useStaffEvaluation = (existingEvaluation = null, onEvaluationSubmit
     handleRatingChange,
     handleFeedbackChange,
     setRecommendation,
-    handleSubmit
+    handleSubmit,
+    loading
   };
 };

@@ -9,9 +9,11 @@
       "Bash(findstr:*)",
       "Bash(tasklist)",
       "Bash(dir server.js)",
-      "Bash(cat:*)"
+      "Bash(cat:*)",
+      "Bash(dir:*)",
+      "Bash(npm run build)"
     ],
-    "deny": [], 
+    "deny": [],
     "ask": []
   }
 }

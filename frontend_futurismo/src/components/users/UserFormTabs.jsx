@@ -1,13 +1,12 @@
 import React from 'react';
-import { UserIcon, KeyIcon } from '@heroicons/react/24/outline';
+import { UserIcon } from '@heroicons/react/24/outline';
 import { useTranslation } from 'react-i18next';
 
 const UserFormTabs = ({ activeTab, setActiveTab }) => {
   const { t } = useTranslation();
 
   const tabs = [
-    { id: 'basic', name: t('users.form.basicInfo'), icon: UserIcon },
-    { id: 'permissions', name: t('users.form.permissions'), icon: KeyIcon }
+    { id: 'basic', name: t('users.form.basicInfo'), icon: UserIcon }
   ];
 
   return (
@@ -26,9 +25,7 @@ const UserFormTabs = ({ activeTab, setActiveTab }) => {
           >
             <tab.icon className="h-4 w-4 sm:h-5 sm:w-5 mr-1 sm:mr-2" />
             <span className="hidden sm:inline">{tab.name}</span>
-            <span className="sm:hidden">
-              {tab.id === 'basic' ? 'Info' : 'Permisos'}
-            </span>
+            <span className="sm:hidden">Info</span>
           </button>
         ))}
       </nav>

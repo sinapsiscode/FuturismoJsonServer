@@ -21,6 +21,8 @@ const authMiddleware = (req, res, next) => {
   const token = req.headers.authorization?.replace('Bearer ', '');
 
   if (!token) {
+    console.log('❌ [Auth] No token provided for:', req.method, req.path);
+    console.log('❌ [Auth] Authorization header:', req.headers.authorization);
     return res.status(401).json({
       success: false,
       error: 'Token de acceso requerido'
@@ -30,8 +32,10 @@ const authMiddleware = (req, res, next) => {
   try {
     const decoded = jwt.verify(token, JWT_SECRET);
     req.user = decoded;
+    console.log('✅ [Auth] Token valid for user:', decoded.email, '| Role:', decoded.role);
     next();
   } catch (error) {
+    console.log('❌ [Auth] Invalid token:', error.message);
     return res.status(401).json({
       success: false,
       error: 'Token inválido o expirado'

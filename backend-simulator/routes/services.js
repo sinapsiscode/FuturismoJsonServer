@@ -151,6 +151,11 @@ module.exports = (router) => {
         return res.status(400).json(errorResponse('Campos requeridos: name, description, category, price, duration'));
       }
 
+      // Ensure services array exists
+      if (!db.has('services').value()) {
+        db.set('services', []).write();
+      }
+
       const newService = {
         id: generateId('service'),
         name,
@@ -172,11 +177,12 @@ module.exports = (router) => {
       // Add to database
       db.get('services').push(newService).write();
 
+      console.log('✅ Servicio creado:', newService.id, newService.name);
       res.status(201).json(successResponse(newService, 'Servicio creado exitosamente'));
 
     } catch (error) {
-      console.error('Error creating service:', error);
-      res.status(500).json(errorResponse('Error al crear servicio'));
+      console.error('❌ Error creating service:', error);
+      res.status(500).json(errorResponse('Error al crear servicio: ' + error.message));
     }
   });
 

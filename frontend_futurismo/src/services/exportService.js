@@ -1,13 +1,13 @@
 import * as XLSX from 'xlsx';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
+import { reservationsService } from './reservationsService';
 
 class ExportService {
   // Obtener datos de reservas desde la API
   async getReservationsData() {
     try {
-      const response = await fetch('/api/reservations');
-      const result = await response.json();
+      const result = await reservationsService.getReservations();
 
       if (!result.success) {
         console.error('Error al obtener reservas:', result.error);
@@ -15,7 +15,7 @@ class ExportService {
       }
 
       // Transformar los datos de la API al formato necesario para exportar
-      const reservations = result.data || [];
+      const reservations = result.data?.reservations || result.data || [];
 
       return reservations.map(reservation => ({
         id: reservation.id || reservation.reservation_code || 'N/A',

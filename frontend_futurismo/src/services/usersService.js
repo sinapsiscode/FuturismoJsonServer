@@ -112,7 +112,7 @@ return this.put(`/${id}/role`, { roleId });
    * @returns {Promise<Object>}
    */
   async getRoles() {
-return this.get('/roles');
+return this.get('/roles/list');
   }
 
   /**

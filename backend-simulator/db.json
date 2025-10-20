@@ -13,7 +13,7 @@
       "avatar": "https://ui-avatars.com/api/?name=Admin&background=3B82F6&color=fff",
       "created_at": "2024-01-01T00:00:00Z",
       "updated_at": "2024-01-01T00:00:00Z",
-      "last_login_at": "2025-10-13T17:38:32.553Z"
+      "last_login_at": "2025-10-20T13:37:22.094Z"
     },
     {
       "id": "user-agency-1",
@@ -56,6 +56,122 @@
       "avatar": "https://ui-avatars.com/api/?name=Ana+Torres&background=EC4899&color=fff",
       "created_at": "2024-04-01T00:00:00Z",
       "updated_at": "2024-04-01T00:00:00Z"
+    },
+    {
+      "id": "user-1760400019346",
+      "username": "Gianpierre",
+      "email": "pier_terrazas@hotmail.com",
+      "firstName": "Gian",
+      "lastName": "Terrazas",
+      "phone": "961170946",
+      "role": "guide-freelance",
+      "status": "Activo",
+      "avatar": "",
+      "isEdit": false,
+      "password": "akisemi02",
+      "confirmPassword": "akisemi02",
+      "preferences": {
+        "language": "es",
+        "notifications": {
+          "email": true,
+          "push": true,
+          "sms": false
+        },
+        "theme": "light",
+        "timezone": "America/Lima"
+      },
+      "created_at": "2025-10-14T00:00:19.346Z",
+      "updated_at": "2025-10-14T00:00:19.346Z",
+      "email_verified": false,
+      "phone_verified": false,
+      "last_login": null
+    },
+    {
+      "id": "user-1760400618945",
+      "username": "alfalfa",
+      "email": "alfaldfa@gmail.com",
+      "firstName": "Marco",
+      "lastName": "Perez",
+      "phone": "987654332",
+      "role": "guide-planta",
+      "status": "Activo",
+      "avatar": "",
+      "isEdit": false,
+      "password": "a123456a",
+      "confirmPassword": "a123456a",
+      "preferences": {
+        "language": "es",
+        "notifications": {
+          "email": true,
+          "push": true,
+          "sms": false
+        },
+        "theme": "light",
+        "timezone": "America/Lima"
+      },
+      "created_at": "2025-10-14T00:10:18.945Z",
+      "updated_at": "2025-10-14T00:10:18.945Z",
+      "email_verified": false,
+      "phone_verified": false,
+      "last_login": null
+    },
+    {
+      "id": "user-1760400982923",
+      "username": "jerry",
+      "email": "je@gmail.com",
+      "firstName": "Jerry",
+      "lastName": "Rodrigez",
+      "phone": "961170876",
+      "role": "agency",
+      "status": "Activo",
+      "avatar": "",
+      "isEdit": false,
+      "password": "demo1234",
+      "confirmPassword": "demo1234",
+      "preferences": {
+        "language": "es",
+        "notifications": {
+          "email": true,
+          "push": true,
+          "sms": false
+        },
+        "theme": "light",
+        "timezone": "America/Lima"
+      },
+      "created_at": "2025-10-14T00:16:22.923Z",
+      "updated_at": "2025-10-14T00:16:22.923Z",
+      "email_verified": false,
+      "phone_verified": false,
+      "last_login": null
+    },
+    {
+      "id": "user-1760403013660",
+      "username": "david",
+      "email": "d@gmail.com",
+      "firstName": "david",
+      "lastName": "rod",
+      "phone": "987345212",
+      "role": "guide-planta",
+      "status": "Activo",
+      "avatar": "",
+      "isEdit": false,
+      "password": "aademo123",
+      "confirmPassword": "aademo123",
+      "preferences": {
+        "language": "es",
+        "notifications": {
+          "email": true,
+          "push": true,
+          "sms": false
+        },
+        "theme": "light",
+        "timezone": "America/Lima"
+      },
+      "created_at": "2025-10-14T00:50:13.660Z",
+      "updated_at": "2025-10-14T00:50:13.660Z",
+      "email_verified": false,
+      "phone_verified": false,
+      "last_login": null
     }
   ],
   "agencies": [],
@@ -323,7 +439,28 @@
     }
   ],
   "reservations": [],
-  "clients": [],
+  "clients": [
+    {
+      "type": "agency",
+      "name": "GALDIAZ",
+      "documentNumber": "10770912222",
+      "email": "ga@gmail.com",
+      "phone": "987345212",
+      "address": "asfasfasf",
+      "contact": "asfasffasf",
+      "id": 1
+    },
+    {
+      "type": "agency",
+      "name": "7SOPAS",
+      "documentNumber": "20309843431",
+      "email": "ps@gmail.com",
+      "phone": "961170934",
+      "address": "asdfasfasfasf",
+      "contact": "cayeco",
+      "id": 2
+    }
+  ],
   "marketplace_requests": [],
   "guide_responses": [],
   "financial_transactions": [],
@@ -793,9 +930,12 @@
       "status": "enroute",
       "currentLocation": {
         "lat": -12.0464,
-        "lng": -77.0428
+        "lng": -77.0428,
+        "name": "Plaza Mayor"
       },
-      "startTime": "09:00",
+      "startTime": "09:00 AM",
+      "estimatedEndTime": "01:00 PM",
+      "progress": 45,
       "date": "2024-03-15",
       "destination": "Plaza Mayor"
     },
@@ -808,9 +948,12 @@
       "status": "stopped",
       "currentLocation": {
         "lat": -12.1207,
-        "lng": -77.0282
+        "lng": -77.0282,
+        "name": "Malecón de Miraflores"
       },
-      "startTime": "10:30",
+      "startTime": "10:30 AM",
+      "estimatedEndTime": "02:30 PM",
+      "progress": 60,
       "date": "2024-03-15",
       "destination": "Malecón de Miraflores"
     },
@@ -823,9 +966,12 @@
       "status": "enroute",
       "currentLocation": {
         "lat": -12.0697,
-        "lng": -77.0715
+        "lng": -77.0715,
+        "name": "Museo Larco"
       },
-      "startTime": "11:00",
+      "startTime": "11:00 AM",
+      "estimatedEndTime": "03:00 PM",
+      "progress": 30,
       "date": "2024-03-15",
       "destination": "Museo Larco"
     },
@@ -838,9 +984,12 @@
       "status": "enroute",
       "currentLocation": {
         "lat": -12.1493,
-        "lng": -77.0211
+        "lng": -77.0211,
+        "name": "Puente de los Suspiros"
       },
-      "startTime": "14:00",
+      "startTime": "02:00 PM",
+      "estimatedEndTime": "06:00 PM",
+      "progress": 75,
       "date": "2024-03-15",
       "destination": "Puente de los Suspiros"
     },
@@ -853,9 +1002,12 @@
       "status": "delayed",
       "currentLocation": {
         "lat": -12.0931,
-        "lng": -77.0365
+        "lng": -77.0365,
+        "name": "Huaca Huallamarca"
       },
-      "startTime": "15:30",
+      "startTime": "03:30 PM",
+      "estimatedEndTime": "07:30 PM",
+      "progress": 85,
       "date": "2024-03-15",
       "destination": "Huaca Huallamarca"
     }
@@ -10792,6 +10944,274 @@
       "name": "Nocturno",
       "description": "Tours nocturnos",
       "icon": "night"
+    }
+  ],
+  "roles": [
+    {
+      "id": "role-1",
+      "name": "admin",
+      "label": "Administrador",
+      "description": "Acceso completo al sistema",
+      "permissions": [
+        "all"
+      ]
+    },
+    {
+      "id": "role-2",
+      "name": "agency",
+      "label": "Agencia",
+      "description": "Gestión de reservas y tours",
+      "permissions": [
+        "reservations",
+        "tours",
+        "clients"
+      ]
+    },
+    {
+      "id": "role-3",
+      "name": "guide",
+      "label": "Guía",
+      "description": "Gestión de servicios asignados",
+      "permissions": [
+        "agenda",
+        "services"
+      ]
+    },
+    {
+      "id": "role-4",
+      "name": "guide-freelance",
+      "label": "Guía Freelance",
+      "description": "Guía independiente con acceso a marketplace",
+      "permissions": [
+        "agenda",
+        "marketplace",
+        "finances"
+      ]
+    },
+    {
+      "id": "role-5",
+      "name": "guide-planta",
+      "label": "Guía de Planta",
+      "description": "Guía empleado de agencia",
+      "permissions": [
+        "agenda",
+        "services"
+      ]
+    }
+  ],
+  "ratings_dashboard": {
+    "totalRatings": 1247,
+    "averageRating": 4.6,
+    "staffEvaluated": 38,
+    "improvementTrend": "+12%"
+  },
+  "ratings_area_stats": [
+    {
+      "id": "tours",
+      "name": "Tours",
+      "averageRating": 4.7,
+      "totalRatings": 456,
+      "trend": "+8%"
+    },
+    {
+      "id": "guides",
+      "name": "Guías",
+      "averageRating": 4.8,
+      "totalRatings": 389,
+      "trend": "+15%"
+    },
+    {
+      "id": "transport",
+      "name": "Transporte",
+      "averageRating": 4.5,
+      "totalRatings": 234,
+      "trend": "+5%"
+    },
+    {
+      "id": "customer-service",
+      "name": "Atención al Cliente",
+      "averageRating": 4.4,
+      "totalRatings": 168,
+      "trend": "+10%"
+    }
+  ],
+  "ratings_staff_stats": [
+    {
+      "id": "staff-1",
+      "name": "Carlos Mendoza",
+      "role": "Guía",
+      "averageRating": 4.9,
+      "totalRatings": 87,
+      "avatar": "https://ui-avatars.com/api/?name=Carlos+Mendoza&background=F59E0B&color=fff"
+    },
+    {
+      "id": "staff-2",
+      "name": "Ana Torres",
+      "role": "Guía",
+      "averageRating": 4.8,
+      "totalRatings": 76,
+      "avatar": "https://ui-avatars.com/api/?name=Ana+Torres&background=EC4899&color=fff"
+    },
+    {
+      "id": "staff-3",
+      "name": "Miguel Ramos",
+      "role": "Conductor",
+      "averageRating": 4.7,
+      "totalRatings": 65,
+      "avatar": "https://ui-avatars.com/api/?name=Miguel+Ramos&background=3B82F6&color=fff"
+    }
+  ],
+  "ratings_service_areas": [
+    {
+      "id": "all",
+      "name": "Todas las Áreas"
+    },
+    {
+      "id": "tours",
+      "name": "Tours"
+    },
+    {
+      "id": "guides",
+      "name": "Guías"
+    },
+    {
+      "id": "transport",
+      "name": "Transporte"
+    },
+    {
+      "id": "customer-service",
+      "name": "Atención al Cliente"
+    }
+  ],
+  "ratings_periods": [
+    {
+      "id": "week",
+      "name": "Última Semana"
+    },
+    {
+      "id": "month",
+      "name": "Último Mes"
+    },
+    {
+      "id": "quarter",
+      "name": "Último Trimestre"
+    },
+    {
+      "id": "year",
+      "name": "Último Año"
+    }
+  ],
+  "ratings_distribution": {
+    "1": {
+      "count": 11,
+      "percentage": 1
+    },
+    "2": {
+      "count": 50,
+      "percentage": 4
+    },
+    "3": {
+      "count": 125,
+      "percentage": 10
+    },
+    "4": {
+      "count": 374,
+      "percentage": 30
+    },
+    "5": {
+      "count": 687,
+      "percentage": 55
+    }
+  },
+  "evaluation_criteria": [
+    {
+      "id": "punctuality",
+      "name": "Puntualidad",
+      "description": "Cumplimiento de horarios",
+      "weight": 0.2
+    },
+    {
+      "id": "knowledge",
+      "name": "Conocimiento",
+      "description": "Dominio del tema y destinos",
+      "weight": 0.3
+    },
+    {
+      "id": "communication",
+      "name": "Comunicación",
+      "description": "Claridad y empatía en la comunicación",
+      "weight": 0.2
+    },
+    {
+      "id": "professionalism",
+      "name": "Profesionalismo",
+      "description": "Actitud y presentación",
+      "weight": 0.15
+    },
+    {
+      "id": "problem-solving",
+      "name": "Resolución de Problemas",
+      "description": "Capacidad para resolver imprevistos",
+      "weight": 0.15
+    }
+  ],
+  "evaluation_recommendations": [
+    {
+      "id": "highly-recommend",
+      "name": "Recomiendo Altamente",
+      "value": 5
+    },
+    {
+      "id": "recommend",
+      "name": "Recomiendo",
+      "value": 4
+    },
+    {
+      "id": "neutral",
+      "name": "Neutral",
+      "value": 3
+    },
+    {
+      "id": "not-recommend",
+      "name": "No Recomiendo",
+      "value": 2
+    }
+  ],
+  "staff_evaluations": [],
+  "services": [
+    {
+      "id": "service-1760906350390-96r5mfcz3",
+      "name": "Expedición ",
+      "description": "Un lugar encantador",
+      "category": "city_tour",
+      "price": 3,
+      "currency": "USD",
+      "duration": 4,
+      "status": "active",
+      "rating": 0,
+      "max_group_size": 10,
+      "included": [],
+      "excluded": [],
+      "location": "Lima",
+      "created_at": "2025-10-19T20:39:10.390Z",
+      "updated_at": "2025-10-19T20:39:10.391Z"
+    },
+    {
+      "id": "service-1760908605698-n6irtz87l",
+      "name": "Expec",
+      "description": "sdvsdvsdfvsdvsdv",
+      "category": "city_tour",
+      "price": 22,
+      "currency": "USD",
+      "duration": 4,
+      "status": "active",
+      "rating": 0,
+      "max_group_size": 10,
+      "included": [],
+      "excluded": [],
+      "location": "Lima",
+      "created_at": "2025-10-19T21:16:45.698Z",
+      "updated_at": "2025-10-19T21:16:45.698Z"
     }
   ]
 }

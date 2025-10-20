@@ -34,6 +34,8 @@ const serviceSchema = yup.object({
     .required('El destino es requerido'),
   description: yup
     .string()
+    .required('La descripción es requerida')
+    .min(10, 'Mínimo 10 caracteres')
     .max(500, 'Máximo 500 caracteres'),
 
   // Detalles operativos
@@ -119,28 +121,28 @@ const ServiceForm = ({ service = null, onSubmit, onCancel, isLoading = false }) 
 
   const handleFormSubmit = async (data) => {
     const serviceData = {
-      // Información básica
-      type: data.serviceType,
-      title: data.title,
-      destination: data.destination,
+      // Campos requeridos por el backend
+      name: data.title,                      // Backend espera "name"
       description: data.description,
-      
-      // Detalles operativos
+      category: data.serviceType,            // Backend espera "category"
+      price: parseFloat(data.basePrice),     // Backend espera "price"
       duration: parseInt(data.duration),
-      maxParticipants: parseInt(data.maxParticipants),
-      
+
+      // Campos adicionales
+      destination: data.destination,
+      max_group_size: parseInt(data.maxParticipants),
+
       // Requisitos
       languages: data.languages,
       requiresGuide: data.requiresGuide,
       requiresTransport: data.requiresTransport,
-      
+
       // Paradas
       stops: data.stops || [],
-      
+
       // Comercial
-      basePrice: parseFloat(data.basePrice),
-      includes: data.includes,
-      excludes: data.excludes,
+      included: data.includes,
+      excluded: data.excludes,
       notes: data.notes
     };
 
@@ -160,40 +162,43 @@ const ServiceForm = ({ service = null, onSubmit, onCancel, isLoading = false }) 
   };
 
   return (
-    <div className="modal-overlay">
-      <div className="modal-dialog modal-xl">
-        <div className="modal-content">
-          <div className="modal-header">
-            <h2 className="modal-title">
-              {isEdit ? 'Editar Servicio' : 'Crear Nuevo Servicio'}
-            </h2>
-            <button
-              type="button"
-              onClick={onCancel}
-              className="modal-close"
-            >
-              <XMarkIcon className="w-5 h-5" />
-            </button>
-          </div>
-          
-          <form onSubmit={handleSubmit(handleFormSubmit)}>
-            <div className="modal-body">
-              <div className="space-y-8">
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+      <div className="bg-white rounded-xl shadow-2xl w-full max-w-5xl max-h-[90vh] flex flex-col">
+        {/* Header */}
+        <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200 bg-gradient-to-r from-blue-50 to-indigo-50">
+          <h2 className="text-2xl font-bold text-gray-900">
+            {isEdit ? 'Editar Servicio' : 'Crear Nuevo Servicio'}
+          </h2>
+          <button
+            type="button"
+            onClick={onCancel}
+            className="p-2 text-gray-400 hover:text-gray-600 hover:bg-white rounded-lg transition-colors"
+          >
+            <XMarkIcon className="w-6 h-6" />
+          </button>
+        </div>
+
+        {/* Form */}
+        <form onSubmit={handleSubmit(handleFormSubmit)} className="flex flex-col flex-1 overflow-hidden">
+          {/* Scrollable Content */}
+          <div className="flex-1 overflow-y-auto px-6 py-6">
+            <div className="space-y-6">
         {/* Información Básica */}
-        <div className="bg-white p-6 rounded-lg shadow-sm border">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">
+        <div className="bg-gradient-to-br from-white to-gray-50 p-6 rounded-xl border border-gray-200">
+          <h3 className="text-lg font-semibold text-gray-900 mb-5 flex items-center">
+            <div className="w-1 h-6 bg-blue-500 rounded mr-3"></div>
             Información Básica del Servicio
           </h3>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
                 Tipo de Servicio *
               </label>
               <select
                 {...register('serviceType')}
-                className={`px-4 py-2 w-full border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
-                  errors.serviceType ? 'border-red-300' : 'border-gray-300'
+                className={`px-4 py-2.5 w-full border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all ${
+                  errors.serviceType ? 'border-red-300 bg-red-50' : 'border-gray-300 bg-white'
                 }`}
               >
                 <option value="">Seleccionar tipo</option>
@@ -204,50 +209,57 @@ const ServiceForm = ({ service = null, onSubmit, onCancel, isLoading = false }) 
                 ))}
               </select>
               {errors.serviceType && (
-                <p className="mt-1 text-sm text-red-600">{errors.serviceType.message}</p>
+                <p className="mt-1.5 text-sm text-red-600 flex items-center">
+                  <span className="mr-1">⚠</span> {errors.serviceType.message}
+                </p>
               )}
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
                 Título del Servicio *
               </label>
               <input
                 type="text"
                 {...register('title')}
-                className={`px-4 py-2 w-full border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
-                  errors.title ? 'border-red-300' : 'border-gray-300'
+                className={`px-4 py-2.5 w-full border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all ${
+                  errors.title ? 'border-red-300 bg-red-50' : 'border-gray-300 bg-white'
                 }`}
                 placeholder="Ej: City Tour Lima Centro Histórico"
               />
               {errors.title && (
-                <p className="mt-1 text-sm text-red-600">{errors.title.message}</p>
+                <p className="mt-1.5 text-sm text-red-600 flex items-center">
+                  <span className="mr-1">⚠</span> {errors.title.message}
+                </p>
               )}
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                <MapPinIcon className="inline w-4 h-4 mr-1 text-gray-500" />
                 Destino Principal *
               </label>
               <div className="relative">
-                <MapPinIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                <MapPinIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
                 <input
                   type="text"
                   {...register('destination')}
-                  className={`pl-10 pr-4 py-2 w-full border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
-                    errors.destination ? 'border-red-300' : 'border-gray-300'
+                  className={`pl-11 pr-4 py-2.5 w-full border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all ${
+                    errors.destination ? 'border-red-300 bg-red-50' : 'border-gray-300 bg-white'
                   }`}
                   placeholder="Centro Histórico de Lima"
                 />
               </div>
               {errors.destination && (
-                <p className="mt-1 text-sm text-red-600">{errors.destination.message}</p>
+                <p className="mt-1.5 text-sm text-red-600 flex items-center">
+                  <span className="mr-1">⚠</span> {errors.destination.message}
+                </p>
               )}
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                <GlobeAltIcon className="inline w-4 h-4 mr-1 text-gray-400" />
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                <GlobeAltIcon className="inline w-4 h-4 mr-1 text-gray-500" />
                 Idiomas Disponibles *
               </label>
               <Controller
@@ -263,103 +275,122 @@ const ServiceForm = ({ service = null, onSubmit, onCancel, isLoading = false }) 
                 )}
               />
               {errors.languages && (
-                <p className="mt-1 text-sm text-red-600">{errors.languages.message}</p>
+                <p className="mt-1.5 text-sm text-red-600 flex items-center">
+                  <span className="mr-1">⚠</span> {errors.languages.message}
+                </p>
               )}
-              <p className="mt-1 text-xs text-gray-500">
+              <p className="mt-1.5 text-xs text-gray-500 italic">
                 Los clientes podrán elegir entre estos idiomas al reservar
               </p>
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                <CurrencyDollarIcon className="inline w-4 h-4 mr-1 text-gray-500" />
                 Precio por Turista (S/.) *
               </label>
               <div className="relative">
-                <CurrencyDollarIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 font-medium">S/.</span>
                 <input
                   type="number"
                   step="0.01"
                   {...register('basePrice')}
-                  className={`pl-10 pr-4 py-2 w-full border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
-                    errors.basePrice ? 'border-red-300' : 'border-gray-300'
+                  className={`pl-12 pr-4 py-2.5 w-full border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all ${
+                    errors.basePrice ? 'border-red-300 bg-red-50' : 'border-gray-300 bg-white'
                   }`}
                   placeholder="0.00"
                 />
               </div>
               {errors.basePrice && (
-                <p className="mt-1 text-sm text-red-600">{errors.basePrice.message}</p>
+                <p className="mt-1.5 text-sm text-red-600 flex items-center">
+                  <span className="mr-1">⚠</span> {errors.basePrice.message}
+                </p>
               )}
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                <ClockIcon className="inline w-4 h-4 mr-1 text-gray-500" />
                 Duración (horas) *
               </label>
               <div className="relative">
-                <ClockIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
                 <input
                   type="number"
                   {...register('duration')}
                   min="1"
                   max="24"
-                  className={`pl-10 pr-4 py-2 w-full border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
-                    errors.duration ? 'border-red-300' : 'border-gray-300'
+                  className={`pl-4 pr-16 py-2.5 w-full border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all ${
+                    errors.duration ? 'border-red-300 bg-red-50' : 'border-gray-300 bg-white'
                   }`}
-                  placeholder="8"
+                  placeholder="4"
                 />
+                <span className="absolute right-3 top-1/2 transform -translate-y-1/2 text-sm text-gray-500 font-medium">
+                  horas
+                </span>
               </div>
               {errors.duration && (
-                <p className="mt-1 text-sm text-red-600">{errors.duration.message}</p>
+                <p className="mt-1.5 text-sm text-red-600 flex items-center">
+                  <span className="mr-1">⚠</span> {errors.duration.message}
+                </p>
               )}
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                <UsersIcon className="inline w-4 h-4 mr-1 text-gray-500" />
                 Máximo de Participantes *
               </label>
               <div className="relative">
-                <UsersIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
                 <input
                   type="number"
                   {...register('maxParticipants')}
                   min="1"
                   max="50"
-                  className={`pl-10 pr-4 py-2 w-full border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
-                    errors.maxParticipants ? 'border-red-300' : 'border-gray-300'
+                  className={`pl-4 pr-20 py-2.5 w-full border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all ${
+                    errors.maxParticipants ? 'border-red-300 bg-red-50' : 'border-gray-300 bg-white'
                   }`}
                   placeholder="10"
                 />
+                <span className="absolute right-3 top-1/2 transform -translate-y-1/2 text-sm text-gray-500 font-medium">
+                  personas
+                </span>
               </div>
               {errors.maxParticipants && (
-                <p className="mt-1 text-sm text-red-600">{errors.maxParticipants.message}</p>
+                <p className="mt-1.5 text-sm text-red-600 flex items-center">
+                  <span className="mr-1">⚠</span> {errors.maxParticipants.message}
+                </p>
               )}
             </div>
 
-            <div className="md:col-span-2">
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+            <div className="lg:col-span-2">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                <DocumentTextIcon className="inline w-4 h-4 mr-1 text-gray-500" />
                 Descripción del Servicio
               </label>
               <textarea
                 {...register('description')}
                 rows={3}
-                className={`px-4 py-2 w-full border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
-                  errors.description ? 'border-red-300' : 'border-gray-300'
+                className={`px-4 py-2.5 w-full border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all resize-none ${
+                  errors.description ? 'border-red-300 bg-red-50' : 'border-gray-300 bg-white'
                 }`}
                 placeholder="Describe los lugares a visitar, actividades incluidas, etc."
               />
               {errors.description && (
-                <p className="mt-1 text-sm text-red-600">{errors.description.message}</p>
+                <p className="mt-1.5 text-sm text-red-600 flex items-center">
+                  <span className="mr-1">⚠</span> {errors.description.message}
+                </p>
               )}
             </div>
           </div>
         </div>
 
         {/* Itinerario de Paradas */}
-        <div className="bg-white p-6 rounded-lg shadow-sm border">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">
+        <div className="bg-gradient-to-br from-white to-gray-50 p-6 rounded-xl border border-gray-200">
+          <h3 className="text-lg font-semibold text-gray-900 mb-5 flex items-center">
+            <div className="w-1 h-6 bg-green-500 rounded mr-3"></div>
             Itinerario del Tour
           </h3>
-          
+
           <Controller
             name="stops"
             control={control}
@@ -374,77 +405,90 @@ const ServiceForm = ({ service = null, onSubmit, onCancel, isLoading = false }) 
         </div>
 
         {/* Información Comercial */}
-        <div className="bg-white p-6 rounded-lg shadow-sm border">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">
+        <div className="bg-gradient-to-br from-white to-gray-50 p-6 rounded-xl border border-gray-200">
+          <h3 className="text-lg font-semibold text-gray-900 mb-5 flex items-center">
+            <div className="w-1 h-6 bg-purple-500 rounded mr-3"></div>
             Información Comercial
           </h3>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                <CheckCircleIcon className="inline w-4 h-4 mr-1 text-green-500" />
                 Incluye
               </label>
               <textarea
                 {...register('includes')}
-                rows={3}
-                className="px-4 py-2 w-full border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                rows={4}
+                className="px-4 py-2.5 w-full border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all resize-none bg-white"
                 placeholder="Ej: Transporte, guía, entradas, almuerzo..."
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                <XMarkIcon className="inline w-4 h-4 mr-1 text-red-500" />
                 No Incluye
               </label>
               <textarea
                 {...register('excludes')}
-                rows={3}
-                className="px-4 py-2 w-full border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                rows={4}
+                className="px-4 py-2.5 w-full border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all resize-none bg-white"
                 placeholder="Ej: Bebidas extras, propinas, gastos personales..."
               />
             </div>
 
-            <div className="md:col-span-2">
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+            <div className="lg:col-span-2">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                <DocumentTextIcon className="inline w-4 h-4 mr-1 text-gray-500" />
                 Notas Adicionales
               </label>
-              <div className="relative">
-                <DocumentTextIcon className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-                <textarea
-                  {...register('notes')}
-                  rows={3}
-                  className="pl-10 pr-4 py-2 w-full border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  placeholder="Información adicional importante sobre el servicio..."
-                />
-              </div>
+              <textarea
+                {...register('notes')}
+                rows={3}
+                className="px-4 py-2.5 w-full border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all resize-none bg-white"
+                placeholder="Información adicional importante sobre el servicio..."
+              />
             </div>
           </div>
         </div>
 
               </div>
             </div>
-            
-            <div className="modal-footer">
-              <button
-                type="button"
-                onClick={onCancel}
-                className="btn btn-secondary"
-                disabled={isLoading}
-              >
-                {t('common.cancel')}
-              </button>
-              
-              <button
-                type="submit"
-                className="btn btn-primary"
-                disabled={isLoading}
-              >
-                <CheckIcon className="h-4 w-4 mr-2" />
-                {isLoading ? t('common.saving') : (isEdit ? t('common.updateService') : t('common.createService'))}
-              </button>
-            </div>
-          </form>
-        </div>
+
+          {/* Footer */}
+          <div className="flex items-center justify-end gap-3 px-6 py-4 border-t border-gray-200 bg-gray-50">
+            <button
+              type="button"
+              onClick={onCancel}
+              className="px-5 py-2.5 text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-colors font-medium"
+              disabled={isLoading}
+            >
+              Cancelar
+            </button>
+
+            <button
+              type="submit"
+              className="px-6 py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-lg hover:from-blue-700 hover:to-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all font-medium shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center"
+              disabled={isLoading}
+            >
+              {isLoading ? (
+                <>
+                  <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                  Guardando...
+                </>
+              ) : (
+                <>
+                  <CheckIcon className="h-5 w-5 mr-2" />
+                  {isEdit ? 'Actualizar Servicio' : 'Crear Servicio'}
+                </>
+              )}
+            </button>
+          </div>
+        </form>
       </div>
     </div>
   );
