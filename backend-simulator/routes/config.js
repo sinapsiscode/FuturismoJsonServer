@@ -1175,6 +1175,162 @@ module.exports = (router) => {
   });
 
   /**
+   * GET /api/config/payment-methods
+   * Obtiene los métodos de pago disponibles
+   */
+  configRouter.get('/payment-methods', (req, res) => {
+    try {
+      const db = router.db;
+      const paymentMethods = db.get('payment_methods').value() || [];
+
+      res.json({
+        success: true,
+        data: paymentMethods.filter(pm => pm.enabled !== false)
+      });
+    } catch (error) {
+      console.error('Payment methods error:', error);
+      res.status(500).json({
+        success: false,
+        error: 'Error al obtener métodos de pago'
+      });
+    }
+  });
+
+  /**
+   * POST /api/config/payment-methods
+   * Crea un nuevo método de pago
+   */
+  configRouter.post('/payment-methods', (req, res) => {
+    try {
+      const db = router.db;
+      const { id, name, description, icon } = req.body;
+
+      if (!id || !name) {
+        return res.status(400).json({
+          success: false,
+          error: 'Los campos id y name son requeridos'
+        });
+      }
+
+      const paymentMethods = db.get('payment_methods').value() || [];
+
+      // Verificar si ya existe
+      const exists = paymentMethods.some(pm => pm.id === id);
+      if (exists) {
+        return res.status(409).json({
+          success: false,
+          error: 'Ya existe un método de pago con ese ID'
+        });
+      }
+
+      const newPaymentMethod = {
+        id,
+        name,
+        description: description || '',
+        icon: icon || 'credit-card',
+        enabled: true
+      };
+
+      paymentMethods.push(newPaymentMethod);
+      db.set('payment_methods', paymentMethods).write();
+
+      res.status(201).json({
+        success: true,
+        data: newPaymentMethod,
+        message: 'Método de pago creado exitosamente'
+      });
+    } catch (error) {
+      console.error('Error creating payment method:', error);
+      res.status(500).json({
+        success: false,
+        error: 'Error al crear método de pago'
+      });
+    }
+  });
+
+  /**
+   * PUT /api/config/payment-methods/:id
+   * Actualiza un método de pago existente
+   */
+  configRouter.put('/payment-methods/:id', (req, res) => {
+    try {
+      const db = router.db;
+      const { id: oldId } = req.params;
+      const { id, name, description, icon, enabled } = req.body;
+
+      const paymentMethods = db.get('payment_methods').value() || [];
+      const index = paymentMethods.findIndex(pm => pm.id === oldId);
+
+      if (index === -1) {
+        return res.status(404).json({
+          success: false,
+          error: 'Método de pago no encontrado'
+        });
+      }
+
+      const updatedPaymentMethod = {
+        id: id || oldId,
+        name: name || paymentMethods[index].name,
+        description: description !== undefined ? description : paymentMethods[index].description,
+        icon: icon || paymentMethods[index].icon,
+        enabled: enabled !== undefined ? enabled : paymentMethods[index].enabled
+      };
+
+      paymentMethods[index] = updatedPaymentMethod;
+      db.set('payment_methods', paymentMethods).write();
+
+      res.json({
+        success: true,
+        data: updatedPaymentMethod,
+        message: 'Método de pago actualizado exitosamente'
+      });
+    } catch (error) {
+      console.error('Error updating payment method:', error);
+      res.status(500).json({
+        success: false,
+        error: 'Error al actualizar método de pago'
+      });
+    }
+  });
+
+  /**
+   * DELETE /api/config/payment-methods/:id
+   * Elimina un método de pago
+   */
+  configRouter.delete('/payment-methods/:id', (req, res) => {
+    try {
+      const db = router.db;
+      const { id } = req.params;
+
+      const paymentMethods = db.get('payment_methods').value() || [];
+      const initialLength = paymentMethods.length;
+
+      const filtered = paymentMethods.filter(pm => pm.id !== id);
+
+      if (filtered.length === initialLength) {
+        return res.status(404).json({
+          success: false,
+          error: 'Método de pago no encontrado'
+        });
+      }
+
+      db.set('payment_methods', filtered).write();
+
+      res.json({
+        success: true,
+        message: 'Método de pago eliminado exitosamente',
+        data: { id }
+      });
+    } catch (error) {
+      console.error('Error deleting payment method:', error);
+      res.status(500).json({
+        success: false,
+        error: 'Error al eliminar método de pago'
+      });
+    }
+  });
+
+  /**
    * GET /api/config/shared
    * Obtiene las constantes compartidas desde db.json
    */

@@ -13,7 +13,7 @@
       "avatar": "https://ui-avatars.com/api/?name=Admin&background=3B82F6&color=fff",
       "created_at": "2024-01-01T00:00:00Z",
       "updated_at": "2024-01-01T00:00:00Z",
-      "last_login_at": "2025-10-20T15:59:47.370Z"
+      "last_login_at": "2025-10-22T17:30:20.713Z"
     },
     {
       "id": "user-agency-1",
@@ -1404,7 +1404,29 @@
       "description": "Grupos con requerimientos especiales"
     }
   ],
-  "payment_methods": [],
+  "payment_methods": [
+    {
+      "id": "transfer",
+      "name": "Transferencia Bancaria",
+      "description": "Pago mediante transferencia bancaria",
+      "enabled": true,
+      "icon": "bank"
+    },
+    {
+      "id": "cash",
+      "name": "Efectivo",
+      "description": "Pago en efectivo",
+      "enabled": true,
+      "icon": "cash"
+    },
+    {
+      "id": "card",
+      "name": "Tarjeta de Crédito/Débito",
+      "description": "Pago con tarjeta",
+      "enabled": true,
+      "icon": "credit-card"
+    }
+  ],
   "company_data": {
     "ruc": "20123456789",
     "businessName": "Tours Lima Premium S.A.C.",
@@ -12304,9 +12326,214 @@
       "location": "Lima",
       "created_at": "2025-10-19T21:16:45.698Z",
       "updated_at": "2025-10-19T21:16:45.698Z"
+    },
+    {
+      "id": "service-1761000345143-ujt9c3gaz",
+      "name": "JsonServer",
+      "description": "asfdasfasf",
+      "category": "prueba",
+      "price": 20,
+      "currency": "USD",
+      "duration": 4,
+      "status": "active",
+      "rating": 0,
+      "max_group_size": 10,
+      "included": [],
+      "excluded": [],
+      "location": "Lima",
+      "created_at": "2025-10-20T22:45:45.143Z",
+      "updated_at": "2025-10-20T22:45:45.143Z"
     }
   ],
   "tour_assignments": [],
   "driver_assignments": [],
-  "guide_availability": []
+  "guide_availability": [],
+  "tour_photos": [],
+  "rewards_categories": [
+    {
+      "id": "reward-cat-1",
+      "name": "Tecnología",
+      "description": "Dispositivos electrónicos y gadgets",
+      "icon": "device-mobile",
+      "color": "#3B82F6",
+      "active": true,
+      "created_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "id": "reward-cat-2",
+      "name": "Viajes",
+      "description": "Paquetes turísticos y experiencias",
+      "icon": "airplane",
+      "color": "#10B981",
+      "active": true,
+      "created_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "id": "reward-cat-3",
+      "name": "Capacitación",
+      "description": "Cursos y certificaciones",
+      "icon": "academic-cap",
+      "color": "#F59E0B",
+      "active": true,
+      "created_at": "2024-01-01T00:00:00Z"
+    }
+  ],
+  "points_config": {
+    "enabled": true,
+    "points_per_service": 10,
+    "points_per_dollar": 1,
+    "bonus_multiplier": 1.5,
+    "minimum_redemption": 100,
+    "expiration_months": 12,
+    "levels": [
+      {
+        "name": "Bronce",
+        "min_points": 0,
+        "max_points": 499,
+        "benefits": [
+          "Descuento 5%",
+          "Acceso a catálogo básico"
+        ]
+      },
+      {
+        "name": "Plata",
+        "min_points": 500,
+        "max_points": 1499,
+        "benefits": [
+          "Descuento 10%",
+          "Acceso a catálogo estándar",
+          "Prioridad en reservas"
+        ]
+      },
+      {
+        "name": "Oro",
+        "min_points": 1500,
+        "max_points": 2999,
+        "benefits": [
+          "Descuento 15%",
+          "Acceso a catálogo premium",
+          "Prioridad en reservas",
+          "Soporte dedicado"
+        ]
+      },
+      {
+        "name": "Platino",
+        "min_points": 3000,
+        "max_points": 999999,
+        "benefits": [
+          "Descuento 20%",
+          "Acceso completo",
+          "Máxima prioridad",
+          "Soporte VIP",
+          "Eventos exclusivos"
+        ]
+      }
+    ],
+    "updated_at": "2024-01-01T00:00:00Z"
+  },
+  "emergency_contacts": [
+    {
+      "id": "contact-1",
+      "name": "Policía Nacional del Perú",
+      "phone": "105",
+      "type": "police",
+      "available_24h": true,
+      "description": "Emergencias policiales"
+    },
+    {
+      "id": "contact-2",
+      "name": "Bomberos",
+      "phone": "116",
+      "type": "fire",
+      "available_24h": true,
+      "description": "Emergencias de incendios y rescate"
+    },
+    {
+      "id": "contact-3",
+      "name": "SAMU (Emergencias médicas)",
+      "phone": "106",
+      "type": "medical",
+      "available_24h": true,
+      "description": "Atención médica de emergencia"
+    },
+    {
+      "id": "contact-4",
+      "name": "Defensa Civil",
+      "phone": "115",
+      "type": "civil",
+      "available_24h": true,
+      "description": "Desastres naturales y emergencias civiles"
+    },
+    {
+      "id": "contact-5",
+      "name": "Centro de Operaciones Futurismo",
+      "phone": "+51 999 888 777",
+      "type": "internal",
+      "available_24h": true,
+      "description": "Central de emergencias Futurismo"
+    }
+  ],
+  "provider_locations": [
+    {
+      "id": "loc-1",
+      "name": "Lima - Miraflores",
+      "city": "Lima",
+      "district": "Miraflores",
+      "region": "Lima",
+      "active": true,
+      "created_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "id": "loc-2",
+      "name": "Lima - Barranco",
+      "city": "Lima",
+      "district": "Barranco",
+      "region": "Lima",
+      "active": true,
+      "created_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "id": "loc-3",
+      "name": "Cusco - Centro Histórico",
+      "city": "Cusco",
+      "district": "Centro",
+      "region": "Cusco",
+      "active": true,
+      "created_at": "2024-01-01T00:00:00Z"
+    }
+  ],
+  "provider_categories": [
+    {
+      "id": "prov-cat-1",
+      "name": "Restaurantes",
+      "description": "Servicios de alimentación",
+      "icon": "utensils",
+      "active": true,
+      "created_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "id": "prov-cat-2",
+      "name": "Hoteles",
+      "description": "Alojamiento y hospedaje",
+      "icon": "building",
+      "active": true,
+      "created_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "id": "prov-cat-3",
+      "name": "Transporte",
+      "description": "Servicios de transporte turístico",
+      "icon": "truck",
+      "active": true,
+      "created_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "id": "prov-cat-4",
+      "name": "Actividades",
+      "description": "Actividades recreativas y tours",
+      "icon": "ticket",
+      "active": true,
+      "created_at": "2024-01-01T00:00:00Z"
+    }
+  ]
 }

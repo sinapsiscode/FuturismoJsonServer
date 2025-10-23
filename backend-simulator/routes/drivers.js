@@ -3,6 +3,22 @@ const express = require('express');
 module.exports = (router) => {
   const driversRouter = express.Router();
 
+  // Helper function to convert camelCase driver data to snake_case for DB
+  const toSnakeCase = (data) => {
+    return {
+      first_name: data.firstName || data.first_name,
+      last_name: data.lastName || data.last_name,
+      dni: data.dni,
+      license_number: data.licenseNumber || data.license_number,
+      license_type: data.licenseCategory || data.license_type || data.licenseType,
+      license_expiry: data.licenseExpiry || data.license_expiry || data.licenseExpiryDate,
+      phone: data.phone,
+      email: data.email,
+      status: data.status,
+      agency_id: data.agency_id || data.agencyId
+    };
+  };
+
   // Get all drivers with filters
   driversRouter.get('/', (req, res) => {
     try {
@@ -215,24 +231,51 @@ module.exports = (router) => {
   driversRouter.post('/', (req, res) => {
     try {
       const db = router.db;
-      const { user_id, license_number } = req.body;
 
-      // Check if user exists
-      const user = db.get('users').find({ id: user_id }).value();
-      if (!user) {
-        return res.status(404).json({
+      // Transform camelCase to snake_case
+      const driverData = toSnakeCase(req.body);
+      const { user_id, license_number } = driverData;
+
+      // Validation: Check required fields
+      if (!driverData.first_name || !driverData.last_name) {
+        return res.status(400).json({
           success: false,
-          error: 'Usuario no encontrado'
+          error: 'Nombre y apellido son requeridos'
         });
       }
 
-      // Check if driver profile already exists for this user
-      const existingDriver = db.get('drivers').find({ user_id }).value();
-      if (existingDriver) {
+      if (!driverData.dni) {
         return res.status(400).json({
           success: false,
-          error: 'Ya existe un perfil de conductor para este usuario'
+          error: 'DNI es requerido'
         });
+      }
+
+      if (!license_number) {
+        return res.status(400).json({
+          success: false,
+          error: 'Número de licencia es requerido'
+        });
+      }
+
+      // Check if user exists (optional - only if user_id is provided)
+      if (user_id) {
+        const user = db.get('users').find({ id: user_id }).value();
+        if (!user) {
+          return res.status(404).json({
+            success: false,
+            error: 'Usuario no encontrado'
+          });
+        }
+
+        // Check if driver profile already exists for this user
+        const existingDriver = db.get('drivers').find({ user_id }).value();
+        if (existingDriver) {
+          return res.status(400).json({
+            success: false,
+            error: 'Ya existe un perfil de conductor para este usuario'
+          });
+        }
       }
 
       // Check if license number already exists
@@ -246,14 +289,29 @@ module.exports = (router) => {
 
       const newDriver = {
         id: `driver-${Date.now()}`,
-        ...req.body,
+        ...driverData,
+        user_id: user_id || null,
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString(),
-        status: req.body.status || 'active',
+        status: driverData.status || 'active',
         is_available: true,
         current_vehicle_id: null,
         total_services: 0,
-        average_rating: 0
+        average_rating: 0,
+        total_reviews: 0,
+        experience_years: 0,
+        languages: ['es'],
+        specialties: [],
+        certifications: [],
+        availability: {
+          monday: true,
+          tuesday: true,
+          wednesday: true,
+          thursday: true,
+          friday: true,
+          saturday: true,
+          sunday: false
+        }
       };
 
       db.get('drivers').push(newDriver).write();
@@ -299,10 +357,14 @@ module.exports = (router) => {
         });
       }
 
+      // Transform camelCase to snake_case
+      const driverData = toSnakeCase(req.body);
+
       // Check license uniqueness if license is being changed
-      if (req.body.license_number && req.body.license_number !== driver.value().license_number) {
+      const newLicenseNumber = driverData.license_number || req.body.license_number;
+      if (newLicenseNumber && newLicenseNumber !== driver.value().license_number) {
         const existingLicense = db.get('drivers')
-          .find({ license_number: req.body.license_number })
+          .find({ license_number: newLicenseNumber })
           .value();
         if (existingLicense) {
           return res.status(400).json({
@@ -312,10 +374,15 @@ module.exports = (router) => {
         }
       }
 
-      const updatedDriver = {
-        ...req.body,
-        updated_at: new Date().toISOString()
-      };
+      // Merge with existing data, only update provided fields
+      const updatedDriver = {};
+      Object.keys(driverData).forEach(key => {
+        if (driverData[key] !== undefined && driverData[key] !== null) {
+          updatedDriver[key] = driverData[key];
+        }
+      });
+
+      updatedDriver.updated_at = new Date().toISOString();
 
       driver.assign(updatedDriver).write();
 

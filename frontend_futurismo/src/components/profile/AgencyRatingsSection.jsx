@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { StarIcon, ChatBubbleLeftRightIcon, ChevronDownIcon, ChevronUpIcon, FunnelIcon, CalendarDaysIcon } from '@heroicons/react/24/outline';
 import { StarIcon as StarIconSolid } from '@heroicons/react/24/solid';
 import { useTranslation } from 'react-i18next';
+import ratingsService from '../../services/ratingsService';
 
 const AgencyRatingsSection = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);
@@ -20,25 +21,20 @@ const AgencyRatingsSection = () => {
   useEffect(() => {
     const loadRatings = async () => {
       try {
-        // TODO: Implementar endpoints:
-        // GET /api/data/section/agency_ratings - para ratings generales
-        // GET /api/data/section/agency_reviews - para comentarios/reviews
-        // Por ahora retorna datos vacíos
-        const ratingsResponse = { success: true, data: [] };
+        // Cargar ratings de agencias desde el servicio
+        const [ratingsResult, summaryResult] = await Promise.all([
+          ratingsService.getAgencyRatings({ period: selectedPeriod }),
+          ratingsService.getAgencyRatingsSummary()
+        ]);
 
-        if (ratingsResponse.success) {
-          // Calcular estadísticas
-          const agencies = ratingsResponse.data || [];
-          const totalReviews = agencies.reduce((sum, agency) => sum + (agency.totalReviews || 0), 0);
-          const avgRating = agencies.length > 0
-            ? agencies.reduce((sum, agency) => sum + (agency.rating || 0), 0) / agencies.length
-            : 0;
-
+        if (ratingsResult.success && summaryResult.success) {
           setRatingsData({
-            averageRating: avgRating,
-            totalRatings: totalReviews,
-            ratingsByAgency: agencies
+            averageRating: summaryResult.data.averageRating || 0,
+            totalRatings: summaryResult.data.totalRatings || 0,
+            ratingsByAgency: ratingsResult.data || []
           });
+        } else {
+          throw new Error(ratingsResult.error || summaryResult.error || 'Error desconocido');
         }
       } catch (error) {
         console.error('Error loading ratings:', error);
@@ -51,7 +47,7 @@ const AgencyRatingsSection = () => {
     };
 
     loadRatings();
-  }, []);
+  }, [selectedPeriod]);
 
   // Filtrar datos según el período seleccionado
   const filterByPeriod = (data) => {

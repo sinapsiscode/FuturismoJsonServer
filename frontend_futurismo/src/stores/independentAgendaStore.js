@@ -25,13 +25,32 @@ const initialState = {
   workingHours: {}
 };
 
+/**
+ * Valida y convierte un valor a fecha válida
+ * @param {any} date - Valor a convertir a fecha
+ * @returns {Date} - Fecha válida o fecha actual si es inválida
+ */
+const toValidDate = (date) => {
+  if (!date) return new Date();
+
+  const dateObj = date instanceof Date ? date : new Date(date);
+
+  // Verificar si es una fecha válida
+  if (isNaN(dateObj.getTime())) {
+    console.warn('Invalid date detected, using current date instead:', date);
+    return new Date();
+  }
+
+  return dateObj;
+};
+
 const useIndependentAgendaStore = create(
   persist(
     devtools(
       (set, get) => ({
           // Estado principal
           currentView: 'week', // day, week, month, year
-          selectedDate: new Date(),
+          selectedDate: toValidDate(new Date()),
           currentGuide: '1', // Seleccionar primer guía por defecto
           
           // Eventos personales del guía (privados)
@@ -62,9 +81,9 @@ const useIndependentAgendaStore = create(
           actions: {
           // === NAVEGACIÓN Y VISTAS ===
           setCurrentView: (view) => set({ currentView: view }),
-          
-          setSelectedDate: (date) => set({ selectedDate: new Date(date) }),
-          
+
+          setSelectedDate: (date) => set({ selectedDate: toValidDate(date) }),
+
           setCurrentGuide: (guideId) => set({ currentGuide: guideId }),
           
           // === EVENTOS PERSONALES (SOLO GUÍA) ===
@@ -642,7 +661,7 @@ const useIndependentAgendaStore = create(
           resetStore: () => {
             set({
               currentView: 'week',
-              selectedDate: new Date(),
+              selectedDate: toValidDate(new Date()),
               currentGuide: '1',
               personalEvents: {},
               availabilitySlots: {},

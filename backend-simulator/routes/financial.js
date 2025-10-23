@@ -588,5 +588,225 @@ module.exports = (router) => {
     }
   });
 
+  /**
+   * GET /api/financial/rewards/categories
+   * Obtener categorías de premios
+   */
+  financialRouter.get('/rewards/categories', (req, res) => {
+    try {
+      const db = router.db;
+      const categories = db.get('rewards_categories').value() || [];
+
+      res.json({
+        success: true,
+        data: categories.filter(c => c.active !== false)
+      });
+    } catch (error) {
+      console.error('Error al obtener categorías de premios:', error);
+      res.status(500).json({
+        success: false,
+        error: 'Error al obtener categorías de premios',
+        data: []
+      });
+    }
+  });
+
+  /**
+   * POST /api/financial/rewards/categories
+   * Crear nueva categoría de premio
+   */
+  financialRouter.post('/rewards/categories', (req, res) => {
+    try {
+      const db = router.db;
+      const { name, description, icon, color } = req.body;
+
+      if (!name) {
+        return res.status(400).json({
+          success: false,
+          error: 'El nombre es requerido'
+        });
+      }
+
+      const newCategory = {
+        id: `reward-cat-${Date.now()}`,
+        name,
+        description: description || '',
+        icon: icon || 'tag',
+        color: color || '#3B82F6',
+        active: true,
+        created_at: new Date().toISOString()
+      };
+
+      db.get('rewards_categories').push(newCategory).write();
+
+      res.status(201).json({
+        success: true,
+        data: newCategory,
+        message: 'Categoría creada exitosamente'
+      });
+    } catch (error) {
+      console.error('Error al crear categoría:', error);
+      res.status(500).json({
+        success: false,
+        error: 'Error al crear categoría'
+      });
+    }
+  });
+
+  /**
+   * PUT /api/financial/rewards/categories/:id
+   * Actualizar categoría de premio
+   */
+  financialRouter.put('/rewards/categories/:id', (req, res) => {
+    try {
+      const db = router.db;
+      const { id } = req.params;
+      const { name, description, icon, color, active } = req.body;
+
+      const category = db.get('rewards_categories').find({ id }).value();
+
+      if (!category) {
+        return res.status(404).json({
+          success: false,
+          error: 'Categoría no encontrada'
+        });
+      }
+
+      const updatedCategory = {
+        ...category,
+        name: name || category.name,
+        description: description !== undefined ? description : category.description,
+        icon: icon || category.icon,
+        color: color || category.color,
+        active: active !== undefined ? active : category.active,
+        updated_at: new Date().toISOString()
+      };
+
+      db.get('rewards_categories').find({ id }).assign(updatedCategory).write();
+
+      res.json({
+        success: true,
+        data: updatedCategory,
+        message: 'Categoría actualizada exitosamente'
+      });
+    } catch (error) {
+      console.error('Error al actualizar categoría:', error);
+      res.status(500).json({
+        success: false,
+        error: 'Error al actualizar categoría'
+      });
+    }
+  });
+
+  /**
+   * DELETE /api/financial/rewards/categories/:id
+   * Eliminar categoría de premio
+   */
+  financialRouter.delete('/rewards/categories/:id', (req, res) => {
+    try {
+      const db = router.db;
+      const { id } = req.params;
+
+      const category = db.get('rewards_categories').find({ id }).value();
+
+      if (!category) {
+        return res.status(404).json({
+          success: false,
+          error: 'Categoría no encontrada'
+        });
+      }
+
+      // Soft delete
+      db.get('rewards_categories').find({ id }).assign({ active: false }).write();
+
+      res.json({
+        success: true,
+        message: 'Categoría eliminada exitosamente'
+      });
+    } catch (error) {
+      console.error('Error al eliminar categoría:', error);
+      res.status(500).json({
+        success: false,
+        error: 'Error al eliminar categoría'
+      });
+    }
+  });
+
+  /**
+   * GET /api/financial/points/config
+   * Obtener configuración de puntos
+   */
+  financialRouter.get('/points/config', (req, res) => {
+    try {
+      const db = router.db;
+      const config = db.get('points_config').value() || {
+        enabled: true,
+        points_per_service: 10,
+        points_per_dollar: 1,
+        bonus_multiplier: 1.5,
+        minimum_redemption: 100,
+        expiration_months: 12,
+        levels: []
+      };
+
+      res.json({
+        success: true,
+        data: config
+      });
+    } catch (error) {
+      console.error('Error al obtener configuración de puntos:', error);
+      res.status(500).json({
+        success: false,
+        error: 'Error al obtener configuración de puntos'
+      });
+    }
+  });
+
+  /**
+   * PUT /api/financial/points/config
+   * Actualizar configuración de puntos
+   */
+  financialRouter.put('/points/config', (req, res) => {
+    try {
+      const db = router.db;
+      const {
+        enabled,
+        points_per_service,
+        points_per_dollar,
+        bonus_multiplier,
+        minimum_redemption,
+        expiration_months,
+        levels
+      } = req.body;
+
+      const currentConfig = db.get('points_config').value() || {};
+
+      const updatedConfig = {
+        enabled: enabled !== undefined ? enabled : currentConfig.enabled,
+        points_per_service: points_per_service || currentConfig.points_per_service,
+        points_per_dollar: points_per_dollar || currentConfig.points_per_dollar,
+        bonus_multiplier: bonus_multiplier || currentConfig.bonus_multiplier,
+        minimum_redemption: minimum_redemption || currentConfig.minimum_redemption,
+        expiration_months: expiration_months || currentConfig.expiration_months,
+        levels: levels || currentConfig.levels,
+        updated_at: new Date().toISOString()
+      };
+
+      db.set('points_config', updatedConfig).write();
+
+      res.json({
+        success: true,
+        data: updatedConfig,
+        message: 'Configuración actualizada exitosamente'
+      });
+    } catch (error) {
+      console.error('Error al actualizar configuración:', error);
+      res.status(500).json({
+        success: false,
+        error: 'Error al actualizar configuración'
+      });
+    }
+  });
+
   return financialRouter;
 };

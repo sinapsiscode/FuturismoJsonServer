@@ -3,6 +3,23 @@ const express = require('express');
 module.exports = (router) => {
   const vehiclesRouter = express.Router();
 
+  // Helper function to transform documents from frontend format
+  const transformDocuments = (documents) => {
+    if (!documents) return {};
+
+    // Transform camelCase document keys to database format
+    return {
+      soat: documents.soat || documents.SOAT || {
+        number: documents.soat?.number || '',
+        expiry: documents.soat?.expiry || ''
+      },
+      technicalReview: documents.technicalReview || documents.technical_review || documents.TECHNICAL_REVIEW || {
+        number: documents.technicalReview?.number || documents.technical_review?.number || '',
+        expiry: documents.technicalReview?.expiry || documents.technical_review?.expiry || ''
+      }
+    };
+  };
+
   // Get all vehicles with filters
   vehiclesRouter.get('/', (req, res) => {
     try {
@@ -242,14 +259,63 @@ module.exports = (router) => {
   vehiclesRouter.post('/', (req, res) => {
     try {
       const db = router.db;
+
+      // Validate required fields
+      if (!req.body.plate) {
+        return res.status(400).json({
+          success: false,
+          error: 'La placa es requerida'
+        });
+      }
+
+      if (!req.body.brand) {
+        return res.status(400).json({
+          success: false,
+          error: 'La marca es requerida'
+        });
+      }
+
+      if (!req.body.model) {
+        return res.status(400).json({
+          success: false,
+          error: 'El modelo es requerido'
+        });
+      }
+
+      // Check if plate already exists
+      const existingPlate = db.get('vehicles').find({ plate: req.body.plate }).value();
+      if (existingPlate) {
+        return res.status(400).json({
+          success: false,
+          error: 'Ya existe un vehículo con esta placa'
+        });
+      }
+
+      // Transform documents if provided
+      const documents = req.body.documents ? transformDocuments(req.body.documents) : {};
+
       const newVehicle = {
         id: `vehicle-${Date.now()}`,
-        ...req.body,
+        plate: req.body.plate,
+        brand: req.body.brand,
+        model: req.body.model,
+        year: req.body.year || new Date().getFullYear(),
+        type: req.body.type || 'van',
+        capacity: req.body.capacity || 10,
+        fuel_type: req.body.fuel_type || req.body.fuelType || 'diesel',
+        color: req.body.color,
+        vin: req.body.vin,
+        agency_id: req.body.agency_id || req.body.agencyId || null,
+        documents,
+        photos: req.body.photos || [],
+        features: req.body.features || [],
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString(),
         is_available: true,
         status: 'active',
-        current_driver_id: null
+        current_driver_id: null,
+        total_services: 0,
+        average_rating: 0
       };
 
       db.get('vehicles').push(newVehicle).write();
@@ -260,6 +326,7 @@ module.exports = (router) => {
         message: 'Vehículo creado exitosamente'
       });
     } catch (error) {
+      console.error('Error creating vehicle:', error);
       res.status(500).json({
         success: false,
         error: 'Error al crear vehículo'
@@ -280,10 +347,38 @@ module.exports = (router) => {
         });
       }
 
-      const updatedVehicle = {
+      // Check plate uniqueness if plate is being changed
+      if (req.body.plate && req.body.plate !== vehicle.value().plate) {
+        const existingPlate = db.get('vehicles').find({ plate: req.body.plate }).value();
+        if (existingPlate) {
+          return res.status(400).json({
+            success: false,
+            error: 'Ya existe un vehículo con esta placa'
+          });
+        }
+      }
+
+      // Transform documents if provided
+      let updatedVehicle = {
         ...req.body,
         updated_at: new Date().toISOString()
       };
+
+      if (req.body.documents) {
+        updatedVehicle.documents = transformDocuments(req.body.documents);
+      }
+
+      // Handle camelCase to snake_case for fuel_type
+      if (req.body.fuelType) {
+        updatedVehicle.fuel_type = req.body.fuelType;
+        delete updatedVehicle.fuelType;
+      }
+
+      // Handle camelCase to snake_case for agency_id
+      if (req.body.agencyId) {
+        updatedVehicle.agency_id = req.body.agencyId;
+        delete updatedVehicle.agencyId;
+      }
 
       vehicle.assign(updatedVehicle).write();
 
@@ -293,6 +388,7 @@ module.exports = (router) => {
         message: 'Vehículo actualizado exitosamente'
       });
     } catch (error) {
+      console.error('Error updating vehicle:', error);
       res.status(500).json({
         success: false,
         error: 'Error al actualizar vehículo'

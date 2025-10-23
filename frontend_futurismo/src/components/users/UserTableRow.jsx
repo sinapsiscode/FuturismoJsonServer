@@ -84,9 +84,15 @@ const UserTableRow = ({
       </td>
       
       <td className="px-4 lg:px-6 py-4 whitespace-nowrap">
-        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusClasses(user.status)}`}>
-          {user.status === USER_STATUS.ACTIVE ? t('users.status.active') : t('users.status.inactive')}
-        </span>
+        {user.role === USER_ROLES.AGENCY ? (
+          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+            {t('users.status.active')}
+          </span>
+        ) : (
+          <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusClasses(user.status)}`}>
+            {user.status === USER_STATUS.ACTIVE ? t('users.status.active') : t('users.status.inactive')}
+          </span>
+        )}
       </td>
       
       <td className="px-4 lg:px-6 py-4 whitespace-nowrap text-sm text-gray-500">
@@ -118,23 +124,26 @@ const UserTableRow = ({
           >
             <KeyIcon className="h-4 w-4" />
           </button>
-          
-          <button
-            onClick={() => onStatusToggle(user.id)}
-            className={`p-1 rounded ${
-              user.status === USER_STATUS.ACTIVE
-                ? 'text-red-600 hover:text-red-900'
-                : 'text-green-600 hover:text-green-900'
-            }`}
-            title={user.status === USER_STATUS.ACTIVE ? t('users.list.deactivate') : t('users.list.activate')}
-          >
-            {user.status === USER_STATUS.ACTIVE ? (
-              <XCircleIcon className="h-4 w-4" />
-            ) : (
-              <CheckCircleIcon className="h-4 w-4" />
-            )}
-          </button>
-          
+
+          {/* Las agencias siempre están activas, no se puede cambiar su estado */}
+          {user.role !== USER_ROLES.AGENCY && (
+            <button
+              onClick={() => onStatusToggle(user.id)}
+              className={`p-1 rounded ${
+                user.status === USER_STATUS.ACTIVE
+                  ? 'text-red-600 hover:text-red-900'
+                  : 'text-green-600 hover:text-green-900'
+              }`}
+              title={user.status === USER_STATUS.ACTIVE ? t('users.list.deactivate') : t('users.list.activate')}
+            >
+              {user.status === USER_STATUS.ACTIVE ? (
+                <XCircleIcon className="h-4 w-4" />
+              ) : (
+                <CheckCircleIcon className="h-4 w-4" />
+              )}
+            </button>
+          )}
+
           <button
             onClick={() => onDelete && onDelete(user)}
             className="text-red-600 hover:text-red-900 p-1 rounded"

@@ -4,7 +4,10 @@
       "Bash(npm run dev:*)",
       "Bash(pkill:*)",
       "Bash(rm:*)",
-      "Bash(rg:*)"
+      "Bash(rg:*)",
+      "Read(//c/Users/usu/Documents/FuturismoJsonServer/backend-simulator/routes/**)",
+      "Read(//c/Users/usu/**)",
+      "Bash(find:*)"
     ],
     "deny": []
   }

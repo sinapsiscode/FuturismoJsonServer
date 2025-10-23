@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { 
-  CameraIcon, 
-  CalendarIcon, 
-  UserIcon, 
+import {
+  CameraIcon,
+  CalendarIcon,
+  UserIcon,
   MapPinIcon,
   FunnelIcon,
   MagnifyingGlassIcon,
@@ -13,6 +13,7 @@ import {
   XMarkIcon
 } from '@heroicons/react/24/outline';
 import { formatters } from '../../utils/formatters';
+import monitoringService from '../../services/monitoringService';
 
 const TourPhotosGallery = () => {
   const { t } = useTranslation();
@@ -33,16 +34,15 @@ const TourPhotosGallery = () => {
     const loadPhotos = async () => {
       try {
         setLoading(true);
-        // TODO: Implementar endpoint GET /api/monitoring/photos o /api/tours/photos
-        // const response = await fetch('/api/monitoring/photos');
-        // const result = await response.json();
-        // const photosData = result.data || [];
+        const result = await monitoringService.getPhotos();
 
-        // Por ahora retorna array vacío
-        const photosData = [];
-
-        setPhotos(photosData);
-        setFilteredPhotos(photosData);
+        if (result.success) {
+          const photosData = result.data || [];
+          setPhotos(photosData);
+          setFilteredPhotos(photosData);
+        } else {
+          throw new Error(result.error || 'Error al cargar fotos');
+        }
       } catch (error) {
         console.error('Error loading photos:', error);
         setPhotos([]);
@@ -106,13 +106,29 @@ const TourPhotosGallery = () => {
 
   const handleDownload = (photo) => {
     // Implementar descarga
-    console.log('Descargando foto:', photo.id);
+    const link = document.createElement('a');
+    link.href = photo.url;
+    link.download = `tour-photo-${photo.id}.jpg`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   };
 
-  const handleDelete = (photoId) => {
-    if (window.confirm(t('monitoring.photos.confirmDelete'))) {
-      setPhotos(prev => prev.filter(p => p.id !== photoId));
-      setShowPreview(false);
+  const handleDelete = async (photoId) => {
+    if (window.confirm(t('monitoring.photos.confirmDelete') || '¿Está seguro de eliminar esta foto?')) {
+      try {
+        const result = await monitoringService.deletePhoto(photoId);
+
+        if (result.success) {
+          setPhotos(prev => prev.filter(p => p.id !== photoId));
+          setShowPreview(false);
+        } else {
+          alert('Error al eliminar la foto: ' + result.error);
+        }
+      } catch (error) {
+        console.error('Error deleting photo:', error);
+        alert('Error al eliminar la foto');
+      }
     }
   };
 

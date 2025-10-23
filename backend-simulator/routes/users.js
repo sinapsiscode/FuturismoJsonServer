@@ -154,13 +154,51 @@ module.exports = (router) => {
         ...req.body,
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString(),
-        status: req.body.status || 'active',
+        // Las agencias siempre están activas
+        status: req.body.role === 'agency' ? 'active' : (req.body.status || 'active'),
         email_verified: false,
         phone_verified: false,
         last_login: null
       };
 
       db.get('users').push(newUser).write();
+
+      // If role is agency, create agency record
+      if (req.body.role === 'agency') {
+        const newAgency = {
+          id: `agency-${Date.now()}`,
+          user_id: newUser.id,
+          name: `${req.body.firstName} ${req.body.lastName}`,
+          business_name: req.body.businessName || `${req.body.firstName} ${req.body.lastName}`,
+          ruc: req.body.ruc || '',
+          email: req.body.email,
+          phone: req.body.phone,
+          address: req.body.address || '',
+          description: req.body.description || '',
+          website: req.body.website || '',
+          logo: req.body.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(req.body.firstName + ' ' + req.body.lastName)}&background=10B981&color=fff&size=200`,
+          rating: 0,
+          total_reviews: 0,
+          total_tours: 0,
+          status: 'active',
+          subscription_plan: 'standard',
+          verified: false,
+          points: 0,
+          level: 'bronze',
+          contact_person: {
+            name: `${req.body.firstName} ${req.body.lastName}`,
+            position: 'Representante',
+            phone: req.body.phone,
+            email: req.body.email
+          },
+          specialties: [],
+          languages: ['es'],
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
+        };
+
+        db.get('agencies').push(newAgency).write();
+      }
 
       // Create activity log
       const activityLog = {
@@ -180,7 +218,9 @@ module.exports = (router) => {
       res.status(201).json({
         success: true,
         data: userWithoutPassword,
-        message: 'Usuario creado exitosamente'
+        message: req.body.role === 'agency'
+          ? 'Agencia creada exitosamente'
+          : 'Usuario creado exitosamente'
       });
     } catch (error) {
       res.status(500).json({
@@ -217,6 +257,8 @@ module.exports = (router) => {
 
       const updatedUser = {
         ...req.body,
+        // Las agencias siempre están activas
+        status: req.body.role === 'agency' ? 'active' : req.body.status,
         updated_at: new Date().toISOString()
       };
 

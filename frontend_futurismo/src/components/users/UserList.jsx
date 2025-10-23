@@ -3,7 +3,7 @@ import { UserIcon, EyeIcon, PencilIcon, KeyIcon } from '@heroicons/react/24/outl
 import { useTranslation } from 'react-i18next';
 import { useUserList } from '../../hooks/useUserList';
 import { formatFullDateTime, getRoleColor, getRoleName, getStatusClasses } from '../../utils/usersHelpers';
-import { DEFAULT_VALUES, USER_STATUS } from '../../constants/usersConstants';
+import { DEFAULT_VALUES, USER_STATUS, USER_ROLES } from '../../constants/usersConstants';
 import UserStatCards from './UserStatCards';
 import UserFilters from './UserFilters';
 import UserTableRow from './UserTableRow';
@@ -167,9 +167,15 @@ const UserList = ({ onEdit, onView, onDelete }) => {
               
               <div className="flex justify-between items-center">
                 <span className="text-xs text-gray-500">{t('users.list.status')}:</span>
-                <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusClasses(user.status)}`}>
-                  {user.status === USER_STATUS.ACTIVE ? t('users.status.active') : t('users.status.inactive')}
-                </span>
+                {user.role === USER_ROLES.AGENCY ? (
+                  <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                    {t('users.status.active')}
+                  </span>
+                ) : (
+                  <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusClasses(user.status)}`}>
+                    {user.status === USER_STATUS.ACTIVE ? t('users.status.active') : t('users.status.inactive')}
+                  </span>
+                )}
               </div>
               
               <div className="flex justify-between items-center">

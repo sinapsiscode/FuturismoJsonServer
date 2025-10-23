@@ -1,32 +1,39 @@
-import { useState } from 'react';
-import { 
-  format, 
-  addDays, 
-  subDays, 
-  addWeeks, 
-  subWeeks, 
-  addMonths, 
-  subMonths, 
-  startOfWeek, 
-  endOfWeek 
+import { useState, useMemo } from 'react';
+import {
+  format,
+  addDays,
+  subDays,
+  addWeeks,
+  subWeeks,
+  addMonths,
+  subMonths,
+  startOfWeek,
+  endOfWeek
 } from 'date-fns';
 import { es } from 'date-fns/locale';
-import { 
-  CalendarDaysIcon, 
-  Squares2X2Icon, 
-  ViewColumnsIcon, 
-  TableCellsIcon 
+import {
+  CalendarDaysIcon,
+  Squares2X2Icon,
+  ViewColumnsIcon,
+  TableCellsIcon
 } from '@heroicons/react/24/solid';
 import useIndependentAgendaStore from '../stores/independentAgendaStore';
 import useAuthStore from '../stores/authStore';
 
 const useFantasticalLayout = () => {
   const { user } = useAuthStore();
-  const { 
-    currentView, 
-    selectedDate, 
+  const {
+    currentView,
+    selectedDate: rawSelectedDate,
     actions: { setCurrentView, setSelectedDate }
   } = useIndependentAgendaStore();
+
+  // Validar selectedDate para evitar "Invalid time value"
+  const selectedDate = useMemo(() => {
+    if (!rawSelectedDate) return new Date();
+    const dateObj = rawSelectedDate instanceof Date ? rawSelectedDate : new Date(rawSelectedDate);
+    return isNaN(dateObj.getTime()) ? new Date() : dateObj;
+  }, [rawSelectedDate]);
 
   const [isLoading, setIsLoading] = useState(false);
 

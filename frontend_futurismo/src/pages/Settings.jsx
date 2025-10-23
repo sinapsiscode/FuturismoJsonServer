@@ -16,7 +16,7 @@ import {
 import GeneralSettings from '../components/settings/GeneralSettings';
 import ToursSettings from '../components/settings/ToursSettings';
 import NotificationsSettings from '../components/settings/NotificationsSettings';
-import ServiceTypesSettings from '../components/settings/ServiceTypesSettings';
+import ServicesConfigSettings from '../components/settings/ServicesConfigSettings';
 import { useSettingsStore } from '../stores/settingsStore';
 
 const Settings = () => {
@@ -41,7 +41,7 @@ const Settings = () => {
       id: 'services',
       name: 'Servicios',
       icon: CogIcon,
-      description: 'Tipos de servicio y configuraciones relacionadas'
+      description: 'Tipos de servicio, métodos de pago y configuraciones relacionadas'
     },
     {
       id: 'agencies',
@@ -110,7 +110,7 @@ const Settings = () => {
       case 'tours':
         return <ToursSettings />;
       case 'services':
-        return <ServiceTypesSettings />;
+        return <ServicesConfigSettings />;
       case 'notifications':
         return <NotificationsSettings />;
       case 'agencies':

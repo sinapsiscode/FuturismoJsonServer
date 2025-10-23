@@ -1,40 +1,47 @@
-import { useState, useEffect } from 'react';
-import { 
-  format, 
-  startOfMonth, 
-  endOfMonth, 
-  startOfWeek, 
-  endOfWeek, 
-  addDays 
+import React, { useState, useEffect } from 'react';
+import {
+  format,
+  startOfMonth,
+  endOfMonth,
+  startOfWeek,
+  endOfWeek,
+  addDays
 } from 'date-fns';
 import useIndependentAgendaStore from '../stores/independentAgendaStore';
 import useAuthStore from '../stores/authStore';
-import { 
-  EVENT_TYPES, 
-  CALENDAR_CONFIG, 
+import {
+  EVENT_TYPES,
+  CALENDAR_CONFIG,
   CALENDAR_VIEWS,
   USER_ROLES
 } from '../constants/monthViewConstants';
 
 const useMonthView = () => {
   const { user } = useAuthStore();
-  const { 
-    selectedDate, 
+  const {
+    selectedDate: rawSelectedDate,
     currentGuide,
-    actions: { 
-      getGuideCompleteAgenda, 
-      getGuideAvailability, 
+    actions: {
+      getGuideCompleteAgenda,
+      getGuideAvailability,
       setSelectedDate,
       setCurrentView
     }
   } = useIndependentAgendaStore();
+
+  // Validar selectedDate para evitar "Invalid time value"
+  const selectedDate = React.useMemo(() => {
+    if (!rawSelectedDate) return new Date();
+    const dateObj = rawSelectedDate instanceof Date ? rawSelectedDate : new Date(rawSelectedDate);
+    return isNaN(dateObj.getTime()) ? new Date() : dateObj;
+  }, [rawSelectedDate]);
 
   const [monthEvents, setMonthEvents] = useState({});
   const [hoveredDate, setHoveredDate] = useState(null);
   const [selectedEvent, setSelectedEvent] = useState(null);
 
   const isAdmin = user?.role === USER_ROLES.ADMIN;
-  
+
   const monthStart = startOfMonth(selectedDate);
   const monthEnd = endOfMonth(monthStart);
   const startDate = startOfWeek(monthStart, { weekStartsOn: CALENDAR_CONFIG.WEEK_START_DAY });

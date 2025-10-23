@@ -499,5 +499,279 @@ module.exports = (router) => {
     }
   });
 
+  /**
+   * POST /api/emergency/categories
+   * Crear nueva categoría de emergencia
+   */
+  emergencyRouter.post('/categories', (req, res) => {
+    try {
+      const db = router.db;
+      const { name, description, color, icon } = req.body;
+
+      if (!name) {
+        return res.status(400).json({
+          success: false,
+          error: 'El nombre es requerido'
+        });
+      }
+
+      const newCategory = {
+        id: `emerg-cat-${Date.now()}`,
+        name,
+        description: description || '',
+        color: color || '#EF4444',
+        icon: icon || 'exclamation-triangle',
+        active: true,
+        created_at: new Date().toISOString()
+      };
+
+      db.get('emergency_categories').push(newCategory).write();
+
+      res.status(201).json({
+        success: true,
+        data: newCategory,
+        message: 'Categoría creada exitosamente'
+      });
+    } catch (error) {
+      console.error('Error al crear categoría de emergencia:', error);
+      res.status(500).json({
+        success: false,
+        error: 'Error al crear categoría de emergencia'
+      });
+    }
+  });
+
+  /**
+   * PUT /api/emergency/categories/:id
+   * Actualizar categoría de emergencia
+   */
+  emergencyRouter.put('/categories/:id', (req, res) => {
+    try {
+      const db = router.db;
+      const { id } = req.params;
+      const { name, description, color, icon, active } = req.body;
+
+      const category = db.get('emergency_categories').find({ id }).value();
+
+      if (!category) {
+        return res.status(404).json({
+          success: false,
+          error: 'Categoría no encontrada'
+        });
+      }
+
+      const updatedCategory = {
+        ...category,
+        name: name || category.name,
+        description: description !== undefined ? description : category.description,
+        color: color || category.color,
+        icon: icon || category.icon,
+        active: active !== undefined ? active : category.active,
+        updated_at: new Date().toISOString()
+      };
+
+      db.get('emergency_categories').find({ id }).assign(updatedCategory).write();
+
+      res.json({
+        success: true,
+        data: updatedCategory,
+        message: 'Categoría actualizada exitosamente'
+      });
+    } catch (error) {
+      console.error('Error al actualizar categoría:', error);
+      res.status(500).json({
+        success: false,
+        error: 'Error al actualizar categoría'
+      });
+    }
+  });
+
+  /**
+   * DELETE /api/emergency/categories/:id
+   * Eliminar categoría de emergencia
+   */
+  emergencyRouter.delete('/categories/:id', (req, res) => {
+    try {
+      const db = router.db;
+      const { id } = req.params;
+
+      const category = db.get('emergency_categories').find({ id }).value();
+
+      if (!category) {
+        return res.status(404).json({
+          success: false,
+          error: 'Categoría no encontrada'
+        });
+      }
+
+      // Soft delete
+      db.get('emergency_categories').find({ id }).assign({ active: false }).write();
+
+      res.json({
+        success: true,
+        message: 'Categoría eliminada exitosamente'
+      });
+    } catch (error) {
+      console.error('Error al eliminar categoría:', error);
+      res.status(500).json({
+        success: false,
+        error: 'Error al eliminar categoría'
+      });
+    }
+  });
+
+  /**
+   * GET /api/emergency/contacts
+   * Obtener contactos de emergencia
+   */
+  emergencyRouter.get('/contacts', (req, res) => {
+    try {
+      const db = router.db;
+      const { type } = req.query;
+
+      let contacts = db.get('emergency_contacts').value() || [];
+
+      // Filter by type if provided
+      if (type) {
+        contacts = contacts.filter(c => c.type === type);
+      }
+
+      res.json({
+        success: true,
+        data: contacts
+      });
+    } catch (error) {
+      console.error('Error al obtener contactos de emergencia:', error);
+      res.status(500).json({
+        success: false,
+        error: 'Error al obtener contactos de emergencia',
+        data: []
+      });
+    }
+  });
+
+  /**
+   * POST /api/emergency/contacts
+   * Crear nuevo contacto de emergencia
+   */
+  emergencyRouter.post('/contacts', (req, res) => {
+    try {
+      const db = router.db;
+      const { name, phone, type, available_24h, description } = req.body;
+
+      if (!name || !phone || !type) {
+        return res.status(400).json({
+          success: false,
+          error: 'Nombre, teléfono y tipo son requeridos'
+        });
+      }
+
+      const newContact = {
+        id: `contact-${Date.now()}`,
+        name,
+        phone,
+        type,
+        available_24h: available_24h !== undefined ? available_24h : true,
+        description: description || '',
+        active: true,
+        created_at: new Date().toISOString()
+      };
+
+      db.get('emergency_contacts').push(newContact).write();
+
+      res.status(201).json({
+        success: true,
+        data: newContact,
+        message: 'Contacto creado exitosamente'
+      });
+    } catch (error) {
+      console.error('Error al crear contacto:', error);
+      res.status(500).json({
+        success: false,
+        error: 'Error al crear contacto'
+      });
+    }
+  });
+
+  /**
+   * PUT /api/emergency/contacts/:id
+   * Actualizar contacto de emergencia
+   */
+  emergencyRouter.put('/contacts/:id', (req, res) => {
+    try {
+      const db = router.db;
+      const { id } = req.params;
+      const { name, phone, type, available_24h, description, active } = req.body;
+
+      const contact = db.get('emergency_contacts').find({ id }).value();
+
+      if (!contact) {
+        return res.status(404).json({
+          success: false,
+          error: 'Contacto no encontrado'
+        });
+      }
+
+      const updatedContact = {
+        ...contact,
+        name: name || contact.name,
+        phone: phone || contact.phone,
+        type: type || contact.type,
+        available_24h: available_24h !== undefined ? available_24h : contact.available_24h,
+        description: description !== undefined ? description : contact.description,
+        active: active !== undefined ? active : contact.active,
+        updated_at: new Date().toISOString()
+      };
+
+      db.get('emergency_contacts').find({ id }).assign(updatedContact).write();
+
+      res.json({
+        success: true,
+        data: updatedContact,
+        message: 'Contacto actualizado exitosamente'
+      });
+    } catch (error) {
+      console.error('Error al actualizar contacto:', error);
+      res.status(500).json({
+        success: false,
+        error: 'Error al actualizar contacto'
+      });
+    }
+  });
+
+  /**
+   * DELETE /api/emergency/contacts/:id
+   * Eliminar contacto de emergencia
+   */
+  emergencyRouter.delete('/contacts/:id', (req, res) => {
+    try {
+      const db = router.db;
+      const { id } = req.params;
+
+      const contact = db.get('emergency_contacts').find({ id }).value();
+
+      if (!contact) {
+        return res.status(404).json({
+          success: false,
+          error: 'Contacto no encontrado'
+        });
+      }
+
+      // Soft delete
+      db.get('emergency_contacts').find({ id }).assign({ active: false }).write();
+
+      res.json({
+        success: true,
+        message: 'Contacto eliminado exitosamente'
+      });
+    } catch (error) {
+      console.error('Error al eliminar contacto:', error);
+      res.status(500).json({
+        success: false,
+        error: 'Error al eliminar contacto'
+      });
+    }
+  });
+
   return emergencyRouter;
 };

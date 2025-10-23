@@ -30,6 +30,7 @@ const Providers = lazy(() => import('./pages/Providers'));
 const EmergencyProtocols = lazy(() => import('./pages/EmergencyProtocols'));
 const GuidesManagement = lazy(() => import('./pages/GuidesManagement'));
 const ClientsManagement = lazy(() => import('./pages/ClientsManagement'));
+const AgenciesManagement = lazy(() => import('./pages/AgenciesManagement'));
 const DriversManagement = lazy(() => import('./pages/DriversManagement'));
 const VehiclesManagement = lazy(() => import('./pages/VehiclesManagement'));
 const ServicesManagement = lazy(() => import('./pages/ServicesManagement'));
@@ -266,21 +267,29 @@ function App() {
                 </ProtectedRoute>
               } 
             />
-            <Route 
-              path="clients" 
+            <Route
+              path="clients"
               element={
                 <ProtectedRoute allowedRoles={['admin']}>
                   <ClientsManagement />
                 </ProtectedRoute>
-              } 
+              }
             />
-            <Route 
-              path="drivers" 
+            <Route
+              path="agencies"
+              element={
+                <ProtectedRoute allowedRoles={['admin']}>
+                  <AgenciesManagement />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="drivers"
               element={
                 <ProtectedRoute allowedRoles={['admin']}>
                   <DriversManagement />
                 </ProtectedRoute>
-              } 
+              }
             />
             <Route 
               path="vehicles" 

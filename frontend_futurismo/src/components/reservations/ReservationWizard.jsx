@@ -78,7 +78,7 @@ const step3Schema = yup.object({
   acceptTerms: yup.boolean().oneOf([true], 'Debe aceptar los términos y condiciones')
 });
 
-const ReservationWizard = ({ onClose }) => {
+const ReservationWizard = ({ onClose, onComplete }) => {
   const navigate = useNavigate();
   const { submitReservation } = useReservationsStore();
   const { t } = useTranslation();
@@ -89,6 +89,8 @@ const ReservationWizard = ({ onClose }) => {
   const [canBookDirectReservation, setCanBookDirectReservation] = useState(true);
   const [serviceTypes, setServiceTypes] = useState([]);
   const [loadingTypes, setLoadingTypes] = useState(true);
+  const [paymentMethods, setPaymentMethods] = useState([]);
+  const [loadingPaymentMethods, setLoadingPaymentMethods] = useState(true);
 
   // Obtener servicios del catálogo (NO tours activos)
   const { services: availableServices, loadServices, isLoading: servicesLoading } = useServicesStore();
@@ -117,6 +119,32 @@ const ReservationWizard = ({ onClose }) => {
     };
 
     loadServiceTypes();
+  }, []);
+
+  // Cargar métodos de pago desde la API
+  useEffect(() => {
+    const loadPaymentMethods = async () => {
+      try {
+        const response = await fetch('/api/config/payment-methods');
+        const result = await response.json();
+
+        if (result.success && result.data) {
+          setPaymentMethods(result.data);
+        }
+      } catch (error) {
+        console.error('Error loading payment methods:', error);
+        // Fallback a métodos por defecto
+        setPaymentMethods([
+          { id: 'transfer', name: 'Transferencia Bancaria' },
+          { id: 'cash', name: 'Efectivo' },
+          { id: 'card', name: 'Tarjeta de Crédito/Débito' }
+        ]);
+      } finally {
+        setLoadingPaymentMethods(false);
+      }
+    };
+
+    loadPaymentMethods();
   }, []);
 
   // Cargar catálogo de servicios al montar el componente
@@ -243,7 +271,12 @@ const ReservationWizard = ({ onClose }) => {
 
       await submitReservation();
       toast.success('Reserva creada exitosamente');
-      
+
+      // Llamar callback de completado si existe
+      if (onComplete) {
+        onComplete();
+      }
+
       // Navegar a la página de confirmación o cerrar el wizard
       if (onClose) {
         onClose();
@@ -682,14 +715,24 @@ const ReservationWizard = ({ onClose }) => {
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">Método de Pago *</label>
-              <select
-                {...register('paymentMethod')}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              >
-                <option value="transfer">Transferencia Bancaria</option>
-                <option value="cash">Efectivo</option>
-                <option value="card">Tarjeta de Crédito/Débito</option>
-              </select>
+              {loadingPaymentMethods ? (
+                <div className="w-full px-4 py-2 border border-gray-300 rounded-lg bg-gray-50 text-gray-500">
+                  Cargando métodos de pago...
+                </div>
+              ) : (
+                <select
+                  {...register('paymentMethod')}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  disabled={loadingPaymentMethods}
+                >
+                  <option value="">Seleccionar método de pago</option>
+                  {paymentMethods.map((method) => (
+                    <option key={method.id} value={method.id}>
+                      {method.name}
+                    </option>
+                  ))}
+                </select>
+              )}
               {errors.paymentMethod && (
                 <p className="mt-1 text-sm text-red-600">{errors.paymentMethod.message}</p>
               )}

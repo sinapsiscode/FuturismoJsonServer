@@ -10,10 +10,10 @@ module.exports = (router) => {
   reservationsRouter.get('/', adminOrAgency(), (req, res) => {
     try {
       const db = router.db;
-      let reservations = db.get('reservations').value();
+      let reservations = db.get('reservations').value() || [];
 
       // Apply filters if provided
-      const { status, date_from, date_to, user_id } = req.query;
+      const { status, date_from, date_to, user_id, page, pageSize } = req.query;
 
       if (status) {
         reservations = reservations.filter(r => r.status === status);
@@ -31,10 +31,24 @@ module.exports = (router) => {
         reservations = reservations.filter(r => new Date(r.created_at) <= new Date(date_to));
       }
 
+      // Pagination
+      const currentPage = parseInt(page) || 1;
+      const itemsPerPage = parseInt(pageSize) || 20;
+      const totalItems = reservations.length;
+      const totalPages = Math.ceil(totalItems / itemsPerPage);
+      const startIndex = (currentPage - 1) * itemsPerPage;
+      const endIndex = startIndex + itemsPerPage;
+      const paginatedReservations = reservations.slice(startIndex, endIndex);
+
       res.json({
         success: true,
-        data: reservations,
-        total: reservations.length
+        data: {
+          reservations: paginatedReservations,
+          page: currentPage,
+          pageSize: itemsPerPage,
+          total: totalItems,
+          totalPages: totalPages
+        }
       });
 
     } catch (error) {
@@ -77,19 +91,21 @@ module.exports = (router) => {
   reservationsRouter.post('/', adminOrAgency(), (req, res) => {
     try {
       const db = router.db;
-      const {
-        service_id,
-        client_id,
-        guide_id,
-        tour_date,
-        group_size,
-        special_requests,
-        emergency_contact
-      } = req.body;
+
+      // Accept both camelCase and snake_case
+      const service_id = req.body.service_id || req.body.serviceId || req.body.tourId;
+      const client_id = req.body.client_id || req.body.clientId;
+      const guide_id = req.body.guide_id || req.body.guideId;
+      const tour_date = req.body.tour_date || req.body.tourDate || req.body.date;
+      const group_size = req.body.group_size || req.body.groupSize || req.body.adults || req.body.tourists;
+      const special_requests = req.body.special_requests || req.body.specialRequests || req.body.specialRequirements;
+      const emergency_contact = req.body.emergency_contact || req.body.emergencyContact;
 
       // Validate required fields
       if (!service_id || !client_id || !tour_date || !group_size) {
-        return res.status(400).json(errorResponse('Campos requeridos: service_id, client_id, tour_date, group_size'));
+        console.log('Missing required fields:', { service_id, client_id, tour_date, group_size });
+        console.log('Received body:', req.body);
+        return res.status(400).json(errorResponse('Campos requeridos: service_id/tourId, client_id/clientId, tour_date/date, group_size/adults'));
       }
 
       // Get service details for pricing

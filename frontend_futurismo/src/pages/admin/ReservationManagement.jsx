@@ -32,7 +32,7 @@ const ReservationManagement = () => {
     destination: 'all',
     guide: 'all',
     tourType: 'all',
-    status: 'completed', // Por defecto solo completados
+    status: 'all', // Mostrar todas las reservas por defecto
     searchTerm: '',
     // Filtros por cantidad de clientes
     clientQuantityType: 'all', // all, range, category
@@ -94,10 +94,15 @@ const ReservationManagement = () => {
   
   // Enriquecer reservas con datos relacionados
   const enrichedReservations = Array.isArray(reservations) ? reservations.map(reservation => {
-    const client = clients.find(c => c.id === reservation.clientId);
-    const tour = tours.find(t => t.id === reservation.tourId);
-    const guide = guides.find(g => g.id === reservation.guideId);
-    
+    // Asegurar que clients, tours y guides sean arrays antes de usar find
+    const clientsArray = Array.isArray(clients) ? clients : [];
+    const toursArray = Array.isArray(tours) ? tours : [];
+    const guidesArray = Array.isArray(guides) ? guides : [];
+
+    const client = clientsArray.find(c => c.id === reservation.clientId || c.id === reservation.client_id);
+    const tour = toursArray.find(t => t.id === reservation.tourId || t.id === reservation.service_id);
+    const guide = guidesArray.find(g => g.id === reservation.guideId || g.id === reservation.guide_id);
+
     return {
       ...reservation,
       clientName: client?.name || 'Cliente desconocido',
@@ -106,13 +111,13 @@ const ReservationManagement = () => {
       tourName: tour?.name || reservation.tourName || 'Tour sin nombre',
       destination: tour?.destination || 'Destino desconocido',
       guide: guide?.name || 'Guía sin asignar',
-      tourists: (reservation.adults || 0) + (reservation.children || 0),
-      totalAmount: reservation.total || 0,
+      tourists: (reservation.adults || 0) + (reservation.children || 0) || reservation.group_size || 0,
+      totalAmount: reservation.total || reservation.total_amount || 0,
       tourType: tour?.category || 'cultural',
-      agencyId: client?.id || '',
+      agencyId: client?.id || reservation.agency_id || '',
       agencyName: client?.name || 'Reserva Directa',
-      tourDate: reservation.date,
-      bookingDate: reservation.createdAt
+      tourDate: reservation.date || reservation.tour_date,
+      bookingDate: reservation.createdAt || reservation.created_at
     };
   }) : [];
   
@@ -140,7 +145,7 @@ const ReservationManagement = () => {
   const filteredReservations = useMemo(() => {
     let filtered = enrichedReservations;
 
-    // Filtro por estado (por defecto solo completados)
+    // Filtro por estado
     if (filters.status !== 'all') {
       filtered = filtered.filter(res => res.status === filters.status);
     }
@@ -856,7 +861,13 @@ const ReservationManagement = () => {
               </button>
 
               {/* Wizard content */}
-              <ReservationWizard onClose={() => setShowWizard(false)} />
+              <ReservationWizard
+                onClose={() => setShowWizard(false)}
+                onComplete={() => {
+                  // Recargar reservas después de crear una nueva
+                  fetchReservations();
+                }}
+              />
             </div>
           </div>
         </div>

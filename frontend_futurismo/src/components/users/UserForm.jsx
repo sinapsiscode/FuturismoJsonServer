@@ -42,7 +42,11 @@ const createUserSchema = (t) => yup.object({
     .required(t('users.form.errors.roleRequired')),
   status: yup
     .string()
-    .required(t('users.form.errors.statusRequired')),
+    .when('role', {
+      is: (role) => role !== 'agency',
+      then: (schema) => schema.required(t('users.form.errors.statusRequired')),
+      otherwise: (schema) => schema.notRequired()
+    }),
   password: yup
     .string()
     .when('isEdit', {
@@ -57,7 +61,38 @@ const createUserSchema = (t) => yup.object({
       then: (schema) => schema
         .required(t('users.form.errors.confirmPasswordRequired'))
         .oneOf([yup.ref('password')], t('users.form.errors.passwordMismatch'))
-    })
+    }),
+  // Agency-specific fields
+  businessName: yup
+    .string()
+    .when('role', {
+      is: 'agency',
+      then: (schema) => schema.required('Razón social es requerida'),
+      otherwise: (schema) => schema.notRequired()
+    }),
+  ruc: yup
+    .string()
+    .when('role', {
+      is: 'agency',
+      then: (schema) => schema
+        .required('RUC es requerido')
+        .matches(/^[0-9]{11}$/, 'RUC debe tener 11 dígitos'),
+      otherwise: (schema) => schema.notRequired()
+    }),
+  address: yup
+    .string()
+    .when('role', {
+      is: 'agency',
+      then: (schema) => schema.required('Dirección es requerida'),
+      otherwise: (schema) => schema.notRequired()
+    }),
+  website: yup
+    .string()
+    .url('Debe ser una URL válida')
+    .notRequired(),
+  description: yup
+    .string()
+    .notRequired()
 });
 
 const UserForm = ({ user = null, onSubmit, onCancel, isLoading = false }) => {
@@ -116,14 +151,16 @@ const UserForm = ({ user = null, onSubmit, onCancel, isLoading = false }) => {
   const handleFormSubmit = async (data) => {
     const userData = {
       ...data,
-      preferences: user?.preferences || DEFAULT_PREFERENCES
+      preferences: user?.preferences || DEFAULT_PREFERENCES,
+      // Las agencias siempre están activas
+      status: data.role === 'agency' ? USER_STATUS.ACTIVE : data.status
     };
 
     try {
       if (isEdit) {
-        updateUser(user.id, userData);
+        await updateUser(user.id, userData);
       } else {
-        createUser(userData);
+        await createUser(userData);
       }
 
       if (onSubmit) {
@@ -131,6 +168,7 @@ const UserForm = ({ user = null, onSubmit, onCancel, isLoading = false }) => {
       }
     } catch (error) {
       // Error handling is done in the store
+      console.error('Error al guardar usuario:', error);
     }
   };
 
