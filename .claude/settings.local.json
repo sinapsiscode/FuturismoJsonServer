@@ -1,19 +1,8 @@
 {
   "permissions": {
     "allow": [
-      "Bash(node:*)",
-      "Bash(find:*)",
-      "Bash(curl:*)",
-      "Read(//c//**)",
-      "Bash(netstat:*)",
-      "Bash(findstr:*)",
-      "Bash(tasklist)",
-      "Bash(dir server.js)",
-      "Bash(cat:*)",
-      "Bash(dir:*)",
-      "Bash(npm run build)",
-      "Bash(taskkill:*)",
-      "Bash(npx kill-port:*)"
+      "Bash(done)",
+      "Bash(timeout 3 bash:*)"
     ],
     "deny": [],
     "ask": []

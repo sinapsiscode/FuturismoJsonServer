@@ -4,6 +4,13 @@ const { adminOnly, selfOrAdmin } = require('../middlewares/authorize');
 module.exports = (router) => {
   const usersRouter = express.Router();
 
+  // Get avatar service URL from environment
+  const getAvatarUrl = (name, background = '10B981', color = 'fff', size = 200) => {
+    const avatarServiceUrl = process.env.AVATARS_SERVICE_URL || 'https://ui-avatars.com/api/';
+    const baseUrl = avatarServiceUrl.endsWith('/') ? avatarServiceUrl : `${avatarServiceUrl}/`;
+    return `${baseUrl}?name=${encodeURIComponent(name)}&background=${background}&color=${color}&size=${size}`;
+  };
+
   // Get all users with filters and pagination
   // Only admins can list all users
   usersRouter.get('/', adminOnly(), (req, res) => {
@@ -176,7 +183,7 @@ module.exports = (router) => {
           address: req.body.address || '',
           description: req.body.description || '',
           website: req.body.website || '',
-          logo: req.body.avatar || `https://ui-avatars.com/api/?name=${encodeURIComponent(req.body.firstName + ' ' + req.body.lastName)}&background=10B981&color=fff&size=200`,
+          logo: req.body.avatar || getAvatarUrl(`${req.body.firstName} ${req.body.lastName}`),
           rating: 0,
           total_reviews: 0,
           total_tours: 0,

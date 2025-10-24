@@ -152,6 +152,7 @@ module.exports = (router) => {
   });
 
   // Check guide availability for tour
+  // Check guide availability for tour (GET version - legacy)
   toursRouter.get('/:id/check-guide-availability', async (req, res) => {
     try {
       const { guideId } = req.query;
@@ -195,6 +196,51 @@ module.exports = (router) => {
     }
   });
 
+  // Check guide availability for tour (POST version - used by frontend)
+  toursRouter.post('/:id/check-guide-availability', async (req, res) => {
+    try {
+      const { guideId } = req.body;
+      const db = router.db;
+
+      const tour = db.get('tours').find({ id: req.params.id }).value();
+      if (!tour) {
+        return res.status(404).json({
+          success: false,
+          error: 'Tour no encontrado'
+        });
+      }
+
+      const guide = db.get('guides').find({ id: guideId }).value();
+      if (!guide) {
+        return res.status(404).json({
+          success: false,
+          error: 'Guía no encontrado'
+        });
+      }
+
+      // Check if guide is available
+      const isAvailable = guide.status === 'active' && guide.is_available !== false;
+
+      res.json({
+        success: true,
+        data: {
+          isAvailable,
+          guide: {
+            id: guide.id,
+            name: guide.name,
+            status: guide.status
+          }
+        }
+      });
+    } catch (error) {
+      console.error('Error checking guide availability:', error);
+      res.status(500).json({
+        success: false,
+        error: 'Error al verificar disponibilidad'
+      });
+    }
+  });
+
   // Check guide competences for tour
   toursRouter.post('/:id/check-guide-competences', async (req, res) => {
     try {
@@ -211,23 +257,42 @@ module.exports = (router) => {
         });
       }
 
-      // Check if guide has required languages
+      // Check if guide has required languages (more permissive)
       const tourLanguages = tour.languages || [];
       const guideLanguages = guide.languages || [];
-      const hasLanguages = tourLanguages.every(lang => guideLanguages.includes(lang));
+      // Si no hay idiomas requeridos, o el guía tiene al menos un idioma, es válido
+      const hasLanguages = tourLanguages.length === 0 ||
+                          tourLanguages.some(lang => guideLanguages.includes(lang)) ||
+                          guideLanguages.length > 0;
 
-      // Check if guide has matching specialization
-      const tourCategory = tour.category;
+      // Check if guide has matching specialization (more permissive)
+      const tourCategory = tour.category || '';
       const guideSpecialties = guide.specialties || guide.specializations || [];
-      const hasSpecialty = guideSpecialties.some(s =>
-        s.includes(tourCategory) || tourCategory.includes(s)
-      );
+      // Si no hay categoría específica, o el guía tiene especialidades que coincidan parcialmente, es válido
+      const hasSpecialty = !tourCategory ||
+                          tourCategory === 'general' ||
+                          guideSpecialties.length === 0 ||
+                          guideSpecialties.some(s =>
+                            s.toLowerCase().includes(tourCategory.toLowerCase()) ||
+                            tourCategory.toLowerCase().includes(s.toLowerCase())
+                          );
 
-      const hasCompetences = hasLanguages && (guideSpecialties.length === 0 || hasSpecialty);
+      const hasCompetences = hasLanguages && hasSpecialty;
+
+      console.log('🔍 [Competences Check]', {
+        tourId: req.params.id,
+        guideId,
+        tourCategory,
+        guideSpecialties,
+        hasLanguages,
+        hasSpecialty,
+        hasCompetences
+      });
 
       res.json({
         success: true,
         data: {
+          hasRequiredCompetences: hasCompetences,
           hasCompetences,
           details: {
             hasLanguages,

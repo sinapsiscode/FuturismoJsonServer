@@ -1,6 +1,11 @@
+// Load environment variables first
+require('dotenv').config();
+
 const jsonServer = require('json-server');
 const cors = require('cors');
 const path = require('path');
+const http = require('http');
+const { Server } = require('socket.io');
 
 // Import custom routes
 const authRoutes = require('./routes/auth');
@@ -32,6 +37,8 @@ const filesRoutes = require('./routes/files');
 const ratingsRoutes = require('./routes/ratings');
 const agendaRoutes = require('./routes/agenda');
 const monitoringRoutes = require('./routes/monitoring');
+const settingsRoutes = require('./routes/settings');
+const suggestionsRoutes = require('./routes/suggestions');
 const { addHelpers } = require('./middlewares/helpers');
 const { authMiddleware } = require('./middlewares/auth');
 
@@ -88,18 +95,123 @@ server.use('/api/files', filesRoutes(router));
 server.use('/api/ratings', ratingsRoutes(router));
 server.use('/api/agenda', agendaRoutes(router));
 server.use('/api/monitoring', monitoringRoutes(router));
+server.use('/api/settings', settingsRoutes(router));
+server.use('/api/suggestions', suggestionsRoutes(router));
 
 // JSON Server router (handles CRUD for all other endpoints)
 server.use('/api', router);
 
-// Start server
+// Create HTTP server for Socket.io
 const PORT = process.env.PORT || 4050;
-server.listen(PORT, '0.0.0.0', () => {
+const HOST = process.env.HOST || '0.0.0.0';
+const httpServer = http.createServer(server);
+
+// Initialize Socket.io
+const io = new Server(httpServer, {
+  cors: {
+    origin: '*',
+    methods: ['GET', 'POST'],
+    credentials: false
+  }
+});
+
+// Socket.io authentication middleware
+io.use((socket, next) => {
+  const token = socket.handshake.auth.token;
+
+  if (!token) {
+    console.log('⚠️ [WebSocket] Client connected without token');
+    // Allow connection even without token for development
+    return next();
+  }
+
+  try {
+    const jwt = require('jsonwebtoken');
+    const { JWT_SECRET } = require('./middlewares/auth');
+    const decoded = jwt.verify(token, JWT_SECRET);
+    socket.userId = decoded.userId;
+    socket.userEmail = decoded.email;
+    socket.userRole = decoded.role;
+    console.log(`✅ [WebSocket] Authenticated user: ${decoded.email} (${decoded.role})`);
+    next();
+  } catch (error) {
+    console.log('❌ [WebSocket] Invalid token:', error.message);
+    // Allow connection but mark as unauthenticated
+    socket.userId = null;
+    next();
+  }
+});
+
+// Socket.io connection handler
+io.on('connection', (socket) => {
+  console.log(`🔌 [WebSocket] Client connected: ${socket.id} | User: ${socket.userEmail || 'anonymous'}`);
+
+  // Join user to their personal room
+  if (socket.userId) {
+    socket.join(`user:${socket.userId}`);
+    console.log(`👤 [WebSocket] User ${socket.userEmail} joined room: user:${socket.userId}`);
+  }
+
+  // Join role-based rooms
+  if (socket.userRole) {
+    socket.join(`role:${socket.userRole}`);
+    console.log(`👥 [WebSocket] User joined role room: role:${socket.userRole}`);
+  }
+
+  // Handle custom events
+  socket.on('service:update', (data) => {
+    console.log(`📦 [WebSocket] Service update:`, data);
+    // Broadcast to all connected clients
+    io.emit('service:update', data);
+  });
+
+  socket.on('notification:new', (data) => {
+    console.log(`🔔 [WebSocket] New notification:`, data);
+    if (data.userId) {
+      // Send to specific user
+      io.to(`user:${data.userId}`).emit('notification:new', data);
+    } else {
+      // Broadcast to all
+      io.emit('notification:new', data);
+    }
+  });
+
+  socket.on('booking:update', (data) => {
+    console.log(`📅 [WebSocket] Booking update:`, data);
+    io.emit('booking:update', data);
+  });
+
+  socket.on('chat:message', (data) => {
+    console.log(`💬 [WebSocket] Chat message:`, data);
+    // Send to specific conversation
+    if (data.conversationId) {
+      io.to(`conversation:${data.conversationId}`).emit('chat:message', data);
+    }
+  });
+
+  socket.on('monitoring:update', (data) => {
+    console.log(`📍 [WebSocket] Monitoring update:`, data);
+    // Broadcast to monitoring viewers
+    io.to('role:admin').emit('monitoring:update', data);
+    io.to('role:agency').emit('monitoring:update', data);
+  });
+
+  // Handle disconnection
+  socket.on('disconnect', () => {
+    console.log(`🔌 [WebSocket] Client disconnected: ${socket.id}`);
+  });
+});
+
+// Start server
+httpServer.listen(PORT, HOST, () => {
   console.log('🚀 Futurismo JSON Server is running!');
-  console.log(`📡 Server: http://localhost:${PORT}`);
-  console.log(`📡 Server: http://172.29.80.1:${PORT}`);
-  console.log(`📊 Resources: http://localhost:${PORT}/api`);
+  console.log(`📡 HTTP Server: http://localhost:${PORT}`);
+  console.log(`🔌 WebSocket Server: ws://localhost:${PORT}`);
+  console.log(`📊 API Resources: http://localhost:${PORT}/api`);
+  console.log(`🌍 Environment: ${process.env.NODE_ENV || 'development'}`);
+  console.log(`📦 Version: ${process.env.APP_VERSION || 'unknown'}`);
   console.log('✅ Ready for frontend integration');
 });
 
-module.exports = server;
+// Export both server and io for use in routes
+module.exports = { server, io, httpServer };

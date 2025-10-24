@@ -1,62 +1,63 @@
 import { useState, useEffect } from 'react';
 import { api } from '../services';
 import useModulesConfigStore from '../stores/modulesConfigStore';
+import { APP_CONFIG } from '../config/app.config';
 
-// Default configuration fallback
+// Default configuration fallback - uses environment variables
 const defaultConfig = {
   app: {
-    name: 'Futurismo',
-    version: '25.07.0001',
-    environment: 'development'
+    name: APP_CONFIG.app.name,
+    version: APP_CONFIG.app.version,
+    environment: APP_CONFIG.app.environment
   },
   contact: {
-    whatsapp: '+51999888777',
-    email: 'info@futurismo.com',
-    website: 'https://futurismo.com',
+    whatsapp: import.meta.env.VITE_WHATSAPP_NUMBER || '+51999888777',
+    email: import.meta.env.VITE_COMPANY_EMAIL || 'info@futurismo.com',
+    website: import.meta.env.VITE_COMPANY_WEBSITE || 'https://futurismo.com',
     emergency: {
-      police: '105',
-      fire: '116',
-      medical: '106',
-      company: '+51 999 888 777'
+      police: import.meta.env.VITE_EMERGENCY_POLICE || '105',
+      fire: import.meta.env.VITE_EMERGENCY_FIRE || '116',
+      medical: import.meta.env.VITE_EMERGENCY_MEDICAL || '106',
+      company: import.meta.env.VITE_EMERGENCY_COMPANY || '+51 999 888 777'
     }
   },
   api: {
-    baseUrl: 'http://localhost:4050/api',
-    wsUrl: 'http://localhost:3000',
-    timeout: 30000
+    baseUrl: APP_CONFIG.api.baseUrl,
+    wsUrl: APP_CONFIG.websocket.url,
+    timeout: APP_CONFIG.api.timeout
   },
   features: {
-    notifications: true,
+    notifications: APP_CONFIG.features.mockData !== true,
     emergency_alerts: true,
     multi_language: true,
     payment_gateway: false,
     real_time_tracking: true
   },
   limits: {
-    max_file_size: 5242880, // 5MB
-    max_group_size: 50,
-    max_tour_capacity: 20,
-    reservation_days_ahead: 365,
-    cancellation_hours: 24,
-    session_timeout: 1800000,
-    whatsapp_cutoff_hour: 17
+    max_file_size: APP_CONFIG.limits.maxFileSize,
+    max_group_size: parseInt(import.meta.env.VITE_MAX_GROUP_SIZE, 10) || 50,
+    max_tour_capacity: parseInt(import.meta.env.VITE_MAX_TOUR_CAPACITY, 10) || 20,
+    reservation_days_ahead: parseInt(import.meta.env.VITE_RESERVATION_DAYS_AHEAD, 10) || 365,
+    cancellation_hours: parseInt(import.meta.env.VITE_CANCELLATION_HOURS, 10) || 24,
+    session_timeout: APP_CONFIG.security.sessionTimeout,
+    whatsapp_cutoff_hour: parseInt(import.meta.env.VITE_WHATSAPP_CUTOFF_HOUR, 10) || 17
   },
   intervals: {
-    fast_update: 30000,
-    medium_update: 60000,
-    slow_update: 300000,
-    debounce_delay: 300
+    fast_update: parseInt(import.meta.env.VITE_UPDATE_INTERVAL_FAST, 10) || 30000,
+    medium_update: parseInt(import.meta.env.VITE_UPDATE_INTERVAL_MEDIUM, 10) || 60000,
+    slow_update: parseInt(import.meta.env.VITE_UPDATE_INTERVAL_SLOW, 10) || 300000,
+    debounce_delay: APP_CONFIG.ui.debounceDelay
   },
   formats: {
-    date: 'DD/MM/YYYY',
-    time: 'HH:mm',
-    currency: 'USD',
-    timezone: 'America/Lima'
+    date: import.meta.env.VITE_DATE_FORMAT || 'DD/MM/YYYY',
+    time: import.meta.env.VITE_TIME_FORMAT || 'HH:mm',
+    currency: import.meta.env.VITE_DEFAULT_CURRENCY || 'USD',
+    timezone: import.meta.env.VITE_TIMEZONE || 'America/Lima'
   },
   external_services: {
-    google_maps_api: '',
-    avatars_service: 'https://ui-avatars.com/api/',
-    osm_tiles: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
+    google_maps_api: APP_CONFIG.external.googleMapsApiKey,
+    avatars_service: APP_CONFIG.external.avatarServiceUrl,
+    osm_tiles: APP_CONFIG.external.mapTileUrl
   }
 };
 

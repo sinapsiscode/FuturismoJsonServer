@@ -147,11 +147,13 @@ module.exports = (router) => {
   // Get API documentation
   systemRouter.get('/docs', (req, res) => {
     try {
+      const baseUrl = process.env.API_BASE_URL || `http://localhost:${process.env.PORT || 4050}/api`;
+
       const documentation = {
         title: 'Futurismo API Documentation',
-        version: '1.0.0',
+        version: process.env.APP_VERSION || '1.0.0',
         description: 'Complete API for Futurismo tourism management system',
-        base_url: 'http://localhost:4050/api',
+        base_url: baseUrl,
         authentication: {
           type: 'Bearer Token',
           login_endpoint: '/api/auth/login',

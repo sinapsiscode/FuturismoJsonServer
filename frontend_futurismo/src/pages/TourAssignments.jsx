@@ -35,7 +35,6 @@ const TourAssignments = () => {
   const [selectedGuide, setSelectedGuide] = useState('');
   const [selectedDriver, setSelectedDriver] = useState('');
   const [selectedVehicle, setSelectedVehicle] = useState('');
-  const [validateCompetences, setValidateCompetences] = useState(true);
   const [availableGuides, setAvailableGuides] = useState([]);
   const [availableDrivers, setAvailableDrivers] = useState([]);
   const [availableVehicles, setAvailableVehicles] = useState([]);
@@ -202,7 +201,7 @@ const TourAssignments = () => {
             toast.error('Seleccione un guía');
             return;
           }
-          await assignGuideToTour(selectedTour.id, selectedGuide, { validateCompetences });
+          await assignGuideToTour(selectedTour.id, selectedGuide, { validateCompetences: false });
           toast.success('Guía asignado exitosamente');
           break;
           
@@ -507,7 +506,7 @@ const TourAssignments = () => {
                     <div className="flex items-center text-green-700">
                       <UserIcon className="h-4 w-4 mr-2" />
                       <span>
-                        {guides.find(g => g.id === tour.assignedGuide)?.name || 'Guía asignado'}
+                        {guides?.find(g => g.id === tour.assignedGuide)?.name || 'Guía asignado'}
                       </span>
                     </div>
                     <button
@@ -659,19 +658,6 @@ const TourAssignments = () => {
                       ))}
                     </select>
                   )}
-                </div>
-
-                <div className="flex items-center">
-                  <input
-                    type="checkbox"
-                    id="validateCompetences"
-                    checked={validateCompetences}
-                    onChange={(e) => setValidateCompetences(e.target.checked)}
-                    className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-                  />
-                  <label htmlFor="validateCompetences" className="ml-2 text-sm text-gray-700">
-                    Validar competencias del guía
-                  </label>
                 </div>
 
                 {availableGuides.length === 0 && !checkingAvailability && (

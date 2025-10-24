@@ -138,9 +138,10 @@ function App() {
     }
   }, [isAuthenticated, user?.id]);
 
-  // Conectar WebSocket cuando se autentique
+  // Conectar WebSocket cuando se autentique (solo si está habilitado)
   useEffect(() => {
-    if (isAuthenticated && token) {
+    if (isAuthenticated && token && import.meta.env.VITE_ENABLE_WEBSOCKET === 'true') {
+      console.log('✅ WebSocket habilitado - conectando...');
       webSocketService.connect(token);
 
       // Listeners de WebSocket
@@ -162,6 +163,8 @@ function App() {
         unsubscribeNotification();
         webSocketService.disconnect();
       };
+    } else if (isAuthenticated && token) {
+      console.log('ℹ️ WebSocket deshabilitado en configuración (VITE_ENABLE_WEBSOCKET=false)');
     }
   }, [isAuthenticated, token]);
 

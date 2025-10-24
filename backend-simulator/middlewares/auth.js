@@ -1,6 +1,13 @@
 const jwt = require('jsonwebtoken');
 
-const JWT_SECRET = 'futurismo-secret-2024';
+// Get JWT secret from environment variable
+// In production, this MUST be a secure random string stored in environment variables
+const JWT_SECRET = process.env.JWT_SECRET || 'futurismo-secret-2024';
+
+// Warn if using default secret in production
+if (!process.env.JWT_SECRET && process.env.NODE_ENV === 'production') {
+  console.error('⚠️ WARNING: Using default JWT_SECRET in production! Set JWT_SECRET environment variable.');
+}
 
 const authMiddleware = (req, res, next) => {
   // Skip auth for public endpoints

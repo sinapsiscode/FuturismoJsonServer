@@ -98,9 +98,19 @@ export const REGEX_PATTERNS = {
 // Estas funciones acceden a la configuración dinámica
 export const getApiConfig = () => {
   // Esta función será reemplazada por el hook useConfig
+  const isDevelopment = import.meta.env.MODE === 'development';
+
+  // Validar que las variables de entorno estén presentes
+  if (!import.meta.env.VITE_API_URL) {
+    console.warn('⚠️ VITE_API_URL no está definida en .env');
+  }
+  if (!import.meta.env.VITE_WS_URL) {
+    console.warn('⚠️ VITE_WS_URL no está definida en .env');
+  }
+
   return {
-    BASE_URL: import.meta.env.VITE_API_URL || 'http://localhost:4050/api',
-    WS_URL: import.meta.env.VITE_WS_URL || 'ws://localhost:3001'
+    BASE_URL: import.meta.env.VITE_API_URL || (isDevelopment ? '/api' : undefined),
+    WS_URL: import.meta.env.VITE_WS_URL
   };
 };
 
@@ -127,10 +137,13 @@ export const getIntervalsConfig = () => {
 
 export const getContactConfig = () => {
   // Esta función será reemplazada por el hook useConfig
+  // Los valores deben venir de la configuración del servidor
+  console.warn('⚠️ getContactConfig() debería obtener datos del servidor, no usar valores hardcodeados');
+
   return {
-    WHATSAPP_NUMBER: "+51999888777",
+    WHATSAPP_NUMBER: import.meta.env.VITE_WHATSAPP_NUMBER || "+51999888777",
     WHATSAPP_MESSAGE: "Hola, necesito consultar disponibilidad para un tour fullday después de las 5 PM",
-    CUTOFF_HOUR: 17 // 5 PM
+    CUTOFF_HOUR: parseInt(import.meta.env.VITE_WHATSAPP_CUTOFF_HOUR, 10) || 17 // 5 PM
   };
 };
 
@@ -158,7 +171,4 @@ export const ERROR_MESSAGES = {
 export const UPDATE_INTERVALS = getIntervalsConfig();
 export const LIMITS = getLimitsConfig();
 export const FULLDAY_CONFIG = getContactConfig();
-export const API_ENDPOINTS = {
-  BASE_URL: import.meta.env.VITE_API_URL || 'http://localhost:4050/api',
-  WS_URL: import.meta.env.VITE_WS_URL || 'ws://localhost:3001'
-};
+export const API_ENDPOINTS = getApiConfig();

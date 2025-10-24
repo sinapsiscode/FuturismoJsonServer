@@ -33,7 +33,8 @@ export const APP_CONFIG = {
 
   // Configuración de API
   api: {
-    baseUrl: getEnvVar('VITE_API_URL', import.meta.env.DEV ? '/api' : 'http://localhost:4050/api'),
+    // En desarrollo usa proxy relativo, en producción requiere VITE_API_URL
+    baseUrl: getEnvVar('VITE_API_URL', import.meta.env.DEV ? '/api' : undefined),
     timeout: getEnvNumber('VITE_API_TIMEOUT', 30000),
     retryAttempts: 3,
     retryDelay: 1000
@@ -41,7 +42,8 @@ export const APP_CONFIG = {
 
   // Configuración de WebSocket
   websocket: {
-    url: getEnvVar('VITE_WS_URL', 'http://localhost:3000'),
+    // Requiere VITE_WS_URL definido
+    url: getEnvVar('VITE_WS_URL', undefined),
     enabled: getEnvBoolean('VITE_ENABLE_WEBSOCKET', false),
     reconnectDelay: getEnvNumber('VITE_WS_RECONNECT_DELAY', 5000),
     maxReconnectAttempts: 10

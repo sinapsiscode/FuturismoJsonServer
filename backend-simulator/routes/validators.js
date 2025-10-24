@@ -3,6 +3,11 @@ const express = require('express');
 module.exports = (router) => {
   const validatorsRouter = express.Router();
 
+  // Get configuration values from environment
+  const CANCELLATION_HOURS = parseInt(process.env.CANCELLATION_HOURS, 10) || 24;
+  const MAX_GROUP_SIZE = parseInt(process.env.MAX_GROUP_SIZE, 10) || 50;
+  const RESERVATION_DAYS_AHEAD = parseInt(process.env.RESERVATION_DAYS_AHEAD, 10) || 365;
+
   // Validate email format
   validatorsRouter.post('/email', (req, res) => {
     try {
@@ -110,19 +115,23 @@ module.exports = (router) => {
         const tourDate = new Date(tour_date);
         const today = new Date();
         const maxDate = new Date();
-        maxDate.setFullYear(today.getFullYear() + 1);
+        maxDate.setDate(today.getDate() + RESERVATION_DAYS_AHEAD);
+
+        const minAdvanceTime = CANCELLATION_HOURS * 60 * 60 * 1000; // Convert hours to milliseconds
 
         if (tourDate < today) {
           errors.push('La fecha del tour no puede ser en el pasado');
         } else if (tourDate > maxDate) {
-          warnings.push('La fecha del tour es muy lejana');
-        } else if (tourDate.getTime() - today.getTime() < 24 * 60 * 60 * 1000) {
-          warnings.push('Reserva con menos de 24 horas de anticipación');
+          warnings.push(`La fecha del tour excede el límite de ${RESERVATION_DAYS_AHEAD} días`);
+        } else if (tourDate.getTime() - today.getTime() < minAdvanceTime) {
+          warnings.push(`Reserva con menos de ${CANCELLATION_HOURS} horas de anticipación`);
         }
       }
 
       // Validate group size
-      if (group_size > 15) {
+      if (group_size > MAX_GROUP_SIZE) {
+        errors.push(`El tamaño del grupo no puede exceder ${MAX_GROUP_SIZE} personas`);
+      } else if (group_size > 15) {
         warnings.push('Grupo grande, considere dividir la reserva');
       }
 

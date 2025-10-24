@@ -13,7 +13,7 @@
       "avatar": "https://ui-avatars.com/api/?name=Admin&background=3B82F6&color=fff",
       "created_at": "2024-01-01T00:00:00Z",
       "updated_at": "2024-01-01T00:00:00Z",
-      "last_login_at": "2025-10-22T17:30:20.713Z"
+      "last_login_at": "2025-10-24T20:53:44.500Z"
     },
     {
       "id": "user-agency-1",
@@ -284,6 +284,7 @@
       "phone": "+51987654323",
       "type": "employed",
       "status": "active",
+      "is_available": true,
       "avatar": "https://ui-avatars.com/api/?name=Carlos+Mendoza&background=F59E0B&color=fff&size=200",
       "rating": 4.8,
       "total_reviews": 156,
@@ -356,6 +357,7 @@
       "phone": "+51987654332",
       "type": "employed",
       "status": "active",
+      "is_available": true,
       "avatar": "https://ui-avatars.com/api/?name=Marco+Perez&background=3B82F6&color=fff&size=200",
       "rating": 4.6,
       "total_reviews": 98,
@@ -427,6 +429,7 @@
       "phone": "+51987654324",
       "type": "freelance",
       "status": "active",
+      "is_available": true,
       "avatar": "https://ui-avatars.com/api/?name=Ana+Torres&background=EC4899&color=fff&size=200",
       "rating": 4.9,
       "total_reviews": 203,
@@ -514,6 +517,7 @@
       "phone": "+51961170946",
       "type": "freelance",
       "status": "active",
+      "is_available": true,
       "avatar": "https://ui-avatars.com/api/?name=Gian+Terrazas&background=8B5CF6&color=fff&size=200",
       "rating": 4.7,
       "total_reviews": 134,
@@ -600,6 +604,7 @@
       "phone": "+51987345212",
       "type": "employed",
       "status": "active",
+      "is_available": true,
       "avatar": "https://ui-avatars.com/api/?name=David+Rodriguez&background=10B981&color=fff&size=200",
       "rating": 4.5,
       "total_reviews": 76,
@@ -683,7 +688,10 @@
       ],
       "meeting_point": "Plaza San Martín",
       "image": "https://images.unsplash.com/photo-1531968455001-5c5272a41129",
-      "created_at": "2024-01-15T10:00:00Z"
+      "created_at": "2024-01-15T10:00:00Z",
+      "assignedGuide": "guide-002",
+      "updated_at": "2025-10-24T19:30:13.862Z",
+      "assignedDriver": "driver-001"
     },
     {
       "id": "tour-002",
@@ -707,7 +715,11 @@
       ],
       "meeting_point": "Mercado Surquillo",
       "image": "https://images.unsplash.com/photo-1555939594-58d7cb561ad1",
-      "created_at": "2024-01-15T10:00:00Z"
+      "created_at": "2024-01-15T10:00:00Z",
+      "assignedVehicle": "vehicle-001",
+      "updated_at": "2025-10-23T23:04:33.093Z",
+      "assignedDriver": "driver-001",
+      "assignedGuide": "guide-001"
     },
     {
       "id": "tour-003",
@@ -733,7 +745,10 @@
       ],
       "meeting_point": "Plaza de Armas Cusco",
       "image": "https://images.unsplash.com/photo-1587595431973-160d0d94add1",
-      "created_at": "2024-01-15T10:00:00Z"
+      "created_at": "2024-01-15T10:00:00Z",
+      "assignedDriver": "driver-001",
+      "updated_at": "2025-10-24T02:06:42.300Z",
+      "assignedVehicle": "vehicle-002"
     },
     {
       "id": "tour-004",
@@ -11395,7 +11410,38 @@
       }
     ]
   },
-  "suggestions": [],
+  "suggestions": [
+    {
+      "id": "suggestion-1761258856106-cdo3ps5cv",
+      "title": "Test Suggestion",
+      "description": "This is a test suggestion",
+      "category": "feature",
+      "priority": "low",
+      "status": "pending",
+      "userId": "user-admin-1",
+      "userEmail": "admin@futurismo.com",
+      "attachments": [],
+      "responses": [],
+      "votes": 0,
+      "createdAt": "2025-10-23T22:34:16.106Z",
+      "updatedAt": "2025-10-23T22:34:16.106Z"
+    },
+    {
+      "id": "suggestion-1761258893160-p8lcvusru",
+      "title": "Test Suggestion",
+      "description": "This is a test suggestion",
+      "category": "feature",
+      "priority": "low",
+      "status": "pending",
+      "userId": "user-admin-1",
+      "userEmail": "admin@futurismo.com",
+      "attachments": [],
+      "responses": [],
+      "votes": 0,
+      "createdAt": "2025-10-23T22:34:53.160Z",
+      "updatedAt": "2025-10-23T22:34:53.160Z"
+    }
+  ],
   "drivers": [
     {
       "id": "driver-001",
@@ -11440,7 +11486,8 @@
       "agency_id": "agency-001",
       "avatar": "https://ui-avatars.com/api/?name=Luis+Vargas&background=3B82F6&color=fff&size=200",
       "created_at": "2024-06-01T00:00:00Z",
-      "updated_at": "2025-10-20T00:00:00Z"
+      "updated_at": "2025-10-24T19:30:13.877Z",
+      "is_available": false
     },
     {
       "id": "driver-002",
@@ -11566,7 +11613,8 @@
       "technical_review_expiry": "2026-03-31",
       "fuel_type": "diesel",
       "created_at": "2024-01-15T00:00:00Z",
-      "updated_at": "2025-10-20T00:00:00Z"
+      "updated_at": "2025-10-23T23:01:41.617Z",
+      "is_available": false
     },
     {
       "id": "vehicle-002",
@@ -11603,7 +11651,8 @@
       "technical_review_expiry": "2026-05-31",
       "fuel_type": "diesel",
       "created_at": "2023-09-01T00:00:00Z",
-      "updated_at": "2025-10-20T00:00:00Z"
+      "updated_at": "2025-10-24T02:06:42.311Z",
+      "is_available": false
     },
     {
       "id": "vehicle-003",
@@ -11681,7 +11730,28 @@
   ],
   "driver_evaluations": [],
   "driver_license_history": [],
-  "vehicle_assignments": [],
+  "vehicle_assignments": [
+    {
+      "id": "vehicle-assignment-1761260501606",
+      "vehicle_id": "vehicle-001",
+      "tour_id": "tour-002",
+      "driver_id": "driver-001",
+      "date": "2025-10-23T23:01:41.568Z",
+      "passengers": 10,
+      "status": "active",
+      "created_at": "2025-10-23T23:01:41.606Z"
+    },
+    {
+      "id": "vehicle-assignment-1761271602306",
+      "vehicle_id": "vehicle-002",
+      "tour_id": "tour-003",
+      "driver_id": null,
+      "date": "2025-10-24T02:06:42.272Z",
+      "passengers": 10,
+      "status": "active",
+      "created_at": "2025-10-24T02:06:42.306Z"
+    }
+  ],
   "maintenance_records": [],
   "rewards_catalog": [],
   "agency_ratings": [],
@@ -12343,10 +12413,74 @@
       "location": "Lima",
       "created_at": "2025-10-20T22:45:45.143Z",
       "updated_at": "2025-10-20T22:45:45.143Z"
+    },
+    {
+      "id": "service-1761334802767-cp4438737",
+      "name": "EL  COMMIT MAS BONITO",
+      "description": "ASFASFASDFASDFSDFSDFSDFSDFSDFGSD",
+      "category": "prueba",
+      "price": 23,
+      "currency": "USD",
+      "duration": 2,
+      "status": "active",
+      "rating": 0,
+      "max_group_size": 10,
+      "included": [],
+      "excluded": [],
+      "location": "Lima",
+      "created_at": "2025-10-24T19:40:02.767Z",
+      "updated_at": "2025-10-24T19:40:02.767Z"
     }
   ],
-  "tour_assignments": [],
-  "driver_assignments": [],
+  "tour_assignments": [
+    {
+      "id": "assignment-1761260673100",
+      "tour_id": "tour-002",
+      "guide_id": "guide-001",
+      "type": "guide",
+      "date": "2025-10-23T23:04:33.100Z",
+      "status": "active",
+      "created_at": "2025-10-23T23:04:33.100Z"
+    },
+    {
+      "id": "assignment-1761276885157",
+      "tour_id": "tour-001",
+      "guide_id": "guide-002",
+      "type": "guide",
+      "date": "2025-10-24T03:34:45.157Z",
+      "status": "active",
+      "created_at": "2025-10-24T03:34:45.157Z"
+    }
+  ],
+  "driver_assignments": [
+    {
+      "id": "driver-assignment-1761260543781",
+      "driver_id": "driver-001",
+      "tour_id": "tour-002",
+      "date": "2025-10-23T23:02:23.756Z",
+      "vehicle_id": null,
+      "status": "active",
+      "created_at": "2025-10-23T23:02:23.781Z"
+    },
+    {
+      "id": "driver-assignment-1761271597007",
+      "driver_id": "driver-001",
+      "tour_id": "tour-003",
+      "date": "2025-10-24T02:06:36.991Z",
+      "vehicle_id": null,
+      "status": "active",
+      "created_at": "2025-10-24T02:06:37.007Z"
+    },
+    {
+      "id": "driver-assignment-1761334213868",
+      "driver_id": "driver-001",
+      "tour_id": "tour-001",
+      "date": "2025-10-24T19:30:13.836Z",
+      "vehicle_id": null,
+      "status": "active",
+      "created_at": "2025-10-24T19:30:13.868Z"
+    }
+  ],
   "guide_availability": [],
   "tour_photos": [],
   "rewards_categories": [
@@ -12535,5 +12669,133 @@
       "active": true,
       "created_at": "2024-01-01T00:00:00Z"
     }
-  ]
+  ],
+  "settings": {
+    "general": {
+      "appName": "Futurismo",
+      "timezone": "America/Lima",
+      "language": "es",
+      "dateFormat": "DD/MM/YYYY",
+      "timeFormat": "24h",
+      "currency": "USD"
+    },
+    "security": {
+      "sessionTimeout": 30,
+      "requireStrongPasswords": true,
+      "twoFactorEnabled": false,
+      "maxLoginAttempts": 5,
+      "passwordExpirationDays": 90
+    },
+    "notifications": {
+      "emailEnabled": true,
+      "pushEnabled": false,
+      "smsEnabled": false,
+      "notifyOnNewReservation": true,
+      "notifyOnCancellation": true
+    },
+    "appearance": {
+      "theme": "light",
+      "primaryColor": "#3B82F6",
+      "sidebarCollapsed": false
+    },
+    "system": {
+      "maintenanceMode": false,
+      "allowRegistration": true,
+      "requireEmailVerification": true
+    }
+  },
+  "default_settings": {
+    "general": {
+      "appName": "Futurismo",
+      "timezone": "America/Lima",
+      "language": "es",
+      "dateFormat": "DD/MM/YYYY",
+      "timeFormat": "24h",
+      "currency": "USD"
+    },
+    "security": {
+      "sessionTimeout": 30,
+      "requireStrongPasswords": true,
+      "twoFactorEnabled": false,
+      "maxLoginAttempts": 5,
+      "passwordExpirationDays": 90
+    },
+    "notifications": {
+      "emailEnabled": true,
+      "pushEnabled": false,
+      "smsEnabled": false,
+      "notifyOnNewReservation": true,
+      "notifyOnCancellation": true
+    },
+    "appearance": {
+      "theme": "light",
+      "primaryColor": "#3B82F6",
+      "sidebarCollapsed": false
+    },
+    "system": {
+      "maintenanceMode": false,
+      "allowRegistration": true,
+      "requireEmailVerification": true
+    }
+  },
+  "settings_history": [],
+  "settings_backups": [],
+  "settings_options": {
+    "timezones": [
+      {
+        "value": "America/Lima",
+        "label": "Lima (UTC-5)"
+      },
+      {
+        "value": "America/New_York",
+        "label": "Nueva York (UTC-5)"
+      },
+      {
+        "value": "Europe/Madrid",
+        "label": "Madrid (UTC+1)"
+      }
+    ],
+    "languages": [
+      {
+        "value": "es",
+        "label": "Español"
+      },
+      {
+        "value": "en",
+        "label": "English"
+      },
+      {
+        "value": "pt",
+        "label": "Português"
+      }
+    ],
+    "themes": [
+      {
+        "value": "light",
+        "label": "Claro"
+      },
+      {
+        "value": "dark",
+        "label": "Oscuro"
+      },
+      {
+        "value": "auto",
+        "label": "Automático"
+      }
+    ],
+    "dateFormats": [
+      {
+        "value": "DD/MM/YYYY",
+        "label": "DD/MM/YYYY"
+      },
+      {
+        "value": "MM/DD/YYYY",
+        "label": "MM/DD/YYYY"
+      },
+      {
+        "value": "YYYY-MM-DD",
+        "label": "YYYY-MM-DD"
+      }
+    ]
+  }
 }
