@@ -1,11 +1,16 @@
-import { useState } from 'react';
-import { UserGroupIcon, MagnifyingGlassIcon, FunnelIcon, PencilIcon, EyeIcon, TrashIcon, GlobeAltIcon, TrophyIcon, PhoneIcon, EnvelopeIcon, MapPinIcon, InformationCircleIcon } from '@heroicons/react/24/outline';
+import { useState, useEffect } from 'react';
+import { UserGroupIcon, MagnifyingGlassIcon, FunnelIcon, PencilIcon, EyeIcon, TrashIcon, GlobeAltIcon, TrophyIcon, PhoneIcon, EnvelopeIcon, MapPinIcon, InformationCircleIcon, Squares2X2Icon, TableCellsIcon } from '@heroicons/react/24/outline';
 import useGuidesStore from '../stores/guidesStore';
 import GuideForm from '../components/guides/GuideForm';
 import GuideProfile from '../components/guides/GuideProfile';
 
 const GuidesManagement = () => {
-  const { guides = [], languages = [], museums = [], actions } = useGuidesStore();
+  const { guides = [], languages = [], museums = [], fetchGuides, isLoading } = useGuidesStore();
+
+  // Cargar guías al montar el componente
+  useEffect(() => {
+    fetchGuides();
+  }, [fetchGuides]);
   const [searchQuery, setSearchQuery] = useState('');
   const [filterType, setFilterType] = useState('');
   const [filterLanguage, setFilterLanguage] = useState('');
@@ -258,6 +263,34 @@ const GuidesManagement = () => {
         </div>
       </div>
 
+      {/* Selector de vista */}
+      <div className="flex justify-end mb-4">
+        <div className="inline-flex rounded-lg border border-gray-300 bg-white p-1">
+          <button
+            onClick={() => setViewMode('grid')}
+            className={`px-4 py-2 rounded-md flex items-center space-x-2 transition-colors ${
+              viewMode === 'grid'
+                ? 'bg-blue-500 text-white'
+                : 'text-gray-600 hover:bg-gray-100'
+            }`}
+          >
+            <Squares2X2Icon className="w-4 h-4" />
+            <span>Cuadrícula</span>
+          </button>
+          <button
+            onClick={() => setViewMode('list')}
+            className={`px-4 py-2 rounded-md flex items-center space-x-2 transition-colors ${
+              viewMode === 'list'
+                ? 'bg-blue-500 text-white'
+                : 'text-gray-600 hover:bg-gray-100'
+            }`}
+          >
+            <TableCellsIcon className="w-4 h-4" />
+            <span>Lista</span>
+          </button>
+        </div>
+      </div>
+
       {/* Lista de guías */}
       {filteredGuides.length === 0 ? (
         <div className="text-center py-12 bg-gray-50 rounded-lg">
@@ -269,7 +302,126 @@ const GuidesManagement = () => {
             Ajusta los filtros de búsqueda o crea guías desde la sección de Usuarios.
           </p>
         </div>
+      ) : viewMode === 'list' ? (
+        /* Vista de Lista/Tabla */
+        <div className="bg-white rounded-lg border border-gray-200 shadow-sm overflow-hidden">
+          <div className="overflow-x-auto">
+            <table className="min-w-full divide-y divide-gray-200">
+              <thead className="bg-gray-50">
+                <tr>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Guía
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Tipo
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Contacto
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Idiomas
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Rating
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Tours
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Experiencia
+                  </th>
+                  <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Acciones
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="bg-white divide-y divide-gray-200">
+                {filteredGuides.map(guide => (
+                  <tr key={guide.id} className="hover:bg-gray-50">
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="flex items-center">
+                        <div className="flex-shrink-0 h-10 w-10">
+                          <div className="h-10 w-10 rounded-full bg-blue-500 flex items-center justify-center text-white font-semibold">
+                            {(guide?.fullName || 'G').split(' ').map(name => name[0]).join('').substring(0, 2)}
+                          </div>
+                        </div>
+                        <div className="ml-4">
+                          <div className="text-sm font-medium text-gray-900">{guide?.fullName || 'Sin nombre'}</div>
+                          <div className="text-sm text-gray-500">{guide?.email || 'Sin email'}</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <span className={`px-2 py-1 text-xs font-medium rounded-full ${
+                        guide?.guideType === 'planta'
+                          ? 'bg-green-100 text-green-800'
+                          : 'bg-yellow-100 text-yellow-800'
+                      }`}>
+                        {guide?.guideType === 'planta' ? 'Planta' : 'Freelance'}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="text-sm text-gray-900">{guide?.phone || 'Sin teléfono'}</div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="flex flex-wrap gap-1">
+                        {(guide?.specializations?.languages || []).slice(0, 2).map((lang, idx) => (
+                          <span key={idx} className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-100 text-blue-800">
+                            {lang.code.toUpperCase()}
+                          </span>
+                        ))}
+                        {(guide?.specializations?.languages?.length || 0) > 2 && (
+                          <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-800">
+                            +{(guide?.specializations?.languages?.length || 0) - 2}
+                          </span>
+                        )}
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="flex items-center">
+                        <TrophyIcon className="w-4 h-4 text-yellow-500 mr-1" />
+                        <span className="text-sm text-gray-900">{guide?.stats?.rating || 0}/5</span>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                      {guide?.stats?.toursCompleted || 0}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                      {guide?.stats?.yearsExperience || 0} años
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                      <div className="flex items-center justify-end space-x-2">
+                        <button
+                          onClick={() => handleViewProfile(guide)}
+                          className="text-blue-600 hover:text-blue-900"
+                          title="Ver perfil"
+                        >
+                          <EyeIcon className="w-5 h-5" />
+                        </button>
+                        <button
+                          onClick={() => handleEditGuide(guide)}
+                          className="text-yellow-600 hover:text-yellow-900"
+                          title="Editar"
+                        >
+                          <PencilIcon className="w-5 h-5" />
+                        </button>
+                        <button
+                          onClick={() => handleDeleteGuide(guide.id)}
+                          className="text-red-600 hover:text-red-900"
+                          title="Eliminar"
+                        >
+                          <TrashIcon className="w-5 h-5" />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
       ) : (
+        /* Vista de Grid/Cuadrícula */
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredGuides.map(guide => (
             <div

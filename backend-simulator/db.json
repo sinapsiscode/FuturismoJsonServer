@@ -13,7 +13,7 @@
       "avatar": "https://ui-avatars.com/api/?name=Admin&background=3B82F6&color=fff",
       "created_at": "2024-01-01T00:00:00Z",
       "updated_at": "2024-01-01T00:00:00Z",
-      "last_login_at": "2025-10-24T20:53:44.500Z"
+      "last_login_at": "2025-10-24T21:58:21.057Z"
     },
     {
       "id": "user-agency-1",
@@ -35,6 +35,7 @@
       "email": "carlos@guia.com",
       "password_hash": "$2a$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi",
       "role": "guide",
+      "guide_type": "employed",
       "status": "active",
       "first_name": "Carlos",
       "last_name": "Mendoza",
@@ -49,6 +50,7 @@
       "email": "ana@freelance.com",
       "password_hash": "$2a$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi",
       "role": "guide",
+      "guide_type": "freelance",
       "status": "active",
       "first_name": "Ana",
       "last_name": "Torres",
@@ -61,15 +63,14 @@
       "id": "user-1760400019346",
       "username": "Gianpierre",
       "email": "pier_terrazas@hotmail.com",
-      "firstName": "Gian",
-      "lastName": "Terrazas",
-      "phone": "961170946",
-      "role": "guide-freelance",
-      "status": "Activo",
-      "avatar": "",
-      "isEdit": false,
-      "password": "akisemi02",
-      "confirmPassword": "akisemi02",
+      "password_hash": "$2a$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi",
+      "first_name": "Gian",
+      "last_name": "Terrazas",
+      "phone": "+51961170946",
+      "role": "guide",
+      "guide_type": "freelance",
+      "status": "active",
+      "avatar": "https://ui-avatars.com/api/?name=Gian+Terrazas&background=F59E0B&color=fff",
       "preferences": {
         "language": "es",
         "notifications": {
@@ -90,15 +91,14 @@
       "id": "user-1760400618945",
       "username": "alfalfa",
       "email": "alfaldfa@gmail.com",
-      "firstName": "Marco",
-      "lastName": "Perez",
-      "phone": "987654332",
-      "role": "guide-planta",
-      "status": "Activo",
-      "avatar": "",
-      "isEdit": false,
-      "password": "a123456a",
-      "confirmPassword": "a123456a",
+      "password_hash": "$2a$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi",
+      "first_name": "Marco",
+      "last_name": "Pérez",
+      "phone": "+51987654332",
+      "role": "guide",
+      "guide_type": "employed",
+      "status": "active",
+      "avatar": "https://ui-avatars.com/api/?name=Marco+Perez&background=F59E0B&color=fff",
       "preferences": {
         "language": "es",
         "notifications": {
@@ -148,15 +148,14 @@
       "id": "user-1760403013660",
       "username": "david",
       "email": "d@gmail.com",
-      "firstName": "david",
-      "lastName": "rod",
-      "phone": "987345212",
-      "role": "guide-planta",
-      "status": "Activo",
-      "avatar": "",
-      "isEdit": false,
-      "password": "aademo123",
-      "confirmPassword": "aademo123",
+      "password_hash": "$2a$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi",
+      "first_name": "David",
+      "last_name": "Rodriguez",
+      "phone": "+51987345212",
+      "role": "guide",
+      "guide_type": "employed",
+      "status": "active",
+      "avatar": "https://ui-avatars.com/api/?name=David+Rodriguez&background=F59E0B&color=fff",
       "preferences": {
         "language": "es",
         "notifications": {
@@ -690,7 +689,7 @@
       "image": "https://images.unsplash.com/photo-1531968455001-5c5272a41129",
       "created_at": "2024-01-15T10:00:00Z",
       "assignedGuide": "guide-002",
-      "updated_at": "2025-10-24T19:30:13.862Z",
+      "updated_at": "2025-10-24T22:00:15.537Z",
       "assignedDriver": "driver-001"
     },
     {
@@ -11486,7 +11485,7 @@
       "agency_id": "agency-001",
       "avatar": "https://ui-avatars.com/api/?name=Luis+Vargas&background=3B82F6&color=fff&size=200",
       "created_at": "2024-06-01T00:00:00Z",
-      "updated_at": "2025-10-24T19:30:13.877Z",
+      "updated_at": "2025-10-24T22:00:15.553Z",
       "is_available": false
     },
     {
@@ -12479,6 +12478,15 @@
       "vehicle_id": null,
       "status": "active",
       "created_at": "2025-10-24T19:30:13.868Z"
+    },
+    {
+      "id": "driver-assignment-1761343215545",
+      "driver_id": "driver-001",
+      "tour_id": "tour-001",
+      "date": "2025-10-24T22:00:15.213Z",
+      "vehicle_id": null,
+      "status": "active",
+      "created_at": "2025-10-24T22:00:15.545Z"
     }
   ],
   "guide_availability": [],

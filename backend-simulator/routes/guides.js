@@ -25,24 +25,38 @@ module.exports = (router) => {
         guides = guides.filter(g => g.is_available === isAvailable);
       }
 
-      // Add specialization details
-      const languages = db.get('guide_languages').value() || [];
-      const specializations = db.get('guide_specializations').value() || [];
-      const museums = db.get('guide_museums').value() || [];
-      const certifications = db.get('guide_certifications').value() || [];
-
+      // Transform guides to frontend format
       guides = guides.map(guide => {
-        const guideLanguages = languages.filter(l => l.guide_id === guide.id);
-        const guideSpecs = specializations.filter(s => s.guide_id === guide.id);
-        const guideMuseums = museums.filter(m => m.guide_id === guide.id);
-        const guideCerts = certifications.filter(c => c.guide_id === guide.id);
+        // Convert guide.type ("employed"/"freelance") to guideType ("planta"/"freelance")
+        const guideType = guide.type === 'employed' ? 'planta' : guide.type;
+
+        // Transform languages array to expected format
+        const languagesData = (guide.languages || []).map(langCode => ({
+          code: langCode,
+          level: 'avanzado' // Default level since we don't have detailed data
+        }));
+
+        // Transform certifications array to objects
+        const certificationsData = (guide.certifications || []).map((cert, idx) =>
+          typeof cert === 'string'
+            ? { id: `cert-${guide.id}-${idx}`, name: cert, issuer: 'MINCETUR', date: '2024-01-01' }
+            : cert
+        );
 
         return {
           ...guide,
-          languages: guideLanguages,
-          specializations: guideSpecs,
-          museums: guideMuseums,
-          certifications: guideCerts
+          guideType: guideType,
+          fullName: `${guide.first_name} ${guide.last_name}`.trim() || guide.name,
+          specializations: {
+            languages: languagesData,
+            museums: [] // No museum data in current structure
+          },
+          stats: {
+            rating: guide.rating || 0,
+            toursCompleted: guide.total_tours || 0,
+            yearsExperience: guide.experience_years || 0,
+            certifications: (guide.certifications || []).length
+          }
         };
       });
 
@@ -60,10 +74,24 @@ module.exports = (router) => {
         );
       }
 
+      // Pagination
+      const page = parseInt(req.query.page) || 1;
+      const pageSize = parseInt(req.query.pageSize) || 20;
+      const total = guides.length;
+      const totalPages = Math.ceil(total / pageSize);
+      const startIndex = (page - 1) * pageSize;
+      const endIndex = startIndex + pageSize;
+      const paginatedGuides = guides.slice(startIndex, endIndex);
+
       res.json({
         success: true,
-        data: guides,
-        total: guides.length
+        data: {
+          guides: paginatedGuides,
+          page,
+          pageSize,
+          total,
+          totalPages
+        }
       });
     } catch (error) {
       res.status(500).json({
