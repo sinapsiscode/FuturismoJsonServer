@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { MapPinIcon, PlusIcon, MagnifyingGlassIcon, FunnelIcon, Squares2X2Icon, ListBulletIcon, BuildingOffice2Icon, PhoneIcon, EnvelopeIcon, StarIcon, UserGroupIcon, ClockIcon, CalendarIcon, DocumentTextIcon } from '@heroicons/react/24/outline';
 import useProvidersStore from '../../stores/providersStore';
 import ProviderCard from './ProviderCard';
@@ -7,6 +8,7 @@ import ProviderForm from './ProviderForm';
 import LocationTree from './LocationTree';
 
 const ProvidersManager = () => {
+  const { t } = useTranslation();
   const {
     locations,
     categories,
@@ -189,10 +191,10 @@ const ProvidersManager = () => {
               onChange={(e) => setFilters(prev => ({ ...prev, category: e.target.value }))}
               className="border border-gray-300 rounded-lg px-3 py-2"
             >
-              <option value="">Todas las categorías</option>
+              <option value="">{t('providers.filters.allCategories')}</option>
               {categories.map(category => (
                 <option key={category.id} value={category.id}>
-                  {category.icon} {category.name}
+                  {t(category.name)}
                 </option>
               ))}
             </select>

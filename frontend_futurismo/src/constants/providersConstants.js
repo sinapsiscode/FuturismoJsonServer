@@ -25,17 +25,33 @@ const getProvidersConfig = () => {
 
 export const PROVIDER_CATEGORIES = (() => {
   const config = getProvidersConfig();
-  return config.providerCategories || [];
+  return config.providerCategories || {
+    RESTAURANT: 'restaurant',
+    HOTEL: 'hotel',
+    TRANSPORT: 'transport',
+    GUIDE: 'guide',
+    ACTIVITY: 'activity',
+    ATTRACTION: 'attraction'
+  };
 })();
 
 export const PRICING_TYPES = (() => {
   const config = getProvidersConfig();
-  return config.pricingTypes || [];
+  return config.pricingTypes || {
+    PER_PERSON: 'per_person',
+    PER_GROUP: 'per_group',
+    FIXED: 'fixed',
+    HOURLY: 'hourly'
+  };
 })();
 
 export const CURRENCIES = (() => {
   const config = getProvidersConfig();
-  return config.currencies || [];
+  return config.currencies || {
+    USD: 'USD',
+    PEN: 'PEN',
+    EUR: 'EUR'
+  };
 })();
 
 export const SERVICE_TYPES = (() => {

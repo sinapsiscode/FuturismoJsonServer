@@ -12698,7 +12698,7 @@
   "provider_categories": [
     {
       "id": "prov-cat-1",
-      "name": "Restaurantes",
+      "name": "providers.categories.restaurant",
       "description": "Servicios de alimentación",
       "icon": "utensils",
       "active": true,
@@ -12706,7 +12706,7 @@
     },
     {
       "id": "prov-cat-2",
-      "name": "Hoteles",
+      "name": "providers.categories.hotel",
       "description": "Alojamiento y hospedaje",
       "icon": "building",
       "active": true,
@@ -12714,7 +12714,7 @@
     },
     {
       "id": "prov-cat-3",
-      "name": "Transporte",
+      "name": "providers.categories.transport",
       "description": "Servicios de transporte turístico",
       "icon": "truck",
       "active": true,
@@ -12722,7 +12722,7 @@
     },
     {
       "id": "prov-cat-4",
-      "name": "Actividades",
+      "name": "providers.categories.activity",
       "description": "Actividades recreativas y tours",
       "icon": "ticket",
       "active": true,

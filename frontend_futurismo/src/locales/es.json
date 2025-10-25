@@ -1841,7 +1841,10 @@
         "capacity": "Capacidad"
       },
       "placeholders": {
+        "selectCategory": "Seleccionar categoría",
         "selectLocation": "Seleccionar ubicación",
+        "selectPricingType": "Seleccionar tipo de precio",
+        "name": "Nombre del proveedor",
         "contactPerson": "Nombre del contacto principal",
         "phone": "Número de teléfono",
         "email": "correo@ejemplo.com",
@@ -1878,6 +1881,10 @@
       "active": "Activo",
       "inactive": "Inactivo",
       "pending": "Pendiente"
+    },
+    "filters": {
+      "allCategories": "Todas las categorías",
+      "allLocations": "Todas las ubicaciones"
     }
   }
 }

@@ -1638,7 +1638,10 @@
         "capacity": "Capacity"
       },
       "placeholders": {
+        "selectCategory": "Select category",
         "selectLocation": "Select location",
+        "selectPricingType": "Select pricing type",
+        "name": "Provider name",
         "contactPerson": "Main contact name",
         "phone": "Phone number",
         "email": "email@example.com",
@@ -1675,6 +1678,10 @@
       "active": "Active",
       "inactive": "Inactive",
       "pending": "Pending"
+    },
+    "filters": {
+      "allCategories": "All categories",
+      "allLocations": "All locations"
     }
   },
   "rating": {
