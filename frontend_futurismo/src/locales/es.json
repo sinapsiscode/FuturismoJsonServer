@@ -1054,6 +1054,37 @@
     }
   },
   "guides": {
+    "types": {
+      "planta": "Guía de Planta",
+      "freelance": "Freelance"
+    },
+    "status": {
+      "active": "Activo",
+      "inactive": "Inactivo"
+    },
+    "profile": {
+      "personalInfo": "Información Personal",
+      "identityDocument": "Documento de Identidad",
+      "noDNI": "Sin DNI",
+      "phone": "Teléfono",
+      "noPhone": "Sin teléfono",
+      "email": "Correo Electrónico",
+      "noEmail": "Sin correo",
+      "address": "Dirección",
+      "noAddress": "Sin dirección",
+      "additionalInfo": "Información Adicional",
+      "status": "Estado",
+      "registrationDate": "Fecha de Registro",
+      "lastUpdate": "Última Actualización",
+      "notAvailable": "No disponible",
+      "languageSpecialization": "Especialización en Idiomas",
+      "noLanguages": "No hay idiomas registrados",
+      "language": "Idioma",
+      "proficiencyLevel": "Nivel de Dominio",
+      "museumKnowledge": "Conocimiento de Museos",
+      "noMuseums": "No hay museos registrados",
+      "unknownMuseum": "Museo desconocido"
+    },
     "availability": {
       "title": "Agenda de Disponibilidad",
       "freelanceTitle": "Disponibilidad de Guías Freelance",
@@ -1094,10 +1125,17 @@
       "acceptedFormats": "PDF, JPG, PNG (máx. 5MB)"
     },
     "levels": {
+      "principiante": "Principiante",
+      "basico": "Básico",
       "basic": "Básico",
+      "intermedio": "Intermedio",
       "intermediate": "Intermedio",
+      "avanzado": "Avanzado",
       "advanced": "Avanzado",
-      "expert": "Experto"
+      "experto": "Experto",
+      "expert": "Experto",
+      "nativo": "Nativo",
+      "native": "Nativo"
     }
   },
   "emergency": {

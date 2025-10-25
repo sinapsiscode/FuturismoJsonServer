@@ -3,24 +3,21 @@ import { useUsersStore } from '../stores/usersStoreSimple';
 import { DEFAULT_VALUES } from '../constants/usersConstants';
 
 export const useUserList = () => {
-  const {
-    getFilteredUsers,
-    getUsersStatistics,
-    getRoleStatistics,
-    getRoles,
-    toggleUserStatus,
-    resetUserPassword,
-    filters,
-    setFilters,
-    clearFilters,
-    initialize,
-    hasInitialized
-  } = useUsersStore();
+  // Suscribirse directamente a las funciones del store
+  const toggleUserStatus = useUsersStore((state) => state.toggleUserStatus);
+  const resetUserPassword = useUsersStore((state) => state.resetUserPassword);
+  const setFilters = useUsersStore((state) => state.setFilters);
+  const clearFilters = useUsersStore((state) => state.clearFilters);
+  const initialize = useUsersStore((state) => state.initialize);
+  const hasInitialized = useUsersStore((state) => state.hasInitialized);
 
-  const [users, setUsers] = useState([]);
-  const [stats, setStats] = useState({});
-  const [roleStats, setRoleStats] = useState({});
-  const [roles, setRoles] = useState([]);
+  // Suscribirse a los datos computados - estos se actualizarán automáticamente cuando cambien los filtros
+  const users = useUsersStore((state) => state.getFilteredUsers());
+  const stats = useUsersStore((state) => state.getUsersStatistics());
+  const roleStats = useUsersStore((state) => state.getRoleStatistics());
+  const roles = useUsersStore((state) => state.getRoles());
+  const filters = useUsersStore((state) => state.filters);
+
   const [showFilters, setShowFilters] = useState(false);
 
   // Inicializar el store al montar el componente
@@ -28,23 +25,7 @@ export const useUserList = () => {
     if (!hasInitialized) {
       initialize().catch(err => console.error('Error initializing users:', err));
     }
-  }, []);
-
-  useEffect(() => {
-    loadData();
-  }, [filters, hasInitialized]);
-
-  const loadData = () => {
-    const filteredUsers = getFilteredUsers();
-    const userStats = getUsersStatistics();
-    const roleStatistics = getRoleStatistics();
-    const systemRoles = getRoles();
-
-    setUsers(filteredUsers);
-    setStats(userStats);
-    setRoleStats(roleStatistics);
-    setRoles(systemRoles);
-  };
+  }, [hasInitialized, initialize]);
 
   const handleSearch = (e) => {
     setFilters({ search: e.target.value });
@@ -56,7 +37,6 @@ export const useUserList = () => {
 
   const handleStatusToggle = (userId) => {
     toggleUserStatus(userId);
-    loadData();
   };
 
   const handlePasswordReset = (userId, onConfirm, onSuccess) => {

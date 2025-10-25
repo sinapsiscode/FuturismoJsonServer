@@ -4,7 +4,6 @@ import useGuideProfile from '../../hooks/useGuideProfile';
 import ProfileHeader from './ProfileHeader';
 import PersonalInfoCard from './PersonalInfoCard';
 import GuideStatsCard from './GuideStatsCard';
-import LanguageSpecializationCard from './LanguageSpecializationCard';
 import MuseumSpecializationCard from './MuseumSpecializationCard';
 // import CompetenciesSummary from './CompetenciesSummary';
 
@@ -23,7 +22,7 @@ const GuideProfile = ({ guide, onClose, onEdit }) => {
   } = useGuideProfile(guide);
 
   return (
-    <div className="p-6">
+    <div className="p-0">
       <ProfileHeader
         guide={guide}
         initials={getInitials(guide?.fullName)}
@@ -34,27 +33,21 @@ const GuideProfile = ({ guide, onClose, onEdit }) => {
         onClose={onClose}
       />
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 mt-4 sm:mt-6">
         {/* Left column - Personal information */}
-        <div className="lg:col-span-1 space-y-6">
-          <PersonalInfoCard 
-            guide={guide} 
-            isActive={isActive} 
+        <div className="lg:col-span-1 space-y-4 sm:space-y-6">
+          <PersonalInfoCard
+            guide={guide}
+            isActive={isActive}
           />
-          
-          <GuideStatsCard 
-            stats={stats} 
+
+          <GuideStatsCard
+            stats={stats}
           />
         </div>
 
         {/* Right column - Specializations */}
-        <div className="lg:col-span-2 space-y-6">
-          <LanguageSpecializationCard
-            languages={languages}
-            getLanguageInfo={getLanguageInfo}
-            getLevelInfo={getLevelInfo}
-          />
-
+        <div className="lg:col-span-2 space-y-4 sm:space-y-6">
           <MuseumSpecializationCard
             museums={museums}
             getMuseumInfo={getMuseumInfo}

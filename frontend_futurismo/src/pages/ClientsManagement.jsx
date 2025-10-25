@@ -177,7 +177,7 @@ const ClientsManagement = () => {
       phone: client.phone,
       address: client.address || '',
       contact: client.contact || '',
-      status: client.status || CLIENT_STATUS.ACTIVE
+      status: CLIENT_STATUS.ACTIVE // Siempre activo
     });
     setShowForm(true);
   };
@@ -406,9 +406,6 @@ const ClientsManagement = () => {
                   Contacto
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Estado
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Rating
                 </th>
                 <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -443,11 +440,6 @@ const ClientsManagement = () => {
                         {client.phone}
                       </div>
                     </div>
-                  </td>
-                  <td className="px-6 py-4">
-                    <span className={`px-2 py-1 text-xs font-medium rounded-full ${getStatusColor(client.status)}`}>
-                      {CLIENT_STATUS_LABELS[client.status] || client.status}
-                    </span>
                   </td>
                   <td className="px-6 py-4">
                     {client.rating && (
@@ -486,17 +478,6 @@ const ClientsManagement = () => {
                         <PencilIcon className="h-5 w-5" />
                       </button>
                       <button
-                        onClick={() => handleToggleStatus(client)}
-                        className={client.status === CLIENT_STATUS.ACTIVE ? 'text-gray-600 hover:text-gray-800' : 'text-green-600 hover:text-green-800'}
-                        title={client.status === CLIENT_STATUS.ACTIVE ? 'Desactivar' : 'Activar'}
-                      >
-                        {client.status === CLIENT_STATUS.ACTIVE ? (
-                          <XCircleIcon className="h-5 w-5" />
-                        ) : (
-                          <CheckCircleIcon className="h-5 w-5" />
-                        )}
-                      </button>
-                      <button
                         onClick={() => showDeleteModal(client)}
                         className="text-red-600 hover:text-red-800"
                         title="Eliminar"
@@ -508,7 +489,7 @@ const ClientsManagement = () => {
                 </tr>
               )) : (
                 <tr>
-                  <td colSpan="6" className="px-6 py-4 text-center text-gray-500">
+                  <td colSpan="5" className="px-6 py-4 text-center text-gray-500">
                     No hay clientes disponibles
                   </td>
                 </tr>
@@ -706,21 +687,6 @@ const ClientsManagement = () => {
               )}
 
 
-              {/* Estado */}
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Estado
-                </label>
-                <select
-                  value={formData.status}
-                  onChange={(e) => setFormData({ ...formData, status: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                >
-                  {Object.entries(CLIENT_STATUS_LABELS).map(([value, label]) => (
-                    <option key={value} value={value}>{label}</option>
-                  ))}
-                </select>
-              </div>
 
               {/* Actions */}
               <div className="flex flex-col sm:flex-row justify-end space-y-2 sm:space-y-0 sm:space-x-3 pt-4 border-t">

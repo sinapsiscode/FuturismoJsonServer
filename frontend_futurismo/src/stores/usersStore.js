@@ -695,7 +695,34 @@ const useUsersStore = create((set, get) => ({
       return acc;
     }, {});
   },
-  
+
+  // Get users statistics
+  getUsersStatistics: () => {
+    const { users } = get();
+
+    // Validate that users is an array
+    if (!Array.isArray(users)) {
+      console.warn('[usersStore] users is not an array in getUsersStatistics:', users);
+      return {
+        total: 0,
+        active: 0,
+        inactive: 0,
+        activeRate: 0
+      };
+    }
+
+    const total = users.length;
+    const active = users.filter(u => u.status === 'activo' || u.status === 'active').length;
+    const inactive = users.filter(u => u.status === 'inactivo' || u.status === 'inactive').length;
+
+    return {
+      total,
+      active,
+      inactive,
+      activeRate: total > 0 ? (active / total * 100).toFixed(1) : 0
+    };
+  },
+
   resetStore: () => {
     set({
       users: [],

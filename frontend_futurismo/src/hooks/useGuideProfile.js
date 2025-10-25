@@ -1,15 +1,16 @@
 import { useTranslation } from 'react-i18next';
 import useGuidesStore from '../stores/guidesStore';
-import { LEVEL_COLORS, GUIDE_STATUS } from '../constants/guidesConstants';
+import { LEVEL_COLORS, GUIDE_STATUS, AVAILABLE_LANGUAGES } from '../constants/guidesConstants';
 
 const useGuideProfile = (guide) => {
   const { t } = useTranslation();
-  const { languages = [], museums = [] } = useGuidesStore();
+  const { museums = [] } = useGuidesStore();
 
   const getLanguageInfo = (langCode) => {
-    return languages.find(lang => lang.code === langCode) || { 
-      name: langCode, 
-      code: langCode 
+    const language = AVAILABLE_LANGUAGES.find(lang => lang.code === langCode);
+    return language || {
+      name: langCode.toUpperCase(),
+      code: langCode
     };
   };
 

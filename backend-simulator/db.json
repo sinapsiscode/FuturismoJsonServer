@@ -13,7 +13,7 @@
       "avatar": "https://ui-avatars.com/api/?name=Admin&background=3B82F6&color=fff",
       "created_at": "2024-01-01T00:00:00Z",
       "updated_at": "2024-01-01T00:00:00Z",
-      "last_login_at": "2025-10-24T21:58:21.057Z"
+      "last_login_at": "2025-10-25T00:27:18.655Z"
     },
     {
       "id": "user-agency-1",
@@ -168,6 +168,35 @@
       },
       "created_at": "2025-10-14T00:50:13.660Z",
       "updated_at": "2025-10-14T00:50:13.660Z",
+      "email_verified": false,
+      "phone_verified": false,
+      "last_login": null
+    },
+    {
+      "id": "user-1761355841678",
+      "username": "Jcena",
+      "email": "Jcena@gmail.com",
+      "firstName": "Jcema",
+      "lastName": "Tarrillo",
+      "phone": "976543343",
+      "role": "guide-planta",
+      "status": "Activo",
+      "avatar": "",
+      "isEdit": false,
+      "password": "demo1234",
+      "confirmPassword": "demo1234",
+      "preferences": {
+        "language": "es",
+        "notifications": {
+          "email": true,
+          "push": true,
+          "sms": false
+        },
+        "theme": "light",
+        "timezone": "America/Lima"
+      },
+      "created_at": "2025-10-25T01:30:41.678Z",
+      "updated_at": "2025-10-25T01:30:41.678Z",
       "email_verified": false,
       "phone_verified": false,
       "last_login": null
@@ -688,9 +717,10 @@
       "meeting_point": "Plaza San Martín",
       "image": "https://images.unsplash.com/photo-1531968455001-5c5272a41129",
       "created_at": "2024-01-15T10:00:00Z",
-      "assignedGuide": "guide-002",
-      "updated_at": "2025-10-24T22:00:15.537Z",
-      "assignedDriver": "driver-001"
+      "assignedGuide": "guide-001",
+      "updated_at": "2025-10-25T00:10:33.168Z",
+      "assignedDriver": "driver-001",
+      "assignedVehicle": "vehicle-001"
     },
     {
       "id": "tour-002",
@@ -11612,7 +11642,7 @@
       "technical_review_expiry": "2026-03-31",
       "fuel_type": "diesel",
       "created_at": "2024-01-15T00:00:00Z",
-      "updated_at": "2025-10-23T23:01:41.617Z",
+      "updated_at": "2025-10-25T00:10:33.179Z",
       "is_available": false
     },
     {
@@ -11651,7 +11681,7 @@
       "fuel_type": "diesel",
       "created_at": "2023-09-01T00:00:00Z",
       "updated_at": "2025-10-24T02:06:42.311Z",
-      "is_available": false
+      "is_available": true
     },
     {
       "id": "vehicle-003",
@@ -11663,6 +11693,7 @@
       "plate": "GHI-789",
       "color": "Negro",
       "capacity": 7,
+      "is_available": true,
       "status": "active",
       "condition": "good",
       "features": [
@@ -11700,6 +11731,7 @@
       "plate": "JKL-012",
       "color": "Azul",
       "capacity": 4,
+      "is_available": true,
       "status": "active",
       "condition": "excellent",
       "features": [
@@ -11749,6 +11781,16 @@
       "passengers": 10,
       "status": "active",
       "created_at": "2025-10-24T02:06:42.306Z"
+    },
+    {
+      "id": "vehicle-assignment-1761351033173",
+      "vehicle_id": "vehicle-001",
+      "tour_id": "tour-001",
+      "driver_id": null,
+      "date": "2025-10-25T00:10:33.149Z",
+      "passengers": 10,
+      "status": "active",
+      "created_at": "2025-10-25T00:10:33.173Z"
     }
   ],
   "maintenance_records": [],
@@ -12449,6 +12491,15 @@
       "date": "2025-10-24T03:34:45.157Z",
       "status": "active",
       "created_at": "2025-10-24T03:34:45.157Z"
+    },
+    {
+      "id": "assignment-1761350664841",
+      "tour_id": "tour-001",
+      "guide_id": "guide-001",
+      "type": "guide",
+      "date": "2025-10-25T00:04:24.842Z",
+      "status": "active",
+      "created_at": "2025-10-25T00:04:24.842Z"
     }
   ],
   "driver_assignments": [

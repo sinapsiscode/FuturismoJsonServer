@@ -144,17 +144,19 @@ const TourAssignments = () => {
     setSelectedGuide('');
     setSelectedDriver('');
     setSelectedVehicle('');
-    setValidateCompetences(true);
-    
+
     // Cargar guías disponibles
     setCheckingAvailability(true);
     try {
       const date = tour.date || new Date().toISOString();
+      console.log('Cargando guías para tour:', tour.id, 'fecha:', date);
       const guides = await getAvailableGuidesForTour(tour.id, date);
-      setAvailableGuides(guides);
+      console.log('Guías cargados:', guides);
+      setAvailableGuides(guides || []);
     } catch (error) {
       console.error('Error cargando guías disponibles:', error);
       toast.error('Error al cargar guías disponibles');
+      setAvailableGuides([]);
     } finally {
       setCheckingAvailability(false);
     }
@@ -163,28 +165,37 @@ const TourAssignments = () => {
   // Cargar recursos disponibles según el tipo de asignación
   const handleAssignmentTypeChange = async (type) => {
     setAssignmentType(type);
-    
+
     if (!selectedTour) return;
-    
+
     const tourDate = selectedTour.date || new Date().toISOString();
-    
+
     setCheckingAvailability(true);
     try {
       switch (type) {
         case 'driver':
+          console.log('Cargando choferes disponibles para fecha:', tourDate);
           const drivers = await fetchAvailableDrivers(tourDate);
-          setAvailableDrivers(drivers);
+          console.log('Choferes cargados:', drivers);
+          setAvailableDrivers(drivers || []);
           break;
-          
+
         case 'vehicle':
           const passengers = selectedTour.groupSize || 10;
+          console.log('Cargando vehículos disponibles para', passengers, 'pasajeros');
           const vehicles = await fetchAvailableVehicles(tourDate, passengers);
-          setAvailableVehicles(vehicles);
+          console.log('Vehículos cargados:', vehicles);
+          setAvailableVehicles(vehicles || []);
           break;
       }
     } catch (error) {
       console.error(`Error cargando ${type}s disponibles:`, error);
       toast.error(`Error al cargar ${type === 'driver' ? 'choferes' : 'vehículos'} disponibles`);
+      if (type === 'driver') {
+        setAvailableDrivers([]);
+      } else if (type === 'vehicle') {
+        setAvailableVehicles([]);
+      }
     } finally {
       setCheckingAvailability(false);
     }
@@ -653,7 +664,7 @@ const TourAssignments = () => {
                       <option value="">Seleccione un guía</option>
                       {availableGuides.map((guide) => (
                         <option key={guide.id} value={guide.id}>
-                          {guide.name} - {guide.specialization}
+                          {guide.name || guide.fullName} - {guide.specialties ? guide.specialties.join(', ') : 'Sin especialidades'}
                         </option>
                       ))}
                     </select>
@@ -692,7 +703,7 @@ const TourAssignments = () => {
                       <option value="">Seleccione un chofer</option>
                       {availableDrivers.map((driver) => (
                         <option key={driver.id} value={driver.id}>
-                          {driver.fullName} - Licencia: {driver.licenseCategory}
+                          {driver.name || driver.fullName} - Licencia: {driver.license_type || driver.licenseCategory || 'N/A'}
                         </option>
                       ))}
                     </select>
