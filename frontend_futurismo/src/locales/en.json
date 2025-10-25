@@ -1665,6 +1665,8 @@
       "types": {
         "per_person": "Per Person",
         "per_group": "Per Group",
+        "per_hour": "Per Hour",
+        "per_day": "Per Day",
         "fixed": "Fixed Price",
         "hourly": "Per Hour"
       },

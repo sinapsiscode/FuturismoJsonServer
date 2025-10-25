@@ -641,6 +641,87 @@ const useProvidersStore = create(
             }
           },
           
+          // Crear ubicación
+          createLocation: async (locationData) => {
+            set({ isLoading: true, error: null });
+
+            try {
+              const result = await providersService.createLocation(locationData);
+
+              if (!result.success) {
+                throw new Error(result.error || 'Error al crear ubicación');
+              }
+
+              // Recargar locations
+              const locationsResult = await providersService.getLocations();
+              if (locationsResult.success) {
+                set({ locations: locationsResult.data || [] });
+              }
+
+              set({ isLoading: false });
+
+              return result.data;
+            } catch (error) {
+              set({
+                isLoading: false,
+                error: error.message
+              });
+              throw error;
+            }
+          },
+
+          // Crear categoría
+          createCategory: async (categoryData) => {
+            set({ isLoading: true, error: null });
+
+            try {
+              const result = await providersService.createCategory(categoryData);
+
+              if (!result.success) {
+                throw new Error(result.error || 'Error al crear categoría');
+              }
+
+              // Recargar categories
+              const categoriesResult = await providersService.getCategories();
+              if (categoriesResult.success) {
+                set({ categories: categoriesResult.data || [] });
+              }
+
+              set({ isLoading: false });
+
+              return result.data;
+            } catch (error) {
+              set({
+                isLoading: false,
+                error: error.message
+              });
+              throw error;
+            }
+          },
+
+          // Crear servicio
+          createService: async (serviceData) => {
+            set({ isLoading: true, error: null });
+
+            try {
+              const result = await providersService.createService(serviceData);
+
+              if (!result.success) {
+                throw new Error(result.error || 'Error al crear servicio');
+              }
+
+              set({ isLoading: false });
+
+              return result.data;
+            } catch (error) {
+              set({
+                isLoading: false,
+                error: error.message
+              });
+              throw error;
+            }
+          },
+
           // Utilidades
           getCategoriesByLocation: (locationId) => {
             const location = get().locations.find(loc => loc.id === locationId);

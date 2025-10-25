@@ -81,19 +81,12 @@ const useModalTransitions = (isOpen, onClose, options = {}) => {
   // Función para obtener las props del modal
   const getModalProps = () => ({
     ref: modalRef,
-    className: `modal-overlay ${animationType === 'fade' ? 'modal-fade' : ''} ${isOpen ? 'modal-open' : ''}`,
-    onClick: handleOverlayClick,
-    style: {
-      animation: isOpen ? `modal-fade-in ${transitionDuration}ms ease-out` : undefined
-    }
+    onClick: handleOverlayClick
   });
 
   // Función para obtener las props del diálogo
   const getDialogProps = () => ({
-    className: 'modal-dialog',
-    style: {
-      animation: isOpen ? `modal-scale-in ${transitionDuration}ms ease-out` : undefined
-    }
+    onClick: (e) => e.stopPropagation()
   });
 
   return {

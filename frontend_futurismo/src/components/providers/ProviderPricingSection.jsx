@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 import { CurrencyDollarIcon, UserGroupIcon } from '@heroicons/react/24/outline';
-import { PRICING_TYPES, CURRENCIES } from '../../constants/providersConstants';
+import { PRICING_TYPES } from '../../constants/providersConstants';
 
 const ProviderPricingSection = ({ register, errors, watch }) => {
   const { t } = useTranslation();
@@ -13,13 +13,6 @@ const ProviderPricingSection = ({ register, errors, watch }) => {
     }));
   };
 
-  const getCurrencyOptions = () => {
-    return Object.values(CURRENCIES).map(currency => ({
-      value: currency,
-      label: t(`providers.pricing.currencies.${currency}`)
-    }));
-  };
-
   return (
     <div className="space-y-4">
       <h3 className="text-lg font-semibold flex items-center">
@@ -27,20 +20,23 @@ const ProviderPricingSection = ({ register, errors, watch }) => {
         {t('providers.form.sections.pricing')}
       </h3>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">
-            {t('providers.form.fields.basePrice')} *
+            {t('providers.form.fields.basePrice')} (S/) *
           </label>
-          <input
-            type="number"
-            step="0.01"
-            {...register('pricing.basePrice', { valueAsNumber: true })}
-            className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 ${
-              errors.pricing?.basePrice ? 'border-red-500' : 'border-gray-300'
-            }`}
-            placeholder="0.00"
-          />
+          <div className="relative">
+            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">S/</span>
+            <input
+              type="number"
+              step="0.01"
+              {...register('pricing.basePrice', { valueAsNumber: true })}
+              className={`w-full pl-10 pr-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 ${
+                errors.pricing?.basePrice ? 'border-red-500' : 'border-gray-300'
+              }`}
+              placeholder="0.00"
+            />
+          </div>
           {errors.pricing?.basePrice && (
             <p className="mt-1 text-sm text-red-600">{errors.pricing.basePrice.message}</p>
           )}
@@ -70,22 +66,6 @@ const ProviderPricingSection = ({ register, errors, watch }) => {
 
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">
-            {t('providers.form.fields.currency')} *
-          </label>
-          <select
-            {...register('pricing.currency')}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-          >
-            {getCurrencyOptions().map(option => (
-              <option key={option.value} value={option.value}>
-                {option.label}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
             <UserGroupIcon className="w-4 h-4 inline mr-1" />
             {t('providers.form.fields.capacity')}
           </label>
@@ -102,6 +82,9 @@ const ProviderPricingSection = ({ register, errors, watch }) => {
           )}
         </div>
       </div>
+
+      {/* Campo oculto para forzar moneda a PEN */}
+      <input type="hidden" {...register('pricing.currency')} value="PEN" />
     </div>
   );
 };

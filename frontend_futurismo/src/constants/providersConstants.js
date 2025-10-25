@@ -37,7 +37,19 @@ export const PROVIDER_CATEGORIES = (() => {
 
 export const PRICING_TYPES = (() => {
   const config = getProvidersConfig();
-  return config.pricingTypes || {
+  const pricingTypes = config.pricingTypes;
+
+  // Si viene del backend como array, convertir a objeto
+  if (Array.isArray(pricingTypes)) {
+    return pricingTypes.reduce((acc, item) => {
+      const key = item.value.toUpperCase().replace(/_/g, '_');
+      acc[key] = item.value;
+      return acc;
+    }, {});
+  }
+
+  // Fallback por defecto
+  return pricingTypes || {
     PER_PERSON: 'per_person',
     PER_GROUP: 'per_group',
     FIXED: 'fixed',
@@ -47,7 +59,18 @@ export const PRICING_TYPES = (() => {
 
 export const CURRENCIES = (() => {
   const config = getProvidersConfig();
-  return config.currencies || {
+  const currencies = config.currencies;
+
+  // Si viene del backend como array, convertir a objeto
+  if (Array.isArray(currencies)) {
+    return currencies.reduce((acc, currency) => {
+      acc[currency] = currency;
+      return acc;
+    }, {});
+  }
+
+  // Fallback por defecto
+  return currencies || {
     USD: 'USD',
     PEN: 'PEN',
     EUR: 'EUR'

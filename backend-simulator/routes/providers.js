@@ -344,5 +344,60 @@ module.exports = (router) => {
     }
   });
 
+  /**
+   * POST /api/providers/services
+   * Crear nuevo servicio
+   */
+  providersRouter.post('/services', (req, res) => {
+    try {
+      const db = router.db;
+      const { name, category, description } = req.body;
+
+      if (!name) {
+        return res.status(400).json({
+          success: false,
+          error: 'El nombre del servicio es requerido'
+        });
+      }
+
+      if (!category) {
+        return res.status(400).json({
+          success: false,
+          error: 'La categoría es requerida'
+        });
+      }
+
+      // Obtener o crear el array de service_types si no existe
+      let serviceTypes = db.get('service_types').value();
+      if (!serviceTypes) {
+        db.set('service_types', []).write();
+        serviceTypes = [];
+      }
+
+      const newService = {
+        id: `service-${Date.now()}`,
+        name,
+        category,
+        description: description || '',
+        active: true,
+        created_at: new Date().toISOString()
+      };
+
+      db.get('service_types').push(newService).write();
+
+      res.status(201).json({
+        success: true,
+        data: newService,
+        message: 'Servicio creado exitosamente'
+      });
+    } catch (error) {
+      console.error('Error al crear servicio:', error);
+      res.status(500).json({
+        success: false,
+        error: 'Error al crear servicio'
+      });
+    }
+  });
+
   return providersRouter;
 };

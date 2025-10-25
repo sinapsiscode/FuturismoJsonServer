@@ -1,16 +1,22 @@
+import { useState } from 'react';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 import { TagIcon, PlusIcon, MinusIcon } from '@heroicons/react/24/outline';
 import { SERVICE_TYPES } from '../../constants/providersConstants';
+import useProvidersStore from '../../stores/providersStore';
+import NewServiceModal from './NewServiceModal';
+import toast from 'react-hot-toast';
 
-const ProviderServicesSection = ({ 
-  services, 
-  handleAddService, 
-  handleRemoveService, 
+const ProviderServicesSection = ({
+  services,
+  handleAddService,
+  handleRemoveService,
   handleServiceChange,
-  selectedCategory 
+  selectedCategory
 }) => {
   const { t } = useTranslation();
+  const { categories, actions } = useProvidersStore();
+  const [showServiceModal, setShowServiceModal] = useState(false);
 
   const getServiceOptions = () => {
     const categoryServices = SERVICE_TYPES[selectedCategory?.toUpperCase()] || [];
@@ -18,6 +24,16 @@ const ProviderServicesSection = ({
       value: service,
       label: t(service)
     }));
+  };
+
+  const handleSaveService = async (serviceData) => {
+    try {
+      await actions.createService(serviceData);
+      toast.success('Servicio creado exitosamente');
+    } catch (error) {
+      toast.error('Error al crear servicio');
+      console.error(error);
+    }
   };
 
   return (
@@ -53,15 +69,35 @@ const ProviderServicesSection = ({
             )}
           </div>
         ))}
-        <button
-          type="button"
-          onClick={handleAddService}
-          className="flex items-center gap-2 px-4 py-2 text-blue-600 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors"
-        >
-          <PlusIcon className="w-5 h-5" />
-          {t('providers.form.actions.addService')}
-        </button>
+        <div className="flex gap-2">
+          <button
+            type="button"
+            onClick={handleAddService}
+            className="flex items-center gap-2 px-4 py-2 text-blue-600 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors"
+          >
+            <PlusIcon className="w-5 h-5" />
+            {t('providers.form.actions.addService')}
+          </button>
+          <button
+            type="button"
+            onClick={() => setShowServiceModal(true)}
+            className="flex items-center gap-2 px-4 py-2 text-green-600 bg-green-50 rounded-lg hover:bg-green-100 transition-colors"
+            title="Crear Nuevo Servicio"
+          >
+            <PlusIcon className="w-5 h-5" />
+            Nuevo Servicio
+          </button>
+        </div>
       </div>
+
+      {/* Modal de Nuevo Servicio */}
+      <NewServiceModal
+        isOpen={showServiceModal}
+        onClose={() => setShowServiceModal(false)}
+        onSave={handleSaveService}
+        selectedCategory={selectedCategory}
+        categories={categories}
+      />
     </div>
   );
 };

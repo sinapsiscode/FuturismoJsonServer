@@ -249,6 +249,33 @@ const filename = `providers_${new Date().toISOString().split('T')[0]}.${format}`
   async cloneProvider(providerId, overrides = {}) {
     return this.post(`/${providerId}/clone`, overrides);
   }
+
+  /**
+   * Crear nueva ubicación
+   * @param {Object} locationData - Datos de la ubicación
+   * @returns {Promise<Object>}
+   */
+  async createLocation(locationData) {
+    return this.post('/locations', locationData);
+  }
+
+  /**
+   * Crear nueva categoría
+   * @param {Object} categoryData - Datos de la categoría
+   * @returns {Promise<Object>}
+   */
+  async createCategory(categoryData) {
+    return this.post('/categories', categoryData);
+  }
+
+  /**
+   * Crear nuevo servicio
+   * @param {Object} serviceData - Datos del servicio
+   * @returns {Promise<Object>}
+   */
+  async createService(serviceData) {
+    return this.post('/services', serviceData);
+  }
 }
 
 export const providersService = new ProvidersService();

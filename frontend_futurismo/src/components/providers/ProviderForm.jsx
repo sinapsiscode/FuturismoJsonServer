@@ -43,46 +43,51 @@ const ProviderForm = ({ provider, onSave, onCancel }) => {
   const selectedCategory = watch('category');
 
   return (
-    <div {...getModalProps()}>
-      <div {...getDialogProps()} className="modal-dialog modal-lg">
-        <div className="modal-content modal-open">
-          <form onSubmit={handleSubmit(onSubmit)}>
-            <ProviderFormHeader
-              isEditing={!!provider}
-              onCancel={handleCancelWithAnimation}
-              onSubmit={handleSubmit(onSubmit)}
-            />
+    <div
+      {...getModalProps()}
+      className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-2 sm:p-4 overflow-y-auto"
+    >
+      <div
+        {...getDialogProps()}
+        className="bg-white rounded-lg shadow-xl w-full max-w-4xl max-h-[95vh] flex flex-col my-4 sm:my-8"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col h-full">
+          <ProviderFormHeader
+            isEditing={!!provider}
+            onCancel={handleCancelWithAnimation}
+            onSubmit={handleSubmit(onSubmit)}
+          />
 
-            <div className="modal-body">
-              <div className="space-y-6">
-                <ProviderBasicInfo 
-                  register={register} 
-                  errors={errors} 
-                  watch={watch} 
-                />
+          <div className="flex-1 overflow-y-auto px-4 sm:px-6 py-4">
+            <div className="space-y-4 sm:space-y-6">
+              <ProviderBasicInfo
+                register={register}
+                errors={errors}
+                watch={watch}
+              />
 
-                <ProviderContactInfo 
-                  register={register} 
-                  errors={errors} 
-                />
+              <ProviderContactInfo
+                register={register}
+                errors={errors}
+              />
 
-                <ProviderServicesSection
-                  services={services}
-                  handleAddService={handleAddService}
-                  handleRemoveService={handleRemoveService}
-                  handleServiceChange={handleServiceChange}
-                  selectedCategory={selectedCategory}
-                />
+              <ProviderServicesSection
+                services={services}
+                handleAddService={handleAddService}
+                handleRemoveService={handleRemoveService}
+                handleServiceChange={handleServiceChange}
+                selectedCategory={selectedCategory}
+              />
 
-                <ProviderPricingSection
-                  register={register}
-                  errors={errors}
-                  watch={watch}
-                />
-              </div>
+              <ProviderPricingSection
+                register={register}
+                errors={errors}
+                watch={watch}
+              />
             </div>
-          </form>
-        </div>
+          </div>
+        </form>
       </div>
     </div>
   );
