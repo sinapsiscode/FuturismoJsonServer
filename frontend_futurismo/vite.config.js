@@ -19,11 +19,11 @@ export default defineConfig(({ mode }) => {
   return {
     plugins: [react()],
     server: {
-      port: 5173,
+      port: 5175,
       host: true,
       strictPort: false,
       hmr: {
-        port: 5173
+        port: 5176
       },
       // Proxy para evitar problemas de CORS en desarrollo
       proxy: {

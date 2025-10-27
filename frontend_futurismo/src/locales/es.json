@@ -1857,6 +1857,12 @@
       }
     },
     "categories": {
+      "providers.categories.restaurant": "Restaurante",
+      "providers.categories.hotel": "Hotel",
+      "providers.categories.transport": "Transporte",
+      "providers.categories.activity": "Actividad",
+      "providers.categories.guide": "Guía Turístico",
+      "providers.categories.attraction": "Atracción",
       "restaurant": "Restaurante",
       "hotel": "Hotel",
       "transport": "Transporte",

@@ -15,6 +15,15 @@ const ProviderBasicInfo = ({ register, errors, watch }) => {
   const [showCategoryModal, setShowCategoryModal] = useState(false);
 
   const getCategoryOptions = () => {
+    // Si hay categorías desde el store (backend), usarlas
+    if (categories && categories.length > 0) {
+      return categories.map(category => ({
+        value: category.id,
+        label: t(category.name) // category.name ya incluye el path completo, ej: "providers.categories.restaurant"
+      }));
+    }
+
+    // Fallback a las constantes locales si no hay datos del backend
     return Object.entries(PROVIDER_CATEGORIES).map(([key, value]) => ({
       value,
       label: t(`providers.categories.${value}`)

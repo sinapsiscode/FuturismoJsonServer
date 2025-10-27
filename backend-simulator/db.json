@@ -13,7 +13,7 @@
       "avatar": "https://ui-avatars.com/api/?name=Admin&background=3B82F6&color=fff",
       "created_at": "2024-01-01T00:00:00Z",
       "updated_at": "2024-01-01T00:00:00Z",
-      "last_login_at": "2025-10-25T00:27:18.655Z"
+      "last_login_at": "2025-10-27T23:15:43.958Z"
     },
     {
       "id": "user-agency-1",
@@ -12725,6 +12725,22 @@
       "name": "providers.categories.activity",
       "description": "Actividades recreativas y tours",
       "icon": "ticket",
+      "active": true,
+      "created_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "id": "prov-cat-5",
+      "name": "providers.categories.guide",
+      "description": "Guías turísticos profesionales",
+      "icon": "user-group",
+      "active": true,
+      "created_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "id": "prov-cat-6",
+      "name": "providers.categories.attraction",
+      "description": "Atracciones y lugares turísticos",
+      "icon": "map-pin",
       "active": true,
       "created_at": "2024-01-01T00:00:00Z"
     }
