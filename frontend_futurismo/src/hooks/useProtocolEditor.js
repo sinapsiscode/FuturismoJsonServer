@@ -4,24 +4,12 @@ import { useTranslation } from 'react-i18next';
 
 const useProtocolEditor = (protocol, onSave) => {
   const [selectedIcon, setSelectedIcon] = useState('🚨');
+  const [contactTypes, setContactTypes] = useState([]);
   const { t } = useTranslation();
 
   const iconOptions = [
-    '🚨', '🚑', '⛈️', '🚗', '🔍', '📡', '🏥', '👮', 
+    '🚨', '🚑', '⛈️', '🚗', '🔍', '📡', '🏥', '👮',
     '🚒', '⚠️', '📋', '🛡️', '📞', '💊', '🩹', '🔧'
-  ];
-
-  const contactTypes = [
-    { value: 'emergency', label: t('emergency.protocol.contactTypes.emergency') },
-    { value: 'coordinator', label: t('emergency.protocol.contactTypes.coordinator') },
-    { value: 'management', label: t('emergency.protocol.contactTypes.management') },
-    { value: 'police', label: t('emergency.protocol.contactTypes.police') },
-    { value: 'medical', label: t('emergency.protocol.contactTypes.medical') },
-    { value: 'insurance', label: t('emergency.protocol.contactTypes.insurance') },
-    { value: 'towing', label: t('emergency.protocol.contactTypes.towing') },
-    { value: 'weather', label: t('emergency.protocol.contactTypes.weather') },
-    { value: 'local', label: t('emergency.protocol.contactTypes.local') },
-    { value: 'operations', label: t('emergency.protocol.contactTypes.operations') }
   ];
 
   const {
@@ -77,6 +65,41 @@ const useProtocolEditor = (protocol, onSave) => {
   useEffect(() => {
     setSelectedIcon(watchedIcon);
   }, [watchedIcon]);
+
+  // Load contact types from API
+  useEffect(() => {
+    const loadContactTypes = async () => {
+      try {
+        const response = await fetch('/api/emergency/contact-types');
+        const result = await response.json();
+        if (result.success && result.data) {
+          const types = result.data.map(type => ({
+            value: type.id,
+            label: type.name,
+            icon: type.icon,
+            color: type.color
+          }));
+          setContactTypes(types);
+        }
+      } catch (error) {
+        console.error('Error loading contact types:', error);
+        // Fallback to default types if API fails
+        setContactTypes([
+          { value: 'emergency', label: t('emergency.protocol.contactTypes.emergency') },
+          { value: 'coordinator', label: t('emergency.protocol.contactTypes.coordinator') },
+          { value: 'management', label: t('emergency.protocol.contactTypes.management') },
+          { value: 'police', label: t('emergency.protocol.contactTypes.police') },
+          { value: 'medical', label: t('emergency.protocol.contactTypes.medical') },
+          { value: 'insurance', label: t('emergency.protocol.contactTypes.insurance') },
+          { value: 'towing', label: t('emergency.protocol.contactTypes.towing') },
+          { value: 'weather', label: t('emergency.protocol.contactTypes.weather') },
+          { value: 'local', label: t('emergency.protocol.contactTypes.local') },
+          { value: 'operations', label: t('emergency.protocol.contactTypes.operations') }
+        ]);
+      }
+    };
+    loadContactTypes();
+  }, [t]);
 
   const onSubmit = (data) => {
     const protocolData = {

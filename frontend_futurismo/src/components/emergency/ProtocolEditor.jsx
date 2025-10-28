@@ -16,7 +16,7 @@ import ProtocolMaterials from './ProtocolMaterials';
 
 const ProtocolEditor = ({ protocol, onClose, onSave }) => {
   const { t } = useTranslation();
-  const { categories } = useEmergencyStore();
+  const categories = useEmergencyStore((state) => state.categories);
   const {
     register,
     handleSubmit,

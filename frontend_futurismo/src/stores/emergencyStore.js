@@ -21,7 +21,7 @@ const useEmergencyStore = create()(
         currentIncident: null,
         isLoading: false,
         error: null,
-        
+
         // Paginación
         protocolsPagination: {
           page: 1,
@@ -29,34 +29,34 @@ const useEmergencyStore = create()(
           total: 0,
           totalPages: 0
         },
-        
+
         materialsPagination: {
           page: 1,
           pageSize: 20,
           total: 0,
           totalPages: 0
         },
-        
+
         incidentsPagination: {
           page: 1,
           pageSize: 20,
           total: 0,
           totalPages: 0
         },
-        
+
         // Filtros
         protocolsFilters: {
           search: '',
           category: '',
           priority: ''
         },
-        
+
         materialsFilters: {
           search: '',
           category: '',
           mandatory: null
         },
-        
+
         incidentsFilters: {
           category: '',
           severity: '',
@@ -64,14 +64,13 @@ const useEmergencyStore = create()(
           dateFrom: '',
           dateTo: ''
         },
-        
+
         // Estadísticas
         stats: null,
 
-        // Acciones
-        actions: {
-          // Inicialización
-          initialize: async () => {
+        // Acciones - ahora en el nivel superior del estado
+        // Inicialización
+        initialize: async () => {
             set({ isLoading: true, error: null });
             
             try {
@@ -162,22 +161,22 @@ const useEmergencyStore = create()(
           
           createProtocol: async (protocolData) => {
             set({ isLoading: true, error: null });
-            
+
             try {
               const result = await emergencyService.createProtocol(protocolData);
-              
+
               if (!result.success) {
                 throw new Error(result.error || 'Error al crear protocolo');
               }
-              
+
               set((state) => ({
-                protocols: [result.data, ...state.protocols],
+                protocols: [result.data, ...(state.protocols || [])],
                 isLoading: false
               }));
-              
+
               return result.data;
             } catch (error) {
-              set({ 
+              set({
                 isLoading: false,
                 error: error.message
               });
@@ -187,27 +186,27 @@ const useEmergencyStore = create()(
           
           updateProtocol: async (id, updateData) => {
             set({ isLoading: true, error: null });
-            
+
             try {
               const result = await emergencyService.updateProtocol(id, updateData);
-              
+
               if (!result.success) {
                 throw new Error(result.error || 'Error al actualizar protocolo');
               }
-              
+
               set((state) => ({
-                protocols: state.protocols.map(p => 
+                protocols: (state.protocols || []).map(p =>
                   p.id === id ? result.data : p
                 ),
-                currentProtocol: state.currentProtocol?.id === id 
-                  ? result.data 
+                currentProtocol: state.currentProtocol?.id === id
+                  ? result.data
                   : state.currentProtocol,
                 isLoading: false
               }));
-              
+
               return result.data;
             } catch (error) {
-              set({ 
+              set({
                 isLoading: false,
                 error: error.message
               });
@@ -217,25 +216,25 @@ const useEmergencyStore = create()(
           
           deleteProtocol: async (id) => {
             set({ isLoading: true, error: null });
-            
+
             try {
               const result = await emergencyService.deleteProtocol(id);
-              
+
               if (!result.success) {
                 throw new Error(result.error || 'Error al eliminar protocolo');
               }
-              
+
               set((state) => ({
-                protocols: state.protocols.filter(p => p.id !== id),
-                currentProtocol: state.currentProtocol?.id === id 
-                  ? null 
+                protocols: (state.protocols || []).filter(p => p.id !== id),
+                currentProtocol: state.currentProtocol?.id === id
+                  ? null
                   : state.currentProtocol,
                 isLoading: false
               }));
-              
+
               return true;
             } catch (error) {
-              set({ 
+              set({
                 isLoading: false,
                 error: error.message
               });
@@ -318,7 +317,7 @@ const useEmergencyStore = create()(
               }
               
               set((state) => ({
-                materials: [result.data, ...state.materials],
+                materials: [result.data, ...(state.materials || [])],
                 isLoading: false
               }));
               
@@ -343,7 +342,7 @@ const useEmergencyStore = create()(
               }
               
               set((state) => ({
-                materials: state.materials.map(m => 
+                materials: (state.materials || []).map(m =>
                   m.id === id ? result.data : m
                 ),
                 currentMaterial: state.currentMaterial?.id === id 
@@ -373,7 +372,7 @@ const useEmergencyStore = create()(
               }
               
               set((state) => ({
-                materials: state.materials.filter(m => m.id !== id),
+                materials: (state.materials || []).filter(m => m.id !== id),
                 currentMaterial: state.currentMaterial?.id === id 
                   ? null 
                   : state.currentMaterial,
@@ -401,7 +400,7 @@ const useEmergencyStore = create()(
               }
               
               set((state) => ({
-                materials: state.materials.map(m => 
+                materials: (state.materials || []).map(m =>
                   m.id === id ? result.data : m
                 ),
                 currentMaterial: state.currentMaterial?.id === id 
@@ -495,7 +494,7 @@ const useEmergencyStore = create()(
               }
               
               set((state) => ({
-                incidents: [result.data, ...state.incidents],
+                incidents: [result.data, ...(state.incidents || [])],
                 isLoading: false
               }));
               
@@ -520,7 +519,7 @@ const useEmergencyStore = create()(
               }
               
               set((state) => ({
-                incidents: state.incidents.map(i => 
+                incidents: (state.incidents || []).map(i =>
                   i.id === id ? result.data : i
                 ),
                 currentIncident: state.currentIncident?.id === id 
@@ -550,7 +549,7 @@ const useEmergencyStore = create()(
               }
               
               set((state) => ({
-                incidents: state.incidents.map(i => 
+                incidents: (state.incidents || []).map(i =>
                   i.id === id ? result.data : i
                 ),
                 currentIncident: state.currentIncident?.id === id 
@@ -713,57 +712,56 @@ const useEmergencyStore = create()(
             }
           },
           
-          // Utilidades
-          clearError: () => set({ error: null }),
-          
-          resetStore: () => {
-            set({
-              protocols: [],
-              materials: [],
-              incidents: [],
-              currentProtocol: null,
-              currentMaterial: null,
-              currentIncident: null,
-              isLoading: false,
-              error: null,
-              protocolsPagination: {
-                page: 1,
-                pageSize: 20,
-                total: 0,
-                totalPages: 0
-              },
-              materialsPagination: {
-                page: 1,
-                pageSize: 20,
-                total: 0,
-                totalPages: 0
-              },
-              incidentsPagination: {
-                page: 1,
-                pageSize: 20,
-                total: 0,
-                totalPages: 0
-              },
-              protocolsFilters: {
-                search: '',
-                category: '',
-                priority: ''
-              },
-              materialsFilters: {
-                search: '',
-                category: '',
-                mandatory: null
-              },
-              incidentsFilters: {
-                category: '',
-                severity: '',
-                status: '',
-                dateFrom: '',
-                dateTo: ''
-              },
-              stats: null
-            });
-          }
+        // Utilidades
+        clearError: () => set({ error: null }),
+
+        resetStore: () => {
+          set({
+            protocols: [],
+            materials: [],
+            incidents: [],
+            currentProtocol: null,
+            currentMaterial: null,
+            currentIncident: null,
+            isLoading: false,
+            error: null,
+            protocolsPagination: {
+              page: 1,
+              pageSize: 20,
+              total: 0,
+              totalPages: 0
+            },
+            materialsPagination: {
+              page: 1,
+              pageSize: 20,
+              total: 0,
+              totalPages: 0
+            },
+            incidentsPagination: {
+              page: 1,
+              pageSize: 20,
+              total: 0,
+              totalPages: 0
+            },
+            protocolsFilters: {
+              search: '',
+              category: '',
+              priority: ''
+            },
+            materialsFilters: {
+              search: '',
+              category: '',
+              mandatory: null
+            },
+            incidentsFilters: {
+              category: '',
+              severity: '',
+              status: '',
+              dateFrom: '',
+              dateTo: ''
+            },
+            stats: null
+          });
         }
       }),
       {

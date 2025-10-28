@@ -10,14 +10,18 @@ import AdminEmergency from './AdminEmergency';
 
 const EmergencyProtocols = () => {
   const { user } = useAuthStore();
-  
+
   // Si es administrador, mostrar panel administrativo
   if (user?.role === 'admin') {
     return <AdminEmergency />;
   }
-  
-  const { protocols, categories, actions } = useEmergencyStore();
-  
+
+  const protocols = useEmergencyStore((state) => state.protocols);
+  const categories = useEmergencyStore((state) => state.categories);
+  const updateProtocol = useEmergencyStore((state) => state.updateProtocol);
+  const createProtocol = useEmergencyStore((state) => state.createProtocol);
+  const deleteProtocol = useEmergencyStore((state) => state.deleteProtocol);
+
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('');
   const [selectedProtocol, setSelectedProtocol] = useState(null);
@@ -101,9 +105,9 @@ const EmergencyProtocols = () => {
         }}
         onSave={(updatedProtocol) => {
           if (selectedProtocol) {
-            actions.updateProtocol(selectedProtocol.id, updatedProtocol);
+            updateProtocol(selectedProtocol.id, updatedProtocol);
           } else {
-            actions.addProtocol(updatedProtocol);
+            createProtocol(updatedProtocol);
           }
           setIsEditing(false);
           setSelectedProtocol(null);
@@ -137,14 +141,6 @@ const EmergencyProtocols = () => {
 
         <div className="flex items-center space-x-3">
           {/* Botones de descarga */}
-          <button
-            onClick={handleDownloadGuideKit}
-            className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors flex items-center space-x-2"
-          >
-            <ArrowDownTrayIcon className="w-4 h-4" />
-            <span>Kit Completo</span>
-          </button>
-
           <button
             onClick={handleDownloadAllProtocols}
             className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors flex items-center space-x-2"
@@ -334,7 +330,7 @@ const EmergencyProtocols = () => {
                         <button
                           onClick={() => {
                             if (confirm('¿Estás seguro de eliminar este protocolo?')) {
-                              actions.deleteProtocol(protocol.id);
+                              deleteProtocol(protocol.id);
                             }
                           }}
                           className="px-3 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors"
@@ -437,7 +433,7 @@ const EmergencyProtocols = () => {
                               <button
                                 onClick={() => {
                                   if (confirm('¿Estás seguro de eliminar este protocolo?')) {
-                                    actions.deleteProtocol(protocol.id);
+                                    deleteProtocol(protocol.id);
                                   }
                                 }}
                                 className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"

@@ -7,7 +7,8 @@
       "Bash(rg:*)",
       "Read(//c/Users/usu/Documents/FuturismoJsonServer/backend-simulator/routes/**)",
       "Read(//c/Users/usu/**)",
-      "Bash(find:*)"
+      "Bash(find:*)",
+      "Bash(curl:*)"
     ],
     "deny": []
   }

@@ -13,7 +13,7 @@
       "avatar": "https://ui-avatars.com/api/?name=Admin&background=3B82F6&color=fff",
       "created_at": "2024-01-01T00:00:00Z",
       "updated_at": "2024-01-01T00:00:00Z",
-      "last_login_at": "2025-10-27T23:15:43.958Z"
+      "last_login_at": "2025-10-28T18:36:42.342Z"
     },
     {
       "id": "user-agency-1",
@@ -1729,9 +1729,10 @@
     },
     {
       "id": "climatico",
-      "name": "Climático",
+      "name": "Climáticooooooo",
       "icon": "⛈️",
-      "color": "#3B82F6"
+      "color": "#3B82F6",
+      "updated_at": "2025-10-28T16:36:49.335Z"
     },
     {
       "id": "transporte",
@@ -1750,6 +1751,96 @@
       "name": "Comunicación",
       "icon": "📡",
       "color": "#10B981"
+    }
+  ],
+  "emergency_contact_types": [
+    {
+      "id": "emergency",
+      "name": "Emergencia",
+      "icon": "🚨",
+      "description": "Números de emergencia generales (911, 105, etc.)",
+      "color": "#DC2626",
+      "priority": 1
+    },
+    {
+      "id": "postaaa",
+      "name": "POstaaa",
+      "icon": "📞",
+      "description": "asfasfasfasfasfaf",
+      "color": "#8B5CF6",
+      "priority": 1
+    },
+    {
+      "id": "medical",
+      "name": "Médico",
+      "icon": "🏥",
+      "description": "Servicios médicos, hospitales y clínicas",
+      "color": "#EF4444",
+      "priority": 2
+    },
+    {
+      "id": "police",
+      "name": "Policía",
+      "icon": "👮",
+      "description": "Contactos policiales y seguridad",
+      "color": "#3B82F6",
+      "priority": 3
+    },
+    {
+      "id": "coordinator",
+      "name": "Coordinador",
+      "icon": "👤",
+      "description": "Coordinador de tours y guías",
+      "color": "#8B5CF6",
+      "priority": 4
+    },
+    {
+      "id": "management",
+      "name": "Gerencia",
+      "icon": "💼",
+      "description": "Gerencia de la agencia",
+      "color": "#6366F1",
+      "priority": 5
+    },
+    {
+      "id": "insurance",
+      "name": "Seguro",
+      "icon": "🛡️",
+      "description": "Compañía de seguros",
+      "color": "#10B981",
+      "priority": 6
+    },
+    {
+      "id": "towing",
+      "name": "Grúa",
+      "icon": "🚗",
+      "description": "Servicios de grúa y remolque",
+      "color": "#F59E0B",
+      "priority": 7
+    },
+    {
+      "id": "weather",
+      "name": "Meteorológico",
+      "icon": "⛈️",
+      "description": "Servicios meteorológicos",
+      "color": "#06B6D4",
+      "priority": 8
+    },
+    {
+      "id": "local",
+      "name": "Local",
+      "icon": "🏘️",
+      "description": "Autoridades locales",
+      "color": "#84CC16",
+      "priority": 9
+    },
+    {
+      "id": "operations",
+      "name": "Operaciones",
+      "icon": "📋",
+      "description": "Centro de operaciones",
+      "color": "#6B7280",
+      "priority": 10
     }
   ],
   "emergency_protocols": [
@@ -1857,6 +1948,54 @@
       "updatedAt": "2024-01-15T00:00:00Z",
       "createdBy": "admin",
       "approvedBy": "management"
+    },
+    {
+      "id": "protocol-1761672012756",
+      "title": "USISIII",
+      "description": "asdfasfasf",
+      "category": "climatico",
+      "priority": "media",
+      "icon": "🚨",
+      "content": {
+        "steps": [
+          "asdfasfasf"
+        ],
+        "contacts": [],
+        "materials": [
+          "asfasf"
+        ]
+      },
+      "created_at": "2025-10-28T17:20:12.756Z",
+      "updated_at": "2025-10-28T17:20:12.756Z",
+      "is_active": true
+    },
+    {
+      "id": "protocol-1761673725986",
+      "title": "EL  COMMIT MAS BONITO",
+      "description": "asfafasf",
+      "category": "climatico",
+      "priority": "media",
+      "icon": "🚨",
+      "content": {
+        "steps": [
+          "asfasf",
+          "asfasf"
+        ],
+        "contacts": [
+          {
+            "name": "asfasf",
+            "phone": "9873456432",
+            "type": "weather"
+          }
+        ],
+        "materials": [
+          "asf",
+          "asf"
+        ]
+      },
+      "created_at": "2025-10-28T17:48:45.986Z",
+      "updated_at": "2025-10-28T17:48:45.986Z",
+      "is_active": true
     }
   ],
   "emergency_materials": [
@@ -1900,6 +2039,19 @@
       "checkedBy": "user-003",
       "createdAt": "2023-01-15T00:00:00Z",
       "updatedAt": "2024-03-12T00:00:00Z"
+    },
+    {
+      "id": "material-1761673683279",
+      "name": "Primeros auxilios",
+      "category": "climatico",
+      "mandatory": false,
+      "items": [
+        "asasd",
+        "cinmta",
+        "asff"
+      ],
+      "created_at": "2025-10-28T17:48:03.279Z",
+      "is_active": true
     }
   ],
   "emergency_incidents": [],

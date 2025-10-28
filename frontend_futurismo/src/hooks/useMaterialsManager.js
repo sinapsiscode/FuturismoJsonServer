@@ -1,9 +1,16 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import useEmergencyStore from '../stores/emergencyStore';
 
 const useMaterialsManager = () => {
-  const { materials, categories, actions } = useEmergencyStore();
+  const materials = useEmergencyStore((state) => state.materials);
+  const categories = useEmergencyStore((state) => state.categories);
+  const updateMaterial = useEmergencyStore((state) => state.updateMaterial);
+  const createMaterial = useEmergencyStore((state) => state.createMaterial);
+  const deleteMaterial = useEmergencyStore((state) => state.deleteMaterial);
+  const fetchMaterials = useEmergencyStore((state) => state.fetchMaterials);
+  const initialize = useEmergencyStore((state) => state.initialize);
+
   const [isEditing, setIsEditing] = useState(false);
   const [editingMaterial, setEditingMaterial] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
@@ -12,22 +19,39 @@ const useMaterialsManager = () => {
   const [showOnlyMandatory, setShowOnlyMandatory] = useState(false);
   const { t } = useTranslation();
 
+  // Load materials and categories on mount
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        if (!categories || categories.length === 0) {
+          await initialize();
+        }
+        if (!materials || materials.length === 0) {
+          await fetchMaterials();
+        }
+      } catch (error) {
+        console.error('Error loading materials data:', error);
+      }
+    };
+    loadData();
+  }, []);
+
   // Filter materials
-  const filteredMaterials = materials.filter(material => {
-    const matchesSearch = !searchQuery || 
+  const filteredMaterials = (materials || []).filter(material => {
+    const matchesSearch = !searchQuery ||
       material.name.toLowerCase().includes(searchQuery.toLowerCase());
-    
+
     const matchesCategory = !filterCategory || material.category === filterCategory;
     const matchesMandatory = !showOnlyMandatory || material.mandatory;
-    
+
     return matchesSearch && matchesCategory && matchesMandatory;
   });
 
   const handleSaveMaterial = (materialData) => {
     if (editingMaterial) {
-      actions.updateMaterial(editingMaterial.id, materialData);
+      updateMaterial(editingMaterial.id, materialData);
     } else {
-      actions.addMaterial(materialData);
+      createMaterial(materialData);
     }
     setIsEditing(false);
     setEditingMaterial(null);
@@ -40,7 +64,7 @@ const useMaterialsManager = () => {
 
   const handleDeleteMaterial = (materialId) => {
     if (confirm(t('emergency.materials.confirmDelete'))) {
-      actions.deleteMaterial(materialId);
+      deleteMaterial(materialId);
     }
   };
 
@@ -49,10 +73,10 @@ const useMaterialsManager = () => {
   };
 
   const getCategoryInfo = (categoryId) => {
-    return categories.find(c => c.id === categoryId) || { 
-      name: categoryId, 
-      icon: '📦', 
-      color: '#6B7280' 
+    return (categories || []).find(c => c.id === categoryId) || {
+      name: categoryId,
+      icon: '📦',
+      color: '#6B7280'
     };
   };
 
@@ -63,10 +87,10 @@ const useMaterialsManager = () => {
   };
 
   const stats = {
-    total: materials.length,
-    mandatory: materials.filter(m => m.mandatory).length,
-    categories: categories.length,
-    filtered: filteredMaterials.length
+    total: materials?.length || 0,
+    mandatory: materials?.filter(m => m.mandatory).length || 0,
+    categories: categories?.length || 0,
+    filtered: filteredMaterials?.length || 0
   };
 
   return {

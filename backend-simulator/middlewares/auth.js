@@ -20,7 +20,11 @@ const authMiddleware = (req, res, next) => {
     '/tours/categories', // Tour categories configuration
     '/tours', // Tours catalog (browse tours without authentication)
     '/app/init', // App initialization data
-    '/rewards/categories' // Reward categories configuration (temporary for debugging)
+    '/rewards/categories', // Reward categories configuration (temporary for debugging)
+    '/emergency/categories', // Emergency categories (read-only)
+    '/emergency/contact-types', // Emergency contact types (read-only)
+    '/emergency/protocols', // Emergency protocols (read-only)
+    '/emergency/materials' // Emergency materials (read-only)
   ];
   if (publicPaths.some(path => req.path.includes(path))) {
     return next();

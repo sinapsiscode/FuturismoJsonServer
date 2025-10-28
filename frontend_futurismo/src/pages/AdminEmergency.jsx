@@ -1,13 +1,23 @@
-import { useState } from 'react';
-import { ShieldCheckIcon, ArchiveBoxIcon, CogIcon, UserGroupIcon, ExclamationTriangleIcon, DocumentTextIcon, ArrowDownTrayIcon, PlusIcon, PencilIcon, TrashIcon, MagnifyingGlassIcon, FunnelIcon, CheckCircleIcon, PhoneIcon, ChartBarIcon, EyeIcon } from '@heroicons/react/24/outline';
+import { useState, useEffect } from 'react';
+import { ShieldCheckIcon, ArchiveBoxIcon, CogIcon, UserGroupIcon, ExclamationTriangleIcon, DocumentTextIcon, ArrowDownTrayIcon, PlusIcon, PencilIcon, TrashIcon, MagnifyingGlassIcon, FunnelIcon, CheckCircleIcon, PhoneIcon, ChartBarIcon, EyeIcon, SwatchIcon } from '@heroicons/react/24/outline';
 import useEmergencyStore from '../stores/emergencyStore';
 import ProtocolEditor from '../components/emergency/ProtocolEditor';
 import MaterialsManager from '../components/emergency/MaterialsManager';
+import EmergencyCategoryManager from '../components/emergency/EmergencyCategoryManager';
+import ContactTypeManager from '../components/emergency/ContactTypeManager';
 import emergencyPDFService from '../services/emergencyPDFService';
 
 const AdminEmergency = () => {
-  const { protocols, materials, categories, actions } = useEmergencyStore();
-  
+  const protocols = useEmergencyStore((state) => state.protocols);
+  const materials = useEmergencyStore((state) => state.materials);
+  const categories = useEmergencyStore((state) => state.categories);
+  const initialize = useEmergencyStore((state) => state.initialize);
+  const fetchProtocols = useEmergencyStore((state) => state.fetchProtocols);
+  const fetchMaterials = useEmergencyStore((state) => state.fetchMaterials);
+  const updateProtocol = useEmergencyStore((state) => state.updateProtocol);
+  const createProtocol = useEmergencyStore((state) => state.createProtocol);
+  const deleteProtocol = useEmergencyStore((state) => state.deleteProtocol);
+
   const [activeTab, setActiveTab] = useState('overview'); // 'overview', 'protocols', 'materials'
   const [selectedProtocol, setSelectedProtocol] = useState(null);
   const [isEditingProtocol, setIsEditingProtocol] = useState(false);
@@ -15,17 +25,32 @@ const AdminEmergency = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [filterCategory, setFilterCategory] = useState('');
 
+  // Inicializar store y cargar datos
+  useEffect(() => {
+    const initializeData = async () => {
+      try {
+        await initialize();
+        await fetchProtocols();
+        await fetchMaterials();
+      } catch (error) {
+        console.error('Error initializing emergency data:', error);
+      }
+    };
+
+    initializeData();
+  }, [initialize, fetchProtocols, fetchMaterials]);
+
   // Estadísticas
   const stats = {
-    totalProtocols: protocols.length,
-    highPriorityProtocols: protocols.filter(p => p.priority === 'alta').length,
-    totalMaterials: materials.length,
-    mandatoryMaterials: materials.filter(m => m.mandatory).length,
-    categoriesCount: categories.length
+    totalProtocols: protocols?.length || 0,
+    highPriorityProtocols: protocols?.filter(p => p.priority === 'alta').length || 0,
+    totalMaterials: materials?.length || 0,
+    mandatoryMaterials: materials?.filter(m => m.mandatory).length || 0,
+    categoriesCount: categories?.length || 0
   };
 
   // Filtrar protocolos
-  const filteredProtocols = protocols.filter(protocol => {
+  const filteredProtocols = (protocols || []).filter(protocol => {
     const matchesSearch = !searchQuery || 
       protocol.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       protocol.description.toLowerCase().includes(searchQuery.toLowerCase());
@@ -54,10 +79,10 @@ const AdminEmergency = () => {
   };
 
   const getCategoryInfo = (categoryId) => {
-    return categories.find(c => c.id === categoryId) || { 
-      name: categoryId, 
-      icon: '📋', 
-      color: '#6B7280' 
+    return (categories || []).find(c => c.id === categoryId) || {
+      name: categoryId,
+      icon: '📋',
+      color: '#6B7280'
     };
   };
 
@@ -80,9 +105,9 @@ const AdminEmergency = () => {
         }}
         onSave={(updatedProtocol) => {
           if (selectedProtocol) {
-            actions.updateProtocol(selectedProtocol.id, updatedProtocol);
+            updateProtocol(selectedProtocol.id, updatedProtocol);
           } else {
-            actions.addProtocol(updatedProtocol);
+            createProtocol(updatedProtocol);
           }
           setIsEditingProtocol(false);
           setSelectedProtocol(null);
@@ -115,14 +140,6 @@ const AdminEmergency = () => {
         </div>
 
         <div className="flex items-center space-x-3">
-          <button
-            onClick={handleDownloadGuideKit}
-            className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors flex items-center space-x-2"
-          >
-            <ArrowDownTrayIcon className="w-4 h-4" />
-            <span>Kit Completo</span>
-          </button>
-
           <button
             onClick={handleDownloadAllProtocols}
             className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors flex items-center space-x-2"
@@ -157,7 +174,7 @@ const AdminEmergency = () => {
             }`}
           >
             <ShieldCheckIcon className="w-4 h-4 inline mr-2" />
-            Protocolos ({protocols.length})
+            Protocolos ({protocols?.length || 0})
           </button>
           
           <button
@@ -169,9 +186,33 @@ const AdminEmergency = () => {
             }`}
           >
             <ArchiveBoxIcon className="w-4 h-4 inline mr-2" />
-            Materiales ({materials.length})
+            Materiales ({materials?.length || 0})
           </button>
-          
+
+          <button
+            onClick={() => setActiveTab('categories')}
+            className={`py-2 px-1 border-b-2 font-medium text-sm ${
+              activeTab === 'categories'
+                ? 'border-blue-500 text-blue-600'
+                : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+            }`}
+          >
+            <SwatchIcon className="w-4 h-4 inline mr-2" />
+            Categorías ({categories?.length || 0})
+          </button>
+
+          <button
+            onClick={() => setActiveTab('contactTypes')}
+            className={`py-2 px-1 border-b-2 font-medium text-sm ${
+              activeTab === 'contactTypes'
+                ? 'border-blue-500 text-blue-600'
+                : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+            }`}
+          >
+            <PhoneIcon className="w-4 h-4 inline mr-2" />
+            Tipos de Contacto
+          </button>
+
         </nav>
       </div>
 
@@ -301,7 +342,7 @@ const AdminEmergency = () => {
             </div>
             <div className="p-6">
               <div className="space-y-4">
-                {protocols.slice(0, 3).map(protocol => {
+                {(protocols || []).slice(0, 3).map(protocol => {
                   const category = getCategoryInfo(protocol.category);
                   return (
                     <div key={protocol.id} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
@@ -362,7 +403,7 @@ const AdminEmergency = () => {
                     className="border border-gray-300 rounded-lg px-3 py-2"
                   >
                     <option value="">Todas las categorías</option>
-                    {categories.map(category => (
+                    {(categories || []).map(category => (
                       <option key={category.id} value={category.id}>
                         {category.icon} {category.name}
                       </option>
@@ -462,7 +503,7 @@ const AdminEmergency = () => {
                             <button
                               onClick={() => {
                                 if (confirm('¿Estás seguro de eliminar este protocolo?')) {
-                                  actions.deleteProtocol(protocol.id);
+                                  deleteProtocol(protocol.id);
                                 }
                               }}
                               className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
@@ -485,6 +526,18 @@ const AdminEmergency = () => {
       {activeTab === 'materials' && (
         <div className="space-y-6">
           <MaterialsManager onClose={() => {}} isAdmin={true} />
+        </div>
+      )}
+
+      {activeTab === 'categories' && (
+        <div className="space-y-6">
+          <EmergencyCategoryManager onCategoriesChanged={initialize} />
+        </div>
+      )}
+
+      {activeTab === 'contactTypes' && (
+        <div className="space-y-6">
+          <ContactTypeManager onContactTypesChanged={initialize} />
         </div>
       )}
     </div>

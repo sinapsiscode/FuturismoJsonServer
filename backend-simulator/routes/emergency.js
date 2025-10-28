@@ -23,6 +23,223 @@ module.exports = (router) => {
     }
   });
 
+  // ============================================
+  // CONTACT TYPES CRUD
+  // ============================================
+
+  // Get all contact types
+  emergencyRouter.get('/contact-types', (req, res) => {
+    try {
+      const db = router.db;
+      let contactTypes = db.get('emergency_contact_types').value() || [];
+
+      // Sort by priority
+      contactTypes.sort((a, b) => (a.priority || 0) - (b.priority || 0));
+
+      res.json({
+        success: true,
+        data: contactTypes
+      });
+    } catch (error) {
+      console.error('Contact types error:', error);
+      res.status(500).json({
+        success: false,
+        error: 'Error al obtener tipos de contacto'
+      });
+    }
+  });
+
+  // Get contact type by ID
+  emergencyRouter.get('/contact-types/:id', (req, res) => {
+    try {
+      const db = router.db;
+      const contactType = db.get('emergency_contact_types')
+        .find({ id: req.params.id })
+        .value();
+
+      if (!contactType) {
+        return res.status(404).json({
+          success: false,
+          error: 'Tipo de contacto no encontrado'
+        });
+      }
+
+      res.json({
+        success: true,
+        data: contactType
+      });
+    } catch (error) {
+      res.status(500).json({
+        success: false,
+        error: 'Error al obtener el tipo de contacto'
+      });
+    }
+  });
+
+  // Create new contact type
+  emergencyRouter.post('/contact-types', (req, res) => {
+    try {
+      const db = router.db;
+      const { name, icon, description, color, priority } = req.body;
+
+      // Validation
+      if (!name || !name.trim()) {
+        return res.status(400).json({
+          success: false,
+          error: 'El nombre es requerido'
+        });
+      }
+
+      // Generate ID from name
+      const id = name.toLowerCase()
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .replace(/[^a-z0-9]+/g, '_')
+        .replace(/^_+|_+$/g, '');
+
+      // Check if ID already exists
+      const exists = db.get('emergency_contact_types')
+        .find({ id })
+        .value();
+
+      if (exists) {
+        return res.status(400).json({
+          success: false,
+          error: 'Ya existe un tipo de contacto con ese nombre'
+        });
+      }
+
+      const newContactType = {
+        id,
+        name: name.trim(),
+        icon: icon || '📞',
+        description: description || '',
+        color: color || '#6B7280',
+        priority: priority || 999
+      };
+
+      db.get('emergency_contact_types')
+        .push(newContactType)
+        .write();
+
+      res.json({
+        success: true,
+        data: newContactType,
+        message: 'Tipo de contacto creado exitosamente'
+      });
+    } catch (error) {
+      console.error('Create contact type error:', error);
+      res.status(500).json({
+        success: false,
+        error: 'Error al crear tipo de contacto'
+      });
+    }
+  });
+
+  // Update contact type
+  emergencyRouter.put('/contact-types/:id', (req, res) => {
+    try {
+      const db = router.db;
+      const { name, icon, description, color, priority } = req.body;
+
+      const contactType = db.get('emergency_contact_types')
+        .find({ id: req.params.id })
+        .value();
+
+      if (!contactType) {
+        return res.status(404).json({
+          success: false,
+          error: 'Tipo de contacto no encontrado'
+        });
+      }
+
+      // Validation
+      if (!name || !name.trim()) {
+        return res.status(400).json({
+          success: false,
+          error: 'El nombre es requerido'
+        });
+      }
+
+      const updatedContactType = {
+        ...contactType,
+        name: name.trim(),
+        icon: icon || contactType.icon,
+        description: description || '',
+        color: color || contactType.color,
+        priority: priority !== undefined ? priority : contactType.priority
+      };
+
+      db.get('emergency_contact_types')
+        .find({ id: req.params.id })
+        .assign(updatedContactType)
+        .write();
+
+      res.json({
+        success: true,
+        data: updatedContactType,
+        message: 'Tipo de contacto actualizado exitosamente'
+      });
+    } catch (error) {
+      console.error('Update contact type error:', error);
+      res.status(500).json({
+        success: false,
+        error: 'Error al actualizar tipo de contacto'
+      });
+    }
+  });
+
+  // Delete contact type
+  emergencyRouter.delete('/contact-types/:id', (req, res) => {
+    try {
+      const db = router.db;
+
+      const contactType = db.get('emergency_contact_types')
+        .find({ id: req.params.id })
+        .value();
+
+      if (!contactType) {
+        return res.status(404).json({
+          success: false,
+          error: 'Tipo de contacto no encontrado'
+        });
+      }
+
+      // Check if contact type is being used in protocols
+      const protocolsUsingType = db.get('emergency_protocols')
+        .filter(protocol => {
+          return protocol.content?.contacts?.some(contact => contact.type === req.params.id);
+        })
+        .value();
+
+      if (protocolsUsingType && protocolsUsingType.length > 0) {
+        return res.status(400).json({
+          success: false,
+          error: `No se puede eliminar. Este tipo está siendo usado en ${protocolsUsingType.length} protocolo(s)`
+        });
+      }
+
+      db.get('emergency_contact_types')
+        .remove({ id: req.params.id })
+        .write();
+
+      res.json({
+        success: true,
+        message: 'Tipo de contacto eliminado exitosamente'
+      });
+    } catch (error) {
+      console.error('Delete contact type error:', error);
+      res.status(500).json({
+        success: false,
+        error: 'Error al eliminar tipo de contacto'
+      });
+    }
+  });
+
+  // ============================================
+  // PROTOCOLS
+  // ============================================
+
   // Get emergency protocols
   emergencyRouter.get('/protocols', (req, res) => {
     try {
