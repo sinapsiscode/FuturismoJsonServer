@@ -12,17 +12,19 @@ import {
   CubeIcon,
   CheckCircleIcon,
   XMarkIcon,
-  PlusCircleIcon
+  PlusCircleIcon,
+  SwatchIcon
 } from '@heroicons/react/24/outline';
 import { StarIcon } from '@heroicons/react/24/solid';
 import useRewardsStore from '../../stores/rewardsStore';
-import { 
-  REWARD_CATEGORIES, 
+import {
+  REWARD_CATEGORIES,
   REWARD_CATEGORY_LABELS,
   REDEMPTION_STATUS_LABELS,
   REDEMPTION_STATUS_COLORS
 } from '../../constants/rewardsConstants';
 import toast from 'react-hot-toast';
+import CategoryManager from '../../components/rewards/CategoryManager';
 
 const RewardsManagement = () => {
   const { t } = useTranslation();
@@ -33,6 +35,7 @@ const RewardsManagement = () => {
   const [selectedItem, setSelectedItem] = useState(null);
   const [showPointsModal, setShowPointsModal] = useState(false);
   const [selectedAgency, setSelectedAgency] = useState(null);
+  const [categories, setCategories] = useState([]);
   const [pointsData, setPointsData] = useState({
     points: '',
     reason: ''
@@ -69,7 +72,26 @@ const RewardsManagement = () => {
     fetchRewards();
     fetchAgencies();
     fetchRedemptions();
+    loadCategories();
   }, []);
+
+  const loadCategories = async () => {
+    try {
+      const token = localStorage.getItem('auth_token');
+      const response = await fetch('/api/rewards/categories', {
+        headers: {
+          'Content-Type': 'application/json',
+          ...(token && { 'Authorization': `Bearer ${token}` })
+        }
+      });
+      const result = await response.json();
+      if (result.success) {
+        setCategories(result.data || []);
+      }
+    } catch (error) {
+      console.error('Error loading categories:', error);
+    }
+  };
 
   // Validar formulario
   const validateForm = () => {
@@ -289,6 +311,17 @@ const RewardsManagement = () => {
             >
               <CheckCircleIcon className="h-5 w-5 inline mr-2" />
               Canjes ({redemptions.length})
+            </button>
+            <button
+              onClick={() => setActiveTab('categories')}
+              className={`py-2 px-1 border-b-2 font-medium text-sm ${
+                activeTab === 'categories'
+                  ? 'border-purple-500 text-purple-600'
+                  : 'border-transparent text-gray-500 hover:text-gray-700'
+              }`}
+            >
+              <SwatchIcon className="h-5 w-5 inline mr-2" />
+              Categorías ({categories.length})
             </button>
           </nav>
         </div>
@@ -518,6 +551,13 @@ const RewardsManagement = () => {
           </div>
         )}
 
+        {/* Tab de Categorías */}
+        {activeTab === 'categories' && (
+          <div className="bg-white rounded-lg shadow p-6">
+            <CategoryManager onCategoriesChanged={loadCategories} />
+          </div>
+        )}
+
         {/* Modal de formulario */}
         {showForm && (
           <div className="fixed inset-0 bg-gray-500 bg-opacity-75 flex items-center justify-center p-4 z-50">
@@ -607,8 +647,8 @@ const RewardsManagement = () => {
                       className={`w-full border rounded-lg px-3 py-2 ${errors.category ? 'border-red-500' : ''}`}
                     >
                       <option value="">Seleccionar categoría</option>
-                      {Object.entries(REWARD_CATEGORY_LABELS).map(([value, label]) => (
-                        <option key={value} value={value}>{label}</option>
+                      {categories.map((cat) => (
+                        <option key={cat.id} value={cat.id}>{cat.name}</option>
                       ))}
                     </select>
                     {errors.category && <p className="text-red-500 text-sm mt-1">{errors.category}</p>}
@@ -681,6 +721,92 @@ const RewardsManagement = () => {
                 </div>
 
                 {/* Contenido específico por tipo */}
+                {selectedItem.type === 'reward' && (
+                  <div className="space-y-4">
+                    <div className="bg-gray-50 p-4 rounded-lg">
+                      <h3 className="font-medium mb-2">Información del Premio</h3>
+                      <div className="space-y-2 text-sm">
+                        <div className="flex justify-between">
+                          <span className="text-gray-500">Nombre:</span>
+                          <span className="font-medium">{selectedItem.name}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-gray-500">Categoría:</span>
+                          <span className="font-medium">
+                            {categories.find(c => c.id === selectedItem.category)?.name || selectedItem.category}
+                          </span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-gray-500">Puntos Requeridos:</span>
+                          <span className="font-medium text-purple-600">
+                            {selectedItem.points.toLocaleString()}
+                          </span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-gray-500">Stock:</span>
+                          <span className="font-medium">{selectedItem.stock}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-gray-500">Estado:</span>
+                          <span className={`badge ${selectedItem.active ? 'badge-green' : 'badge-gray'}`}>
+                            {selectedItem.active ? 'Activo' : 'Inactivo'}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {selectedItem.description && (
+                      <div>
+                        <h4 className="font-medium mb-2">Descripción</h4>
+                        <p className="text-sm text-gray-600 bg-gray-50 p-3 rounded">
+                          {selectedItem.description}
+                        </p>
+                      </div>
+                    )}
+
+                    {selectedItem.image && (
+                      <div>
+                        <h4 className="font-medium mb-2">Imagen</h4>
+                        <img
+                          src={selectedItem.image}
+                          alt={selectedItem.name}
+                          className="w-full h-48 object-cover rounded-lg"
+                        />
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {selectedItem.type === 'agency' && (
+                  <div className="space-y-4">
+                    <div className="bg-gray-50 p-4 rounded-lg">
+                      <h3 className="font-medium mb-2">Información de la Agencia</h3>
+                      <div className="space-y-2 text-sm">
+                        <div className="flex justify-between">
+                          <span className="text-gray-500">Nombre:</span>
+                          <span className="font-medium">{selectedItem.name}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-gray-500">Puntos Actuales:</span>
+                          <span className="font-medium text-purple-600">
+                            {selectedItem.points?.toLocaleString() || 0}
+                          </span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-gray-500">Puntos Totales Ganados:</span>
+                          <span className="font-medium text-green-600">
+                            {selectedItem.totalPointsEarned?.toLocaleString() || 0}
+                          </span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-gray-500">Canjes Realizados:</span>
+                          <span className="font-medium">{selectedItem.redemptionsCount || 0}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
                 {selectedItem.type === 'redemption' && (
                   <div className="space-y-4">
                     <div className="bg-gray-50 p-4 rounded-lg">

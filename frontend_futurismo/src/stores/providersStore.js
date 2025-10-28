@@ -725,10 +725,12 @@ const useProvidersStore = create(
           // Utilidades
           getCategoriesByLocation: (locationId) => {
             const location = get().locations.find(loc => loc.id === locationId);
-            if (!location) return [];
-            
+            if (!location || !location.categories) return [];
+
             const allCategories = get().categories;
-            return location.categories.map(catId => 
+            if (!allCategories || allCategories.length === 0) return [];
+
+            return location.categories.map(catId =>
               allCategories.find(cat => cat.id === catId)
             ).filter(Boolean);
           },

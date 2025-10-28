@@ -6,7 +6,6 @@ import ProviderFormHeader from './ProviderFormHeader';
 import ProviderBasicInfo from './ProviderBasicInfo';
 import ProviderContactInfo from './ProviderContactInfo';
 import ProviderServicesSection from './ProviderServicesSection';
-import ProviderPricingSection from './ProviderPricingSection';
 
 const ProviderForm = ({ provider, onSave, onCancel }) => {
   const {
@@ -78,12 +77,6 @@ const ProviderForm = ({ provider, onSave, onCancel }) => {
                 handleRemoveService={handleRemoveService}
                 handleServiceChange={handleServiceChange}
                 selectedCategory={selectedCategory}
-              />
-
-              <ProviderPricingSection
-                register={register}
-                errors={errors}
-                watch={watch}
               />
             </div>
           </div>

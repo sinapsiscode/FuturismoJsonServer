@@ -28,7 +28,7 @@ const useRewardsStore = create((set, get) => ({
     set({ loading: true, error: null });
     try {
       const headers = get().getAuthHeaders();
-      const response = await fetch('/api/data/section/rewards_catalog', { headers });
+      const response = await fetch('/api/rewards/catalog', { headers });
       const result = await response.json();
 
       if (result.success) {
@@ -45,21 +45,25 @@ const useRewardsStore = create((set, get) => ({
   createReward: async (rewardData) => {
     set({ loading: true, error: null });
     try {
-      const newReward = {
-        id: `reward-${Date.now()}`,
-        ...rewardData,
-        createdAt: new Date().toISOString(),
-        active: true
-      };
+      const headers = get().getAuthHeaders();
+      const response = await fetch('/api/rewards/catalog', {
+        method: 'POST',
+        headers,
+        body: JSON.stringify(rewardData)
+      });
 
-      // En un backend real, esto haría POST /api/rewards
-      // Por ahora solo actualiza el estado local
+      const result = await response.json();
+
+      if (!result.success) {
+        throw new Error(result.error || 'Error al crear premio');
+      }
+
       set(state => ({
-        rewards: [...state.rewards, newReward],
+        rewards: [...state.rewards, result.data],
         loading: false
       }));
 
-      return newReward;
+      return result.data;
     } catch (error) {
       set({ error: error.message, loading: false });
       throw error;
@@ -69,13 +73,27 @@ const useRewardsStore = create((set, get) => ({
   updateReward: async (id, updates) => {
     set({ loading: true, error: null });
     try {
-      // En un backend real: PUT /api/rewards/:id
+      const headers = get().getAuthHeaders();
+      const response = await fetch(`/api/rewards/catalog/${id}`, {
+        method: 'PUT',
+        headers,
+        body: JSON.stringify(updates)
+      });
+
+      const result = await response.json();
+
+      if (!result.success) {
+        throw new Error(result.error || 'Error al actualizar premio');
+      }
+
       set(state => ({
         rewards: state.rewards.map(reward =>
-          reward.id === id ? { ...reward, ...updates } : reward
+          reward.id === id ? result.data : reward
         ),
         loading: false
       }));
+
+      return result.data;
     } catch (error) {
       set({ error: error.message, loading: false });
       throw error;
@@ -85,7 +103,18 @@ const useRewardsStore = create((set, get) => ({
   deleteReward: async (id) => {
     set({ loading: true, error: null });
     try {
-      // En un backend real: DELETE /api/rewards/:id
+      const headers = get().getAuthHeaders();
+      const response = await fetch(`/api/rewards/catalog/${id}`, {
+        method: 'DELETE',
+        headers
+      });
+
+      const result = await response.json();
+
+      if (!result.success) {
+        throw new Error(result.error || 'Error al eliminar premio');
+      }
+
       set(state => ({
         rewards: state.rewards.filter(reward => reward.id !== id),
         loading: false

@@ -39,6 +39,7 @@ const agendaRoutes = require('./routes/agenda');
 const monitoringRoutes = require('./routes/monitoring');
 const settingsRoutes = require('./routes/settings');
 const suggestionsRoutes = require('./routes/suggestions');
+const rewardsRoutes = require('./routes/rewards');
 const { addHelpers } = require('./middlewares/helpers');
 const { authMiddleware } = require('./middlewares/auth');
 
@@ -97,6 +98,7 @@ server.use('/api/agenda', agendaRoutes(router));
 server.use('/api/monitoring', monitoringRoutes(router));
 server.use('/api/settings', settingsRoutes(router));
 server.use('/api/suggestions', suggestionsRoutes(router));
+server.use('/api/rewards', rewardsRoutes(router));
 
 // JSON Server router (handles CRUD for all other endpoints)
 server.use('/api', router);

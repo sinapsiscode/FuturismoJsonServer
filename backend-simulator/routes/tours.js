@@ -555,6 +555,50 @@ module.exports = (router) => {
   });
 
   // Update tour (complete replacement)
+  // Assign providers to tour (specific route - MUST come before /:id)
+  toursRouter.post('/:id/assign-providers', (req, res) => {
+    try {
+      const db = router.db;
+      const tour = db.get('tours').find({ id: req.params.id });
+
+      if (!tour.value()) {
+        return res.status(404).json({
+          success: false,
+          error: 'Tour no encontrado'
+        });
+      }
+
+      const { providers } = req.body;
+
+      if (!Array.isArray(providers)) {
+        return res.status(400).json({
+          success: false,
+          error: 'Los proveedores deben ser un array'
+        });
+      }
+
+      // Actualizar proveedores asignados
+      tour.assign({
+        ...tour.value(),
+        assignedProviders: providers,
+        updated_at: new Date().toISOString()
+      }).write();
+
+      res.json({
+        success: true,
+        data: tour.value(),
+        message: `${providers.length} proveedor(es) asignado(s) exitosamente`
+      });
+
+    } catch (error) {
+      console.error('Error assigning providers:', error);
+      res.status(500).json({
+        success: false,
+        error: 'Error al asignar proveedores'
+      });
+    }
+  });
+
   toursRouter.put('/:id', (req, res) => {
     try {
       const db = router.db;
@@ -575,6 +619,7 @@ module.exports = (router) => {
         assignedGuide: req.body.assignedGuide !== undefined ? req.body.assignedGuide : existingTour.assignedGuide,
         assignedDriver: req.body.assignedDriver !== undefined ? req.body.assignedDriver : existingTour.assignedDriver,
         assignedVehicle: req.body.assignedVehicle !== undefined ? req.body.assignedVehicle : existingTour.assignedVehicle,
+        assignedProviders: req.body.assignedProviders !== undefined ? req.body.assignedProviders : existingTour.assignedProviders,
         created_at: existingTour.created_at,
         updated_at: new Date().toISOString()
       };

@@ -293,6 +293,16 @@ return this.delete(`/${tourId}/assignment/${assignmentType}`);
     return this.put(`/${tourId}/status`, { status, guideId });
   }
 
+  /**
+   * Asignar proveedores a un tour
+   * @param {string} tourId - ID del tour
+   * @param {Array} providers - Array de proveedores asignados
+   * @returns {Promise<Object>}
+   */
+  async assignProviders(tourId, providers) {
+    return this.post(`/${tourId}/assign-providers`, { providers });
+  }
+
   // Método auxiliar para generar CSV
   generateCSV(tours) {
     const headers = ['Código', 'Nombre', 'Categoría', 'Precio', 'Duración', 'Capacidad', 'Estado'];

@@ -19,7 +19,8 @@ const authMiddleware = (req, res, next) => {
     '/clients/types', // Client types configuration
     '/tours/categories', // Tour categories configuration
     '/tours', // Tours catalog (browse tours without authentication)
-    '/app/init' // App initialization data
+    '/app/init', // App initialization data
+    '/rewards/categories' // Reward categories configuration (temporary for debugging)
   ];
   if (publicPaths.some(path => req.path.includes(path))) {
     return next();

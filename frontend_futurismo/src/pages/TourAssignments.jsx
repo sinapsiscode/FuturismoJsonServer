@@ -15,7 +15,8 @@ import {
   InformationCircleIcon,
   ChevronRightIcon,
   BuildingOffice2Icon,
-  ArrowDownTrayIcon
+  ArrowDownTrayIcon,
+  BuildingStorefrontIcon
 } from '@heroicons/react/24/outline';
 import { CheckIcon } from '@heroicons/react/24/solid';
 import useToursStore from '../stores/toursStore';
@@ -26,15 +27,18 @@ import useVehiclesStore from '../stores/vehiclesStore';
 import { formatters } from '../utils/formatters';
 import toast from 'react-hot-toast';
 import exportService from '../services/exportService';
+import ProviderAssignment from '../components/assignments/ProviderAssignment';
+import toursService from '../services/toursService';
 
 const TourAssignments = () => {
   const navigate = useNavigate();
   const [selectedTour, setSelectedTour] = useState(null);
   const [showAssignModal, setShowAssignModal] = useState(false);
-  const [assignmentType, setAssignmentType] = useState('guide'); // 'guide', 'driver', 'vehicle'
+  const [assignmentType, setAssignmentType] = useState('guide'); // 'guide', 'driver', 'vehicle', 'providers'
   const [selectedGuide, setSelectedGuide] = useState('');
   const [selectedDriver, setSelectedDriver] = useState('');
   const [selectedVehicle, setSelectedVehicle] = useState('');
+  const [selectedProviders, setSelectedProviders] = useState([]);
   const [availableGuides, setAvailableGuides] = useState([]);
   const [availableDrivers, setAvailableDrivers] = useState([]);
   const [availableVehicles, setAvailableVehicles] = useState([]);
@@ -144,6 +148,7 @@ const TourAssignments = () => {
     setSelectedGuide('');
     setSelectedDriver('');
     setSelectedVehicle('');
+    setSelectedProviders(tour.assignedProviders || []);
 
     // Cargar guías disponibles
     setCheckingAvailability(true);
@@ -204,7 +209,7 @@ const TourAssignments = () => {
   // Asignar recurso al tour
   const handleAssign = async () => {
     if (!selectedTour) return;
-    
+
     try {
       switch (assignmentType) {
         case 'guide':
@@ -215,7 +220,7 @@ const TourAssignments = () => {
           await assignGuideToTour(selectedTour.id, selectedGuide, { validateCompetences: false });
           toast.success('Guía asignado exitosamente');
           break;
-          
+
         case 'driver':
           if (!selectedDriver) {
             toast.error('Seleccione un chofer');
@@ -229,7 +234,7 @@ const TourAssignments = () => {
           });
           toast.success('Chofer asignado exitosamente');
           break;
-          
+
         case 'vehicle':
           if (!selectedVehicle) {
             toast.error('Seleccione un vehículo');
@@ -244,8 +249,20 @@ const TourAssignments = () => {
           });
           toast.success('Vehículo asignado exitosamente');
           break;
+
+        case 'providers':
+          // Guardar proveedores asignados
+          try {
+            await toursService.assignProviders(selectedTour.id, selectedProviders);
+            toast.success(`${selectedProviders.length} proveedor(es) asignado(s) exitosamente`);
+          } catch (error) {
+            console.error('Error asignando proveedores:', error);
+            toast.error('Error al asignar proveedores');
+            return;
+          }
+          break;
       }
-      
+
       // Recargar tours y cerrar modal
       await loadTours();
       setShowAssignModal(false);
@@ -576,6 +593,19 @@ const TourAssignments = () => {
                     Sin vehículo asignado
                   </div>
                 )}
+
+                {/* Proveedores */}
+                {tour.assignedProviders && tour.assignedProviders.length > 0 ? (
+                  <div className="flex items-center text-sm text-blue-700">
+                    <BuildingStorefrontIcon className="h-4 w-4 mr-2" />
+                    <span>{tour.assignedProviders.length} proveedor(es) asignado(s)</span>
+                  </div>
+                ) : (
+                  <div className="text-sm text-gray-500">
+                    <BuildingStorefrontIcon className="h-4 w-4 inline mr-2" />
+                    Sin proveedores asignados
+                  </div>
+                )}
               </div>
 
               {/* Actions */}
@@ -622,16 +652,17 @@ const TourAssignments = () => {
             </div>
 
             {/* Assignment Type Tabs */}
-            <div className="flex space-x-2 mb-6">
+            <div className="grid grid-cols-2 gap-2 mb-6">
               {[
                 { key: 'guide', label: 'Guía', icon: UserIcon },
                 { key: 'driver', label: 'Chofer', icon: UserIcon },
-                { key: 'vehicle', label: 'Vehículo', icon: TruckIcon }
+                { key: 'vehicle', label: 'Vehículo', icon: TruckIcon },
+                { key: 'providers', label: 'Proveedores', icon: BuildingStorefrontIcon }
               ].map(({ key, label, icon: Icon }) => (
                 <button
                   key={key}
                   onClick={() => handleAssignmentTypeChange(key)}
-                  className={`flex-1 px-3 py-2 rounded-lg text-sm font-medium transition-colors flex items-center justify-center ${
+                  className={`px-3 py-2 rounded-lg text-sm font-medium transition-colors flex items-center justify-center ${
                     assignmentType === key
                       ? 'bg-blue-100 text-blue-800'
                       : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
@@ -770,6 +801,15 @@ const TourAssignments = () => {
                   </div>
                 )}
               </div>
+            )}
+
+            {/* Providers Assignment */}
+            {assignmentType === 'providers' && (
+              <ProviderAssignment
+                tour={selectedTour}
+                selectedProviders={selectedProviders}
+                onProvidersChange={setSelectedProviders}
+              />
             )}
 
             {/* Actions */}
