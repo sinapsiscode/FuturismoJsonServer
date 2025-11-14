@@ -3,14 +3,11 @@ import PropTypes from 'prop-types';
 import { XMarkIcon, MapPinIcon, ClockIcon, UserGroupIcon, CheckCircleIcon } from '@heroicons/react/24/outline';
 
 const ActiveTourDetailsModal = ({ isOpen, onClose, tour, onViewOnMap }) => {
+  // IMPORTANTE: Todos los hooks DEBEN estar antes de cualquier return condicional
   const mapRef = useRef(null);
   const mapInstanceRef = useRef(null);
   const markerRef = useRef(null);
   const [mapReady, setMapReady] = useState(false);
-
-  if (!isOpen || !tour) {
-    return null;
-  }
 
   // Inicializar mapa cuando el modal se abre
   useEffect(() => {
@@ -141,6 +138,11 @@ const ActiveTourDetailsModal = ({ isOpen, onClose, tour, onViewOnMap }) => {
         return 'Activo';
     }
   };
+
+  // Return condicional DESPUÉS de todos los hooks
+  if (!isOpen || !tour) {
+    return null;
+  }
 
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto">

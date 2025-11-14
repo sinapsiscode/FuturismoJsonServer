@@ -247,6 +247,46 @@ module.exports = (router) => {
     }
   });
 
+  // Update service status
+  servicesRouter.put('/:id/status', (req, res) => {
+    try {
+      const db = router.db;
+      const { id } = req.params;
+      const { status } = req.body;
+
+      const service = db.get('services').find({ id }).value();
+
+      if (!service) {
+        return res.status(404).json(errorResponse('Servicio no encontrado'));
+      }
+
+      // Validar que el status sea válido
+      const validStatuses = ['active', 'inactive', 'pending', 'on_way', 'in_service', 'finished', 'cancelled'];
+      if (!validStatuses.includes(status)) {
+        return res.status(400).json(errorResponse(`Estado inválido. Debe ser uno de: ${validStatuses.join(', ')}`));
+      }
+
+      // Actualizar estado
+      const updatedService = {
+        ...service,
+        status,
+        updated_at: new Date().toISOString()
+      };
+
+      db.get('services')
+        .find({ id })
+        .assign(updatedService)
+        .write();
+
+      console.log(`✅ Estado del servicio ${id} actualizado a: ${status}`);
+      res.json(successResponse(updatedService, 'Estado del servicio actualizado exitosamente'));
+
+    } catch (error) {
+      console.error('Error updating service status:', error);
+      res.status(500).json(errorResponse('Error al actualizar estado del servicio'));
+    }
+  });
+
   // Delete service
   servicesRouter.delete('/:id', (req, res) => {
     try {

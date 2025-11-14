@@ -11,7 +11,8 @@
       "Bash(npm run dev:*)",
       "Bash(node:*)",
       "Bash(cat:*)",
-      "Bash(powershell \"Get-Process node | Stop-Process -Force\")"
+      "Bash(powershell \"Get-Process node | Stop-Process -Force\")",
+      "Bash(dir:*)"
     ],
     "deny": [],
     "ask": []

@@ -144,19 +144,19 @@ const useServicesStore = create((set, get) => ({
 
   updateService: async (serviceId, updates) => {
     set({ isLoading: true, error: null });
-    
+
     try {
       const result = await servicesService.updateService(serviceId, updates);
-      
+
       if (!result.success) {
         throw new Error(result.error || 'Error al actualizar servicio');
       }
-      
+
       set((state) => {
         const updatedServices = state.services.map(service =>
           service.id === serviceId ? result.data : service
         );
-        
+
         return {
           services: updatedServices,
           activeServices: updatedServices, // Todos los servicios son activos
@@ -164,10 +164,78 @@ const useServicesStore = create((set, get) => ({
           isLoading: false
         };
       });
-      
+
       return result.data;
     } catch (error) {
-      set({ 
+      set({
+        isLoading: false,
+        error: error.message
+      });
+      throw error;
+    }
+  },
+
+  deleteService: async (serviceId) => {
+    set({ isLoading: true, error: null });
+
+    try {
+      const result = await servicesService.deleteService(serviceId);
+
+      if (!result.success) {
+        throw new Error(result.error || 'Error al eliminar servicio');
+      }
+
+      // Eliminar el servicio del estado local
+      set((state) => {
+        const filteredServices = state.services.filter(s => s.id !== serviceId);
+        const filteredActiveServices = state.activeServices.filter(s => s.id !== serviceId);
+
+        return {
+          services: filteredServices,
+          activeServices: filteredActiveServices,
+          isLoading: false
+        };
+      });
+
+      return result;
+    } catch (error) {
+      set({
+        isLoading: false,
+        error: error.message
+      });
+      throw error;
+    }
+  },
+
+  updateServiceStatus: async (serviceId, status) => {
+    set({ isLoading: true, error: null });
+
+    try {
+      const result = await servicesService.updateServiceStatus(serviceId, status);
+
+      if (!result.success) {
+        throw new Error(result.error || 'Error al actualizar estado del servicio');
+      }
+
+      // Actualizar el servicio en el estado local
+      set((state) => {
+        const updatedServices = state.services.map(service =>
+          service.id === serviceId ? { ...service, status, updated_at: new Date().toISOString() } : service
+        );
+        const updatedActiveServices = state.activeServices.map(service =>
+          service.id === serviceId ? { ...service, status, updated_at: new Date().toISOString() } : service
+        );
+
+        return {
+          services: updatedServices,
+          activeServices: updatedActiveServices,
+          isLoading: false
+        };
+      });
+
+      return result;
+    } catch (error) {
+      set({
         isLoading: false,
         error: error.message
       });
