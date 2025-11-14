@@ -204,7 +204,11 @@
         "totalRevenue": "Total Revenue",
         "occupancyRate": "Occupancy Rate",
         "vs": "vs",
-        "previousMonth": "previous month"
+        "previousWeek": "previous week",
+        "previousMonth": "previous month",
+        "previousQuarter": "previous quarter",
+        "previousYear": "previous year",
+        "previousPeriod": "previous period"
       },
       "months": {
         "jan": "Jan",

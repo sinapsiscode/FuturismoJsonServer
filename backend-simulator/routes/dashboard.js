@@ -376,6 +376,47 @@ function calculateTrendPercentage(current, previous) {
 function calculateChartData(reservations, services, tours, timeRange = 'year') {
   const now = new Date();
   const monthNames = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
+  const dayNames = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
+
+  // Si es semana, mostrar días de la semana actual
+  if (timeRange === 'week') {
+    const chartData = [];
+    const dayOfWeek = now.getDay();
+    const monday = new Date(now);
+    monday.setDate(now.getDate() - (dayOfWeek === 0 ? 6 : dayOfWeek - 1));
+    monday.setHours(0, 0, 0, 0);
+
+    for (let i = 0; i < 7; i++) {
+      const targetDate = new Date(monday);
+      targetDate.setDate(monday.getDate() + i);
+      const dayStart = new Date(targetDate);
+      dayStart.setHours(0, 0, 0, 0);
+      const dayEnd = new Date(targetDate);
+      dayEnd.setHours(23, 59, 59, 999);
+
+      // Filtrar reservas del día
+      const dayReservations = reservations.filter(r => {
+        if (!r.created_at && !r.tour_date) return false;
+        const reservationDate = new Date(r.created_at || r.tour_date);
+        return reservationDate >= dayStart && reservationDate <= dayEnd;
+      });
+
+      // Calcular estadísticas del día
+      const ingresos = _.sumBy(dayReservations, r => parseFloat(r.total_amount) || 0);
+      const reservasCount = dayReservations.length;
+      const turistas = _.sumBy(dayReservations, r => parseInt(r.group_size) || 1);
+
+      chartData.push({
+        name: `${dayNames[targetDate.getDay()]} ${targetDate.getDate()}`,
+        ingresos: Math.round(ingresos),
+        reservas: reservasCount,
+        turistas: turistas,
+        servicios: services.length
+      });
+    }
+
+    return chartData;
+  }
 
   // Determinar el número de meses a mostrar según el timeRange
   const monthsToShow = timeRange === 'year' ? 12 : timeRange === 'quarter' ? 3 : 1;
@@ -418,7 +459,25 @@ function calculateKPIs(reservations, services, timeRange = 'month') {
   // Determinar los períodos actual y anterior
   let currentStart, currentEnd, previousStart, previousEnd;
 
-  if (timeRange === 'month') {
+  if (timeRange === 'week') {
+    // Semana actual (lunes a domingo)
+    const dayOfWeek = now.getDay();
+    const monday = new Date(now);
+    monday.setDate(now.getDate() - (dayOfWeek === 0 ? 6 : dayOfWeek - 1));
+    monday.setHours(0, 0, 0, 0);
+
+    currentStart = monday;
+    currentEnd = new Date(monday);
+    currentEnd.setDate(monday.getDate() + 6);
+    currentEnd.setHours(23, 59, 59, 999);
+
+    // Semana anterior
+    previousStart = new Date(monday);
+    previousStart.setDate(monday.getDate() - 7);
+    previousEnd = new Date(monday);
+    previousEnd.setDate(monday.getDate() - 1);
+    previousEnd.setHours(23, 59, 59, 999);
+  } else if (timeRange === 'month') {
     currentStart = new Date(now.getFullYear(), now.getMonth(), 1);
     currentEnd = new Date(now.getFullYear(), now.getMonth() + 1, 0);
     previousStart = new Date(now.getFullYear(), now.getMonth() - 1, 1);
@@ -490,7 +549,17 @@ function calculateSummary(reservations, services, tours, timeRange = 'month') {
   // Determinar período
   let periodStart, periodEnd;
 
-  if (timeRange === 'month') {
+  if (timeRange === 'week') {
+    const dayOfWeek = now.getDay();
+    const monday = new Date(now);
+    monday.setDate(now.getDate() - (dayOfWeek === 0 ? 6 : dayOfWeek - 1));
+    monday.setHours(0, 0, 0, 0);
+
+    periodStart = monday;
+    periodEnd = new Date(monday);
+    periodEnd.setDate(monday.getDate() + 6);
+    periodEnd.setHours(23, 59, 59, 999);
+  } else if (timeRange === 'month') {
     periodStart = new Date(now.getFullYear(), now.getMonth(), 1);
     periodEnd = new Date(now.getFullYear(), now.getMonth() + 1, 0);
   } else if (timeRange === 'quarter') {

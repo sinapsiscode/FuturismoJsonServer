@@ -4,8 +4,24 @@ import { useTranslation } from 'react-i18next';
 import { ArrowTrendingUpIcon, ArrowTrendingDownIcon } from '@heroicons/react/24/outline';
 import { formatters } from '../../utils/formatters';
 
-const ChartKPIs = ({ kpiData }) => {
+const ChartKPIs = ({ kpiData, timeRange }) => {
   const { t } = useTranslation();
+
+  // Determinar el texto de comparación según el período
+  const getPreviousPeriodText = () => {
+    switch (timeRange) {
+      case 'week':
+        return t('dashboard.chart.kpis.previousWeek') || 'semana anterior';
+      case 'month':
+        return t('dashboard.chart.kpis.previousMonth') || 'mes anterior';
+      case 'quarter':
+        return t('dashboard.chart.kpis.previousQuarter') || 'trimestre anterior';
+      case 'year':
+        return t('dashboard.chart.kpis.previousYear') || 'año anterior';
+      default:
+        return t('dashboard.chart.kpis.previousPeriod') || 'período anterior';
+    }
+  };
 
   const kpiConfigs = [
     {
@@ -60,9 +76,9 @@ const ChartKPIs = ({ kpiData }) => {
               {config.isPercentage && '%'}
             </p>
             <p className={`text-xs ${config.textClass}-600 mt-2 sm:text-sm`}>
-              {t('dashboard.chart.kpis.vs')} 
+              {t('dashboard.chart.kpis.vs')}
               {config.showCurrency ? `S/${data.anterior.toLocaleString()}` : data.anterior.toLocaleString()}
-              {' '}{t('dashboard.chart.kpis.previousMonth')}
+              {' '}{getPreviousPeriodText()}
             </p>
             <div className={`absolute -right-3 -bottom-3 ${config.textClass}-100 opacity-20 sm:-right-4 sm:-bottom-4`}>
               <svg className="w-16 h-16 sm:w-20 sm:h-20 lg:w-24 lg:h-24" fill="currentColor" viewBox="0 0 24 24">
@@ -101,7 +117,8 @@ ChartKPIs.propTypes = {
       anterior: PropTypes.number,
       crecimiento: PropTypes.number
     })
-  })
+  }),
+  timeRange: PropTypes.string.isRequired
 };
 
 export default ChartKPIs;

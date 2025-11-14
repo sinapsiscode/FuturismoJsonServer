@@ -59,7 +59,7 @@ const ServiceChart = () => {
         chartTypeOptions={chartTypeOptions}
       />
 
-      <ChartKPIs kpiData={kpiData} />
+      <ChartKPIs kpiData={kpiData} timeRange={timeRange} />
 
       <ChartViews
         chartType={chartType}

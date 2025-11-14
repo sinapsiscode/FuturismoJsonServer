@@ -209,7 +209,11 @@
         "totalTourists": "Total Turistas",
         "totalRevenue": "Ingresos Totales",
         "vs": "vs",
-        "previousMonth": "mes anterior"
+        "previousWeek": "semana anterior",
+        "previousMonth": "mes anterior",
+        "previousQuarter": "trimestre anterior",
+        "previousYear": "año anterior",
+        "previousPeriod": "período anterior"
       },
       "months": {
         "jan": "Ene",
