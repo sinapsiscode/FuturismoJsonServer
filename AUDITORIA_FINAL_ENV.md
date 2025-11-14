@@ -1,9 +1,11 @@
 # Auditoría Final: Variables de Entorno
 
 ## 📅 Fecha
+
 2025-01-24
 
 ## 🎯 Objetivo
+
 Verificar que **NINGUNA** URL de API esté hardcodeada en el código y que TODO apunte a variables de entorno.
 
 ---
@@ -15,7 +17,7 @@ Verificar que **NINGUNA** URL de API esté hardcodeada en el código y que TODO 
 Se ejecutaron búsquedas de los siguientes patrones:
 
 ```regex
-(http://localhost|https://localhost|localhost:4050|localhost:3000|localhost:5173)
+(http://localhost|https://localhost|localhost:4050|localhost:3000|)
 ```
 
 ---
@@ -23,6 +25,7 @@ Se ejecutaron búsquedas de los siguientes patrones:
 ## 📊 Backend: Resultados
 
 ### Archivos Analizados
+
 - ✅ Todas las rutas (`routes/*.js`) - 31 archivos
 - ✅ Todos los middlewares (`middlewares/*.js`) - 4 archivos
 - ✅ Servidor principal (`server.js`)
@@ -30,16 +33,17 @@ Se ejecutaron búsquedas de los siguientes patrones:
 
 ### URLs Encontradas (Justificadas)
 
-| Archivo | Línea | Uso | Estado |
-|---------|-------|-----|--------|
-| `server.js:108` | `http://localhost:${PORT}` | Console.log informativo | ✅ OK - usa variable |
-| `server.js:109` | `http://localhost:${PORT}/api` | Console.log informativo | ✅ OK - usa variable |
-| `middlewares/cors.js:14-17` | Múltiples localhost URLs | Fallback para desarrollo | ✅ OK - solo si no hay env var |
-| `routes/system.js:150` | `http://localhost:${PORT}/api` | Fallback en documentación | ✅ OK - usa env var primero |
+| Archivo                       | Línea                           | Uso                        | Estado                         |
+| ----------------------------- | -------------------------------- | -------------------------- | ------------------------------ |
+| `server.js:108`             | `http://localhost:${PORT}`     | Console.log informativo    | ✅ OK - usa variable           |
+| `server.js:109`             | `http://localhost:${PORT}/api` | Console.log informativo    | ✅ OK - usa variable           |
+| `middlewares/cors.js:14-17` | Múltiples localhost URLs        | Fallback para desarrollo   | ✅ OK - solo si no hay env var |
+| `routes/system.js:150`      | `http://localhost:${PORT}/api` | Fallback en documentación | ✅ OK - usa env var primero    |
 
 **Conclusión Backend**: ✅ **CERO valores hardcodeados críticos**
 
 Todos los valores tienen:
+
 1. Variable de entorno como primera opción
 2. Fallback controlado SOLO para desarrollo
 3. Advertencias si no están configurados en producción
@@ -49,6 +53,7 @@ Todos los valores tienen:
 ## 📊 Frontend: Resultados
 
 ### Archivos Analizados
+
 - ✅ Todo el directorio `src/` completo
 - ✅ Configuración (`app.config.js`)
 - ✅ Hooks (`useAppConfig.js`)
@@ -61,6 +66,7 @@ Todos los valores tienen:
 **Resultado**: ✅ **CERO URLs hardcodeadas en src/**
 
 Todas las URLs fueron eliminadas y ahora usan:
+
 - `import.meta.env.VITE_API_URL`
 - `import.meta.env.VITE_WS_URL`
 - `APP_CONFIG.api.baseUrl`
@@ -71,6 +77,7 @@ Todas las URLs fueron eliminadas y ahora usan:
 ## 🔧 Archivos Modificados en Esta Auditoría Final
 
 ### 1. `frontend_futurismo/vite.config.js`
+
 **Cambio**: Proxy ahora lee de variables de entorno
 
 ```javascript
@@ -99,6 +106,7 @@ proxy: {
 ```
 
 ### 2. `frontend_futurismo/src/hooks/useAppConfig.js`
+
 **Cambio**: DefaultConfig ahora usa APP_CONFIG y variables de entorno
 
 ```javascript
@@ -132,6 +140,7 @@ const defaultConfig = {
 ```
 
 ### 3. `frontend_futurismo/src/config/app.config.js`
+
 **Cambio**: Eliminado fallback hardcodeado en producción
 
 ```javascript
@@ -155,6 +164,7 @@ websocket: {
 ### Backend (42 variables)
 
 **Críticas** ✅:
+
 - APP_VERSION
 - NODE_ENV
 - PORT
@@ -168,12 +178,14 @@ websocket: {
 - CORS_ORIGINS
 
 **Opcionales** ℹ️:
+
 - GOOGLE_MAPS_API_KEY
 - Límites, intervalos, formatos
 
 ### Frontend (44 variables)
 
 **Críticas** ✅:
+
 - VITE_API_URL
 - VITE_WS_URL
 - VITE_APP_NAME
@@ -181,6 +193,7 @@ websocket: {
 - VITE_APP_ENV
 
 **Recomendadas** ⚠️:
+
 - VITE_WHATSAPP_NUMBER
 - VITE_COMPANY_EMAIL
 - Configuraciones de límites y formatos
@@ -190,22 +203,26 @@ websocket: {
 ## 🧪 Testing Ejecutado
 
 ### Backend
+
 ```bash
 npm run validate:env
 ```
 
 **Resultado**:
+
 ```
 ✅ 39 variables validadas
 ⚠️  1 advertencia (GOOGLE_MAPS_API_KEY opcional)
 ```
 
 **Inicio del servidor**:
+
 ```bash
 npm start
 ```
 
 **Resultado**:
+
 ```
 ✅ Servidor inicia correctamente
 ✅ Todas las variables cargadas desde .env
@@ -216,11 +233,13 @@ npm start
 ### Frontend
 
 **Configuración verificada**:
+
 ```bash
 node validateEnv.js
 ```
 
 **Resultado esperado**:
+
 ```
 ✅ VITE_API_URL: http://localhost:4050/api
 ✅ VITE_WS_URL: ws://localhost:4050
@@ -231,18 +250,18 @@ node validateEnv.js
 
 ## 🎯 Criterios de Aprobación
 
-| Criterio | Estado | Notas |
-|----------|--------|-------|
-| ❌ URLs hardcodeadas en rutas | ✅ CERO | Solo fallbacks controlados |
-| ❌ URLs hardcodeadas en services | ✅ CERO | Usa APP_CONFIG |
-| ❌ URLs hardcodeadas en hooks | ✅ CERO | Usa import.meta.env |
-| ❌ Puertos hardcodeados | ✅ CERO | Usa process.env.PORT |
-| ❌ Secrets hardcodeados | ✅ CERO | JWT_SECRET desde env |
-| ✅ Variables de entorno documentadas | ✅ SÍ | .env.example actualizado |
-| ✅ Validación automática | ✅ SÍ | validateEnv.js |
-| ✅ Advertencias de seguridad | ✅ SÍ | En producción |
-| ✅ Fallbacks solo en desarrollo | ✅ SÍ | Con advertencias |
-| ✅ Todo funciona correctamente | ✅ SÍ | Tested |
+| Criterio                             | Estado  | Notas                      |
+| ------------------------------------ | ------- | -------------------------- |
+| ❌ URLs hardcodeadas en rutas        | ✅ CERO | Solo fallbacks controlados |
+| ❌ URLs hardcodeadas en services     | ✅ CERO | Usa APP_CONFIG             |
+| ❌ URLs hardcodeadas en hooks        | ✅ CERO | Usa import.meta.env        |
+| ❌ Puertos hardcodeados              | ✅ CERO | Usa process.env.PORT       |
+| ❌ Secrets hardcodeados              | ✅ CERO | JWT_SECRET desde env       |
+| ✅ Variables de entorno documentadas | ✅ SÍ  | .env.example actualizado   |
+| ✅ Validación automática           | ✅ SÍ  | validateEnv.js             |
+| ✅ Advertencias de seguridad         | ✅ SÍ  | En producción             |
+| ✅ Fallbacks solo en desarrollo      | ✅ SÍ  | Con advertencias           |
+| ✅ Todo funciona correctamente       | ✅ SÍ  | Tested                     |
 
 **TOTAL: 10/10** ✅
 
@@ -253,20 +272,21 @@ node validateEnv.js
 ### Validaciones Implementadas
 
 1. **JWT Secret en Producción**
+
    ```javascript
    if (!process.env.JWT_SECRET && process.env.NODE_ENV === 'production') {
      console.error('⚠️ WARNING: Using default JWT_SECRET in production!');
    }
    ```
-
 2. **CORS en Producción**
+
    ```javascript
    if (!process.env.CORS_ORIGINS && process.env.NODE_ENV === 'production') {
      console.warn('⚠️ WARNING: CORS_ORIGINS not set in production.');
    }
    ```
-
 3. **API URL en Frontend Producción**
+
    ```javascript
    baseUrl: getEnvVar('VITE_API_URL', import.meta.env.DEV ? '/api' : undefined)
    // undefined en producción fuerza a usar variable
@@ -277,6 +297,7 @@ node validateEnv.js
 ## 📋 Archivos de Configuración
 
 ### Backend
+
 ```
 backend-simulator/
 ├── .env                    ✅ 42 variables configuradas
@@ -294,6 +315,7 @@ backend-simulator/
 ```
 
 ### Frontend
+
 ```
 frontend_futurismo/
 ├── .env                           ✅ 44 variables configuradas
@@ -320,26 +342,27 @@ frontend_futurismo/
 **✅ SÍ - 100% CONFIRMADO**
 
 1. **Backend**:
+
    - ✅ Todas las rutas usan `process.env`
    - ✅ Todos los middlewares usan `process.env`
    - ✅ Server usa `process.env`
    - ✅ Validación automática en cada inicio
    - ✅ 42 variables configuradas
-
 2. **Frontend**:
+
    - ✅ Todo el código usa `import.meta.env.VITE_*`
    - ✅ APP_CONFIG centraliza configuración
    - ✅ Vite proxy usa variables de entorno
    - ✅ Hooks usan APP_CONFIG
    - ✅ 44 variables configuradas
-
 3. **Seguridad**:
+
    - ✅ JWT Secret no hardcodeado
    - ✅ CORS configurable
    - ✅ Advertencias en producción
    - ✅ Validación automática
-
 4. **Documentación**:
+
    - ✅ ENV_CONFIGURATION.md
    - ✅ CAMBIOS_ENV.md
    - ✅ CAMBIOS_ENDPOINTS_ENV.md
@@ -352,6 +375,7 @@ frontend_futurismo/
 **✨ PROYECTO COMPLETAMENTE CONFIGURADO CON VARIABLES DE ENTORNO ✨**
 
 El proyecto Futurismo ahora:
+
 - ✅ **NO tiene URLs hardcodeadas** en el código de producción
 - ✅ **TODO apunta a variables de entorno**
 - ✅ **Tiene validación automática** de configuración
@@ -360,6 +384,7 @@ El proyecto Futurismo ahora:
 - ✅ **Funciona correctamente** en desarrollo
 
 **Cumple al 100% con las mejores prácticas de configuración** según:
+
 - ✅ 12-Factor App methodology
 - ✅ Security best practices
 - ✅ DevOps standards

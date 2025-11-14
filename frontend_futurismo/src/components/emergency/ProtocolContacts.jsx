@@ -48,9 +48,16 @@ const ProtocolContacts = ({
                   {t('emergency.protocol.phone')}
                 </label>
                 <input
-                  {...register(`contacts.${index}.phone`)}
+                  {...register(`contacts.${index}.phone`, {
+                    pattern: {
+                      value: /^9\d{8}$/,
+                      message: 'El teléfono debe tener exactamente 9 dígitos'
+                    }
+                  })}
+                  type="tel"
+                  maxLength="9"
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent"
-                  placeholder={t('emergency.protocol.phonePlaceholder')}
+                  placeholder="999999999"
                 />
               </div>
               <div>

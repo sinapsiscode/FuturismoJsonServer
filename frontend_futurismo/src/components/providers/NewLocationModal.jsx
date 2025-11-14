@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { createPortal } from 'react-dom';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 import { XMarkIcon, MapPinIcon } from '@heroicons/react/24/outline';
@@ -21,11 +22,17 @@ const NewLocationModal = ({ isOpen, onClose, onSave, locations }) => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (validate()) {
-      onSave(formData);
-      handleClose();
+      try {
+        await onSave(formData);
+        // Solo cerrar si onSave fue exitoso
+        handleClose();
+      } catch (error) {
+        console.error('Error en handleSubmit:', error);
+        // No cerrar el modal si hay error, para que el usuario pueda corregir
+      }
     }
   };
 
@@ -37,7 +44,7 @@ const NewLocationModal = ({ isOpen, onClose, onSave, locations }) => {
 
   if (!isOpen) return null;
 
-  return (
+  const modalContent = (
     <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
       <div className="bg-white rounded-lg shadow-xl w-full max-w-md">
         {/* Header */}
@@ -133,6 +140,8 @@ const NewLocationModal = ({ isOpen, onClose, onSave, locations }) => {
       </div>
     </div>
   );
+
+  return createPortal(modalContent, document.body);
 };
 
 NewLocationModal.propTypes = {

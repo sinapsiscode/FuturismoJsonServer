@@ -316,6 +316,15 @@ module.exports = (router) => {
         materials = materials.filter(m => m.mandatory === (req.query.mandatory === 'true'));
       }
 
+      // Filter by search query
+      if (req.query.search) {
+        const searchLower = req.query.search.toLowerCase();
+        materials = materials.filter(m =>
+          m.name.toLowerCase().includes(searchLower) ||
+          (m.category && m.category.toLowerCase().includes(searchLower))
+        );
+      }
+
       // Sort by mandatory first
       materials.sort((a, b) => {
         if (a.mandatory && !b.mandatory) return -1;
@@ -323,9 +332,24 @@ module.exports = (router) => {
         return a.name.localeCompare(b.name);
       });
 
+      // Pagination
+      const page = parseInt(req.query.page) || 1;
+      const pageSize = parseInt(req.query.pageSize) || 100; // Default to large size for dropdowns
+      const total = materials.length;
+      const totalPages = Math.ceil(total / pageSize);
+      const startIndex = (page - 1) * pageSize;
+      const endIndex = startIndex + pageSize;
+      const paginatedMaterials = materials.slice(startIndex, endIndex);
+
       res.json({
         success: true,
-        data: materials
+        data: {
+          materials: paginatedMaterials,
+          page,
+          pageSize,
+          total,
+          totalPages
+        }
       });
 
     } catch (error) {

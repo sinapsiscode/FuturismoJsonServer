@@ -13,7 +13,7 @@
       "avatar": "https://ui-avatars.com/api/?name=Admin&background=3B82F6&color=fff",
       "created_at": "2024-01-01T00:00:00Z",
       "updated_at": "2024-01-01T00:00:00Z",
-      "last_login_at": "2025-10-28T18:36:42.342Z"
+      "last_login_at": "2025-11-14T19:41:29.373Z"
     },
     {
       "id": "user-agency-1",
@@ -1996,6 +1996,33 @@
       "created_at": "2025-10-28T17:48:45.986Z",
       "updated_at": "2025-10-28T17:48:45.986Z",
       "is_active": true
+    },
+    {
+      "id": "protocol-1761678633329",
+      "title": "asfasfasf",
+      "description": "asdasdfasd",
+      "category": "climatico",
+      "priority": "media",
+      "icon": "🚨",
+      "content": {
+        "steps": [
+          "asfasfasf"
+        ],
+        "contacts": [
+          {
+            "name": "asfasf",
+            "phone": "asfasf",
+            "type": "emergency"
+          }
+        ],
+        "materials": [
+          "asfasfasfaf",
+          "asfasfasf"
+        ]
+      },
+      "created_at": "2025-10-28T19:10:33.329Z",
+      "updated_at": "2025-10-28T19:10:33.329Z",
+      "is_active": true
     }
   ],
   "emergency_materials": [
@@ -2039,6 +2066,27 @@
       "checkedBy": "user-003",
       "createdAt": "2023-01-15T00:00:00Z",
       "updatedAt": "2024-03-12T00:00:00Z"
+    },
+    {
+      "id": "material-1762548692472",
+      "name": "afasfaf",
+      "category": "transporte",
+      "mandatory": false,
+      "items": [
+        "asfasfasf"
+      ],
+      "created_at": "2025-11-07T20:51:32.472Z",
+      "is_active": true
+    },
+    {
+      "id": "material-1762550968956",
+      "name": "burbuuuaaa",
+      "category": "climatico",
+      "mandatory": false,
+      "items": [],
+      "created_at": "2025-11-07T21:29:28.956Z",
+      "is_active": true,
+      "updated_at": "2025-11-14T18:25:33.111Z"
     },
     {
       "id": "material-1761673683279",
@@ -13123,8 +13171,43 @@
       "icon": "map-pin",
       "active": true,
       "created_at": "2024-01-01T00:00:00Z"
+    },
+    {
+      "id": "prov-cat-1763151493257",
+      "name": "providers.categories.asf",
+      "description": "asf",
+      "icon": "tag",
+      "active": true,
+      "created_at": "2025-11-14T20:18:13.257Z"
+    },
+    {
+      "id": "prov-cat-1763151500277",
+      "name": "providers.categories.asf",
+      "description": "asf",
+      "icon": "tag",
+      "active": true,
+      "created_at": "2025-11-14T20:18:20.277Z"
+    },
+    {
+      "id": "prov-cat-1763151515285",
+      "name": "providers.categories.sirehaaas",
+      "description": "asff",
+      "icon": "truck",
+      "active": true,
+      "created_at": "2025-11-14T20:18:35.285Z"
     }
   ],
+  "service_types": [
+    {
+      "id": "service-1763151545021",
+      "name": "sirenaaaaas",
+      "category": "prov-cat-1",
+      "description": "asdasda",
+      "active": true,
+      "created_at": "2025-11-14T20:19:05.021Z"
+    }
+  ],
+  "providers": [],
   "settings": {
     "general": {
       "appName": "Futurismo",

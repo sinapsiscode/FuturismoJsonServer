@@ -23,7 +23,11 @@ class WebSocketService {
       return;
     }
 
-    this.socket = io(API_ENDPOINTS.WS_URL, {
+    // Determinar la URL del WebSocket dinámicamente
+    const wsUrl = this.getWebSocketUrl();
+    console.log('🔌 Conectando WebSocket a:', wsUrl);
+
+    this.socket = io(wsUrl, {
       auth: { token },
       transports: ['websocket'],
       reconnection: true,
@@ -32,6 +36,44 @@ class WebSocketService {
     });
 
     this.setupEventHandlers();
+  }
+
+  /**
+   * Determina la URL del WebSocket basándose en el entorno y hostname actual
+   * @returns {string} URL del WebSocket
+   */
+  getWebSocketUrl() {
+    // Si está definida en variables de entorno y NO estamos en producción, usarla
+    if (import.meta.env.VITE_WS_URL && !import.meta.env.PROD) {
+      // Si la URL contiene 'localhost' pero estamos accediendo desde una IP de red,
+      // reemplazar localhost por la IP actual
+      const envWsUrl = import.meta.env.VITE_WS_URL;
+
+      if (envWsUrl.includes('localhost') && window.location.hostname !== 'localhost') {
+        // Extraer el puerto de la URL del env
+        const portMatch = envWsUrl.match(/:(\d+)/);
+        const port = portMatch ? portMatch[1] : '4050';
+
+        // Construir URL con el hostname actual
+        const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+        const wsUrl = `${protocol}//${window.location.hostname}:${port}`;
+
+        console.log(`🔄 WebSocket URL adaptada de ${envWsUrl} a ${wsUrl}`);
+        return wsUrl;
+      }
+
+      return envWsUrl;
+    }
+
+    // En producción o si no hay variable de entorno, construir dinámicamente
+    const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+    const host = window.location.hostname;
+
+    // En desarrollo, usar puerto 4050 (puerto del backend)
+    // En producción, usar el mismo puerto que el frontend o el puerto estándar
+    const port = import.meta.env.DEV ? '4050' : window.location.port || (protocol === 'wss:' ? '443' : '80');
+
+    return `${protocol}//${host}:${port}`;
   }
 
   setupEventHandlers() {

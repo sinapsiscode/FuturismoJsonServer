@@ -15,15 +15,76 @@ const ProviderServicesSection = ({
   selectedCategory
 }) => {
   const { t } = useTranslation();
-  const { categories, actions } = useProvidersStore();
+  const { categories, services: storeServices, actions } = useProvidersStore();
   const [showServiceModal, setShowServiceModal] = useState(false);
 
   const getServiceOptions = () => {
-    const categoryServices = SERVICE_TYPES[selectedCategory?.toUpperCase()] || [];
-    return categoryServices.map(service => ({
-      value: service,
-      label: t(service)
-    }));
+    if (!selectedCategory) return [];
+
+    // Intentar encontrar la categoría por ID si selectedCategory es un ID
+    let categoryValue = selectedCategory;
+    let categoryId = selectedCategory;
+    let categoryName = null;
+
+    // Si categories está disponible y selectedCategory parece ser un ID
+    if (Array.isArray(categories) && categories.length > 0) {
+      const foundCategory = categories.find(cat => cat.id === selectedCategory);
+      if (foundCategory) {
+        categoryId = foundCategory.id;
+        categoryName = foundCategory.name;
+        // Extraer el último segmento del nombre de categoría
+        // ej: "providers.categories.restaurant" -> "restaurant"
+        const nameParts = foundCategory.name.split('.');
+        categoryValue = nameParts[nameParts.length - 1];
+      }
+    }
+
+    const options = [];
+
+    // 1. Agregar servicios dinámicos del store (servicios creados por el usuario)
+    if (Array.isArray(storeServices) && storeServices.length > 0) {
+      const dynamicServices = storeServices.filter(service => {
+        // Comparar por ID directo, por valor de categoría, o por nombre completo
+        const matches = service.category === categoryId ||
+                       service.category === categoryValue ||
+                       service.category === categoryName;
+
+        return matches;
+      });
+
+      dynamicServices.forEach(service => {
+        options.push({
+          value: service.id,
+          label: service.name,
+          isDynamic: true
+        });
+      });
+    }
+
+    // 2. Agregar servicios estáticos de las constantes (fallback)
+    const categoryKey = categoryValue ? categoryValue.toUpperCase() : '';
+    const categoryServices = SERVICE_TYPES[categoryKey];
+
+    if (categoryServices && Array.isArray(categoryServices)) {
+      categoryServices.forEach(service => {
+        try {
+          options.push({
+            value: service,
+            label: t(service) || service,
+            isDynamic: false
+          });
+        } catch (error) {
+          console.warn('Error traduciendo servicio:', service, error);
+          options.push({
+            value: service,
+            label: service,
+            isDynamic: false
+          });
+        }
+      });
+    }
+
+    return options;
   };
 
   const handleSaveService = async (serviceData) => {
@@ -31,8 +92,9 @@ const ProviderServicesSection = ({
       await actions.createService(serviceData);
       toast.success('Servicio creado exitosamente');
     } catch (error) {
-      toast.error('Error al crear servicio');
-      console.error(error);
+      const errorMessage = error.message || 'Error al crear servicio';
+      toast.error(errorMessage);
+      throw error; // Re-lanzar el error para que NewServiceModal sepa que falló
     }
   };
 

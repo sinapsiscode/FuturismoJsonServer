@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 import { XMarkIcon, BriefcaseIcon } from '@heroicons/react/24/outline';
@@ -12,6 +13,16 @@ const NewServiceModal = ({ isOpen, onClose, onSave, selectedCategory, categories
   });
   const [errors, setErrors] = useState({});
 
+  // Actualizar la categoría cuando cambia o cuando se abre el modal
+  useEffect(() => {
+    if (isOpen && selectedCategory) {
+      setFormData(prev => ({
+        ...prev,
+        category: selectedCategory
+      }));
+    }
+  }, [isOpen, selectedCategory]);
+
   const validate = () => {
     const newErrors = {};
     if (!formData.name.trim()) {
@@ -24,11 +35,17 @@ const NewServiceModal = ({ isOpen, onClose, onSave, selectedCategory, categories
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (validate()) {
-      onSave(formData);
-      handleClose();
+      try {
+        await onSave(formData);
+        // Solo cerrar si onSave fue exitoso
+        handleClose();
+      } catch (error) {
+        console.error('Error en handleSubmit:', error);
+        // No cerrar el modal si hay error, para que el usuario pueda corregir
+      }
     }
   };
 
@@ -40,7 +57,7 @@ const NewServiceModal = ({ isOpen, onClose, onSave, selectedCategory, categories
 
   if (!isOpen) return null;
 
-  return (
+  const modalContent = (
     <div className="fixed inset-0 bg-black bg-opacity-50 z-[60] flex items-center justify-center p-4">
       <div className="bg-white rounded-lg shadow-xl w-full max-w-md">
         {/* Header */}
@@ -92,11 +109,22 @@ const NewServiceModal = ({ isOpen, onClose, onSave, selectedCategory, categories
                 }`}
               >
                 <option value="">Seleccionar categoría</option>
-                {categories.map(category => (
-                  <option key={category.id} value={category.id}>
-                    {t(category.name)}
-                  </option>
-                ))}
+                {Array.isArray(categories) && categories.map(category => {
+                  try {
+                    return (
+                      <option key={category.id} value={category.id}>
+                        {t(category.name) || category.name}
+                      </option>
+                    );
+                  } catch (error) {
+                    console.warn('Error traduciendo categoría:', category, error);
+                    return (
+                      <option key={category.id} value={category.id}>
+                        {category.name}
+                      </option>
+                    );
+                  }
+                })}
               </select>
               {errors.category && (
                 <p className="text-sm text-red-600 mt-1">{errors.category}</p>
@@ -138,6 +166,8 @@ const NewServiceModal = ({ isOpen, onClose, onSave, selectedCategory, categories
       </div>
     </div>
   );
+
+  return createPortal(modalContent, document.body);
 };
 
 NewServiceModal.propTypes = {

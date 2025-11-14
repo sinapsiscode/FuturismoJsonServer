@@ -35,8 +35,9 @@ const ProviderBasicInfo = ({ register, errors, watch }) => {
       await actions.createLocation(locationData);
       toast.success('Ubicación creada exitosamente');
     } catch (error) {
-      toast.error('Error al crear ubicación');
-      console.error(error);
+      const errorMessage = error.message || 'Error al crear ubicación';
+      toast.error(errorMessage);
+      throw error;
     }
   };
 
@@ -45,8 +46,9 @@ const ProviderBasicInfo = ({ register, errors, watch }) => {
       await actions.createCategory(categoryData);
       toast.success('Categoría creada exitosamente');
     } catch (error) {
-      toast.error('Error al crear categoría');
-      console.error(error);
+      const errorMessage = error.message || 'Error al crear categoría';
+      toast.error(errorMessage);
+      throw error;
     }
   };
 
@@ -119,15 +121,27 @@ const ProviderBasicInfo = ({ register, errors, watch }) => {
               }`}
             >
               <option value="">{t('providers.form.placeholders.selectLocation')}</option>
-              {locations.map(location => (
-                <optgroup key={location.id} label={t(location.name)}>
-                  {location.children?.map(child => (
-                    <option key={child.id} value={child.id}>
-                      {t(child.name)}
+              {locations.map(location => {
+                // Si tiene estructura jerárquica con children
+                if (location.children && Array.isArray(location.children) && location.children.length > 0) {
+                  return (
+                    <optgroup key={location.id} label={t(location.name)}>
+                      {location.children.map(child => (
+                        <option key={child.id} value={child.id}>
+                          {t(child.name)}
+                        </option>
+                      ))}
+                    </optgroup>
+                  );
+                } else {
+                  // Estructura plana - mostrar directamente
+                  return (
+                    <option key={location.id} value={location.id}>
+                      {location.name}
                     </option>
-                  ))}
-                </optgroup>
-              ))}
+                  );
+                }
+              })}
             </select>
             <button
               type="button"

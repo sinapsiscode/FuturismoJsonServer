@@ -12,7 +12,7 @@ export const guideProfileSchema = yup.object().shape({
   
   phone: yup.string()
     .required('El teléfono es requerido')
-    .matches(/^\+?[0-9\s-()]+$/, 'Formato de teléfono inválido'),
+    .matches(/^9\d{8}$/, 'El teléfono debe tener exactamente 9 dígitos'),
   
   email: yup.string()
     .required('El email es requerido')

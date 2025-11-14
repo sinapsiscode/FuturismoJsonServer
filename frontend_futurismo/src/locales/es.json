@@ -1193,7 +1193,10 @@
       "checklistForGuides": "Lista de verificación para guías - Futurismo Tours",
       "important": "IMPORTANTE",
       "verifyBeforeTour": "Verificar todos los elementos antes de cada tour",
-      "mandatoryCopiedToClipboard": "Lista de materiales obligatorios copiada al portapapeles"
+      "mandatoryCopiedToClipboard": "Lista de materiales obligatorios copiada al portapapeles",
+      "selectMaterials": "Seleccionar Materiales",
+      "noMaterials": "No hay materiales disponibles",
+      "materialsSelected": "materiales seleccionados"
     },
     "protocol": {
       "newProtocol": "Nuevo Protocolo",
@@ -1241,6 +1244,9 @@
       "necessaryMaterials": "Materiales Necesarios",
       "addMaterial": "Agregar Material",
       "materialPlaceholder": "Ej: Botiquín de primeros auxilios",
+      "selectMaterials": "Seleccionar Materiales",
+      "noMaterialsSelected": "No hay materiales seleccionados",
+      "clickToSelect": "Haz clic para seleccionar materiales",
       "important": "Importante",
       "importantNote": "Asegúrate de que todos los pasos sean claros y específicos. Los protocolos de emergencia deben ser fáciles de seguir bajo situaciones de estrés."
     }
@@ -1272,6 +1278,7 @@
     "changeLanguage": "Cambiar idioma",
     "requiredFields": "Campos obligatorios",
     "cancel": "Cancelar",
+    "confirm": "Confirmar",
     "add": "Agregar",
     "update": "Actualizar",
     "save": "Guardar",
@@ -1285,7 +1292,8 @@
     "createService": "Crear Servicio",
     "updateService": "Actualizar Servicio",
     "min": "Mínimo",
-    "max": "Máximo"
+    "max": "Máximo",
+    "back": "Volver"
   },
   "settings": {
     "title": "Configuración",
@@ -1863,12 +1871,16 @@
       "providers.categories.activity": "Actividad",
       "providers.categories.guide": "Guía Turístico",
       "providers.categories.attraction": "Atracción",
+      "providers.categories.asf": "ASF",
+      "providers.categories.sirehaaas": "Sirehaaas",
       "restaurant": "Restaurante",
       "hotel": "Hotel",
       "transport": "Transporte",
       "guide": "Guía Turístico",
       "activity": "Actividad",
-      "attraction": "Atracción"
+      "attraction": "Atracción",
+      "asf": "ASF",
+      "sirehaaas": "Sirehaaas"
     },
     "pricing": {
       "types": {
@@ -1894,5 +1906,12 @@
       "allCategories": "Todas las categorías",
       "allLocations": "Todas las ubicaciones"
     }
+  },
+  "validation": {
+    "required": "Este campo es requerido",
+    "invalidEmail": "Correo electrónico inválido",
+    "positiveNumber": "Debe ser un número positivo",
+    "minValue": "El valor mínimo es {{value}}",
+    "maxValue": "El valor máximo es {{value}}"
   }
 }

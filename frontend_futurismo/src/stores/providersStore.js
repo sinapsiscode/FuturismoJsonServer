@@ -14,6 +14,7 @@ const useProvidersStore = create(
         // Estado
         locations: [],
         categories: [],
+        services: [],
         providers: [],
         assignments: [],
         currentProvider: null,
@@ -60,6 +61,7 @@ const useProvidersStore = create(
               // Cargar datos de manera independiente para evitar que un error bloquee todo
               let locations = [];
               let categories = [];
+              let services = [];
 
               try {
                 const locationsResult = await providersService.getLocations();
@@ -77,9 +79,18 @@ const useProvidersStore = create(
                 categories = []; // Continuar con array vacío
               }
 
+              try {
+                const servicesResult = await providersService.getServices();
+                services = servicesResult.success ? servicesResult.data || [] : [];
+              } catch (err) {
+                console.warn('Error cargando services de providers:', err);
+                services = []; // Continuar con array vacío
+              }
+
               set({
                 locations,
                 categories,
+                services,
                 isLoading: false,
                 error: null
               });
@@ -91,7 +102,8 @@ const useProvidersStore = create(
                 isLoading: false,
                 error: error.message,
                 locations: [], // Asegurar que sean arrays
-                categories: []
+                categories: [],
+                services: []
               });
               // No lanzar error para permitir que la aplicación continúe
               return false;
@@ -652,13 +664,21 @@ const useProvidersStore = create(
                 throw new Error(result.error || 'Error al crear ubicación');
               }
 
-              // Recargar locations
-              const locationsResult = await providersService.getLocations();
-              if (locationsResult.success) {
-                set({ locations: locationsResult.data || [] });
-              }
+              // Agregar la nueva ubicación al estado inmediatamente
+              set((state) => ({
+                locations: [...state.locations, result.data],
+                isLoading: false
+              }));
 
-              set({ isLoading: false });
+              // Opcionalmente, recargar todas las ubicaciones para sincronizar
+              try {
+                const locationsResult = await providersService.getLocations();
+                if (locationsResult.success) {
+                  set({ locations: locationsResult.data || [] });
+                }
+              } catch (reloadError) {
+                console.warn('Error recargando ubicaciones:', reloadError);
+              }
 
               return result.data;
             } catch (error) {
@@ -681,13 +701,21 @@ const useProvidersStore = create(
                 throw new Error(result.error || 'Error al crear categoría');
               }
 
-              // Recargar categories
-              const categoriesResult = await providersService.getCategories();
-              if (categoriesResult.success) {
-                set({ categories: categoriesResult.data || [] });
-              }
+              // Agregar la nueva categoría al estado inmediatamente
+              set((state) => ({
+                categories: [...state.categories, result.data],
+                isLoading: false
+              }));
 
-              set({ isLoading: false });
+              // Opcionalmente, recargar todas las categorías para sincronizar
+              try {
+                const categoriesResult = await providersService.getCategories();
+                if (categoriesResult.success) {
+                  set({ categories: categoriesResult.data || [] });
+                }
+              } catch (reloadError) {
+                console.warn('Error recargando categorías:', reloadError);
+              }
 
               return result.data;
             } catch (error) {
@@ -710,7 +738,21 @@ const useProvidersStore = create(
                 throw new Error(result.error || 'Error al crear servicio');
               }
 
-              set({ isLoading: false });
+              // Agregar el nuevo servicio al estado inmediatamente para evitar delay
+              set((state) => ({
+                services: [...state.services, result.data],
+                isLoading: false
+              }));
+
+              // Opcionalmente, recargar todos los servicios para sincronizar
+              try {
+                const servicesResult = await providersService.getServices();
+                if (servicesResult.success) {
+                  set({ services: servicesResult.data || [] });
+                }
+              } catch (reloadError) {
+                console.warn('Error recargando servicios:', reloadError);
+              }
 
               return result.data;
             } catch (error) {
@@ -812,7 +854,8 @@ const useProvidersStore = create(
           providers: state.providers,
           assignments: state.assignments,
           locations: state.locations,
-          categories: state.categories
+          categories: state.categories,
+          services: state.services
         })
       }
     ),

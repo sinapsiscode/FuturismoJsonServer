@@ -1,11 +1,16 @@
 import { useState, useEffect } from 'react';
 import { useForm, useFieldArray } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
+import useEmergencyStore from '../stores/emergencyStore';
+
+const PHONE_REGEX = /^9\d{8}$/;
 
 const useProtocolEditor = (protocol, onSave) => {
   const [selectedIcon, setSelectedIcon] = useState('🚨');
   const [contactTypes, setContactTypes] = useState([]);
+  const [selectedMaterials, setSelectedMaterials] = useState([]);
   const { t } = useTranslation();
+  const materials = useEmergencyStore((state) => state.materials);
 
   const iconOptions = [
     '🚨', '🚑', '⛈️', '🚗', '🔍', '📡', '🏥', '👮',
@@ -27,8 +32,7 @@ const useProtocolEditor = (protocol, onSave) => {
       priority: protocol?.priority || 'media',
       icon: protocol?.icon || '🚨',
       steps: protocol?.content?.steps?.map(step => ({ text: step })) || [{ text: '' }],
-      contacts: protocol?.content?.contacts || [{ name: '', phone: '', type: 'emergency' }],
-      materials: protocol?.content?.materials?.map(material => ({ name: material })) || [{ name: '' }]
+      contacts: protocol?.content?.contacts || [{ name: '', phone: '', type: 'emergency' }]
     }
   });
 
@@ -50,21 +54,28 @@ const useProtocolEditor = (protocol, onSave) => {
     name: 'contacts'
   });
 
-  const {
-    fields: materialFields,
-    append: appendMaterial,
-    remove: removeMaterial
-  } = useFieldArray({
-    control,
-    name: 'materials'
-  });
-
   const watchedIcon = watch('icon');
   const watchedPriority = watch('priority');
 
   useEffect(() => {
     setSelectedIcon(watchedIcon);
   }, [watchedIcon]);
+
+  // Load selected materials when protocol changes or materials are loaded
+  useEffect(() => {
+    if (protocol?.content?.materials && materials.length > 0) {
+      // If materials are stored as IDs (strings)
+      if (typeof protocol.content.materials[0] === 'string') {
+        const loadedMaterials = materials.filter(m =>
+          protocol.content.materials.includes(m.id)
+        );
+        setSelectedMaterials(loadedMaterials);
+      } else {
+        // If materials are already objects
+        setSelectedMaterials(protocol.content.materials);
+      }
+    }
+  }, [protocol, materials]);
 
   // Load contact types from API
   useEffect(() => {
@@ -111,7 +122,7 @@ const useProtocolEditor = (protocol, onSave) => {
       content: {
         steps: data.steps.map(step => step.text).filter(text => text.trim() !== ''),
         contacts: data.contacts.filter(contact => contact.name && contact.phone),
-        materials: data.materials.map(material => material.name).filter(name => name.trim() !== '')
+        materials: selectedMaterials.map(material => material.id)
       }
     };
 
@@ -136,7 +147,7 @@ const useProtocolEditor = (protocol, onSave) => {
     setValue,
     errors,
     onSubmit,
-    
+
     // Field arrays
     stepFields,
     appendStep,
@@ -144,18 +155,19 @@ const useProtocolEditor = (protocol, onSave) => {
     contactFields,
     appendContact,
     removeContact,
-    materialFields,
-    appendMaterial,
-    removeMaterial,
-    
+
+    // Materials
+    selectedMaterials,
+    setSelectedMaterials,
+
     // State
     selectedIcon,
     setSelectedIcon,
-    
+
     // Options
     iconOptions,
     contactTypes,
-    
+
     // Utilities
     getPriorityColor,
     watchedPriority

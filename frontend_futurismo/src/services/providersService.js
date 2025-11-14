@@ -269,6 +269,14 @@ const filename = `providers_${new Date().toISOString().split('T')[0]}.${format}`
   }
 
   /**
+   * Obtener todos los servicios
+   * @returns {Promise<Object>}
+   */
+  async getServices() {
+    return this.get('/services');
+  }
+
+  /**
    * Crear nuevo servicio
    * @param {Object} serviceData - Datos del servicio
    * @returns {Promise<Object>}

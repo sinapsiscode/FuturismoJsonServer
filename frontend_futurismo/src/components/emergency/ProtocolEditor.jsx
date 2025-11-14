@@ -29,9 +29,8 @@ const ProtocolEditor = ({ protocol, onClose, onSave }) => {
     contactFields,
     appendContact,
     removeContact,
-    materialFields,
-    appendMaterial,
-    removeMaterial,
+    selectedMaterials,
+    setSelectedMaterials,
     selectedIcon,
     setSelectedIcon,
     iconOptions,
@@ -111,10 +110,8 @@ const ProtocolEditor = ({ protocol, onClose, onSave }) => {
 
             {/* Necessary materials */}
             <ProtocolMaterials
-              materialFields={materialFields}
-              register={register}
-              appendMaterial={appendMaterial}
-              removeMaterial={removeMaterial}
+              selectedMaterials={selectedMaterials}
+              onMaterialsChange={setSelectedMaterials}
             />
 
             {/* Warning */}

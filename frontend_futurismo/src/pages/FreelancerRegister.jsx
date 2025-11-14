@@ -30,7 +30,7 @@ const registerSchema = yup.object({
     .email('Email inválido'),
   phone: yup.string()
     .required('El teléfono es requerido')
-    .matches(/^[0-9]{9}$/, 'Debe tener 9 dígitos'),
+    .matches(/^9\d{8}$/, 'El teléfono debe tener exactamente 9 dígitos'),
   documentType: yup.string()
     .required('Selecciona el tipo de documento'),
   documentNumber: yup.string()

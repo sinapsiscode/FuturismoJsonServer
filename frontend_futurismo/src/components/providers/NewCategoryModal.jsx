@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { createPortal } from 'react-dom';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 import { XMarkIcon, TagIcon } from '@heroicons/react/24/outline';
@@ -33,11 +34,17 @@ const NewCategoryModal = ({ isOpen, onClose, onSave }) => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (validate()) {
-      onSave(formData);
-      handleClose();
+      try {
+        await onSave(formData);
+        // Solo cerrar si onSave fue exitoso
+        handleClose();
+      } catch (error) {
+        console.error('Error en handleSubmit:', error);
+        // No cerrar el modal si hay error, para que el usuario pueda corregir
+      }
     }
   };
 
@@ -49,7 +56,7 @@ const NewCategoryModal = ({ isOpen, onClose, onSave }) => {
 
   if (!isOpen) return null;
 
-  return (
+  const modalContent = (
     <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
       <div className="bg-white rounded-lg shadow-xl w-full max-w-md">
         {/* Header */}
@@ -141,6 +148,8 @@ const NewCategoryModal = ({ isOpen, onClose, onSave }) => {
       </div>
     </div>
   );
+
+  return createPortal(modalContent, document.body);
 };
 
 NewCategoryModal.propTypes = {

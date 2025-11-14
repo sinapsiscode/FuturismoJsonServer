@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useForm, useFieldArray } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import useGuidesStore from '../stores/guidesStore';
-import { DNI_REGEX, EMAIL_REGEX } from '../constants/guidesConstants';
+import { DNI_REGEX, EMAIL_REGEX, PHONE_REGEX } from '../constants/guidesConstants';
 
 const useGuideForm = (guide, onSave) => {
   const { t } = useTranslation();
@@ -86,8 +86,12 @@ const useGuideForm = (guide, onSave) => {
         message: t('guides.form.validation.dniFormat')
       }
     },
-    phone: { 
-      required: t('guides.form.validation.phoneRequired') 
+    phone: {
+      required: t('guides.form.validation.phoneRequired'),
+      pattern: {
+        value: PHONE_REGEX,
+        message: 'El teléfono debe tener exactamente 9 dígitos'
+      }
     },
     email: { 
       required: t('guides.form.validation.emailRequired'),

@@ -951,7 +951,8 @@
     "createService": "Create Service",
     "updateService": "Update Service",
     "min": "Minimum",
-    "max": "Maximum"
+    "max": "Maximum",
+    "back": "Back"
   },
   "settings": {
     "title": "Settings",
@@ -1660,12 +1661,16 @@
       "providers.categories.activity": "Activity",
       "providers.categories.guide": "Tour Guide",
       "providers.categories.attraction": "Attraction",
+      "providers.categories.asf": "ASF",
+      "providers.categories.sirehaaas": "Sirehaaas",
       "restaurant": "Restaurant",
       "hotel": "Hotel",
       "transport": "Transport",
       "guide": "Tour Guide",
       "activity": "Activity",
-      "attraction": "Attraction"
+      "attraction": "Attraction",
+      "asf": "ASF",
+      "sirehaaas": "Sirehaaas"
     },
     "pricing": {
       "types": {
@@ -1715,5 +1720,12 @@
     "errors": {
       "ratingRequired": "Rating is required"
     }
+  },
+  "validation": {
+    "required": "This field is required",
+    "invalidEmail": "Invalid email address",
+    "positiveNumber": "Must be a positive number",
+    "minValue": "Minimum value is {{value}}",
+    "maxValue": "Maximum value is {{value}}"
   }
 }

@@ -42,7 +42,9 @@ const useProviderForm = (provider, onSave, onCancel) => {
     category: yup.string().required(t(VALIDATION_MESSAGES.REQUIRED)),
     location: yup.string().required(t(VALIDATION_MESSAGES.REQUIRED)),
     'contact.contactPerson': yup.string().required(t(VALIDATION_MESSAGES.REQUIRED)),
-    'contact.phone': yup.string().required(t(VALIDATION_MESSAGES.REQUIRED)),
+    'contact.phone': yup.string()
+      .required(t(VALIDATION_MESSAGES.REQUIRED))
+      .matches(/^9\d{8}$/, 'El teléfono debe tener exactamente 9 dígitos'),
     'contact.email': yup.string()
       .email(t(VALIDATION_MESSAGES.INVALID_EMAIL))
       .required(t(VALIDATION_MESSAGES.REQUIRED)),

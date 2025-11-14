@@ -30,7 +30,7 @@ const editReservationSchema = yup.object({
   clientName: yup.string().required('El nombre del cliente es requerido'),
   clientPhone: yup.string()
     .required('El teléfono es requerido')
-    .matches(/^[+]?[\d\s\-()]+$/, 'Formato de teléfono inválido'),
+    .matches(/^9\d{8}$/, 'El teléfono debe tener exactamente 9 dígitos'),
   clientEmail: yup.string().email('Email inválido'),
   specialRequirements: yup.string().max(500, 'Máximo 500 caracteres')
 });
