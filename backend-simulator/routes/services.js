@@ -8,10 +8,11 @@ module.exports = (router) => {
   servicesRouter.get('/active', (req, res) => {
     try {
       const db = router.db;
+      const { persist } = req.query; // Parámetro para habilitar persistencia
       let monitoringTours = db.get('monitoring_tours').value() || [];
 
       // Simular movimiento en tiempo real de los tours activos
-      monitoringTours = monitoringTours.map(tour => {
+      const updatedTours = monitoringTours.map(tour => {
         if (tour.status === 'enroute' && tour.currentLocation) {
           // Simular pequeño movimiento aleatorio para tours "en ruta"
           // Esto hace que los marcadores se muevan ligeramente en cada petición
@@ -24,15 +25,22 @@ module.exports = (router) => {
               ...tour.currentLocation,
               lat: tour.currentLocation.lat + deltaLat,
               lng: tour.currentLocation.lng + deltaLng
-            }
+            },
+            lastUpdated: new Date().toISOString()
           };
         }
         return tour;
       });
 
+      // PERSISTENCIA: Si persist=true, guardar las nuevas ubicaciones en db.json
+      if (persist === 'true') {
+        db.set('monitoring_tours', updatedTours).write();
+        console.log('💾 Ubicaciones de tours persistidas en db.json');
+      }
+
       // Filter by provided filters if any
       const { status, guide, date } = req.query;
-      let filteredTours = monitoringTours;
+      let filteredTours = updatedTours;
 
       if (status) {
         filteredTours = filteredTours.filter(t => t.status === status);
@@ -343,6 +351,87 @@ module.exports = (router) => {
     } catch (error) {
       console.error('Error checking availability:', error);
       res.status(500).json(errorResponse('Error al verificar disponibilidad'));
+    }
+  });
+
+  // PUT /api/services/tours/:tourId/location
+  // Actualizar ubicación de un tour específico (para que guías actualicen su posición)
+  servicesRouter.put('/tours/:tourId/location', (req, res) => {
+    try {
+      const db = router.db;
+      const { tourId } = req.params;
+      const { lat, lng, name } = req.body;
+
+      // Validar datos
+      if (!lat || !lng) {
+        return res.status(400).json(errorResponse('Se requieren latitud y longitud'));
+      }
+
+      // Buscar el tour
+      const monitoringTours = db.get('monitoring_tours').value() || [];
+      const tourIndex = monitoringTours.findIndex(t => t.id === tourId);
+
+      if (tourIndex === -1) {
+        return res.status(404).json(errorResponse('Tour no encontrado'));
+      }
+
+      // Actualizar ubicación
+      monitoringTours[tourIndex].currentLocation = {
+        lat: parseFloat(lat),
+        lng: parseFloat(lng),
+        name: name || monitoringTours[tourIndex].currentLocation?.name || 'Ubicación actualizada'
+      };
+      monitoringTours[tourIndex].lastUpdated = new Date().toISOString();
+
+      // Guardar en db.json
+      db.set('monitoring_tours', monitoringTours).write();
+
+      console.log(`📍 Ubicación actualizada para tour ${tourId}: ${lat}, ${lng}`);
+
+      res.json(successResponse(monitoringTours[tourIndex]));
+
+    } catch (error) {
+      console.error('Error updating tour location:', error);
+      res.status(500).json(errorResponse('Error al actualizar ubicación del tour'));
+    }
+  });
+
+  // PUT /api/services/tours/:tourId/status
+  // Actualizar estado de un tour (iniciado, pausado, completado)
+  servicesRouter.put('/tours/:tourId/status', (req, res) => {
+    try {
+      const db = router.db;
+      const { tourId } = req.params;
+      const { status } = req.body;
+
+      // Validar estado
+      const validStatuses = ['enroute', 'stopped', 'delayed', 'completed', 'cancelled'];
+      if (!validStatuses.includes(status)) {
+        return res.status(400).json(errorResponse(`Estado inválido. Debe ser uno de: ${validStatuses.join(', ')}`));
+      }
+
+      // Buscar el tour
+      const monitoringTours = db.get('monitoring_tours').value() || [];
+      const tourIndex = monitoringTours.findIndex(t => t.id === tourId);
+
+      if (tourIndex === -1) {
+        return res.status(404).json(errorResponse('Tour no encontrado'));
+      }
+
+      // Actualizar estado
+      monitoringTours[tourIndex].status = status;
+      monitoringTours[tourIndex].lastUpdated = new Date().toISOString();
+
+      // Guardar en db.json
+      db.set('monitoring_tours', monitoringTours).write();
+
+      console.log(`🔄 Estado actualizado para tour ${tourId}: ${status}`);
+
+      res.json(successResponse(monitoringTours[tourIndex]));
+
+    } catch (error) {
+      console.error('Error updating tour status:', error);
+      res.status(500).json(errorResponse('Error al actualizar estado del tour'));
     }
   });
 

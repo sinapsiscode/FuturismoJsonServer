@@ -1,11 +1,120 @@
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import { XMarkIcon, MapPinIcon, ClockIcon, UserGroupIcon, CheckCircleIcon } from '@heroicons/react/24/outline';
 
 const ActiveTourDetailsModal = ({ isOpen, onClose, tour, onViewOnMap }) => {
+  const mapRef = useRef(null);
+  const mapInstanceRef = useRef(null);
+  const markerRef = useRef(null);
+  const [mapReady, setMapReady] = useState(false);
+
   if (!isOpen || !tour) {
     return null;
   }
+
+  // Inicializar mapa cuando el modal se abre
+  useEffect(() => {
+    if (!isOpen || !tour?.currentLocation) return;
+
+    // Esperar a que Leaflet esté disponible
+    const initMap = () => {
+      if (!window.L || !mapRef.current || mapInstanceRef.current) return;
+
+      try {
+        // Crear mapa centrado en la ubicación del tour
+        const map = window.L.map(mapRef.current, {
+          center: [tour.currentLocation.lat, tour.currentLocation.lng],
+          zoom: 15,
+          zoomControl: true,
+          attributionControl: false,
+          scrollWheelZoom: false
+        });
+
+        // Agregar capa de tiles
+        window.L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          maxZoom: 19
+        }).addTo(map);
+
+        // Crear icono personalizado
+        const icon = window.L.divIcon({
+          className: 'custom-marker-modal',
+          html: `
+            <div class="relative">
+              <div class="absolute -top-1 -right-1 w-3 h-3 bg-${tour.status === 'enroute' ? 'green' : tour.status === 'stopped' ? 'yellow' : 'red'}-500 rounded-full animate-pulse"></div>
+              <div class="bg-blue-600 rounded-full p-3 shadow-lg border-4 border-white">
+                <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+                </svg>
+              </div>
+            </div>
+          `,
+          iconSize: [48, 48],
+          iconAnchor: [24, 48]
+        });
+
+        // Agregar marcador
+        const marker = window.L.marker(
+          [tour.currentLocation.lat, tour.currentLocation.lng],
+          { icon }
+        ).addTo(map);
+
+        // Popup con información
+        marker.bindPopup(`
+          <div class="text-center p-2">
+            <h3 class="font-bold text-gray-900">${tour.tourName}</h3>
+            <p class="text-sm text-gray-600 mt-1">${tour.guideName}</p>
+            <p class="text-xs text-gray-500 mt-1">${tour.currentLocation.name}</p>
+          </div>
+        `).openPopup();
+
+        mapInstanceRef.current = map;
+        markerRef.current = marker;
+
+        // Invalidar tamaño después de un breve delay
+        setTimeout(() => {
+          if (map) {
+            map.invalidateSize();
+            setMapReady(true);
+          }
+        }, 100);
+
+      } catch (error) {
+        console.error('Error al inicializar mapa del modal:', error);
+      }
+    };
+
+    // Esperar a que Leaflet esté cargado
+    if (window.L) {
+      initMap();
+    } else {
+      // Si Leaflet no está cargado, esperar un poco
+      const timer = setTimeout(initMap, 500);
+      return () => clearTimeout(timer);
+    }
+
+    // Limpiar mapa al cerrar
+    return () => {
+      if (mapInstanceRef.current) {
+        mapInstanceRef.current.remove();
+        mapInstanceRef.current = null;
+        markerRef.current = null;
+        setMapReady(false);
+      }
+    };
+  }, [isOpen, tour]);
+
+  // Actualizar marcador cuando cambia la ubicación
+  useEffect(() => {
+    if (!mapInstanceRef.current || !markerRef.current || !tour?.currentLocation) return;
+
+    try {
+      const newLatLng = [tour.currentLocation.lat, tour.currentLocation.lng];
+      markerRef.current.setLatLng(newLatLng);
+      mapInstanceRef.current.setView(newLatLng, 15);
+    } catch (error) {
+      console.error('Error al actualizar ubicación del marcador:', error);
+    }
+  }, [tour?.currentLocation]);
 
   const getStatusColor = (status) => {
     switch (status) {
@@ -182,14 +291,35 @@ const ActiveTourDetailsModal = ({ isOpen, onClose, tour, onViewOnMap }) => {
               </div>
             </div>
 
-            {/* Mapa placeholder */}
-            <div className="mt-6 bg-gradient-to-br from-gray-100 to-gray-200 rounded-xl p-8 border-2 border-dashed border-gray-300">
-              <div className="text-center">
-                <MapPinIcon className="w-12 h-12 mx-auto text-gray-400 mb-3" />
-                <p className="text-sm text-gray-600 font-medium">Vista de mapa en tiempo real</p>
-                <p className="text-xs text-gray-500 mt-1">
-                  Ubicación actual: {tour.currentLocation?.lat.toFixed(4)}, {tour.currentLocation?.lng.toFixed(4)}
-                </p>
+            {/* Mapa interactivo en tiempo real */}
+            <div className="mt-6">
+              <h4 className="text-sm font-semibold text-gray-900 mb-3 flex items-center gap-2">
+                <MapPinIcon className="w-5 h-5 text-blue-600" />
+                Vista de mapa en tiempo real
+              </h4>
+              <div className="relative bg-gray-100 rounded-xl overflow-hidden border-2 border-gray-300" style={{ height: '350px' }}>
+                {/* Contenedor del mapa Leaflet */}
+                <div ref={mapRef} className="w-full h-full"></div>
+
+                {/* Badge de ubicación */}
+                {mapReady && tour.currentLocation && (
+                  <div className="absolute bottom-4 left-4 bg-white rounded-lg shadow-lg px-3 py-2 z-[1000]">
+                    <p className="text-xs text-gray-600 font-medium">Ubicación GPS</p>
+                    <p className="text-sm font-bold text-gray-900">
+                      {tour.currentLocation.lat.toFixed(6)}, {tour.currentLocation.lng.toFixed(6)}
+                    </p>
+                  </div>
+                )}
+
+                {/* Indicador de carga */}
+                {!mapReady && (
+                  <div className="absolute inset-0 flex items-center justify-center bg-white bg-opacity-75">
+                    <div className="text-center">
+                      <div className="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto mb-2"></div>
+                      <p className="text-sm text-gray-600">Cargando mapa...</p>
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           </div>

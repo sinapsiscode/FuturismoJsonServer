@@ -25,10 +25,13 @@ return this.get('', filters);
   /**
    * Obtener servicios activos
    * @param {Object} filters - Filtros opcionales
+   * @param {boolean} persist - Si true, guarda las ubicaciones actualizadas en db.json
    * @returns {Promise<Object>}
    */
-  async getActiveServices(filters = {}) {
-return this.get('/active', filters);
+  async getActiveServices(filters = {}, persist = true) {
+    // Agregar persist=true para que las ubicaciones se guarden en db.json
+    const params = { ...filters, persist: persist ? 'true' : 'false' };
+    return this.get('/active', params);
   }
 
   /**
@@ -124,6 +127,28 @@ return this.post(`/${id}/rate`, { rating, feedback });
    */
   async getServiceTypes() {
 return this.get('/types');
+  }
+
+  /**
+   * Actualizar ubicación de un tour
+   * @param {string} tourId - ID del tour
+   * @param {number} lat - Latitud
+   * @param {number} lng - Longitud
+   * @param {string} name - Nombre del lugar (opcional)
+   * @returns {Promise<Object>}
+   */
+  async updateTourLocation(tourId, lat, lng, name = null) {
+    return this.put(`/tours/${tourId}/location`, { lat, lng, name });
+  }
+
+  /**
+   * Actualizar estado de un tour
+   * @param {string} tourId - ID del tour
+   * @param {string} status - Nuevo estado (enroute, stopped, delayed, completed, cancelled)
+   * @returns {Promise<Object>}
+   */
+  async updateTourStatus(tourId, status) {
+    return this.put(`/tours/${tourId}/status`, { status });
   }
 
   /**
