@@ -4,8 +4,6 @@ import {
   PlusIcon,
   Cog6ToothIcon,
   ArrowLeftIcon,
-  InformationCircleIcon,
-  ExclamationTriangleIcon,
   TrashIcon,
   XMarkIcon
 } from '@heroicons/react/24/outline';
@@ -150,70 +148,6 @@ const ServicesManagement = () => {
     );
   };
 
-  const renderServiceStats = () => {
-    if (currentView !== 'list') return null;
-
-    return (
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-        <div className="bg-white p-6 rounded-lg shadow-sm border">
-          <div className="flex items-center">
-            <div className="flex-shrink-0">
-              <div className="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center">
-                <Cog6ToothIcon className="h-5 w-5 text-gray-600" />
-              </div>
-            </div>
-            <div className="ml-4">
-              <p className="text-sm font-medium text-gray-600">{t('services.totalServices') || 'Total Servicios'}</p>
-              <p className="text-2xl font-semibold text-gray-900">--</p>
-            </div>
-          </div>
-        </div>
-
-        <div className="bg-white p-6 rounded-lg shadow-sm border">
-          <div className="flex items-center">
-            <div className="flex-shrink-0">
-              <div className="w-8 h-8 bg-yellow-100 rounded-lg flex items-center justify-center">
-                <ExclamationTriangleIcon className="h-5 w-5 text-yellow-600" />
-              </div>
-            </div>
-            <div className="ml-4">
-              <p className="text-sm font-medium text-gray-600">{t('dashboard.pending')}</p>
-              <p className="text-2xl font-semibold text-gray-900">--</p>
-            </div>
-          </div>
-        </div>
-
-        <div className="bg-white p-6 rounded-lg shadow-sm border">
-          <div className="flex items-center">
-            <div className="flex-shrink-0">
-              <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
-                <Cog6ToothIcon className="h-5 w-5 text-green-600" />
-              </div>
-            </div>
-            <div className="ml-4">
-              <p className="text-sm font-medium text-gray-600">En Curso</p>
-              <p className="text-2xl font-semibold text-gray-900">--</p>
-            </div>
-          </div>
-        </div>
-
-        <div className="bg-white p-6 rounded-lg shadow-sm border">
-          <div className="flex items-center">
-            <div className="flex-shrink-0">
-              <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
-                <InformationCircleIcon className="h-5 w-5 text-blue-600" />
-              </div>
-            </div>
-            <div className="ml-4">
-              <p className="text-sm font-medium text-gray-600">Completados</p>
-              <p className="text-2xl font-semibold text-gray-900">--</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  };
-
   const renderContent = () => {
     if (currentView === 'config') {
       return <ServiceTypesSettings />;
@@ -328,7 +262,6 @@ const ServicesManagement = () => {
   return (
     <div className="space-y-6">
       {renderHeader()}
-      {renderServiceStats()}
       {renderContent()}
       {renderModals()}
     </div>
