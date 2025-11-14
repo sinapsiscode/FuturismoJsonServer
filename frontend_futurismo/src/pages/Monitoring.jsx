@@ -26,16 +26,28 @@ const Monitoring = () => {
   const isGuide = user?.role === 'guide';
   const isAdmin = user?.role === 'admin';
 
-  // Cargar servicios activos para admin
+  // Cargar servicios activos para admin y establecer actualizaciones en tiempo real
   useEffect(() => {
-    if (isAdmin && activeView === 'tours') {
+    if (isAdmin) {
       // Cargar servicios activos desde el backend
       loadActiveServices().catch(err => {
         console.error('Error al cargar servicios activos:', err);
         // Si hay error, los datos se quedarán vacíos y se mostrará el mensaje de "no hay tours"
       });
+
+      // Configurar actualizaciones automáticas cada 10 segundos
+      const intervalId = setInterval(() => {
+        loadActiveServices().catch(err => {
+          console.error('Error en actualización automática:', err);
+        });
+      }, 10000); // 10 segundos
+
+      // Limpiar intervalo al desmontar
+      return () => {
+        clearInterval(intervalId);
+      };
     }
-  }, [isAdmin, activeView]);
+  }, [isAdmin, loadActiveServices]);
 
   // Hook para manejar tours del guía (reemplaza datos hardcodeados)
   const {
@@ -251,7 +263,7 @@ const Monitoring = () => {
       <div className="overflow-hidden bg-white rounded-lg shadow">
         {/* Vista de Mapa - Para todos los roles */}
         {activeView === 'map' && (
-          <div className="p-4 sm:p-6 h-[calc(100vh-16rem)]">
+          <div className="p-4 sm:p-6" style={{ height: 'calc(100vh - 280px)', minHeight: '600px' }}>
             <LiveMapResponsive />
           </div>
         )}

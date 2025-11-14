@@ -7,6 +7,7 @@ const LiveMapResponsive = ({ filters, onServiceSelect }) => {
   const { activeServices, loadActiveServices } = useServicesStore();
   const { viewport, sidebarOpen } = useLayout();
   const [selectedService, setSelectedService] = useState(null);
+  const [isUpdating, setIsUpdating] = useState(false);
   const mapRef = useRef(null);
   const leafletMapRef = useRef(null);
   const markersRef = useRef({});
@@ -20,60 +21,53 @@ const LiveMapResponsive = ({ filters, onServiceSelect }) => {
 
   // Cargar Leaflet desde CDN
   useEffect(() => {
-    // Solo cargar si no está ya cargado
+    // Verificar si Leaflet ya está cargado
     if (window.L) {
-      initializeMap();
+      console.log('✅ Leaflet ya está disponible, inicializando mapa...');
+      // Pequeño delay para asegurar que el CSS está aplicado
+      setTimeout(() => initializeMap(), 100);
       return;
     }
 
-    let cssLoaded = false;
     let jsLoaded = false;
 
-    const tryInitialize = () => {
-      if (cssLoaded && jsLoaded && window.L) {
-        console.log('✅ Leaflet CSS y JS cargados, inicializando mapa...');
-        initializeMap();
+    // El CSS ya está en el index.html, solo necesitamos cargar el JS
+    const script = document.createElement('script');
+    script.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
+    script.integrity = 'sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=';
+    script.crossOrigin = '';
+
+    script.onload = () => {
+      console.log('✅ Leaflet JS cargado correctamente');
+
+      // Fix para iconos por defecto de Leaflet
+      if (window.L) {
+        delete window.L.Icon.Default.prototype._getIconUrl;
+        window.L.Icon.Default.mergeOptions({
+          iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
+          iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
+          shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
+        });
+
+        jsLoaded = true;
+        // Delay para asegurar que todo está listo
+        setTimeout(() => {
+          console.log('🗺️ Inicializando mapa Leaflet...');
+          initializeMap();
+        }, 200);
       }
     };
 
-    // Cargar CSS
-    const link = document.createElement('link');
-    link.rel = 'stylesheet';
-    link.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';
-    link.onload = () => {
-      console.log('✅ Leaflet CSS cargado');
-      cssLoaded = true;
-      tryInitialize();
-    };
-    link.onerror = () => {
-      console.error('❌ Error al cargar Leaflet CSS');
-    };
-    document.head.appendChild(link);
-
-    // Cargar JS
-    const script = document.createElement('script');
-    script.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
-    script.onload = () => {
-      console.log('✅ Leaflet JS cargado');
-      // Fix para iconos por defecto
-      delete window.L.Icon.Default.prototype._getIconUrl;
-      window.L.Icon.Default.mergeOptions({
-        iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
-        iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
-        shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
-      });
-
-      jsLoaded = true;
-      tryInitialize();
-    };
     script.onerror = () => {
       console.error('❌ Error al cargar Leaflet JS');
     };
+
     document.head.appendChild(script);
 
     return () => {
       // Limpiar al desmontar
       if (leafletMapRef.current) {
+        console.log('🧹 Limpiando mapa...');
         leafletMapRef.current.remove();
         leafletMapRef.current = null;
       }
@@ -82,47 +76,77 @@ const LiveMapResponsive = ({ filters, onServiceSelect }) => {
 
   // Inicializar el mapa
   const initializeMap = () => {
-    if (!mapRef.current || leafletMapRef.current) return;
+    if (!mapRef.current) {
+      console.error('❌ mapRef.current no existe');
+      return;
+    }
 
-    // Crear mapa con configuración responsive
-    const map = window.L.map(mapRef.current, {
-      center: [-12.0464, -77.0428], // Lima, Perú
-      zoom: viewport.isMobile ? 11 : 12,
-      zoomControl: false, // Controles personalizados
-      attributionControl: viewport.isDesktop,
-      tap: true,
-      touchZoom: true,
-      dragging: true,
-      doubleClickZoom: !viewport.isMobile
-    });
+    if (leafletMapRef.current) {
+      console.log('⚠️ Mapa ya inicializado, saltando...');
+      return;
+    }
 
-    // Agregar capa de mapa
-    window.L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '© OpenStreetMap contributors',
-      maxZoom: 19,
-      minZoom: viewport.isMobile ? 10 : 8
-    }).addTo(map);
+    console.log('🗺️ Creando instancia del mapa Leaflet...');
 
-    leafletMapRef.current = map;
+    try {
+      // Crear mapa con configuración responsive
+      const map = window.L.map(mapRef.current, {
+        center: [-12.0464, -77.0428], // Lima, Perú
+        zoom: viewport.isMobile ? 11 : 12,
+        zoomControl: false, // Controles personalizados
+        attributionControl: viewport.isDesktop,
+        tap: true,
+        touchZoom: true,
+        dragging: true,
+        doubleClickZoom: !viewport.isMobile,
+        scrollWheelZoom: true
+      });
 
-    // IMPORTANTE: Forzar redimensionamiento después de inicializar
-    // Esto asegura que Leaflet calcule correctamente el tamaño del contenedor
-    setTimeout(() => {
-      if (map) {
-        map.invalidateSize();
+      console.log('✅ Mapa creado exitosamente');
+
+      // Agregar capa de mapa (tiles)
+      window.L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors',
+        maxZoom: 19,
+        minZoom: viewport.isMobile ? 10 : 8
+      }).addTo(map);
+
+      console.log('✅ Capa de tiles agregada');
+
+      leafletMapRef.current = map;
+
+      // IMPORTANTE: Forzar redimensionamiento después de inicializar
+      // Esto asegura que Leaflet calcule correctamente el tamaño del contenedor
+      setTimeout(() => {
+        if (map) {
+          console.log('🔄 Invalidando tamaño del mapa (primera vez)...');
+          map.invalidateSize();
+        }
+      }, 100);
+
+      // Segundo invalidate para asegurar que se ajuste completamente
+      setTimeout(() => {
+        if (map) {
+          console.log('🔄 Invalidando tamaño del mapa (segunda vez)...');
+          map.invalidateSize({ animate: false });
+        }
+      }, 300);
+
+      // Tercer invalidate para casos donde el contenedor tarda en renderizar
+      setTimeout(() => {
+        if (map) {
+          console.log('🔄 Invalidando tamaño del mapa (tercera vez - final)...');
+          map.invalidateSize({ animate: false });
+        }
+      }, 500);
+
+      // Cargar servicios activos si es necesario
+      if (activeServices.length === 0) {
+        console.log('📡 Cargando servicios activos...');
+        loadActiveServices();
       }
-    }, 100);
-
-    // Segundo invalidate para asegurar que se ajuste completamente
-    setTimeout(() => {
-      if (map) {
-        map.invalidateSize({ animate: false });
-      }
-    }, 300);
-
-    // Cargar servicios activos si es necesario
-    if (activeServices.length === 0) {
-      loadActiveServices();
+    } catch (error) {
+      console.error('❌ Error al inicializar el mapa:', error);
     }
   };
 
@@ -159,9 +183,15 @@ const LiveMapResponsive = ({ filters, onServiceSelect }) => {
     };
   }, [leafletMapRef.current]);
 
-  // Actualizar marcadores
+  // Actualizar marcadores en tiempo real cuando cambian los servicios activos
   useEffect(() => {
     if (!leafletMapRef.current || !window.L) return;
+
+    console.log('🗺️ Actualizando marcadores del mapa:', activeServices.length, 'servicios');
+
+    // Mostrar indicador de actualización
+    setIsUpdating(true);
+    setTimeout(() => setIsUpdating(false), 500);
 
     // Limpiar marcadores antiguos
     Object.values(markersRef.current).forEach(marker => {
@@ -292,7 +322,20 @@ const LiveMapResponsive = ({ filters, onServiceSelect }) => {
     <div className="relative w-full h-full" style={{ minHeight: '500px' }}>
       <div className="relative bg-gray-100 rounded-xl overflow-hidden shadow-lg border border-gray-200 h-full">
         <div ref={mapRef} className="w-full h-full" style={{ minHeight: '500px' }} />
-        
+
+        {/* Indicador de actualización en tiempo real */}
+        <div className="absolute top-4 left-4 z-[10]">
+          <div className={`flex items-center gap-2 bg-white px-3 py-2 rounded-lg shadow-md transition-opacity ${isUpdating ? 'opacity-100' : 'opacity-70'}`}>
+            <div className={`w-2 h-2 rounded-full ${isUpdating ? 'bg-green-500 animate-pulse' : 'bg-green-500'}`}></div>
+            <span className="text-xs font-medium text-gray-700">
+              {isUpdating ? 'Actualizando...' : 'En vivo'}
+            </span>
+            <span className="text-xs text-gray-500">
+              {Array.isArray(activeServices) ? activeServices.length : 0} servicios
+            </span>
+          </div>
+        </div>
+
         {/* Controles personalizados para móvil */}
         <div className="absolute top-4 right-4 z-[10] flex flex-col gap-2">
           {/* Zoom */}

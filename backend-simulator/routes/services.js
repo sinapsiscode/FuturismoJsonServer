@@ -8,7 +8,27 @@ module.exports = (router) => {
   servicesRouter.get('/active', (req, res) => {
     try {
       const db = router.db;
-      const monitoringTours = db.get('monitoring_tours').value() || [];
+      let monitoringTours = db.get('monitoring_tours').value() || [];
+
+      // Simular movimiento en tiempo real de los tours activos
+      monitoringTours = monitoringTours.map(tour => {
+        if (tour.status === 'enroute' && tour.currentLocation) {
+          // Simular pequeño movimiento aleatorio para tours "en ruta"
+          // Esto hace que los marcadores se muevan ligeramente en cada petición
+          const deltaLat = (Math.random() - 0.5) * 0.001; // ~100 metros
+          const deltaLng = (Math.random() - 0.5) * 0.001;
+
+          return {
+            ...tour,
+            currentLocation: {
+              ...tour.currentLocation,
+              lat: tour.currentLocation.lat + deltaLat,
+              lng: tour.currentLocation.lng + deltaLng
+            }
+          };
+        }
+        return tour;
+      });
 
       // Filter by provided filters if any
       const { status, guide, date } = req.query;
