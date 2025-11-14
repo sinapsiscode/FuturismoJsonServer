@@ -248,24 +248,35 @@ function getAdminStats(db) {
   const guides = db.get('guides').value() || [];
   const reservations = db.get('reservations').value() || [];
   const services = db.get('services').value() || [];
-  const transactions = db.get('financial_transactions').value() || [];
+  const clients = db.get('clients').value() || [];
+
+  // Calcular ingresos totales desde reservations (no desde financial_transactions que está vacío)
+  const totalRevenue = _.sumBy(reservations, r => parseFloat(r.total_amount) || 0);
 
   // Calcular trends (simulados por ahora)
   const activeServices = services.filter(s => s.status === 'active').length;
-  const totalAgencies = agencies.length;
-  const totalRevenue = _.sumBy(transactions, 'amount') || 0;
+
+  // Contar solo agencias activas
+  const totalAgencies = agencies.filter(a => a.status !== 'inactive').length;
+
+  // Total de clientes registrados
+  const totalClients = clients.length;
 
   return {
     totalUsers: users.length,
     totalAgencies: totalAgencies,
-    totalAgenciesTrend: calculateTrendPercentage(totalAgencies, totalAgencies - 1),
+    totalAgenciesTrend: calculateTrendPercentage(totalAgencies, Math.max(1, totalAgencies - 1)),
     totalGuides: guides.length,
+    totalGuidesTrend: calculateTrendPercentage(guides.length, Math.max(1, guides.length - 2)),
     totalReservations: reservations.length,
-    monthlyRevenue: totalRevenue,
+    totalReservationsTrend: calculateTrendPercentage(reservations.length, Math.max(1, reservations.length - 5)),
+    totalClients: totalClients,
+    totalClientsTrend: calculateTrendPercentage(totalClients, Math.max(1, totalClients - 3)),
+    monthlyRevenue: Math.round(totalRevenue),
     activeServices: activeServices,
     activeServicesTrend: calculateTrendPercentage(activeServices, Math.max(1, activeServices - 1)),
-    totalRevenue: totalRevenue,
-    totalRevenueTrend: calculateTrendPercentage(totalRevenue, Math.max(100, totalRevenue - 500)),
+    totalRevenue: Math.round(totalRevenue),
+    totalRevenueTrend: calculateTrendPercentage(totalRevenue, Math.max(100, totalRevenue * 0.9)),
     pendingReservations: reservations.filter(r => r.status === 'pending').length
   };
 }
