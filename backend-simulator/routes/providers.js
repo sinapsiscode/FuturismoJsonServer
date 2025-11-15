@@ -125,9 +125,20 @@ module.exports = (router) => {
       );
 
       if (existingService) {
+        // Obtener lista de servicios en esta categoría para mostrar al usuario
+        const servicesInCategory = serviceTypes.filter(s => s.category === category && s.active !== false);
+
+        console.log(`⚠️ Servicio duplicado detectado: "${name}" ya existe en categoría ${category}`);
+        console.log(`📋 Servicios existentes en esta categoría:`, servicesInCategory.map(s => s.name));
+
         return res.status(400).json({
           success: false,
-          error: 'Ya existe un servicio con ese nombre en esta categoría'
+          error: `Ya existe un servicio llamado "${existingService.name}" en esta categoría`,
+          details: {
+            existingService: existingService.name,
+            servicesInCategory: servicesInCategory.map(s => s.name),
+            suggestion: 'Prueba con un nombre diferente o verifica si el servicio ya existe'
+          }
         });
       }
 

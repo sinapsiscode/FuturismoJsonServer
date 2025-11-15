@@ -177,12 +177,12 @@ const useProvidersStore = create(
               }
               
               set({
-                providers: result.data.providers,
+                providers: result.data.providers || result.data || [],
                 pagination: {
-                  page: result.data.page,
-                  pageSize: result.data.pageSize,
-                  total: result.data.total,
-                  totalPages: result.data.totalPages
+                  page: result.data.page || 1,
+                  pageSize: result.data.pageSize || 20,
+                  total: result.data.total || 0,
+                  totalPages: result.data.totalPages || 0
                 },
                 isLoading: false
               });
@@ -233,7 +233,7 @@ const useProvidersStore = create(
               }
               
               set((state) => ({
-                providers: [result.data, ...state.providers],
+                providers: [result.data, ...(state.providers || [])],
                 isLoading: false
               }));
               
@@ -249,27 +249,27 @@ const useProvidersStore = create(
 
           updateProvider: async (id, updateData) => {
             set({ isLoading: true, error: null });
-            
+
             try {
               const result = await providersService.updateProvider(id, updateData);
-              
+
               if (!result.success) {
                 throw new Error(result.error || 'Error al actualizar proveedor');
               }
-              
+
               set((state) => ({
-                providers: state.providers.map(p => 
+                providers: (state.providers || []).map(p =>
                   p.id === id ? result.data : p
                 ),
-                currentProvider: state.currentProvider?.id === id 
-                  ? result.data 
+                currentProvider: state.currentProvider?.id === id
+                  ? result.data
                   : state.currentProvider,
                 isLoading: false
               }));
-              
+
               return result.data;
             } catch (error) {
-              set({ 
+              set({
                 isLoading: false,
                 error: error.message
               });
@@ -279,25 +279,25 @@ const useProvidersStore = create(
 
           deleteProvider: async (id) => {
             set({ isLoading: true, error: null });
-            
+
             try {
               const result = await providersService.deleteProvider(id);
-              
+
               if (!result.success) {
                 throw new Error(result.error || 'Error al eliminar proveedor');
               }
-              
+
               set((state) => ({
-                providers: state.providers.filter(p => p.id !== id),
-                currentProvider: state.currentProvider?.id === id 
-                  ? null 
+                providers: (state.providers || []).filter(p => p.id !== id),
+                currentProvider: state.currentProvider?.id === id
+                  ? null
                   : state.currentProvider,
                 isLoading: false
               }));
-              
+
               return true;
             } catch (error) {
-              set({ 
+              set({
                 isLoading: false,
                 error: error.message
               });
@@ -307,27 +307,27 @@ const useProvidersStore = create(
           
           toggleProviderStatus: async (id, status) => {
             set({ isLoading: true, error: null });
-            
+
             try {
               const result = await providersService.toggleProviderStatus(id, status);
-              
+
               if (!result.success) {
                 throw new Error(result.error || 'Error al cambiar estado');
               }
-              
+
               set((state) => ({
-                providers: state.providers.map(p => 
+                providers: (state.providers || []).map(p =>
                   p.id === id ? result.data : p
                 ),
-                currentProvider: state.currentProvider?.id === id 
-                  ? result.data 
+                currentProvider: state.currentProvider?.id === id
+                  ? result.data
                   : state.currentProvider,
                 isLoading: false
               }));
-              
+
               return result.data;
             } catch (error) {
-              set({ 
+              set({
                 isLoading: false,
                 error: error.message
               });

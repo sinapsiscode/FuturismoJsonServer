@@ -8,6 +8,10 @@ import NewLocationModal from './NewLocationModal';
 import NewCategoryModal from './NewCategoryModal';
 import toast from 'react-hot-toast';
 
+// Fallback values para evitar undefined
+const MIN_RATING = RATING_RANGE?.MIN || 1;
+const MAX_RATING = RATING_RANGE?.MAX || 5;
+
 const ProviderBasicInfo = ({ register, errors, watch }) => {
   const { t } = useTranslation();
   const { locations, categories, actions } = useProvidersStore();
@@ -159,18 +163,20 @@ const ProviderBasicInfo = ({ register, errors, watch }) => {
 
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">
-            {t('providers.form.fields.rating')} *
+            {t('providers.form.fields.rating')}
           </label>
           <div className="flex items-center space-x-2">
             <input
               type="number"
               step="0.1"
-              min={RATING_RANGE.MIN}
-              max={RATING_RANGE.MAX}
+              min={MIN_RATING}
+              max={MAX_RATING}
+              defaultValue={3}
               {...register('rating', { valueAsNumber: true })}
               className={`w-20 px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 ${
                 errors.rating ? 'border-red-500' : 'border-gray-300'
               }`}
+              placeholder="1-5"
             />
             <div className="flex items-center">
               {[...Array(5)].map((_, i) => (

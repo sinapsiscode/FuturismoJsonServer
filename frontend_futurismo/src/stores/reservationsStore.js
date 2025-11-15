@@ -160,12 +160,13 @@ const useReservationsStore = create((set, get) => ({
     return Object.keys(errors).length === 0;
   },
 
-  submitReservation: async () => {
+  submitReservation: async (reservationData = null) => {
     set({ isSubmitting: true, formState: FORM_STATES.LOADING, error: null });
-    
+
     try {
-      const { formData } = get();
-      const result = await reservationsService.createReservation(formData);
+      // Usar los datos pasados como parámetro o los del store
+      const dataToSubmit = reservationData || get().formData;
+      const result = await reservationsService.createReservation(dataToSubmit);
       
       if (!result.success) {
         throw new Error(result.error || 'Error al crear la reservación');

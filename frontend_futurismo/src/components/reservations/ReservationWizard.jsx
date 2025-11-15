@@ -11,6 +11,7 @@ import { validators } from '../../utils/validators';
 import WhatsAppConsultButton from './WhatsAppConsultButton';
 import toast from 'react-hot-toast';
 import { useServicesStore } from '../../stores/servicesStore';
+import useAuthStore from '../../stores/authStore';
 
 // Tour types constants
 const TOUR_TYPES = {
@@ -81,6 +82,7 @@ const step3Schema = yup.object({
 const ReservationWizard = ({ onClose, onComplete }) => {
   const navigate = useNavigate();
   const { submitReservation } = useReservationsStore();
+  const { user } = useAuthStore();
   const { t } = useTranslation();
   const [currentStep, setCurrentStep] = useState(FORM_STEPS.SERVICE);
   const [formData, setFormData] = useState({});
@@ -262,14 +264,47 @@ const ReservationWizard = ({ onClose, onComplete }) => {
   const handleFinalSubmit = async (finalData) => {
     setIsSubmitting(true);
     try {
+      const selectedTourData = availableServices.find(t => t.id === finalData.tourId);
+
+      // Validar que tengamos el usuario autenticado
+      if (!user || !user.id) {
+        toast.error('Debe iniciar sesión para crear una reserva');
+        setIsSubmitting(false);
+        return;
+      }
+
+      // Calcular tamaño del grupo total
+      const adults = finalData.adults || 1;
+      const children = finalData.children || 0;
+      const groupSize = adults + children;
+
       const reservation = {
-        ...finalData,
-        total: calculateTotal(),
-        status: 'pendiente',
-        createdAt: new Date()
+        service_id: finalData.tourId,
+        client_id: user.id, // ID del usuario autenticado
+        tour_date: finalData.date,
+        tour_time: finalData.time,
+        group_size: groupSize,
+        num_adults: adults,
+        num_children: children,
+        pickup_location: finalData.pickupLocation,
+        special_requests: finalData.specialRequirements || '',
+        groups: finalData.groups || [],
+        payment_method: finalData.paymentMethod,
+        billing_name: finalData.billingName,
+        billing_document: finalData.billingDocument,
+        billing_address: finalData.billingAddress,
+        total_amount: calculateTotal(),
+        status: 'pending',
+        payment_status: 'pending',
+        created_at: new Date().toISOString()
       };
 
-      await submitReservation();
+      const result = await submitReservation(reservation);
+
+      if (!result.success) {
+        throw new Error(result.error || 'Error al crear la reserva');
+      }
+
       toast.success('Reserva creada exitosamente');
 
       // Llamar callback de completado si existe

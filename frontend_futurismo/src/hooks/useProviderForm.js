@@ -6,6 +6,10 @@ import { useTranslation } from 'react-i18next';
 import toast from 'react-hot-toast';
 import { VALIDATION_MESSAGES, RATING_RANGE } from '../constants/providersConstants';
 
+// Fallback values para evitar undefined
+const MIN_RATING = RATING_RANGE?.MIN || 1;
+const MAX_RATING = RATING_RANGE?.MAX || 5;
+
 // Empty provider template for new providers
 const getEmptyProvider = () => ({
   name: '',
@@ -18,10 +22,10 @@ const getEmptyProvider = () => ({
     address: ''
   },
   pricing: {
-    basePrice: 0,
+    basePrice: 1, // Valor por defecto 1 (debe ser positivo)
     type: 'fixed'
   },
-  rating: 0,
+  rating: 3, // Valor por defecto 3 (rango 1-5)
   capacity: 1,
   services: [''],
   specialties: [],
@@ -41,22 +45,29 @@ const useProviderForm = (provider, onSave, onCancel) => {
     name: yup.string().required(t(VALIDATION_MESSAGES.REQUIRED)),
     category: yup.string().required(t(VALIDATION_MESSAGES.REQUIRED)),
     location: yup.string().required(t(VALIDATION_MESSAGES.REQUIRED)),
-    'contact.contactPerson': yup.string().required(t(VALIDATION_MESSAGES.REQUIRED)),
-    'contact.phone': yup.string()
-      .required(t(VALIDATION_MESSAGES.REQUIRED))
-      .matches(/^9\d{8}$/, 'El teléfono debe tener exactamente 9 dígitos'),
-    'contact.email': yup.string()
-      .email(t(VALIDATION_MESSAGES.INVALID_EMAIL))
-      .required(t(VALIDATION_MESSAGES.REQUIRED)),
-    'contact.address': yup.string().required(t(VALIDATION_MESSAGES.REQUIRED)),
-    'pricing.basePrice': yup.number()
-      .positive(t(VALIDATION_MESSAGES.POSITIVE_NUMBER))
-      .required(t(VALIDATION_MESSAGES.REQUIRED)),
-    'pricing.type': yup.string().required(t(VALIDATION_MESSAGES.REQUIRED)),
+    contact: yup.object({
+      contactPerson: yup.string().required(t(VALIDATION_MESSAGES.REQUIRED)),
+      phone: yup.string()
+        .required(t(VALIDATION_MESSAGES.REQUIRED))
+        .matches(/^9\d{8}$/, 'El teléfono debe tener exactamente 9 dígitos'),
+      email: yup.string()
+        .email(t(VALIDATION_MESSAGES.INVALID_EMAIL))
+        .required(t(VALIDATION_MESSAGES.REQUIRED)),
+      address: yup.string().required(t(VALIDATION_MESSAGES.REQUIRED))
+    }),
+    pricing: yup.object({
+      basePrice: yup.number()
+        .positive(t(VALIDATION_MESSAGES.POSITIVE_NUMBER))
+        .required(t(VALIDATION_MESSAGES.REQUIRED)),
+      type: yup.string().required(t(VALIDATION_MESSAGES.REQUIRED))
+    }),
     rating: yup.number()
-      .min(RATING_RANGE.MIN, t(VALIDATION_MESSAGES.MIN_VALUE, { value: RATING_RANGE.MIN }))
-      .max(RATING_RANGE.MAX, t(VALIDATION_MESSAGES.MAX_VALUE, { value: RATING_RANGE.MAX }))
-      .required(t(VALIDATION_MESSAGES.REQUIRED)),
+      .transform((value, originalValue) => {
+        // Si está vacío o es NaN, devolver el valor por defecto
+        return originalValue === '' || isNaN(value) ? 3 : value;
+      })
+      .min(MIN_RATING, `El valor mínimo es ${MIN_RATING}`)
+      .max(MAX_RATING, `El valor máximo es ${MAX_RATING}`),
     capacity: yup.number().positive(t(VALIDATION_MESSAGES.POSITIVE_NUMBER))
   });
 
@@ -71,7 +82,9 @@ const useProviderForm = (provider, onSave, onCancel) => {
     reset
   } = useForm({
     resolver: yupResolver(providerSchema),
-    defaultValues
+    defaultValues,
+    mode: 'onSubmit', // Solo validar al enviar
+    reValidateMode: 'onChange' // Re-validar mientras escribe después del primer intento
   });
 
   useEffect(() => {

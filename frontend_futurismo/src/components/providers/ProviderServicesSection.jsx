@@ -93,7 +93,33 @@ const ProviderServicesSection = ({
       toast.success('Servicio creado exitosamente');
     } catch (error) {
       const errorMessage = error.message || 'Error al crear servicio';
-      toast.error(errorMessage);
+
+      // Si el error incluye detalles sobre servicios existentes, mostrarlos
+      if (error.response?.data?.details?.servicesInCategory) {
+        const existingServices = error.response.data.details.servicesInCategory;
+        console.log('📋 Servicios existentes en esta categoría:', existingServices);
+
+        toast.error(
+          <div>
+            <div className="font-semibold mb-1">{errorMessage}</div>
+            <div className="text-sm mt-2">
+              <strong>Servicios existentes:</strong>
+              <ul className="mt-1 list-disc list-inside">
+                {existingServices.slice(0, 5).map((name, idx) => (
+                  <li key={idx}>{name}</li>
+                ))}
+                {existingServices.length > 5 && (
+                  <li>... y {existingServices.length - 5} más</li>
+                )}
+              </ul>
+            </div>
+          </div>,
+          { duration: 6000 }
+        );
+      } else {
+        toast.error(errorMessage);
+      }
+
       throw error; // Re-lanzar el error para que NewServiceModal sepa que falló
     }
   };

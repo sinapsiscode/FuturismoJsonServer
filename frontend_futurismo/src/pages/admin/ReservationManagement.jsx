@@ -19,6 +19,8 @@ import useClientsStore from '../../stores/clientsStore';
 import useToursStore from '../../stores/toursStore';
 import useGuidesStore from '../../stores/guidesStore';
 import ReservationWizard from '../../components/reservations/ReservationWizard';
+import exportService from '../../services/exportService';
+import toast from 'react-hot-toast';
 
 const ReservationManagement = () => {
   // Hooks de stores
@@ -101,17 +103,18 @@ const ReservationManagement = () => {
 
     return {
       ...reservation,
-      clientName: client?.name || 'Cliente desconocido',
-      clientEmail: client?.email || '',
-      clientPhone: client?.phone || '',
-      tourName: tour?.name || reservation.tourName || 'Tour sin nombre',
+      // Usar datos del backend primero, luego buscar en stores locales como fallback
+      clientName: reservation.clientName || client?.name || 'Cliente desconocido',
+      clientEmail: reservation.client?.email || client?.email || '',
+      clientPhone: reservation.client?.phone || client?.phone || '',
+      tourName: reservation.tourName || tour?.name || 'Tour sin nombre',
       destination: reservation.destination || tour?.destination || 'Sin destino',
-      guide: guide?.name || 'Guía sin asignar',
+      guide: reservation.guide?.name || guide?.name || 'Guía sin asignar',
       tourists: (reservation.adults || 0) + (reservation.children || 0) || reservation.group_size || 0,
       totalAmount: reservation.total || reservation.total_amount || 0,
-      tourType: tour?.category || 'cultural',
-      agencyId: client?.id || reservation.agency_id || '',
-      agencyName: client?.name || 'Reserva Directa',
+      tourType: reservation.service?.category || tour?.category || 'cultural',
+      agencyId: reservation.client?.id || client?.id || reservation.agency_id || '',
+      agencyName: reservation.client?.name || client?.name || 'Reserva Directa',
       tourDate: reservation.date || reservation.tour_date,
       bookingDate: reservation.createdAt || reservation.created_at
     };
@@ -296,10 +299,39 @@ const ReservationManagement = () => {
     };
   }, [filteredReservations]);
 
-  const handleExport = () => {
-    // Simular exportación de datos
-    console.log('Exportando reservas filtradas:', filteredReservations);
-    alert(`Exportando ${filteredReservations.length} reservas...`);
+  const handleExport = async () => {
+    try {
+      if (filteredReservations.length === 0) {
+        toast.warning('No hay reservas para exportar');
+        return;
+      }
+
+      // Preparar datos para exportación
+      const dataToExport = filteredReservations.map(res => ({
+        ID: res.id,
+        Cliente: res.clientName,
+        Email: res.clientEmail,
+        Teléfono: res.clientPhone,
+        Tour: res.tourName,
+        Destino: res.destination,
+        Fecha: formatDate(res.tourDate),
+        Guía: res.guide,
+        'N° Turistas': res.tourists,
+        Total: res.totalAmount,
+        Estado: res.status === 'completed' ? 'Completado' :
+                res.status === 'confirmed' ? 'Confirmado' :
+                res.status === 'pending' ? 'Pendiente' :
+                res.status === 'cancelled' ? 'Cancelado' : res.status
+      }));
+
+      // Usar el servicio de exportación
+      exportService.exportToExcel(dataToExport, 'Reservas_Filtradas');
+
+      toast.success(`Se exportaron ${filteredReservations.length} reservas exitosamente`);
+    } catch (error) {
+      console.error('Error al exportar:', error);
+      toast.error('Error al exportar las reservas');
+    }
   };
 
   const formatCurrency = (amount) => {

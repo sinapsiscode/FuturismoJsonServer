@@ -1284,6 +1284,23 @@
       "cancellation_reason": "Problemas climáticos - cancelado por la agencia",
       "created_at": "2025-08-10T14:00:00Z",
       "updated_at": "2025-08-18T10:00:00Z"
+    },
+    {
+      "id": "reservation-1763166215596-tvhnevjg1",
+      "service_id": "service-1761000345143-ujt9c3gaz",
+      "client_id": "user-admin-1",
+      "guide_id": null,
+      "tour_date": "4444-04-23",
+      "group_size": 33,
+      "status": "pending",
+      "payment_status": "pending",
+      "total_amount": 700.92,
+      "base_amount": 594,
+      "tax_amount": 106.92,
+      "special_requests": "asfasfasf",
+      "emergency_contact": {},
+      "created_at": "2025-11-15T00:23:35.596Z",
+      "updated_at": "2025-11-15T00:23:35.596Z"
     }
   ],
   "clients": [
@@ -13218,9 +13235,94 @@
       "description": "asdasda",
       "active": true,
       "created_at": "2025-11-14T20:19:05.021Z"
+    },
+    {
+      "id": "service-1763166786264",
+      "name": "asf",
+      "category": "prov-cat-2",
+      "description": "asfaf",
+      "active": true,
+      "created_at": "2025-11-15T00:33:06.264Z"
+    },
+    {
+      "id": "service-1763167555705",
+      "name": "asfa",
+      "category": "prov-cat-3",
+      "description": "asfaf",
+      "active": true,
+      "created_at": "2025-11-15T00:45:55.705Z"
+    },
+    {
+      "id": "service-1763167572165",
+      "name": "asfaf",
+      "category": "prov-cat-1763151515285",
+      "description": "asfafa",
+      "active": true,
+      "created_at": "2025-11-15T00:46:12.165Z"
+    },
+    {
+      "id": "service-1763168843231",
+      "name": "masajes",
+      "category": "prov-cat-4",
+      "description": "asff",
+      "active": true,
+      "created_at": "2025-11-15T01:07:23.231Z"
     }
   ],
-  "providers": [],
+  "providers": [
+    {
+      "id": "prov-1763169486836",
+      "name": "Zoro",
+      "category": "prov-cat-2",
+      "location": "loc-1",
+      "contact": {
+        "contactPerson": "asdfsadf",
+        "phone": "987677554",
+        "email": "sdgsdg@gmail.com",
+        "address": "sdfsdgsg"
+      },
+      "pricing": {
+        "basePrice": 1,
+        "type": "fixed"
+      },
+      "rating": 1,
+      "capacity": 1,
+      "services": [
+        "service-1763166786264"
+      ],
+      "specialties": [],
+      "languages": [],
+      "status": "active",
+      "created_at": "2025-11-15T01:18:06.836Z",
+      "updated_at": "2025-11-15T01:18:06.836Z"
+    },
+    {
+      "id": "prov-1763169490458",
+      "name": "Zoro",
+      "category": "prov-cat-2",
+      "location": "loc-1",
+      "contact": {
+        "contactPerson": "asdfsadf",
+        "phone": "987677554",
+        "email": "sdgsdg@gmail.com",
+        "address": "sdfsdgsg"
+      },
+      "pricing": {
+        "basePrice": 1,
+        "type": "fixed"
+      },
+      "rating": 1,
+      "capacity": 1,
+      "services": [
+        "service-1763166786264"
+      ],
+      "specialties": [],
+      "languages": [],
+      "status": "active",
+      "created_at": "2025-11-15T01:18:10.458Z",
+      "updated_at": "2025-11-15T01:18:10.458Z"
+    }
+  ],
   "settings": {
     "general": {
       "appName": "Futurismo",
