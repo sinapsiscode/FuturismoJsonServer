@@ -13,7 +13,7 @@
       "avatar": "https://ui-avatars.com/api/?name=Admin&background=3B82F6&color=fff",
       "created_at": "2024-01-01T00:00:00Z",
       "updated_at": "2024-01-01T00:00:00Z",
-      "last_login_at": "2025-11-14T21:30:34.964Z"
+      "last_login_at": "2025-11-14T23:20:20.202Z"
     },
     {
       "id": "user-agency-1",
@@ -703,6 +703,7 @@
       "duration": "4 horas",
       "price": 85,
       "max_capacity": 15,
+      "location": "Lima Centro",
       "status": "activo",
       "languages": [
         "es",
@@ -731,6 +732,7 @@
       "duration": "5 horas",
       "price": 120,
       "max_capacity": 12,
+      "location": "Lima",
       "status": "activo",
       "languages": [
         "es",
@@ -759,6 +761,7 @@
       "duration": "8 horas",
       "price": 180,
       "max_capacity": 20,
+      "location": "Cusco",
       "status": "activo",
       "languages": [
         "es",
@@ -788,6 +791,7 @@
       "duration": "10 horas",
       "price": 195,
       "max_capacity": 16,
+      "location": "Paracas",
       "status": "activo",
       "languages": [
         "es",
@@ -814,6 +818,7 @@
       "duration": "12 horas",
       "price": 210,
       "max_capacity": 18,
+      "location": "Valle Sagrado",
       "status": "activo",
       "languages": [
         "es",
@@ -841,6 +846,7 @@
       "duration": "3 días / 2 noches",
       "price": 650,
       "max_capacity": 10,
+      "location": "Tambopata",
       "status": "activo",
       "languages": [
         "es",
@@ -868,6 +874,7 @@
       "duration": "5 horas",
       "price": 165,
       "max_capacity": 12,
+      "location": "Miraflores, Lima",
       "status": "activo",
       "languages": [
         "es",
@@ -894,6 +901,7 @@
       "duration": "4 días / 3 noches",
       "price": 580,
       "max_capacity": 14,
+      "location": "Máncora",
       "status": "activo",
       "languages": [
         "es",
@@ -921,6 +929,7 @@
       "duration": "4 días / 3 noches",
       "price": 850,
       "max_capacity": 12,
+      "location": "Machu Picchu",
       "status": "activo",
       "languages": [
         "es",
@@ -948,6 +957,7 @@
       "duration": "6 horas",
       "price": 95,
       "max_capacity": 16,
+      "location": "Arequipa",
       "status": "activo",
       "languages": [
         "es",
@@ -2112,8 +2122,8 @@
       "tourists": 8,
       "status": "enroute",
       "currentLocation": {
-        "lat": -12.049584704186573,
-        "lng": -77.0454285469954,
+        "lat": -12.04960580996278,
+        "lng": -77.04602140004324,
         "name": "Catedral de Lima"
       },
       "startTime": "09:00 AM",
@@ -2121,7 +2131,7 @@
       "progress": 45,
       "date": "2024-03-15",
       "destination": "Plaza Mayor",
-      "lastUpdated": "2025-11-14T22:05:54.399Z"
+      "lastUpdated": "2025-11-14T23:20:27.077Z"
     },
     {
       "id": "tour-active-2",
@@ -2149,8 +2159,8 @@
       "tourists": 6,
       "status": "enroute",
       "currentLocation": {
-        "lat": -12.070157820015966,
-        "lng": -77.07447770320125,
+        "lat": -12.07079009822935,
+        "lng": -77.07508417106777,
         "name": "Museo Larco"
       },
       "startTime": "11:00 AM",
@@ -2158,7 +2168,7 @@
       "progress": 30,
       "date": "2024-03-15",
       "destination": "Museo Larco",
-      "lastUpdated": "2025-11-14T22:05:54.399Z"
+      "lastUpdated": "2025-11-14T23:20:27.077Z"
     },
     {
       "id": "tour-active-4",
@@ -2168,8 +2178,8 @@
       "tourists": 10,
       "status": "enroute",
       "currentLocation": {
-        "lat": -12.151301806324897,
-        "lng": -77.0211006823664,
+        "lat": -12.151775927926572,
+        "lng": -77.02145111202532,
         "name": "Puente de los Suspiros"
       },
       "startTime": "02:00 PM",
@@ -2177,7 +2187,7 @@
       "progress": 75,
       "date": "2024-03-15",
       "destination": "Puente de los Suspiros",
-      "lastUpdated": "2025-11-14T22:05:54.399Z"
+      "lastUpdated": "2025-11-14T23:20:27.077Z"
     },
     {
       "id": "tour-active-5",

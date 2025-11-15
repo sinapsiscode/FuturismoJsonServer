@@ -12,7 +12,9 @@
       "Bash(node:*)",
       "Bash(cat:*)",
       "Bash(powershell \"Get-Process node | Stop-Process -Force\")",
-      "Bash(dir:*)"
+      "Bash(dir:*)",
+      "Bash(powershell \"Stop-Process -Id 4128 -Force\")",
+      "Bash(powershell \"Stop-Process -Id 12084 -Force\")"
     ],
     "deny": [],
     "ask": []

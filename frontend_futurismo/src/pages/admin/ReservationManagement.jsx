@@ -86,12 +86,8 @@ const ReservationManagement = () => {
   ];
 
 
-  // Opciones dinámicas basadas en datos reales
-  const destinations = Array.isArray(tours) ? [...new Set(tours.map(tour => tour.destination).filter(Boolean))] : [];
-  const guidesOptions = Array.isArray(guides) ? guides.map(guide => guide.name) : [];
-  const tourTypes = Array.isArray(tours) ? [...new Set(tours.map(tour => tour.category).filter(Boolean))] : [];
   const statusOptions = ['all', 'completed', 'confirmed', 'pending', 'cancelled'];
-  
+
   // Enriquecer reservas con datos relacionados
   const enrichedReservations = Array.isArray(reservations) ? reservations.map(reservation => {
     // Asegurar que clients, tours y guides sean arrays antes de usar find
@@ -109,7 +105,7 @@ const ReservationManagement = () => {
       clientEmail: client?.email || '',
       clientPhone: client?.phone || '',
       tourName: tour?.name || reservation.tourName || 'Tour sin nombre',
-      destination: tour?.destination || 'Destino desconocido',
+      destination: reservation.destination || tour?.destination || 'Sin destino',
       guide: guide?.name || 'Guía sin asignar',
       tourists: (reservation.adults || 0) + (reservation.children || 0) || reservation.group_size || 0,
       totalAmount: reservation.total || reservation.total_amount || 0,
@@ -120,7 +116,12 @@ const ReservationManagement = () => {
       bookingDate: reservation.createdAt || reservation.created_at
     };
   }) : [];
-  
+
+  // Opciones dinámicas basadas en datos reales
+  const destinations = Array.isArray(enrichedReservations) ? [...new Set(enrichedReservations.map(res => res.destination).filter(d => d && d !== 'Sin destino'))] : [];
+  const guidesOptions = Array.isArray(guides) ? guides.map(guide => guide.name) : [];
+  const tourTypes = Array.isArray(tours) ? [...new Set(tours.map(tour => tour.category).filter(Boolean))] : [];
+
   // Categorías por cantidad de clientes
   const clientCategories = [
     { value: 'all', label: 'Todas las cantidades', range: null },

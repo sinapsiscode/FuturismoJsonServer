@@ -17,6 +17,7 @@ export const useReservationFilters = (reservations) => {
   const [dateFrom, setDateFrom] = useState(DEFAULT_FILTER_VALUES.DATE_FROM);
   const [dateTo, setDateTo] = useState(DEFAULT_FILTER_VALUES.DATE_TO);
   const [customerFilter, setCustomerFilter] = useState(DEFAULT_FILTER_VALUES.CUSTOMER);
+  const [destinationFilter, setDestinationFilter] = useState('');
   const [minPassengers, setMinPassengers] = useState(DEFAULT_FILTER_VALUES.MIN_PASSENGERS);
   const [maxPassengers, setMaxPassengers] = useState(DEFAULT_FILTER_VALUES.MAX_PASSENGERS);
   const [currentPage, setCurrentPage] = useState(DEFAULT_FILTER_VALUES.CURRENT_PAGE);
@@ -50,9 +51,13 @@ export const useReservationFilters = (reservations) => {
       }
       
       // Filtro por cliente
-      const matchesCustomer = !customerFilter || 
+      const matchesCustomer = !customerFilter ||
         reservation.clientName.toLowerCase().includes(customerFilter.toLowerCase());
-      
+
+      // Filtro por destino
+      const matchesDestination = !destinationFilter ||
+        (reservation.destination && reservation.destination.toLowerCase().includes(destinationFilter.toLowerCase()));
+
       // Filtro por cantidad de pasajeros
       const totalPassengers = reservation.adults + reservation.children;
       let matchesPassengers = true;
@@ -62,10 +67,10 @@ export const useReservationFilters = (reservations) => {
       if (maxPassengers) {
         matchesPassengers = matchesPassengers && totalPassengers <= parseInt(maxPassengers);
       }
-      
-      return matchesSearch && matchesStatus && matchesDate && matchesCustomer && matchesPassengers;
+
+      return matchesSearch && matchesStatus && matchesDate && matchesCustomer && matchesDestination && matchesPassengers;
     });
-  }, [reservations, searchTerm, statusFilter, dateFrom, dateTo, customerFilter, minPassengers, maxPassengers]);
+  }, [reservations, searchTerm, statusFilter, dateFrom, dateTo, customerFilter, destinationFilter, minPassengers, maxPassengers]);
 
   // Paginación
   const totalPages = Math.ceil(filteredReservations.length / PAGINATION.DEFAULT_ITEMS_PER_PAGE);
@@ -91,6 +96,7 @@ export const useReservationFilters = (reservations) => {
     setDateFrom(DEFAULT_FILTER_VALUES.DATE_FROM);
     setDateTo(DEFAULT_FILTER_VALUES.DATE_TO);
     setCustomerFilter(DEFAULT_FILTER_VALUES.CUSTOMER);
+    setDestinationFilter('');
     setMinPassengers(DEFAULT_FILTER_VALUES.MIN_PASSENGERS);
     setMaxPassengers(DEFAULT_FILTER_VALUES.MAX_PASSENGERS);
     setCurrentPage(DEFAULT_FILTER_VALUES.CURRENT_PAGE);
@@ -122,6 +128,11 @@ export const useReservationFilters = (reservations) => {
     setCurrentPage(DEFAULT_FILTER_VALUES.CURRENT_PAGE);
   }, []);
 
+  const updateDestinationFilter = useCallback((value) => {
+    setDestinationFilter(value);
+    setCurrentPage(DEFAULT_FILTER_VALUES.CURRENT_PAGE);
+  }, []);
+
   const updateMinPassengers = useCallback((value) => {
     setMinPassengers(value);
     setCurrentPage(DEFAULT_FILTER_VALUES.CURRENT_PAGE);
@@ -131,6 +142,14 @@ export const useReservationFilters = (reservations) => {
     setMaxPassengers(value);
     setCurrentPage(DEFAULT_FILTER_VALUES.CURRENT_PAGE);
   }, []);
+
+  // Obtener destinos únicos para el combobox
+  const availableDestinations = useMemo(() => {
+    const destinations = reservations
+      .map(r => r.destination)
+      .filter(d => d && d !== 'Sin destino');
+    return [...new Set(destinations)].sort();
+  }, [reservations]);
 
   return {
     // Estados de filtros
@@ -144,13 +163,15 @@ export const useReservationFilters = (reservations) => {
     setDateTo: updateDateTo,
     customerFilter,
     setCustomerFilter: updateCustomerFilter,
+    destinationFilter,
+    setDestinationFilter: updateDestinationFilter,
     minPassengers,
     setMinPassengers: updateMinPassengers,
     maxPassengers,
     setMaxPassengers: updateMaxPassengers,
     currentPage,
     setCurrentPage,
-    
+
     // Resultados
     filteredReservations,
     paginatedReservations,
@@ -158,10 +179,11 @@ export const useReservationFilters = (reservations) => {
     exportStats,
     startIndex,
     itemsPerPage: PAGINATION.DEFAULT_ITEMS_PER_PAGE,
-    
+    availableDestinations,
+
     // Acciones
     resetFilters,
-    
+
     // Constantes
     STATUS_OPTIONS,
     DEFAULT_FILTER_VALUES

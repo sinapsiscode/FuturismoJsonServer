@@ -104,7 +104,7 @@ function Reports() {
 
     const destinationCounts = {};
     reservations.forEach(reservation => {
-      const destination = reservation.tourName || 'Destino desconocido';
+      const destination = reservation.destination || reservation.tourName || 'Sin destino';
       destinationCounts[destination] = (destinationCounts[destination] || 0) + 1;
     });
 

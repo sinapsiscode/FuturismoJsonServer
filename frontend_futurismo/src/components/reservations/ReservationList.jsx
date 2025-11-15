@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { CalendarIcon, ClockIcon, UserGroupIcon, MapPinIcon, CurrencyDollarIcon, EllipsisVerticalIcon, EyeIcon, PencilIcon, TrashIcon, DocumentTextIcon, MagnifyingGlassIcon, ArrowDownTrayIcon, ChevronLeftIcon, ChevronRightIcon, XMarkIcon, HeartIcon, ArrowPathIcon } from '@heroicons/react/24/outline';
 import { useTranslation } from 'react-i18next';
 import { formatters } from '../../utils/formatters';
@@ -16,12 +16,18 @@ import { getStatusBadge, getPaymentBadge, canRateService } from '../../utils/res
 import { paymentVoucherService } from '../../services/paymentVoucherService';
 
 const ReservationList = () => {
-  const { reservations } = useReservationsStore();
+  const { reservations, fetchReservations } = useReservationsStore();
   const { user } = useAuthStore();
   const { t } = useTranslation();
+
+  // Cargar reservas al montar el componente
+  useEffect(() => {
+    fetchReservations();
+  }, [fetchReservations]);
+
   // Usar datos del store
   const reservationsData = reservations || [];
-  
+
   // Hook personalizado para filtros
   const {
     searchTerm, setSearchTerm,
@@ -29,6 +35,7 @@ const ReservationList = () => {
     dateFrom, setDateFrom,
     dateTo, setDateTo,
     customerFilter, setCustomerFilter,
+    destinationFilter, setDestinationFilter,
     minPassengers, setMinPassengers,
     maxPassengers, setMaxPassengers,
     currentPage, setCurrentPage,
@@ -38,6 +45,7 @@ const ReservationList = () => {
     exportStats,
     startIndex,
     itemsPerPage,
+    availableDestinations,
     resetFilters
   } = useReservationFilters(reservationsData);
   
@@ -244,6 +252,20 @@ const ReservationList = () => {
                 <option value="completada">{t('reservations.completed')}</option>
               </select>
 
+              {/* Destino */}
+              <select
+                className="px-3 py-2.5 sm:py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 text-sm sm:text-base sm:w-48"
+                value={destinationFilter}
+                onChange={(e) => setDestinationFilter(e.target.value)}
+              >
+                <option value="">Todos los destinos</option>
+                {availableDestinations.map((destination) => (
+                  <option key={destination} value={destination}>
+                    {destination}
+                  </option>
+                ))}
+              </select>
+
               {/* Fechas - en móvil como inputs separados */}
               <div className="flex flex-col sm:flex-row gap-2 sm:items-center sm:bg-gray-50 sm:rounded-lg sm:px-3 sm:py-2 sm:border sm:border-gray-300">
                 <span className="text-sm text-gray-600 sm:whitespace-nowrap hidden sm:block">{t('search.dateRange')}:</span>
@@ -297,12 +319,13 @@ const ReservationList = () => {
               </div>
 
               {/* Botón para limpiar filtros */}
-              {(dateFrom || dateTo || customerFilter || minPassengers || maxPassengers) && (
+              {(dateFrom || dateTo || customerFilter || destinationFilter || minPassengers || maxPassengers) && (
                 <button
                   onClick={() => {
                     setDateFrom('');
                     setDateTo('');
                     setCustomerFilter('');
+                    setDestinationFilter('');
                     setMinPassengers('');
                     setMaxPassengers('');
                     setCurrentPage(1);
@@ -328,7 +351,7 @@ const ReservationList = () => {
                   {t('search.code')}
                 </th>
                 <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">
-                  {t('search.tourClient')}
+                  Tour / Destino
                 </th>
                 <th className="px-3 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">
                   {t('search.dateTime')}
@@ -356,8 +379,8 @@ const ReservationList = () => {
                   </td>
                   <td className="hidden sm:table-cell px-6 py-4">
                     <div>
-                      <p className="text-sm font-medium text-gray-900">{reservation.tourName}</p>
-                      <p className="text-sm text-gray-500">{reservation.clientName}</p>
+                      <p className="text-sm font-medium text-gray-900">{reservation.tourName || 'Sin tour'}</p>
+                      <p className="text-sm text-gray-500">{reservation.destination || 'Sin destino'}</p>
                     </div>
                   </td>
                   <td className="hidden sm:table-cell px-6 py-4 whitespace-nowrap">
@@ -542,10 +565,10 @@ const ReservationList = () => {
                         </div>
                       </div>
 
-                      {/* Tour and client info */}
+                      {/* Tour and destination info */}
                       <div>
-                        <p className="text-sm font-medium text-gray-900 mb-1">{reservation.tourName}</p>
-                        <p className="text-sm text-gray-600">{reservation.clientName}</p>
+                        <p className="text-sm font-medium text-gray-900 mb-1">{reservation.tourName || 'Sin tour'}</p>
+                        <p className="text-sm text-gray-600">{reservation.destination || 'Sin destino'}</p>
                       </div>
 
                       {/* Date, time, passengers info */}

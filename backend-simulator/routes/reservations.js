@@ -230,33 +230,95 @@ module.exports = (router) => {
       const db = router.db;
       let reservations = db.get('reservations').value() || [];
 
+      // Get related data for joining
+      const services = db.get('services').value() || [];
+      const tours = db.get('tours').value() || [];
+      const clients = db.get('clients').value() || [];
+      const users = db.get('users').value() || [];
+      const guides = db.get('guides').value() || [];
+
+      // Transform reservations to extended format with joined data
+      let extendedReservations = reservations.map(reservation => {
+        // Find related service/tour
+        const service = services.find(s => s.id === reservation.service_id) ||
+                       tours.find(t => t.id === reservation.service_id);
+
+        // Find related client
+        const client = clients.find(c => c.id === reservation.client_id) ||
+                      users.find(u => u.id === reservation.client_id);
+
+        // Find related guide
+        const guide = reservation.guide_id ?
+                     guides.find(g => g.id === reservation.guide_id) : null;
+
+        // Calculate adults and children (for now, assume all are adults if not specified)
+        const adults = reservation.adults || reservation.group_size || 1;
+        const children = reservation.children || 0;
+
+        return {
+          ...reservation,
+          // Add expected fields for frontend filters
+          date: reservation.tour_date ? new Date(reservation.tour_date) : new Date(),
+          tourName: service?.name || service?.title || 'Sin nombre',
+          clientName: client ? `${client.name || client.first_name || ''} ${client.last_name || ''}`.trim() : 'Sin nombre',
+          destination: service?.location || service?.destination || 'Sin destino',
+          adults: adults,
+          children: children,
+          total: reservation.total_amount || 0,
+          // Keep original fields
+          tour_date: reservation.tour_date,
+          group_size: reservation.group_size,
+          total_amount: reservation.total_amount,
+          // Add related entities
+          service: service ? {
+            id: service.id,
+            name: service.name || service.title,
+            category: service.category || service.type,
+            duration: service.duration,
+            location: service.location || service.destination
+          } : null,
+          client: client ? {
+            id: client.id,
+            name: `${client.name || client.first_name || ''} ${client.last_name || ''}`.trim(),
+            email: client.email,
+            phone: client.phone
+          } : null,
+          guide: guide ? {
+            id: guide.id,
+            name: guide.name,
+            phone: guide.phone,
+            rating: guide.rating
+          } : null
+        };
+      });
+
       // Apply filters if provided
       const { status, date_from, date_to, user_id, page, pageSize } = req.query;
 
       if (status) {
-        reservations = reservations.filter(r => r.status === status);
+        extendedReservations = extendedReservations.filter(r => r.status === status);
       }
 
       if (user_id) {
-        reservations = reservations.filter(r => r.user_id === user_id);
+        extendedReservations = extendedReservations.filter(r => r.user_id === user_id);
       }
 
       if (date_from) {
-        reservations = reservations.filter(r => new Date(r.created_at) >= new Date(date_from));
+        extendedReservations = extendedReservations.filter(r => new Date(r.created_at) >= new Date(date_from));
       }
 
       if (date_to) {
-        reservations = reservations.filter(r => new Date(r.created_at) <= new Date(date_to));
+        extendedReservations = extendedReservations.filter(r => new Date(r.created_at) <= new Date(date_to));
       }
 
       // Pagination
       const currentPage = parseInt(page) || 1;
       const itemsPerPage = parseInt(pageSize) || 20;
-      const totalItems = reservations.length;
+      const totalItems = extendedReservations.length;
       const totalPages = Math.ceil(totalItems / itemsPerPage);
       const startIndex = (currentPage - 1) * itemsPerPage;
       const endIndex = startIndex + itemsPerPage;
-      const paginatedReservations = reservations.slice(startIndex, endIndex);
+      const paginatedReservations = extendedReservations.slice(startIndex, endIndex);
 
       res.json({
         success: true,
