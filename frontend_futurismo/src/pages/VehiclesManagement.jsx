@@ -23,6 +23,22 @@ const VehiclesManagement = () => {
   const [editingVehicle, setEditingVehicle] = useState(null);
   const [showDetails, setShowDetails] = useState(false);
   const [selectedVehicle, setSelectedVehicle] = useState(null);
+
+  // Helper para formatear fechas sin problemas de timezone
+  const formatDateLocal = (dateString) => {
+    if (!dateString) return 'No registrado';
+
+    // Si la fecha viene en formato ISO, extraer solo la parte de la fecha
+    const datePart = dateString.split('T')[0];
+    const [year, month, day] = datePart.split('-');
+
+    // Crear fecha en zona local sin conversión UTC
+    return new Date(year, month - 1, day).toLocaleDateString('es-PE', {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit'
+    });
+  };
   
   const [formData, setFormData] = useState({
     plate: '',
@@ -271,9 +287,7 @@ const VehiclesManagement = () => {
                               {vehicle.documents[VEHICLE_DOCUMENTS.SOAT].number || 'N/A'}
                             </div>
                             <div className="text-sm text-gray-500">
-                              Vence: {vehicle.documents[VEHICLE_DOCUMENTS.SOAT].expiry ? 
-                                new Date(vehicle.documents[VEHICLE_DOCUMENTS.SOAT].expiry).toLocaleDateString() : 
-                                'No registrado'}
+                              Vence: {formatDateLocal(vehicle.documents[VEHICLE_DOCUMENTS.SOAT].expiry)}
                             </div>
                           </div>
                         ) : (
@@ -287,9 +301,7 @@ const VehiclesManagement = () => {
                               {vehicle.documents[VEHICLE_DOCUMENTS.TECHNICAL_REVIEW].number || 'N/A'}
                             </div>
                             <div className="text-sm text-gray-500">
-                              Vence: {vehicle.documents[VEHICLE_DOCUMENTS.TECHNICAL_REVIEW].expiry ? 
-                                new Date(vehicle.documents[VEHICLE_DOCUMENTS.TECHNICAL_REVIEW].expiry).toLocaleDateString() : 
-                                'No registrado'}
+                              Vence: {formatDateLocal(vehicle.documents[VEHICLE_DOCUMENTS.TECHNICAL_REVIEW].expiry)}
                             </div>
                           </div>
                         ) : (
@@ -549,9 +561,7 @@ const VehiclesManagement = () => {
                             Número: {selectedVehicle.documents[VEHICLE_DOCUMENTS.SOAT].number || 'N/A'}
                           </dd>
                           <dd className="text-sm text-gray-600">
-                            Vence: {selectedVehicle.documents[VEHICLE_DOCUMENTS.SOAT].expiry ? 
-                              new Date(selectedVehicle.documents[VEHICLE_DOCUMENTS.SOAT].expiry).toLocaleDateString() : 
-                              'No registrado'}
+                            Vence: {formatDateLocal(selectedVehicle.documents[VEHICLE_DOCUMENTS.SOAT].expiry)}
                           </dd>
                         </div>
                       )}
@@ -563,9 +573,7 @@ const VehiclesManagement = () => {
                             Número: {selectedVehicle.documents[VEHICLE_DOCUMENTS.TECHNICAL_REVIEW].number || 'N/A'}
                           </dd>
                           <dd className="text-sm text-gray-600">
-                            Vence: {selectedVehicle.documents[VEHICLE_DOCUMENTS.TECHNICAL_REVIEW].expiry ? 
-                              new Date(selectedVehicle.documents[VEHICLE_DOCUMENTS.TECHNICAL_REVIEW].expiry).toLocaleDateString() : 
-                              'No registrado'}
+                            Vence: {formatDateLocal(selectedVehicle.documents[VEHICLE_DOCUMENTS.TECHNICAL_REVIEW].expiry)}
                           </dd>
                         </div>
                       )}

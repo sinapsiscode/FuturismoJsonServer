@@ -169,6 +169,7 @@ const GuidesMarketplace = () => {
             </button>
             
             <select
+              value={activeFilters.availability || ''}
               onChange={(e) => handleFilterChange('availability', e.target.value)}
               className="px-3 py-2 border border-gray-300 rounded-lg"
             >
@@ -188,6 +189,7 @@ const GuidesMarketplace = () => {
                   Zona de Trabajo
                 </label>
                 <select
+                  value={activeFilters.workZone || ''}
                   onChange={(e) => handleFilterChange('workZone', e.target.value)}
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg"
                 >
@@ -204,6 +206,7 @@ const GuidesMarketplace = () => {
                   Idiomas
                 </label>
                 <select
+                  value={activeFilters.language || ''}
                   onChange={(e) => handleFilterChange('language', e.target.value)}
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg"
                 >
@@ -220,6 +223,7 @@ const GuidesMarketplace = () => {
                   Rating Mínimo
                 </label>
                 <select
+                  value={activeFilters.minRating || ''}
                   onChange={(e) => handleFilterChange('minRating', e.target.value)}
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg"
                 >

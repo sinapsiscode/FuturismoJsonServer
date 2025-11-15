@@ -89,24 +89,30 @@ const useDriversStore = create(
       // Crear nuevo chofer
       createDriver: async (driverData) => {
         set({ loading: true, error: null });
-        
+
         try {
           const result = await driversService.createDriver(driverData);
-          
+
           if (result.success) {
+            // Asegurar que el driver tenga fullName
+            const newDriver = result.data;
+            if (!newDriver.fullName) {
+              newDriver.fullName = `${newDriver.first_name || newDriver.firstName || ''} ${newDriver.last_name || newDriver.lastName || ''}`.trim();
+            }
+
             // Recargar lista
             await get().fetchDrivers();
-            
+
             set({ loading: false });
             toast.success(result.message || DRIVER_MESSAGES.CREATE_SUCCESS);
-            return result.data;
+            return newDriver;
           } else {
             throw new Error(result.error);
           }
         } catch (error) {
-          set({ 
-            error: error.message || DRIVER_MESSAGES.CREATE_ERROR, 
-            loading: false 
+          set({
+            error: error.message || DRIVER_MESSAGES.CREATE_ERROR,
+            loading: false
           });
           toast.error(error.message || DRIVER_MESSAGES.CREATE_ERROR);
           return null;
@@ -116,31 +122,37 @@ const useDriversStore = create(
       // Actualizar chofer
       updateDriver: async (id, driverData) => {
         set({ loading: true, error: null });
-        
+
         try {
           const result = await driversService.updateDriver(id, driverData);
-          
+
           if (result.success) {
+            // Asegurar que el driver tenga fullName
+            const updatedDriver = result.data;
+            if (!updatedDriver.fullName) {
+              updatedDriver.fullName = `${updatedDriver.first_name || updatedDriver.firstName || ''} ${updatedDriver.last_name || updatedDriver.lastName || ''}`.trim();
+            }
+
             // Actualizar en la lista
             set(state => ({
-              drivers: state.drivers.map(driver => 
-                driver.id === id ? result.data : driver
+              drivers: state.drivers.map(driver =>
+                driver.id === id ? updatedDriver : driver
               ),
-              selectedDriver: state.selectedDriver?.id === id 
-                ? result.data 
+              selectedDriver: state.selectedDriver?.id === id
+                ? updatedDriver
                 : state.selectedDriver,
               loading: false
             }));
-            
+
             toast.success(result.message || DRIVER_MESSAGES.UPDATE_SUCCESS);
-            return result.data;
+            return updatedDriver;
           } else {
             throw new Error(result.error);
           }
         } catch (error) {
-          set({ 
-            error: error.message || DRIVER_MESSAGES.UPDATE_ERROR, 
-            loading: false 
+          set({
+            error: error.message || DRIVER_MESSAGES.UPDATE_ERROR,
+            loading: false
           });
           toast.error(error.message || DRIVER_MESSAGES.UPDATE_ERROR);
           return null;

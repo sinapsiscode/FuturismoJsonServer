@@ -26,14 +26,22 @@ const ProviderAssignment = ({ tour, selectedProviders, onProvidersChange }) => {
 
   useEffect(() => {
     // Inicializar store de proveedores
-    if (!providers || providers.length === 0) {
-      actions.initialize();
-      actions.fetchProviders();
-    }
+    const loadData = async () => {
+      try {
+        console.log('🔄 Cargando proveedores para asignación...');
+        await actions.initialize();
+        await actions.fetchProviders();
+        console.log('✅ Proveedores cargados:', providers?.length || 0);
+      } catch (error) {
+        console.error('❌ Error cargando proveedores:', error);
+        toast.error('Error al cargar proveedores');
+      }
+    };
 
+    loadData();
     // Cargar servicios
     loadServices();
-  }, []);
+  }, []); // Solo se ejecuta una vez al montar
 
   const loadServices = async () => {
     setLoadingServices(true);
@@ -55,6 +63,18 @@ const ProviderAssignment = ({ tour, selectedProviders, onProvidersChange }) => {
   const filteredProviders = selectedCategory && providers
     ? providers.filter(p => p.category === selectedCategory)
     : (providers || []);
+
+  // Log para debugging
+  useEffect(() => {
+    console.log('📦 Providers en ProviderAssignment:', {
+      total: providers?.length || 0,
+      filtered: filteredProviders.length,
+      categories: categories?.length || 0,
+      selectedCategory,
+      isLoading,
+      providers: providers
+    });
+  }, [providers, filteredProviders, categories, selectedCategory, isLoading]);
 
   // Agregar proveedor a la lista
   const handleAddProvider = () => {
@@ -288,12 +308,29 @@ const ProviderAssignment = ({ tour, selectedProviders, onProvidersChange }) => {
               {/* Proveedor */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Proveedor *
+                  Proveedor * {!isLoading && <span className="text-xs text-gray-500">({filteredProviders.length} disponibles)</span>}
                 </label>
                 {isLoading ? (
                   <div className="text-center py-4">
                     <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600 mx-auto"></div>
                     <p className="text-xs text-gray-500 mt-2">Cargando proveedores...</p>
+                  </div>
+                ) : filteredProviders.length === 0 ? (
+                  <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3 text-center">
+                    <p className="text-sm text-yellow-800 mb-2">
+                      No hay proveedores disponibles
+                      {selectedCategory && ' en esta categoría'}
+                    </p>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setSelectedCategory('');
+                        toast('Mostrando todos los proveedores', { icon: 'ℹ️' });
+                      }}
+                      className="text-xs text-blue-600 hover:text-blue-800 underline"
+                    >
+                      Mostrar todos los proveedores
+                    </button>
                   </div>
                 ) : (
                   <select
@@ -301,7 +338,7 @@ const ProviderAssignment = ({ tour, selectedProviders, onProvidersChange }) => {
                     onChange={(e) => setSelectedProvider(e.target.value)}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   >
-                    <option value="">Seleccionar proveedor</option>
+                    <option value="">Seleccionar proveedor ({filteredProviders.length} opciones)</option>
                     {filteredProviders.map((provider) => (
                       <option key={provider.id} value={provider.id}>
                         {provider.name} - {getCategoryName(provider.category)}

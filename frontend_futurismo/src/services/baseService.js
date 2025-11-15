@@ -37,6 +37,10 @@ class BaseService {
         const token = this.getAuthToken();
         if (token) {
           config.headers.Authorization = `Bearer ${token}`;
+          // Solo loggear si hay problemas o en desarrollo
+          // console.log('✅ [API Request]', config.method.toUpperCase(), config.url, '- Token incluido');
+        } else {
+          console.warn('⚠️ [API Request]', config.method.toUpperCase(), config.url, '- SIN TOKEN');
         }
         return config;
       },
@@ -108,7 +112,7 @@ class BaseService {
         token = state?.token;
 
         if (token) {
-          console.log('🔑 [BaseService] Token found in authStore');
+          // console.log('🔑 [BaseService] Token found in authStore');
           return token;
         }
       } catch (error) {
@@ -121,7 +125,7 @@ class BaseService {
     token = localStorage.getItem(storageKey) || sessionStorage.getItem(storageKey);
 
     if (token) {
-      console.log('🔑 [BaseService] Token found in storage');
+      // console.log('🔑 [BaseService] Token found in storage');
     }
 
     return token;

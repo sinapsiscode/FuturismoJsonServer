@@ -331,6 +331,9 @@ module.exports = (router) => {
 
       db.get('driver_license_history').push(licenseRecord).write();
 
+      // Add fullName for frontend compatibility
+      newDriver.fullName = `${newDriver.first_name || ''} ${newDriver.last_name || ''}`.trim();
+
       res.status(201).json({
         success: true,
         data: newDriver,
@@ -386,9 +389,13 @@ module.exports = (router) => {
 
       driver.assign(updatedDriver).write();
 
+      // Get updated driver and add fullName
+      const resultDriver = driver.value();
+      resultDriver.fullName = `${resultDriver.first_name || resultDriver.firstName || ''} ${resultDriver.last_name || resultDriver.lastName || ''}`.trim();
+
       res.json({
         success: true,
-        data: driver.value(),
+        data: resultDriver,
         message: 'Conductor actualizado exitosamente'
       });
     } catch (error) {

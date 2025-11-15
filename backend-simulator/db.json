@@ -779,8 +779,18 @@
       "image": "https://images.unsplash.com/photo-1587595431973-160d0d94add1",
       "created_at": "2024-01-15T10:00:00Z",
       "assignedDriver": "driver-001",
-      "updated_at": "2025-10-24T02:06:42.300Z",
-      "assignedVehicle": "vehicle-002"
+      "updated_at": "2025-11-15T01:55:34.163Z",
+      "assignedVehicle": "vehicle-002",
+      "assignedProviders": [
+        {
+          "id": "prov-1763169486836",
+          "name": "Zoro",
+          "category": "prov-cat-2",
+          "purpose": "asf",
+          "notes": "asf",
+          "services": []
+        }
+      ]
     },
     {
       "id": "tour-004",
@@ -2130,101 +2140,7 @@
     }
   ],
   "emergency_incidents": [],
-  "monitoring_tours": [
-    {
-      "id": "tour-active-1",
-      "tourName": "City Tour Centro Histórico",
-      "guideName": "Carlos Mendoza",
-      "guideId": "guide-1",
-      "tourists": 8,
-      "status": "enroute",
-      "currentLocation": {
-        "lat": -12.04960580996278,
-        "lng": -77.04602140004324,
-        "name": "Catedral de Lima"
-      },
-      "startTime": "09:00 AM",
-      "estimatedEndTime": "01:00 PM",
-      "progress": 45,
-      "date": "2024-03-15",
-      "destination": "Plaza Mayor",
-      "lastUpdated": "2025-11-14T23:20:27.077Z"
-    },
-    {
-      "id": "tour-active-2",
-      "tourName": "Tour Miraflores",
-      "guideName": "Ana García",
-      "guideId": "guide-2",
-      "tourists": 12,
-      "status": "stopped",
-      "currentLocation": {
-        "lat": -12.1207,
-        "lng": -77.0282,
-        "name": "Malecón de Miraflores"
-      },
-      "startTime": "10:30 AM",
-      "estimatedEndTime": "02:30 PM",
-      "progress": 60,
-      "date": "2024-03-15",
-      "destination": "Malecón de Miraflores"
-    },
-    {
-      "id": "tour-active-3",
-      "tourName": "Museo Larco",
-      "guideName": "Pedro Ramírez",
-      "guideId": "guide-3",
-      "tourists": 6,
-      "status": "enroute",
-      "currentLocation": {
-        "lat": -12.07079009822935,
-        "lng": -77.07508417106777,
-        "name": "Museo Larco"
-      },
-      "startTime": "11:00 AM",
-      "estimatedEndTime": "03:00 PM",
-      "progress": 30,
-      "date": "2024-03-15",
-      "destination": "Museo Larco",
-      "lastUpdated": "2025-11-14T23:20:27.077Z"
-    },
-    {
-      "id": "tour-active-4",
-      "tourName": "Barranco Tour",
-      "guideName": "María López",
-      "guideId": "guide-4",
-      "tourists": 10,
-      "status": "enroute",
-      "currentLocation": {
-        "lat": -12.151775927926572,
-        "lng": -77.02145111202532,
-        "name": "Puente de los Suspiros"
-      },
-      "startTime": "02:00 PM",
-      "estimatedEndTime": "06:00 PM",
-      "progress": 75,
-      "date": "2024-03-15",
-      "destination": "Puente de los Suspiros",
-      "lastUpdated": "2025-11-14T23:20:27.077Z"
-    },
-    {
-      "id": "tour-active-5",
-      "tourName": "Tour San Isidro",
-      "guideName": "Jorge Vega",
-      "guideId": "guide-5",
-      "tourists": 5,
-      "status": "delayed",
-      "currentLocation": {
-        "lat": -12.0931,
-        "lng": -77.0365,
-        "name": "Huaca Huallamarca"
-      },
-      "startTime": "03:30 PM",
-      "estimatedEndTime": "07:30 PM",
-      "progress": 85,
-      "date": "2024-03-15",
-      "destination": "Huaca Huallamarca"
-    }
-  ],
+  "monitoring_tours": [],
   "monitoring_guides": [],
   "monitoring_config": {
     "version": "1.0.0",
@@ -11816,101 +11732,11 @@
   ],
   "drivers": [
     {
-      "id": "driver-001",
-      "user_id": null,
-      "name": "Luis Vargas",
-      "first_name": "Luis",
-      "last_name": "Vargas",
-      "email": "luis.vargas@futurismo.com",
-      "phone": "+51987234567",
-      "dni": "18765432",
-      "license_number": "A1-B2C-987654",
-      "license_type": "A-IIB",
-      "license_expiry": "2027-12-31",
-      "status": "active",
-      "rating": 4.7,
-      "total_reviews": 89,
-      "total_trips": 234,
-      "experience_years": 12,
-      "languages": [
-        "es",
-        "en"
-      ],
-      "specialties": [
-        "city-tours",
-        "long-distance",
-        "mountain-roads"
-      ],
-      "certifications": [
-        "Licencia Profesional Clase A",
-        "Certificado de Transporte Turístico",
-        "First Aid Certification"
-      ],
-      "availability": {
-        "monday": true,
-        "tuesday": true,
-        "wednesday": true,
-        "thursday": true,
-        "friday": true,
-        "saturday": true,
-        "sunday": false
-      },
-      "agency_id": "agency-001",
-      "avatar": "https://ui-avatars.com/api/?name=Luis+Vargas&background=3B82F6&color=fff&size=200",
-      "created_at": "2024-06-01T00:00:00Z",
-      "updated_at": "2025-10-24T22:00:15.553Z",
-      "is_available": false
-    },
-    {
-      "id": "driver-002",
-      "user_id": null,
-      "name": "Pedro Sánchez",
-      "first_name": "Pedro",
-      "last_name": "Sánchez",
-      "email": "pedro.sanchez@futurismo.com",
-      "phone": "+51923456789",
-      "dni": "28765433",
-      "license_number": "A1-B2C-876543",
-      "license_type": "A-IIB",
-      "license_expiry": "2028-06-30",
-      "status": "active",
-      "rating": 4.8,
-      "total_reviews": 112,
-      "total_trips": 298,
-      "experience_years": 15,
-      "languages": [
-        "es"
-      ],
-      "specialties": [
-        "adventure-tours",
-        "4x4-driving",
-        "off-road"
-      ],
-      "certifications": [
-        "Licencia Profesional Clase A",
-        "Certificado de Transporte Turístico",
-        "4x4 Specialist Certification"
-      ],
-      "availability": {
-        "monday": true,
-        "tuesday": true,
-        "wednesday": true,
-        "thursday": true,
-        "friday": true,
-        "saturday": true,
-        "sunday": true
-      },
-      "agency_id": "agency-002",
-      "avatar": "https://ui-avatars.com/api/?name=Pedro+Sanchez&background=F59E0B&color=fff&size=200",
-      "created_at": "2024-05-15T00:00:00Z",
-      "updated_at": "2025-10-20T00:00:00Z"
-    },
-    {
       "id": "driver-003",
       "user_id": null,
       "name": "Miguel Torres",
       "first_name": "Miguel",
-      "last_name": "Torres",
+      "last_name": "Fujimori",
       "email": "miguel.torres@futurismo.com",
       "phone": "+51998765432",
       "dni": "38765434",
@@ -11947,7 +11773,40 @@
       "agency_id": "agency-001",
       "avatar": "https://ui-avatars.com/api/?name=Miguel+Torres&background=10B981&color=fff&size=200",
       "created_at": "2024-08-10T00:00:00Z",
-      "updated_at": "2025-10-20T00:00:00Z"
+      "updated_at": "2025-11-15T02:07:21.339Z"
+    },
+    {
+      "id": "driver-1763172644502",
+      "first_name": "sasuke",
+      "last_name": "aru",
+      "dni": "77675765",
+      "license_number": "45745745767",
+      "license_type": "A-IIIB",
+      "license_expiry": "7765-04-04",
+      "status": "active",
+      "user_id": null,
+      "created_at": "2025-11-15T02:10:44.502Z",
+      "updated_at": "2025-11-15T02:10:44.502Z",
+      "is_available": true,
+      "current_vehicle_id": null,
+      "total_services": 0,
+      "average_rating": 0,
+      "total_reviews": 0,
+      "experience_years": 0,
+      "languages": [
+        "es"
+      ],
+      "specialties": [],
+      "certifications": [],
+      "availability": {
+        "monday": true,
+        "tuesday": true,
+        "wednesday": true,
+        "thursday": true,
+        "friday": true,
+        "saturday": true,
+        "sunday": false
+      }
     }
   ],
   "vehicles": [
@@ -12100,10 +11959,49 @@
       "fuel_type": "gasoline",
       "created_at": "2023-10-15T00:00:00Z",
       "updated_at": "2025-10-20T00:00:00Z"
+    },
+    {
+      "id": "vehicle-1763172802573",
+      "plate": "34FSF",
+      "brand": "toyota",
+      "model": "yaris",
+      "year": 2025,
+      "type": "van",
+      "capacity": 10,
+      "fuel_type": "diesel",
+      "agency_id": null,
+      "documents": {
+        "soat": {
+          "number": "",
+          "expiry": "2037-06-13"
+        },
+        "technicalReview": {
+          "number": "346346346346346",
+          "expiry": "2035-06-13"
+        }
+      },
+      "photos": [],
+      "features": [],
+      "created_at": "2025-11-15T02:13:22.573Z",
+      "updated_at": "2025-11-15T02:13:22.573Z",
+      "is_available": true,
+      "status": "active",
+      "current_driver_id": null,
+      "total_services": 0,
+      "average_rating": 0
     }
   ],
   "driver_evaluations": [],
-  "driver_license_history": [],
+  "driver_license_history": [
+    {
+      "id": "license-1763172644510",
+      "driver_id": "driver-1763172644502",
+      "license_number": "45745745767",
+      "license_type": "A-IIIB",
+      "status": "active",
+      "created_at": "2025-11-15T02:10:44.510Z"
+    }
+  ],
   "vehicle_assignments": [
     {
       "id": "vehicle-assignment-1761260501606",
@@ -13451,105 +13349,6 @@
       }
     ]
   },
-  "agency_rewards": [
-    {
-      "id": "ag-reward-1",
-      "agencyId": "agency-1",
-      "agencyName": "Tours Lima Premium",
-      "points": 125000,
-      "totalPointsEarned": 250000,
-      "redemptionsCount": 3,
-      "lastRedemption": "2024-10-15T14:30:00Z",
-      "created_at": "2024-01-01T00:00:00Z",
-      "updated_at": "2024-10-20T10:00:00Z"
-    },
-    {
-      "id": "ag-reward-2",
-      "agencyId": "agency-2",
-      "agencyName": "Cusco Adventures",
-      "points": 85000,
-      "totalPointsEarned": 180000,
-      "redemptionsCount": 2,
-      "lastRedemption": "2024-09-20T16:00:00Z",
-      "created_at": "2024-01-01T00:00:00Z",
-      "updated_at": "2024-10-18T09:00:00Z"
-    },
-    {
-      "id": "ag-reward-3",
-      "agencyId": "agency-3",
-      "agencyName": "Peru Explorer Tours",
-      "points": 42000,
-      "totalPointsEarned": 95000,
-      "redemptionsCount": 1,
-      "lastRedemption": "2024-08-10T11:30:00Z",
-      "created_at": "2024-01-01T00:00:00Z",
-      "updated_at": "2024-10-10T15:00:00Z"
-    }
-  ],
-  "reward_redemptions": [
-    {
-      "id": "redemp-1",
-      "agencyId": "agency-1",
-      "agencyName": "Tours Lima Premium",
-      "rewardId": "reward-1",
-      "rewardName": "iPad Air 10.9\"",
-      "points": 50000,
-      "status": "delivered",
-      "requestDate": "2024-10-10T10:00:00Z",
-      "approvalDate": "2024-10-12T14:30:00Z",
-      "deliveryDate": "2024-10-15T14:30:00Z",
-      "notes": "Entregado en oficina principal",
-      "approvedBy": "admin-1",
-      "created_at": "2024-10-10T10:00:00Z",
-      "updated_at": "2024-10-15T14:30:00Z"
-    },
-    {
-      "id": "redemp-2",
-      "agencyId": "agency-2",
-      "agencyName": "Cusco Adventures",
-      "rewardId": "reward-4",
-      "rewardName": "AirPods Pro 2da Gen",
-      "points": 25000,
-      "status": "approved",
-      "requestDate": "2024-10-18T09:00:00Z",
-      "approvalDate": "2024-10-19T11:00:00Z",
-      "deliveryDate": null,
-      "notes": "Pendiente de entrega",
-      "approvedBy": "admin-1",
-      "created_at": "2024-10-18T09:00:00Z",
-      "updated_at": "2024-10-19T11:00:00Z"
-    },
-    {
-      "id": "redemp-3",
-      "agencyId": "agency-1",
-      "agencyName": "Tours Lima Premium",
-      "rewardId": "reward-3",
-      "rewardName": "Curso de Gestión Turística",
-      "points": 30000,
-      "status": "pending",
-      "requestDate": "2024-10-20T10:00:00Z",
-      "approvalDate": null,
-      "deliveryDate": null,
-      "notes": "Solicitud pendiente de aprobación",
-      "approvedBy": null,
-      "created_at": "2024-10-20T10:00:00Z",
-      "updated_at": "2024-10-20T10:00:00Z"
-    },
-    {
-      "id": "redemp-4",
-      "agencyId": "agency-3",
-      "agencyName": "Peru Explorer Tours",
-      "rewardId": "reward-5",
-      "rewardName": "Fin de Semana en Paracas",
-      "points": 35000,
-      "status": "cancelled",
-      "requestDate": "2024-09-15T13:00:00Z",
-      "approvalDate": null,
-      "deliveryDate": null,
-      "notes": "Cancelado por la agencia",
-      "approvedBy": null,
-      "created_at": "2024-09-15T13:00:00Z",
-      "updated_at": "2024-09-16T10:00:00Z"
-    }
-  ]
+  "agency_rewards": [],
+  "reward_redemptions": []
 }

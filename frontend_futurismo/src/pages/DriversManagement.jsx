@@ -87,16 +87,26 @@ const DriversManagement = () => {
     }
 
     try {
+      console.log('💾 Guardando chofer:', {
+        modo: editingDriver ? 'Actualizar' : 'Crear',
+        id: editingDriver?.id,
+        data: formData
+      });
+
       if (editingDriver) {
-        await updateDriver(editingDriver.id, formData);
+        const result = await updateDriver(editingDriver.id, formData);
+        console.log('✅ Chofer actualizado:', result);
       } else {
-        await createDriver(formData);
+        const result = await createDriver(formData);
+        console.log('✅ Chofer creado:', result);
       }
 
       setShowForm(false);
       resetForm();
+      toast.success(editingDriver ? 'Chofer actualizado exitosamente' : 'Chofer creado exitosamente');
     } catch (error) {
-      console.error('Error al guardar chofer:', error);
+      console.error('❌ Error al guardar chofer:', error);
+      toast.error(error.message || 'Error al guardar chofer');
     }
   };
 
@@ -116,14 +126,23 @@ const DriversManagement = () => {
 
   // Manejar edición
   const handleEdit = (driver) => {
+    console.log('📝 Editando chofer:', driver);
     setEditingDriver(driver);
+
+    // Soportar tanto snake_case (del backend) como camelCase
+    const firstName = driver.first_name || driver.firstName || '';
+    const lastName = driver.last_name || driver.lastName || '';
+    const licenseNumber = driver.license_number || driver.licenseNumber || '';
+    const licenseCategory = driver.license_type || driver.licenseCategory || LICENSE_CATEGORIES.A_IIIC;
+    const licenseExpiry = driver.license_expiry || driver.licenseExpiry || '';
+
     setFormData({
-      firstName: driver.firstName,
-      lastName: driver.lastName,
-      dni: driver.dni,
-      licenseNumber: driver.licenseNumber,
-      licenseCategory: driver.licenseCategory,
-      licenseExpiry: driver.licenseExpiry.split('T')[0]
+      firstName,
+      lastName,
+      dni: driver.dni || '',
+      licenseNumber,
+      licenseCategory,
+      licenseExpiry: licenseExpiry ? licenseExpiry.split('T')[0] : ''
     });
     setShowForm(true);
   };
@@ -215,15 +234,20 @@ const DriversManagement = () => {
                 ) : (
                   drivers
                     .filter(driver => {
+                      if (!searchTerm) return true;
+
                       const search = searchTerm.toLowerCase();
-                      return driver.fullName.toLowerCase().includes(search) || 
-                             driver.dni.includes(search);
+                      const fullName = driver.fullName || `${driver.first_name || driver.firstName || ''} ${driver.last_name || driver.lastName || ''}`.trim();
+                      const dni = driver.dni || '';
+
+                      return fullName.toLowerCase().includes(search) ||
+                             dni.includes(search);
                     })
                     .map((driver) => (
                     <tr key={driver.id} className="hover:bg-gray-50">
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="text-sm font-medium text-gray-900">
-                          {driver.fullName}
+                          {driver.fullName || `${driver.first_name || driver.firstName || ''} ${driver.last_name || driver.lastName || ''}`.trim() || 'Sin nombre'}
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
@@ -233,15 +257,17 @@ const DriversManagement = () => {
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="text-sm text-gray-900">
-                          {driver.licenseNumber}
+                          {driver.license_number || driver.licenseNumber || 'N/A'}
                         </div>
                         <div className="text-xs text-gray-500">
-                          {LICENSE_CATEGORY_LABELS[driver.licenseCategory]}
+                          {LICENSE_CATEGORY_LABELS[driver.license_type || driver.licenseCategory] || driver.license_type || driver.licenseCategory || 'N/A'}
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="text-sm text-gray-900">
-                          {new Date(driver.licenseExpiry).toLocaleDateString()}
+                          {driver.license_expiry || driver.licenseExpiry
+                            ? new Date(driver.license_expiry || driver.licenseExpiry).toLocaleDateString()
+                            : 'N/A'}
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">

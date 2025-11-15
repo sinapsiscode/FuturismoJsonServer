@@ -224,22 +224,34 @@ const useProvidersStore = create(
           
           createProvider: async (providerData) => {
             set({ isLoading: true, error: null });
-            
+
             try {
               const result = await providersService.createProvider(providerData);
-              
+
               if (!result.success) {
                 throw new Error(result.error || 'Error al crear proveedor');
               }
-              
-              set((state) => ({
-                providers: [result.data, ...(state.providers || [])],
-                isLoading: false
-              }));
-              
+
+              set((state) => {
+                // Asegurar que state.providers sea un array válido
+                const currentProviders = Array.isArray(state.providers) ? state.providers : [];
+
+                console.log('✅ Proveedor creado, agregando a la lista:', {
+                  nuevo: result.data.name,
+                  cantidadActual: currentProviders.length,
+                  cantidadNueva: currentProviders.length + 1
+                });
+
+                return {
+                  providers: [result.data, ...currentProviders],
+                  isLoading: false
+                };
+              });
+
               return result.data;
             } catch (error) {
-              set({ 
+              console.error('❌ Error creando proveedor:', error);
+              set({
                 isLoading: false,
                 error: error.message
               });
@@ -850,13 +862,29 @@ const useProvidersStore = create(
       }),
       {
         name: 'providers-store',
+        version: 1, // Incrementar versión para forzar reset
         partialize: (state) => ({
           providers: state.providers,
           assignments: state.assignments,
           locations: state.locations,
           categories: state.categories,
           services: state.services
-        })
+        }),
+        // Función de migración para asegurar que los datos restaurados sean válidos
+        merge: (persistedState, currentState) => {
+          const merged = {
+            ...currentState,
+            ...persistedState,
+            // Asegurar que arrays sean siempre arrays válidos
+            providers: Array.isArray(persistedState?.providers) ? persistedState.providers : [],
+            assignments: Array.isArray(persistedState?.assignments) ? persistedState.assignments : [],
+            locations: Array.isArray(persistedState?.locations) ? persistedState.locations : [],
+            categories: Array.isArray(persistedState?.categories) ? persistedState.categories : [],
+            services: Array.isArray(persistedState?.services) ? persistedState.services : []
+          };
+          console.log('🔄 Datos restaurados del localStorage:', merged);
+          return merged;
+        }
       }
     ),
     {

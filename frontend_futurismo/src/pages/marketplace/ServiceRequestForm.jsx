@@ -48,8 +48,8 @@ const serviceRequestSchema = yup.object().shape({
   tourName: yup.string()
     .when('serviceType', {
       is: 'tour',
-      then: yup.string().required('El nombre del tour es requerido'),
-      otherwise: yup.string().nullable()
+      then: (schema) => schema.required('El nombre del tour es requerido'),
+      otherwise: (schema) => schema.nullable()
     }),
   
   groupSize: yup.number()
@@ -79,7 +79,7 @@ const ServiceRequestForm = () => {
   const { guideId } = useParams();
   const navigate = useNavigate();
   const { user } = useAuthStore();
-  const { getGuideById, createServiceRequest } = useMarketplaceStore();
+  const { fetchGuideProfile, createServiceRequest } = useMarketplaceStore();
   
   const [guide, setGuide] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -139,12 +139,16 @@ const ServiceRequestForm = () => {
     // Calcular precio según duración
     if (guide && watchDuration) {
       let price = 0;
-      if (watchDuration <= 4) {
-        price = guide.pricing.halfDayRate;
-      } else if (watchDuration <= 8) {
-        price = guide.pricing.fullDayRate;
+      const halfDayRate = guide.pricing?.halfDayRate || guide.half_day_rate || null;
+      const fullDayRate = guide.pricing?.dailyRate || guide.pricing?.fullDayRate || guide.daily_rate || null;
+      const hourlyRate = guide.pricing?.hourlyRate || guide.hourlyRate || guide.hourly_rate || 25;
+
+      if (watchDuration <= 4 && halfDayRate) {
+        price = halfDayRate;
+      } else if (watchDuration <= 8 && fullDayRate) {
+        price = fullDayRate;
       } else {
-        price = guide.pricing.hourlyRate * watchDuration;
+        price = hourlyRate * watchDuration;
       }
       setCalculatedPrice(price);
     }
@@ -153,16 +157,20 @@ const ServiceRequestForm = () => {
   const loadGuide = async () => {
     setIsLoading(true);
     try {
-      const guideData = getGuideById(guideId);
+      // Usar el store para obtener el perfil del guía
+      const guideData = await fetchGuideProfile(guideId);
       if (guideData) {
         setGuide(guideData);
         // Pre-seleccionar idiomas disponibles del guía
-        setValue('languages', [guideData.specializations.languages[0]?.code || 'es']);
+        if (guideData.languages && guideData.languages.length > 0) {
+          setValue('languages', [guideData.languages[0]]);
+        }
       } else {
         navigate('/marketplace');
       }
     } catch (error) {
       console.error('Error loading guide:', error);
+      navigate('/marketplace');
     } finally {
       setIsLoading(false);
     }
@@ -222,13 +230,15 @@ const ServiceRequestForm = () => {
 
   const isDateAvailable = (date) => {
     if (!guide) return false;
-    const dayOfWeek = date.toLocaleDateString('en-US', { weekday: 'long' }).toLowerCase();
+    // guide.availability.workingDays contiene números (0=domingo, 1=lunes, ..., 6=sábado)
+    const dayOfWeek = date.getDay();
     return guide.availability.workingDays.includes(dayOfWeek);
   };
 
   const getMinDate = () => {
     const today = new Date();
-    today.setDate(today.getDate() + (guide?.availability.advanceBooking || 1));
+    const advanceDays = guide?.preferences?.advanceBookingDays || 1;
+    today.setDate(today.getDate() + advanceDays);
     return today;
   };
 
@@ -262,10 +272,10 @@ const ServiceRequestForm = () => {
               <h3 className="font-semibold text-gray-900">{guide.fullName}</h3>
               <div className="flex items-center gap-4 text-sm text-gray-600">
                 <span className="flex items-center gap-1">
-                  ⭐ {guide.ratings.overall.toFixed(1)} ({guide.ratings.totalReviews} reseñas)
+                  ⭐ {guide.rating?.toFixed(1) || guide.ratings?.overall?.toFixed(1) || '0.0'} ({guide.reviewCount || guide.ratings?.totalReviews || 0} reseñas)
                 </span>
                 <span>•</span>
-                <span>S/. {guide.pricing.hourlyRate}/hora</span>
+                <span>S/. {guide.pricing?.hourlyRate || guide.hourlyRate || 25}/hora</span>
               </div>
             </div>
           </div>
@@ -388,7 +398,7 @@ const ServiceRequestForm = () => {
                   <span className="w-16 text-center font-medium">{watchDuration}h</span>
                 </div>
                 <p className="text-sm text-gray-500 mt-1">
-                  Mínimo: {guide.preferences.minBookingHours} horas
+                  Mínimo: {guide.preferences?.minBookingHours || 2} horas
                 </p>
                 {errors.duration && (
                   <p className="mt-1 text-sm text-red-600">{errors.duration.message}</p>
@@ -430,11 +440,11 @@ const ServiceRequestForm = () => {
                     type="number"
                     {...register('groupSize')}
                     min="1"
-                    max={guide.preferences.maxGroupSize}
+                    max={guide.preferences?.maxGroupSize || 50}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-cyan-500 focus:border-cyan-500"
                   />
                   <p className="text-sm text-gray-500 mt-1">
-                    Máximo: {guide.preferences.maxGroupSize} personas
+                    Máximo: {guide.preferences?.maxGroupSize || 50} personas
                   </p>
                   {errors.groupSize && (
                     <p className="mt-1 text-sm text-red-600">{errors.groupSize.message}</p>
@@ -468,34 +478,38 @@ const ServiceRequestForm = () => {
                   Idiomas requeridos
                 </label>
                 <div className="grid grid-cols-2 gap-2 mt-2">
-                  {guide.specializations.languages.map((lang) => (
-                    <label
-                      key={lang.code}
-                      className="flex items-center p-2 border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50"
-                    >
-                      <input
-                        type="checkbox"
-                        value={lang.code}
-                        {...register('languages')}
-                        className="h-4 w-4 text-cyan-600 focus:ring-cyan-500 border-gray-300 rounded"
-                      />
+                  {guide.specializations.languages.map((lang) => {
+                    const langCode = typeof lang === 'string' ? lang : lang.code;
+                    const langName = typeof lang === 'string' ? lang.toUpperCase() : lang.name;
+                    return (
+                      <label
+                        key={langCode}
+                        className="flex items-center p-2 border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50"
+                      >
+                        <input
+                          type="checkbox"
+                          value={langCode}
+                          {...register('languages')}
+                          className="h-4 w-4 text-cyan-600 focus:ring-cyan-500 border-gray-300 rounded"
+                        />
                       <span className="ml-2 text-sm">
-                        {lang.code === 'es' && '🇪🇸 Español'}
-                        {lang.code === 'en' && '🇺🇸 Inglés'}
-                        {lang.code === 'fr' && '🇫🇷 Francés'}
-                        {lang.code === 'de' && '🇩🇪 Alemán'}
-                        {lang.code === 'it' && '🇮🇹 Italiano'}
-                        {lang.code === 'pt' && '🇵🇹 Portugués'}
-                        {lang.code === 'ja' && '🇯🇵 Japonés'}
-                        {lang.code === 'ko' && '🇰🇷 Coreano'}
-                        {lang.code === 'zh' && '🇨🇳 Chino'}
-                        {lang.code === 'ru' && '🇷🇺 Ruso'}
+                        {langCode === 'es' && '🇪🇸 Español'}
+                        {langCode === 'en' && '🇺🇸 Inglés'}
+                        {langCode === 'fr' && '🇫🇷 Francés'}
+                        {langCode === 'de' && '🇩🇪 Alemán'}
+                        {langCode === 'it' && '🇮🇹 Italiano'}
+                        {langCode === 'pt' && '🇵🇹 Portugués'}
+                        {langCode === 'ja' && '🇯🇵 Japonés'}
+                        {langCode === 'ko' && '🇰🇷 Coreano'}
+                        {langCode === 'zh' && '🇨🇳 Chino'}
+                        {langCode === 'ru' && '🇷🇺 Ruso'}
                       </span>
                       <span className="ml-auto text-xs text-gray-500 capitalize">
-                        {lang.level}
+                        {typeof lang === 'object' ? lang.level : ''}
                       </span>
                     </label>
-                  ))}
+                    );
+                  })}
                 </div>
                 {errors.languages && (
                   <p className="mt-1 text-sm text-red-600">{errors.languages.message}</p>
@@ -531,13 +545,13 @@ const ServiceRequestForm = () => {
                   <span className="text-gray-600">Tarifa del guía</span>
                   <span className="font-medium">S/. {calculatedPrice}</span>
                 </div>
-                {guide.preferences.requiresDeposit && (
+                {guide.preferences?.requiresDeposit && (
                   <div className="flex items-center justify-between text-sm">
                     <span className="text-gray-600">
-                      Depósito requerido ({guide.preferences.depositPercentage}%)
+                      Depósito requerido ({guide.preferences?.depositPercentage || 30}%)
                     </span>
                     <span className="font-medium">
-                      S/. {(calculatedPrice * guide.preferences.depositPercentage / 100).toFixed(2)}
+                      S/. {(calculatedPrice * (guide.preferences?.depositPercentage || 30) / 100).toFixed(2)}
                     </span>
                   </div>
                 )}
@@ -582,7 +596,7 @@ const ServiceRequestForm = () => {
                   <ExclamationTriangleIcon className="h-5 w-5 text-yellow-600 flex-shrink-0 mt-0.5" />
                   <div className="text-sm text-yellow-800">
                     <p className="font-medium mb-1">Política de cancelación:</p>
-                    <p>{guide.preferences.cancellationPolicy}</p>
+                    <p>{guide.preferences?.cancellationPolicy || 'Política de cancelación no especificada'}</p>
                   </div>
                 </div>
               </div>
