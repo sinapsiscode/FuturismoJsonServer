@@ -802,6 +802,124 @@ module.exports = (router) => {
     }
   });
 
+  // Get agency reservations
+  agenciesRouter.get('/:id/reservations', (req, res) => {
+    try {
+      const db = router.db;
+      const agency = db.get('agencies').find({ id: req.params.id }).value();
+
+      if (!agency) {
+        return res.status(404).json({
+          success: false,
+          error: 'Agencia no encontrada'
+        });
+      }
+
+      let reservations = db.get('reservations')
+        .filter({ agency_id: req.params.id })
+        .value() || [];
+
+      // Apply filters from query params
+      const { status, startDate, endDate, serviceType, page = 1, pageSize = 20 } = req.query;
+
+      if (status) {
+        reservations = reservations.filter(r => r.status === status);
+      }
+
+      if (startDate && endDate) {
+        reservations = reservations.filter(r => {
+          const resDate = r.date || r.tour_date || r.service_date;
+          return resDate && resDate >= startDate && resDate <= endDate;
+        });
+      }
+
+      if (serviceType) {
+        reservations = reservations.filter(r => r.service_type === serviceType);
+      }
+
+      // Sort by date (most recent first)
+      reservations.sort((a, b) => {
+        const dateA = new Date(a.created_at);
+        const dateB = new Date(b.created_at);
+        return dateB - dateA;
+      });
+
+      // Pagination
+      const total = reservations.length;
+      const totalPages = Math.ceil(total / pageSize);
+      const startIndex = (page - 1) * pageSize;
+      const endIndex = startIndex + parseInt(pageSize);
+      const paginatedReservations = reservations.slice(startIndex, endIndex);
+
+      res.json({
+        success: true,
+        data: {
+          reservations: paginatedReservations,
+          page: parseInt(page),
+          pageSize: parseInt(pageSize),
+          total,
+          totalPages
+        }
+      });
+    } catch (error) {
+      res.status(500).json({
+        success: false,
+        error: 'Error al obtener reservaciones'
+      });
+    }
+  });
+
+  // Update reservation (including guide assignment)
+  agenciesRouter.put('/reservations/:id', (req, res) => {
+    try {
+      const db = router.db;
+      const reservation = db.get('reservations').find({ id: req.params.id });
+
+      if (!reservation.value()) {
+        return res.status(404).json({
+          success: false,
+          error: 'Reservación no encontrada'
+        });
+      }
+
+      const updatedData = {
+        ...req.body,
+        updated_at: new Date().toISOString()
+      };
+
+      // If assigning a guide, validate guide exists
+      if (req.body.guide_id || req.body.assigned_guide) {
+        const guideId = req.body.guide_id || req.body.assigned_guide;
+        const guide = db.get('guides').find({ id: guideId }).value();
+
+        if (!guide) {
+          return res.status(404).json({
+            success: false,
+            error: 'Guía no encontrado'
+          });
+        }
+
+        // Store guide info in both fields for compatibility
+        updatedData.guide_id = guideId;
+        updatedData.assigned_guide = guideId;
+      }
+
+      reservation.assign(updatedData).write();
+
+      res.json({
+        success: true,
+        data: reservation.value(),
+        message: 'Reservación actualizada exitosamente'
+      });
+    } catch (error) {
+      console.error('Error updating reservation:', error);
+      res.status(500).json({
+        success: false,
+        error: 'Error al actualizar reservación'
+      });
+    }
+  });
+
   // Get agency statistics
   agenciesRouter.get('/:id/statistics', (req, res) => {
     try {
