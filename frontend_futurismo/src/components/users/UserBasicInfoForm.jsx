@@ -128,6 +128,10 @@ const UserBasicInfoForm = ({
                 errors.phone ? 'border-red-300' : 'border-gray-300'
               }`}
               placeholder={t('users.form.placeholders.phone')}
+              maxLength={9}
+              onInput={(e) => {
+                e.target.value = e.target.value.replace(/[^0-9]/g, '');
+              }}
             />
           </div>
           {errors.phone && (

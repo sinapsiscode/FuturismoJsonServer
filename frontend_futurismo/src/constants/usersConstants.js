@@ -136,7 +136,7 @@ export const VALIDATION_PATTERNS = (() => {
   const config = getAuthConfig();
   return config.validationPatterns || {
     EMAIL: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-    PHONE: /^9\d{8}$/,
+    PHONE: /^\d{9}$/,
     RUC: /^\d{11}$/,
     USERNAME: /^[a-zA-Z0-9_]{3,20}$/,
     DNI: /^\d{8}$/

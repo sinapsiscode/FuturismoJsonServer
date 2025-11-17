@@ -15,6 +15,7 @@ const authMiddleware = (req, res, next) => {
     '/auth/login',
     '/auth/register',
     '/config/', // All config endpoints should be public
+    '/data/', // Data section endpoints should be accessible
     '/services/active', // Active services for monitoring map
     '/clients/types', // Client types configuration
     '/tours/categories', // Tour categories configuration

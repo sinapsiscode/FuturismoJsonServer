@@ -36,6 +36,11 @@ const HistoryTable = ({
         text: 'text-green-800',
         label: t('history.table.status.completed')
       },
+      confirmed: {
+        bg: 'bg-blue-100',
+        text: 'text-blue-800',
+        label: 'Confirmada'
+      },
       cancelled: {
         bg: 'bg-red-100',
         text: 'text-red-800',

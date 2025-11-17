@@ -3,12 +3,13 @@ import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 import { MagnifyingGlassIcon, XMarkIcon } from '@heroicons/react/24/outline';
 
-const HistoryFilters = ({ 
-  filters, 
-  onUpdateFilter, 
+const HistoryFilters = ({
+  filters,
+  onUpdateFilter,
   onClearFilters,
   filterOptions,
-  loading 
+  allFilterOptions,
+  loading
 }) => {
   const { t } = useTranslation();
 
@@ -19,6 +20,11 @@ const HistoryFilters = ({
   const handleFilterChange = (filterName, value) => {
     onUpdateFilter(filterName, value);
   };
+
+  // Usar todas las opciones si están disponibles, sino usar las opciones por defecto
+  const guidesOptions = allFilterOptions?.allGuides || [];
+  const driversOptions = allFilterOptions?.allDrivers || [];
+  const vehiclesOptions = allFilterOptions?.allVehicles || [];
 
   return (
     <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
@@ -85,10 +91,12 @@ const HistoryFilters = ({
             className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
             disabled={loading}
           >
-            <option value="all">{t('history.filters.status.all')}</option>
-            <option value="completed">{t('history.filters.status.completed')}</option>
-            <option value="cancelled">{t('history.filters.status.cancelled')}</option>
-            <option value="pending">{t('history.filters.status.pending')}</option>
+            <option value="all">Todos</option>
+            <option value="pending">Pendiente</option>
+            <option value="confirmed">Confirmada</option>
+            <option value="completed">Completada</option>
+            <option value="cancelled">Cancelada</option>
+            <option value="unassigned">Sin asignar</option>
           </select>
         </div>
 
@@ -120,10 +128,17 @@ const HistoryFilters = ({
             onChange={(e) => handleFilterChange('guide', e.target.value)}
             className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
             disabled={loading}
+            title="Seleccionar guía para filtrar"
           >
-            <option value="all">{t('history.filters.guide.all')}</option>
-            {filterOptions.guides.map(guide => (
-              <option key={guide} value={guide}>{guide}</option>
+            <option value="all">Todos</option>
+            {guidesOptions.map(guide => (
+              <option
+                key={guide.id}
+                value={guide.name}
+                title={guide.assigned ? '✓ Asignado a reservas' : '○ No asignado'}
+              >
+                {guide.assigned ? '● ' : '○ '}{guide.name}
+              </option>
             ))}
           </select>
         </div>
@@ -141,10 +156,17 @@ const HistoryFilters = ({
             onChange={(e) => handleFilterChange('driver', e.target.value)}
             className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
             disabled={loading}
+            title="Seleccionar chofer para filtrar"
           >
-            <option value="all">{t('history.filters.driver.all')}</option>
-            {filterOptions.drivers.map(driver => (
-              <option key={driver} value={driver}>{driver}</option>
+            <option value="all">Todos</option>
+            {driversOptions.map(driver => (
+              <option
+                key={driver.id}
+                value={driver.name}
+                title={driver.assigned ? '✓ Asignado a reservas' : '○ No asignado'}
+              >
+                {driver.assigned ? '● ' : '○ '}{driver.name}
+              </option>
             ))}
           </select>
         </div>
@@ -159,10 +181,17 @@ const HistoryFilters = ({
             onChange={(e) => handleFilterChange('vehicle', e.target.value)}
             className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
             disabled={loading}
+            title="Seleccionar vehículo para filtrar"
           >
-            <option value="all">{t('history.filters.vehicle.all')}</option>
-            {filterOptions.vehicles.map(vehicle => (
-              <option key={vehicle} value={vehicle}>{vehicle}</option>
+            <option value="all">Todos</option>
+            {vehiclesOptions.map(vehicle => (
+              <option
+                key={vehicle.id}
+                value={vehicle.name}
+                title={vehicle.assigned ? '✓ Asignado a reservas' : '○ No asignado'}
+              >
+                {vehicle.assigned ? '● ' : '○ '}{vehicle.name}
+              </option>
             ))}
           </select>
         </div>
@@ -188,11 +217,29 @@ HistoryFilters.propTypes = {
     drivers: PropTypes.arrayOf(PropTypes.string).isRequired,
     vehicles: PropTypes.arrayOf(PropTypes.string).isRequired
   }).isRequired,
+  allFilterOptions: PropTypes.shape({
+    allGuides: PropTypes.arrayOf(PropTypes.shape({
+      id: PropTypes.string,
+      name: PropTypes.string,
+      assigned: PropTypes.bool
+    })),
+    allDrivers: PropTypes.arrayOf(PropTypes.shape({
+      id: PropTypes.string,
+      name: PropTypes.string,
+      assigned: PropTypes.bool
+    })),
+    allVehicles: PropTypes.arrayOf(PropTypes.shape({
+      id: PropTypes.string,
+      name: PropTypes.string,
+      assigned: PropTypes.bool
+    }))
+  }),
   loading: PropTypes.bool
 };
 
 HistoryFilters.defaultProps = {
-  loading: false
+  loading: false,
+  allFilterOptions: { allGuides: [], allDrivers: [], allVehicles: [] }
 };
 
 export default HistoryFilters;

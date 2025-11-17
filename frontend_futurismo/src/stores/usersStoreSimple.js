@@ -80,11 +80,11 @@ const useUsersStore = create((set, get) => ({
     
     if (filters.search) {
       const searchTerm = filters.search.toLowerCase();
-      filtered = filtered.filter(user => 
-        user.firstName.toLowerCase().includes(searchTerm) ||
-        user.lastName.toLowerCase().includes(searchTerm) ||
-        user.email.toLowerCase().includes(searchTerm) ||
-        user.username.toLowerCase().includes(searchTerm) ||
+      filtered = filtered.filter(user =>
+        (user.firstName && user.firstName.toLowerCase().includes(searchTerm)) ||
+        (user.lastName && user.lastName.toLowerCase().includes(searchTerm)) ||
+        (user.email && user.email.toLowerCase().includes(searchTerm)) ||
+        (user.username && user.username.toLowerCase().includes(searchTerm)) ||
         (user.company && user.company.toLowerCase().includes(searchTerm)) ||
         (user.ruc && user.ruc.includes(searchTerm))
       );

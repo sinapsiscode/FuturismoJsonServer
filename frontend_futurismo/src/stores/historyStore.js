@@ -39,12 +39,106 @@ const useHistoryStore = create(
       loadHistory: async () => {
         set({ loading: true, error: null });
         try {
-          // TODO: Implementar llamada real a la API cuando esté disponible
-          // const response = await api.get('/history/services');
-          // const historyData = response.data;
+          // Importar los stores necesarios dinámicamente
+          const useReservationsStore = (await import('./reservationsStore')).default;
+          const useClientsStore = (await import('./clientsStore')).default;
 
-          // Temporalmente retornamos array vacío hasta que se implemente el endpoint
-          const historyData = [];
+          // Obtener datos de los stores
+          const reservationsStore = useReservationsStore.getState();
+          const clientsStore = useClientsStore.getState();
+
+          // Cargar datos si no están disponibles
+          if (!reservationsStore.reservations || reservationsStore.reservations.length === 0) {
+            await reservationsStore.fetchReservations();
+          }
+
+          if (!clientsStore.clients || clientsStore.clients.length === 0) {
+            await clientsStore.loadClients();
+          }
+
+          // Obtener token de autenticación
+          const token = localStorage.getItem('token');
+          const headers = {
+            'Content-Type': 'application/json'
+          };
+          if (token) {
+            headers['Authorization'] = `Bearer ${token}`;
+          }
+
+          // Cargar tours para obtener nombres
+          const toursResponse = await fetch('/api/data/section/tours', { headers });
+          const toursData = await toursResponse.json();
+
+          // Cargar guías
+          const guidesResponse = await fetch('/api/data/section/guides', { headers });
+          const guidesData = await guidesResponse.json();
+
+          // Cargar drivers
+          const driversResponse = await fetch('/api/data/section/drivers', { headers });
+          const driversData = await driversResponse.json();
+
+          // Cargar vehicles
+          const vehiclesResponse = await fetch('/api/data/section/vehicles', { headers });
+          const vehiclesData = await vehiclesResponse.json();
+
+          const reservations = reservationsStore.reservations || [];
+          const tours = toursData.success ? toursData.data : [];
+          const guides = guidesData.success ? guidesData.data : [];
+          const clients = clientsStore.clients || [];
+          const drivers = driversData.success ? driversData.data : [];
+          const vehicles = vehiclesData.success ? vehiclesData.data : [];
+
+          // Transformar reservas a formato de historial de servicios
+          const historyData = reservations.map(reservation => {
+            // Buscar tour
+            const tour = tours.find(t => t.id === reservation.service_id);
+            const serviceName = reservation.service_name || tour?.name || tour?.title || 'Servicio sin nombre';
+
+            // Buscar guía
+            const guide = guides.find(g => g.id === reservation.guide_id);
+            const guideName = guide?.name ||
+                             guide?.fullName ||
+                             (guide?.first_name && guide?.last_name ? `${guide.first_name} ${guide.last_name}` : null) ||
+                             reservation.guideName ||
+                             'Sin asignar';
+
+            // Buscar cliente
+            const client = clients.find(c => c.id === reservation.client_id);
+            const clientName = reservation.client_name || client?.name || client?.fullName || 'Cliente desconocido';
+
+            // Buscar driver (si tiene driver_id o driver_name)
+            const driver = drivers.find(d => d.id === reservation.driver_id);
+            const driverName = reservation.driver_name ||
+                              driver?.name ||
+                              driver?.fullName ||
+                              (driver?.first_name && driver?.last_name ? `${driver.first_name} ${driver.last_name}` : null) ||
+                              'Sin asignar';
+
+            // Buscar vehicle (si tiene vehicle_id)
+            const vehicle = vehicles.find(v => v.id === reservation.vehicle_id);
+            const vehicleInfo = vehicle ? `${vehicle.brand} ${vehicle.model} (${vehicle.plate})` : (reservation.vehicle || 'Sin asignar');
+
+            return {
+              id: reservation.id,
+              serviceName: serviceName,
+              clientName: clientName,
+              date: reservation.date || reservation.tour_date,
+              time: reservation.time || '00:00',
+              duration: tour?.duration || reservation.duration || 4, // Duración en horas
+              status: reservation.status || (reservation.guide_id ? 'confirmed' : 'unassigned'),
+              serviceType: reservation.service_type || 'regular',
+              guide: guideName,
+              driver: driverName,
+              vehicle: vehicleInfo,
+              participants: reservation.group_size || reservation.participants || 0,
+              amount: reservation.total_amount || reservation.total || 0,
+              rating: reservation.rating || 0,
+              hasRating: !!reservation.rating,
+              paymentStatus: reservation.payment_status || 'pending',
+              reservationCode: reservation.reservation_code || reservation.id
+            };
+          });
+
           const totalItems = historyData.length;
           const totalPages = Math.ceil(totalItems / get().pagination.itemsPerPage);
 
@@ -59,8 +153,9 @@ const useHistoryStore = create(
             }
           });
         } catch (error) {
+          console.error('Error loading history:', error);
           set({
-            error: error.message,
+            error: error.message || 'Error al cargar el historial',
             loading: false
           });
         }
@@ -237,11 +332,77 @@ const useHistoryStore = create(
       // Obtener opciones únicas para filtros
       getFilterOptions: () => {
         const { services } = get();
+
+        // Obtener los que están asignados en reservas
+        const assignedGuides = new Set(services.map(s => s.guide).filter(g => g && g !== 'Sin asignar' && g !== 'N/A'));
+        const assignedDrivers = new Set(services.map(s => s.driver).filter(d => d && d !== 'Sin asignar' && d !== 'N/A'));
+        const assignedVehicles = new Set(services.map(s => s.vehicle).filter(v => v && v !== 'Sin asignar' && v !== 'N/A'));
+
         return {
-          guides: [...new Set(services.map(s => s.guide).filter(Boolean))],
-          drivers: [...new Set(services.map(s => s.driver).filter(Boolean))],
-          vehicles: [...new Set(services.map(s => s.vehicle).filter(Boolean))]
+          guides: [...assignedGuides],
+          drivers: [...assignedDrivers],
+          vehicles: [...assignedVehicles],
+          assignedGuides: assignedGuides,
+          assignedDrivers: assignedDrivers,
+          assignedVehicles: assignedVehicles
         };
+      },
+
+      // Obtener todas las opciones disponibles (incluyendo no asignados)
+      getAllFilterOptions: async () => {
+        const token = localStorage.getItem('token');
+        const headers = {
+          'Content-Type': 'application/json'
+        };
+        if (token) {
+          headers['Authorization'] = `Bearer ${token}`;
+        }
+
+        try {
+          // Cargar todos los drivers disponibles
+          const driversResponse = await fetch('/api/data/section/drivers', { headers });
+          const driversData = await driversResponse.json();
+
+          // Cargar todos los vehicles disponibles
+          const vehiclesResponse = await fetch('/api/data/section/vehicles', { headers });
+          const vehiclesData = await vehiclesResponse.json();
+
+          // Cargar todas las guías disponibles
+          const guidesResponse = await fetch('/api/data/section/guides', { headers });
+          const guidesData = await guidesResponse.json();
+
+          const allDrivers = driversData.success ? driversData.data : [];
+          const allVehicles = vehiclesData.success ? vehiclesData.data : [];
+          const allGuides = guidesData.success ? guidesData.data : [];
+
+          // Obtener los asignados
+          const filterOptions = get().getFilterOptions();
+
+          return {
+            allGuides: allGuides.map(g => ({
+              id: g.id,
+              name: g.name || g.fullName || (g.first_name && g.last_name ? `${g.first_name} ${g.last_name}` : 'Sin nombre'),
+              assigned: filterOptions.assignedGuides.has(g.name || g.fullName || (g.first_name && g.last_name ? `${g.first_name} ${g.last_name}` : ''))
+            })),
+            allDrivers: allDrivers.map(d => ({
+              id: d.id,
+              name: d.name || d.fullName || (d.first_name && d.last_name ? `${d.first_name} ${d.last_name}` : 'Sin nombre'),
+              assigned: filterOptions.assignedDrivers.has(d.name || d.fullName || (d.first_name && d.last_name ? `${d.first_name} ${d.last_name}` : ''))
+            })),
+            allVehicles: allVehicles.map(v => ({
+              id: v.id,
+              name: `${v.brand} ${v.model} (${v.plate})`,
+              assigned: filterOptions.assignedVehicles.has(`${v.brand} ${v.model} (${v.plate})`)
+            }))
+          };
+        } catch (error) {
+          console.error('Error loading all filter options:', error);
+          return {
+            allGuides: [],
+            allDrivers: [],
+            allVehicles: []
+          };
+        }
       }
     }),
     {

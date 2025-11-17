@@ -63,7 +63,7 @@ const useMonthView = () => {
     }
 
     setMonthEvents(eventsData);
-  }, [selectedDate, startDate, endDate]);
+  }, [selectedDate]); // Solo selectedDate, ya que startDate y endDate se calculan a partir de él
 
   const handleDateHover = (date, isHovering) => {
     if (isHovering) {

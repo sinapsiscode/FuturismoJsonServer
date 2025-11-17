@@ -16,6 +16,7 @@ const History = () => {
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
   const [isRatingModalOpen, setIsRatingModalOpen] = useState(false);
   const [ratingLoading, setRatingLoading] = useState(false);
+  const [allFilterOptions, setAllFilterOptions] = useState({ allGuides: [], allDrivers: [], allVehicles: [] });
 
   const {
     filteredServices,
@@ -30,11 +31,18 @@ const History = () => {
     changePage,
     updateSort,
     getPaginatedServices,
-    getFilterOptions
+    getFilterOptions,
+    getAllFilterOptions
   } = useHistoryStore();
 
   useEffect(() => {
-    loadHistory();
+    const loadData = async () => {
+      await loadHistory();
+      // Cargar todas las opciones disponibles (incluyendo no asignados)
+      const allOptions = await getAllFilterOptions();
+      setAllFilterOptions(allOptions);
+    };
+    loadData();
   }, []); // Empty dependency array to run only once
 
   const handleViewDetails = (service) => {
@@ -179,6 +187,7 @@ const History = () => {
           onUpdateFilter={updateFilter}
           onClearFilters={clearFilters}
           filterOptions={roleFilteredOptions}
+          allFilterOptions={allFilterOptions}
           loading={loading}
         />
 

@@ -191,7 +191,7 @@ const UserForm = ({ user = null, onSubmit, onCancel, isLoading = false }) => {
           </div>
           
           <form onSubmit={handleSubmit(handleFormSubmit)}>
-            <div className="modal-body">
+            <div className="modal-body overflow-y-auto max-h-[calc(100vh-250px)]">
               <div className="space-y-4 sm:space-y-6">
         {/* Tabs */}
         <UserFormTabs activeTab={activeTab} setActiveTab={setActiveTab} />
