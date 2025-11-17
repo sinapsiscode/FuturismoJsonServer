@@ -62,10 +62,14 @@ const AdminEmergency = () => {
 
   const handleDownloadAllProtocols = async () => {
     try {
+      if (!protocols || protocols.length === 0) {
+        alert('No hay protocolos disponibles para generar el PDF. Por favor, crea algunos protocolos primero.');
+        return;
+      }
       await emergencyPDFService.downloadAllProtocolsPDF(protocols);
     } catch (error) {
       console.error('Error descargando protocolos:', error);
-      alert('Error al generar el PDF de protocolos');
+      alert(`Error al generar el PDF de protocolos: ${error.message}`);
     }
   };
 

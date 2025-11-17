@@ -64,7 +64,23 @@ return this.get(`/reservations/${id}`);
    * @returns {Promise<Object>}
    */
   async createReservation(reservationData) {
-return this.post('/reservations', reservationData);
+    // Use this.api directly to avoid the /agencies prefix
+    try {
+      const response = await this.api.post('/reservations', reservationData);
+
+      // If response already has the {success, data} format, return it
+      if (response.data && typeof response.data === 'object' && 'success' in response.data) {
+        return response.data;
+      }
+
+      // Otherwise, wrap it
+      return {
+        success: true,
+        data: response.data
+      };
+    } catch (error) {
+      return this.handleError(error);
+    }
   }
 
   /**

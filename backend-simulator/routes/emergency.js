@@ -682,6 +682,37 @@ module.exports = (router) => {
     }
   });
 
+  // Delete emergency material
+  emergencyRouter.delete('/materials/:id', (req, res) => {
+    try {
+      const db = router.db;
+      const material = db.get('emergency_materials').find({ id: req.params.id }).value();
+
+      if (!material) {
+        return res.status(404).json({
+          success: false,
+          error: 'Material de emergencia no encontrado'
+        });
+      }
+
+      db.get('emergency_materials')
+        .remove({ id: req.params.id })
+        .write();
+
+      res.json({
+        success: true,
+        message: 'Material de emergencia eliminado',
+        data: { id: req.params.id }
+      });
+    } catch (error) {
+      console.error('Error deleting material:', error);
+      res.status(500).json({
+        success: false,
+        error: 'Error al eliminar material de emergencia'
+      });
+    }
+  });
+
   // Create emergency protocol
   emergencyRouter.post('/protocols', (req, res) => {
     try {
@@ -736,6 +767,37 @@ module.exports = (router) => {
       res.status(500).json({
         success: false,
         error: 'Error al actualizar protocolo'
+      });
+    }
+  });
+
+  // Delete emergency protocol
+  emergencyRouter.delete('/protocols/:id', (req, res) => {
+    try {
+      const db = router.db;
+      const protocol = db.get('emergency_protocols').find({ id: req.params.id }).value();
+
+      if (!protocol) {
+        return res.status(404).json({
+          success: false,
+          error: 'Protocolo de emergencia no encontrado'
+        });
+      }
+
+      db.get('emergency_protocols')
+        .remove({ id: req.params.id })
+        .write();
+
+      res.json({
+        success: true,
+        message: 'Protocolo de emergencia eliminado',
+        data: { id: req.params.id }
+      });
+    } catch (error) {
+      console.error('Error deleting protocol:', error);
+      res.status(500).json({
+        success: false,
+        error: 'Error al eliminar protocolo de emergencia'
       });
     }
   });

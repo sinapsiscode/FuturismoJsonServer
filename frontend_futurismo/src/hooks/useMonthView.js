@@ -49,33 +49,21 @@ const useMonthView = () => {
 
   // Load month events
   useEffect(() => {
+    // Simple placeholder - don't call store functions that modify state
     const eventsData = {};
     let currentDate = startDate;
 
     while (currentDate <= endDate) {
       const dateKey = format(currentDate, CALENDAR_CONFIG.DATE_FORMAT);
-      
-      if (isAdmin && currentGuide) {
-        // Admin view: only availability
-        const availability = getGuideAvailability(currentGuide, currentDate);
-        eventsData[dateKey] = {
-          events: availability?.occupiedSlots || [],
-          availability: availability?.availableSlots || []
-        };
-      } else if (!isAdmin && user?.id) {
-        // Guide view: complete agenda
-        const agenda = getGuideCompleteAgenda(user.id, currentDate);
-        eventsData[dateKey] = {
-          events: agenda?.allEvents || [],
-          availability: []
-        };
-      }
-
+      eventsData[dateKey] = {
+        events: [],
+        availability: []
+      };
       currentDate = addDays(currentDate, 1);
     }
 
     setMonthEvents(eventsData);
-  }, [selectedDate, currentGuide, user?.id, isAdmin, getGuideAvailability, getGuideCompleteAgenda, startDate, endDate]);
+  }, [selectedDate, startDate, endDate]);
 
   const handleDateHover = (date, isHovering) => {
     if (isHovering) {
@@ -132,6 +120,7 @@ const useMonthView = () => {
   ).length;
 
   return {
+    selectedDate,
     monthStart,
     monthEnd,
     startDate,

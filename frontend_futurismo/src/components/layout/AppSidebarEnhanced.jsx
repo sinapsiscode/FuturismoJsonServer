@@ -147,7 +147,8 @@ const AppSidebarEnhanced = () => {
         section: 'Seguridad & Control',
         items: [
           { path: '/emergency', icon: ShieldCheckIcon, label: t('navigation.emergencies') },
-          { path: '/agenda', icon: CalendarDaysIcon, label: t('navigation.coordination') }
+          { path: '/agency/calendar', icon: CalendarDaysIcon, label: 'Coordinación' },
+          { path: '/agenda', icon: CalendarDaysIcon, label: 'Agenda Guías' }
         ]
       },
       {

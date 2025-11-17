@@ -373,43 +373,75 @@ module.exports = (router) => {
       const db = router.db;
 
       // Accept both camelCase and snake_case
+      const agency_id = req.body.agency_id || req.body.agencyId;
       const service_id = req.body.service_id || req.body.serviceId || req.body.tourId;
       const client_id = req.body.client_id || req.body.clientId;
+      const client_name = req.body.client_name || req.body.clientName;
+      const client_phone = req.body.client_phone || req.body.clientPhone;
+      const client_email = req.body.client_email || req.body.clientEmail;
       const guide_id = req.body.guide_id || req.body.guideId;
       const tour_date = req.body.tour_date || req.body.tourDate || req.body.date;
-      const group_size = req.body.group_size || req.body.groupSize || req.body.adults || req.body.tourists;
+      const tour_time = req.body.tour_time || req.body.tourTime || req.body.time || req.body.start_time;
+      const group_size = req.body.group_size || req.body.groupSize || req.body.participants || req.body.adults || req.body.tourists;
+      const service_type = req.body.service_type || req.body.serviceType;
+      const service_name = req.body.service_name || req.body.serviceName;
+      const pickup_location = req.body.pickup_location || req.body.pickupLocation;
       const special_requests = req.body.special_requests || req.body.specialRequests || req.body.specialRequirements;
       const emergency_contact = req.body.emergency_contact || req.body.emergencyContact;
+      const total_amount = req.body.total_amount || req.body.totalAmount || req.body.price;
+      const payment_status = req.body.payment_status || req.body.paymentStatus || 'pending';
+      const status = req.body.status || 'pending';
 
-      // Validate required fields
-      if (!service_id || !client_id || !tour_date || !group_size) {
+      // Validate required fields for agency calendar reservations
+      // Either (service_id + client_id) OR (agency_id + client_name + tour_date + group_size)
+      const hasServiceAndClient = service_id && client_id;
+      const hasAgencyAndBasics = tour_date && group_size;
+
+      if (!hasServiceAndClient && !hasAgencyAndBasics) {
         console.log('Missing required fields:', { service_id, client_id, tour_date, group_size });
         console.log('Received body:', req.body);
-        return res.status(400).json(errorResponse('Campos requeridos: service_id/tourId, client_id/clientId, tour_date/date, group_size/adults'));
+        return res.status(400).json(errorResponse('Campos requeridos: (service_id + client_id) O (tour_date + group_size)'));
       }
 
-      // Get service details for pricing
-      const service = db.get('services').find({ id: service_id }).value();
-      if (!service) {
-        return res.status(404).json(errorResponse('Servicio no encontrado'));
-      }
+      // Calculate pricing only if service exists
+      let pricing = {
+        total: parseFloat(total_amount) || 0,
+        subtotal: parseFloat(total_amount) || 0,
+        tax_amount: 0
+      };
 
-      // Calculate pricing
-      const pricing = calculatePrice({
-        base_price: service.price,
-        group_size: parseInt(group_size)
-      });
+      if (service_id) {
+        const service = db.get('services').find({ id: service_id }).value();
+        if (service) {
+          pricing = calculatePrice({
+            base_price: service.price,
+            group_size: parseInt(group_size)
+          });
+        }
+      }
 
       const newReservation = {
         id: generateId('reservation'),
-        service_id,
-        client_id,
+        agency_id: agency_id || null,
+        service_id: service_id || null,
+        client_id: client_id || null,
+        client_name: client_name || null,
+        client_phone: client_phone || null,
+        client_email: client_email || null,
         guide_id: guide_id || null,
+        service_type: service_type || 'Tour',
+        service_name: service_name || service_type || 'Tour',
         tour_date,
+        date: tour_date,
+        time: tour_time || '09:00',
+        start_time: tour_time || '09:00',
+        pickup_location: pickup_location || '',
         group_size: parseInt(group_size),
-        status: 'pending',
-        payment_status: 'pending',
+        participants: parseInt(group_size),
+        status: status,
+        payment_status: payment_status,
         total_amount: pricing.total,
+        price: pricing.total,
         base_amount: pricing.subtotal,
         tax_amount: pricing.tax_amount,
         special_requests: special_requests || '',

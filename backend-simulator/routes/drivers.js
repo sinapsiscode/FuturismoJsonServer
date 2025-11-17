@@ -406,6 +406,50 @@ module.exports = (router) => {
     }
   });
 
+  // Delete driver
+  driversRouter.delete('/:id', (req, res) => {
+    try {
+      const db = router.db;
+      const driver = db.get('drivers').find({ id: req.params.id }).value();
+
+      if (!driver) {
+        return res.status(404).json({
+          success: false,
+          error: 'Conductor no encontrado'
+        });
+      }
+
+      // Optional: Check if driver has active assignments
+      const activeAssignments = db.get('driver_assignments')
+        .filter({ driver_id: req.params.id, status: 'active' })
+        .value();
+
+      if (activeAssignments && activeAssignments.length > 0) {
+        return res.status(400).json({
+          success: false,
+          error: 'No se puede eliminar un conductor con asignaciones activas'
+        });
+      }
+
+      // Remove driver
+      db.get('drivers')
+        .remove({ id: req.params.id })
+        .write();
+
+      res.json({
+        success: true,
+        message: 'Conductor eliminado exitosamente',
+        data: { id: req.params.id }
+      });
+    } catch (error) {
+      console.error('Error deleting driver:', error);
+      res.status(500).json({
+        success: false,
+        error: 'Error al eliminar conductor'
+      });
+    }
+  });
+
   // Update driver status
   driversRouter.put('/:id/status', (req, res) => {
     try {

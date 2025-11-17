@@ -163,12 +163,14 @@ const AdminAvailabilityView = () => {
   };
 
   const sidebar = (
-    <div className="h-full flex flex-col">
-      <CalendarSidebar />
-      
+    <div className="h-full flex flex-col overflow-hidden">
+      <div className="flex-shrink-0">
+        <CalendarSidebar />
+      </div>
+
       {/* Info del guía seleccionado */}
       {currentGuideInfo && (
-        <div className="p-4 border-t border-gray-100">
+        <div className="flex-shrink-0 p-4 border-t border-gray-100">
           <h4 className="text-sm font-medium text-gray-700 mb-3">Guía Seleccionado</h4>
           
           <div className="bg-gray-50 rounded-lg p-3">

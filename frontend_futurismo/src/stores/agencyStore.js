@@ -78,13 +78,19 @@ const useAgencyStore = create(
               currentAgency: result.data,
               isLoading: false
             });
-            
+
             // Cargar datos adicionales
-            await Promise.all([
-              get().actions.fetchReservations(),
-              get().actions.fetchPointsTransactions()
-            ]);
-            
+            try {
+              await Promise.all([
+                get().actions.fetchReservations(),
+                get().actions.fetchPointsTransactions().catch(err => {
+                  console.warn('Points transactions not available:', err.message);
+                })
+              ]);
+            } catch (error) {
+              console.warn('Some additional data could not be loaded:', error.message);
+            }
+
             return true;
           } catch (error) {
             set({

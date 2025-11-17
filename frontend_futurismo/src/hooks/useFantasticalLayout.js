@@ -40,8 +40,7 @@ const useFantasticalLayout = () => {
   const viewOptions = [
     { key: 'day', label: 'calendar.views.day', icon: CalendarDaysIcon },
     { key: 'week', label: 'calendar.views.week', icon: ViewColumnsIcon },
-    { key: 'month', label: 'calendar.views.month', icon: Squares2X2Icon },
-    { key: 'year', label: 'calendar.views.year', icon: TableCellsIcon }
+    { key: 'month', label: 'calendar.views.month', icon: Squares2X2Icon }
   ];
 
   const navigateDate = (direction) => {
@@ -57,9 +56,6 @@ const useFantasticalLayout = () => {
         break;
       case 'month':
         newDate = direction === 'prev' ? subMonths(selectedDate, 1) : addMonths(selectedDate, 1);
-        break;
-      case 'year':
-        newDate = direction === 'prev' ? subMonths(selectedDate, 12) : addMonths(selectedDate, 12);
         break;
     }
 
@@ -83,8 +79,6 @@ const useFantasticalLayout = () => {
         return `${format(weekStart, 'd MMM', { locale })} - ${format(weekEnd, 'd MMM yyyy', { locale })}`;
       case 'month':
         return format(selectedDate, "MMMM 'de' yyyy", { locale });
-      case 'year':
-        return format(selectedDate, 'yyyy');
       default:
         return '';
     }

@@ -139,7 +139,8 @@ const SidebarEnhanced = ({ isOpen, toggleSidebar, isMobile }) => {
         section: 'Seguridad & Control',
         items: [
           { path: '/emergency', icon: ShieldCheckIcon, label: t('navigation.emergencies') },
-          { path: '/agenda', icon: CalendarDaysIcon, label: t('navigation.coordination') }
+          { path: '/agency/calendar', icon: CalendarDaysIcon, label: t('navigation.coordination') },
+          { path: '/agenda', icon: CalendarDaysIcon, label: 'Agenda Guías' }
         ]
       },
       {

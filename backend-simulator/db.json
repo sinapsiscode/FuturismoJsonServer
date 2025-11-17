@@ -13,7 +13,7 @@
       "avatar": "https://ui-avatars.com/api/?name=Admin&background=3B82F6&color=fff",
       "created_at": "2024-01-01T00:00:00Z",
       "updated_at": "2024-01-01T00:00:00Z",
-      "last_login_at": "2025-11-14T23:20:20.202Z"
+      "last_login_at": "2025-11-16T00:00:26.968Z"
     },
     {
       "id": "user-agency-1",
@@ -27,7 +27,8 @@
       "phone": "+51987654322",
       "avatar": "https://ui-avatars.com/api/?name=Maria+Gonzalez&background=10B981&color=fff",
       "created_at": "2024-02-01T00:00:00Z",
-      "updated_at": "2024-02-01T00:00:00Z"
+      "updated_at": "2024-02-01T00:00:00Z",
+      "last_login_at": "2025-11-15T22:26:27.216Z"
     },
     {
       "id": "user-guide-1",
@@ -988,6 +989,98 @@
   ],
   "reservations": [
     {
+      "id": "res-nov-001",
+      "reservation_code": "FUT-2025-NOV-001",
+      "service_id": "tour-001",
+      "client_id": 1,
+      "agency_id": "agency-001",
+      "guide_id": null,
+      "tour_date": "2025-11-15",
+      "date": "2025-11-15",
+      "time": "09:00",
+      "service_name": "City Tour Lima Centro Histórico",
+      "client_name": "GALDIAZ",
+      "group_size": 6,
+      "participants": 6,
+      "status": "pending",
+      "payment_status": "pending",
+      "total_amount": 510,
+      "base_amount": 432,
+      "tax_amount": 78,
+      "special_requests": "",
+      "created_at": "2025-11-10T10:00:00Z",
+      "updated_at": "2025-11-10T10:00:00Z"
+    },
+    {
+      "id": "res-nov-002",
+      "reservation_code": "FUT-2025-NOV-002",
+      "service_id": "tour-002",
+      "client_id": 2,
+      "agency_id": "agency-001",
+      "guide_id": null,
+      "tour_date": "2025-11-16",
+      "date": "2025-11-16",
+      "time": "10:00",
+      "service_name": "Tour Barranco Bohemio",
+      "client_name": "7SOPAS",
+      "group_size": 8,
+      "participants": 8,
+      "status": "confirmed",
+      "payment_status": "partial",
+      "total_amount": 960,
+      "base_amount": 800,
+      "tax_amount": 160,
+      "special_requests": "",
+      "created_at": "2025-11-12T14:00:00Z",
+      "updated_at": "2025-11-12T14:00:00Z"
+    },
+    {
+      "id": "res-nov-003",
+      "reservation_code": "FUT-2025-NOV-003",
+      "service_id": "tour-003",
+      "client_id": 1,
+      "agency_id": "agency-001",
+      "guide_id": null,
+      "tour_date": "2025-11-18",
+      "date": "2025-11-18",
+      "time": "08:00",
+      "service_name": "Tour Pachacamac - Sitio Arqueológico",
+      "client_name": "GALDIAZ",
+      "group_size": 10,
+      "participants": 10,
+      "status": "pending",
+      "payment_status": "pending",
+      "total_amount": 1800,
+      "base_amount": 1500,
+      "tax_amount": 300,
+      "special_requests": "Grupo familiar con niños",
+      "created_at": "2025-11-13T09:00:00Z",
+      "updated_at": "2025-11-13T09:00:00Z"
+    },
+    {
+      "id": "res-nov-004",
+      "reservation_code": "FUT-2025-NOV-004",
+      "service_id": "tour-004",
+      "client_id": 5,
+      "agency_id": "agency-001",
+      "guide_id": null,
+      "tour_date": "2025-11-20",
+      "date": "2025-11-20",
+      "time": "14:00",
+      "service_name": "Tour Gastronómico Miraflores",
+      "client_name": "Viajes Globales S.A.",
+      "group_size": 4,
+      "participants": 4,
+      "status": "confirmed",
+      "payment_status": "paid",
+      "total_amount": 340,
+      "base_amount": 280,
+      "tax_amount": 60,
+      "special_requests": "",
+      "created_at": "2025-11-14T16:00:00Z",
+      "updated_at": "2025-11-14T16:00:00Z"
+    },
+    {
       "id": "res-001",
       "reservation_code": "FUT-2025-001",
       "service_id": "tour-001",
@@ -1311,6 +1404,35 @@
       "emergency_contact": {},
       "created_at": "2025-11-15T00:23:35.596Z",
       "updated_at": "2025-11-15T00:23:35.596Z"
+    },
+    {
+      "id": "reservation-1763251258174-xpc73wteu",
+      "agency_id": "agency-001",
+      "service_id": "service-custom",
+      "client_id": null,
+      "client_name": "Antgonu",
+      "client_phone": "987678765",
+      "client_email": "pier_terraazas@gmaimcl.com",
+      "guide_id": null,
+      "service_type": "City Tour",
+      "service_name": "City Tour",
+      "tour_date": "2025-11-16",
+      "date": "2025-11-16",
+      "time": "09:00",
+      "start_time": "09:00",
+      "pickup_location": "asfasf",
+      "group_size": 1,
+      "participants": 1,
+      "status": "pending",
+      "payment_status": "pending",
+      "total_amount": 100,
+      "price": 100,
+      "base_amount": 100,
+      "tax_amount": 0,
+      "special_requests": "asfdasfasf",
+      "emergency_contact": {},
+      "created_at": "2025-11-16T00:00:58.174Z",
+      "updated_at": "2025-11-16T00:00:58.174Z"
     }
   ],
   "clients": [
@@ -1775,7 +1897,8 @@
       "id": "transporte",
       "name": "Transporte",
       "icon": "🚗",
-      "color": "#F59E0B"
+      "color": "#F59E0B",
+      "active": false
     },
     {
       "id": "seguridad",
@@ -2086,33 +2209,14 @@
       "updatedAt": "2024-03-10T00:00:00Z"
     },
     {
-      "id": "comunicacion",
-      "name": "Equipo de Comunicación",
-      "category": "comunicacion",
+      "id": "material-1763178054998",
+      "name": "shuriken",
+      "category": "medico",
       "mandatory": true,
-      "status": "active",
       "items": [
-        "Radio transmisor",
-        "Teléfono móvil con batería extra",
-        "Silbato de emergencia",
-        "Linterna LED con pilas extra",
-        "Cargador portátil"
+        "asfasf"
       ],
-      "checklistFrequency": "daily",
-      "lastChecked": "2024-03-12T00:00:00Z",
-      "checkedBy": "user-003",
-      "createdAt": "2023-01-15T00:00:00Z",
-      "updatedAt": "2024-03-12T00:00:00Z"
-    },
-    {
-      "id": "material-1762548692472",
-      "name": "afasfaf",
-      "category": "transporte",
-      "mandatory": false,
-      "items": [
-        "asfasfasf"
-      ],
-      "created_at": "2025-11-07T20:51:32.472Z",
+      "created_at": "2025-11-15T03:40:54.998Z",
       "is_active": true
     },
     {

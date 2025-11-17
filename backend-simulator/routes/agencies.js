@@ -670,6 +670,138 @@ module.exports = (router) => {
     }
   });
 
+  // Get agency calendar data
+  agenciesRouter.get('/:id/calendar', (req, res) => {
+    try {
+      const db = router.db;
+      const { startDate, endDate } = req.query;
+
+      console.log('[CALENDAR] Calendar request for agency:', req.params.id, 'from', startDate, 'to', endDate);
+
+      const agency = db.get('agencies').find({ id: req.params.id }).value();
+      if (!agency) {
+        console.log('Agency not found:', req.params.id);
+        return res.status(404).json({
+          success: false,
+          error: 'Agencia no encontrada'
+        });
+      }
+
+      // Get all reservations for the agency in the date range
+      let reservations = db.get('reservations')
+        .filter({ agency_id: req.params.id })
+        .value() || [];
+
+      console.log('Total reservations for agency:', reservations.length);
+
+      // Filter by date range if provided
+      if (startDate && endDate) {
+        reservations = reservations.filter(r => {
+          const resDate = r.date || r.tour_date || r.service_date || r.created_at?.split('T')[0];
+          return resDate && resDate >= startDate && resDate <= endDate;
+        });
+        console.log('Reservations in date range:', reservations.length);
+      }
+
+      // Get related data
+      const guides = db.get('guides').value() || [];
+      const clients = db.get('clients').value() || [];
+      const tours = db.get('tours').value() || [];
+
+      // Organize reservations by date
+      const calendarData = {};
+
+      reservations.forEach(reservation => {
+        const dateKey = reservation.date || reservation.tour_date || reservation.service_date || reservation.created_at?.split('T')[0];
+
+        if (!dateKey) {
+          console.log('Reservation without date:', reservation.id);
+          return;
+        }
+
+        if (!calendarData[dateKey]) {
+          calendarData[dateKey] = {
+            reservations: [],
+            totalRevenue: 0,
+            totalParticipants: 0
+          };
+        }
+
+        // Find related info
+        const guide = guides.find(g => g.id === reservation.guide_id || g.id === reservation.assigned_guide);
+        const client = clients.find(c => c.id === reservation.client_id);
+        const tour = tours.find(t => t.id === reservation.tour_id || t.id === reservation.service_id);
+
+        // Build reservation object for calendar
+        const calendarReservation = {
+          id: reservation.id,
+          serviceType: tour?.name || reservation.service_name || reservation.service_type || 'Tour',
+          clientName: client?.name || reservation.client_name || 'Cliente',
+          time: reservation.time || reservation.start_time || '09:00',
+          participants: reservation.participants || reservation.group_size || 1,
+          totalAmount: reservation.total_amount || reservation.price || 0,
+          status: reservation.status || 'pending',
+          guideAssigned: guide ? `${guide.firstName || ''} ${guide.lastName || ''}`.trim() : null,
+          tour_id: reservation.tour_id || reservation.service_id,
+          guide_id: reservation.guide_id || reservation.assigned_guide
+        };
+
+        calendarData[dateKey].reservations.push(calendarReservation);
+        calendarData[dateKey].totalRevenue += calendarReservation.totalAmount;
+        calendarData[dateKey].totalParticipants += calendarReservation.participants;
+      });
+
+      console.log('Calendar data organized for', Object.keys(calendarData).length, 'days');
+      console.log('Dates with reservations:', Object.keys(calendarData).join(', '));
+
+      res.json({
+        success: true,
+        data: calendarData
+      });
+    } catch (error) {
+      console.error('Error getting calendar data:', error);
+      res.status(500).json({
+        success: false,
+        error: 'Error al obtener datos del calendario'
+      });
+    }
+  });
+
+  // Get agency points transactions
+  agenciesRouter.get('/:id/points/transactions', (req, res) => {
+    try {
+      const db = router.db;
+      const agency = db.get('agencies').find({ id: req.params.id }).value();
+
+      if (!agency) {
+        return res.status(404).json({
+          success: false,
+          error: 'Agencia no encontrada'
+        });
+      }
+
+      // TODO: Implement points transactions when the feature is ready
+      // For now, return empty array
+      res.json({
+        success: true,
+        data: {
+          transactions: [],
+          pagination: {
+            page: 1,
+            pageSize: 50,
+            total: 0,
+            totalPages: 0
+          }
+        }
+      });
+    } catch (error) {
+      res.status(500).json({
+        success: false,
+        error: 'Error al obtener transacciones de puntos'
+      });
+    }
+  });
+
   // Get agency statistics
   agenciesRouter.get('/:id/statistics', (req, res) => {
     try {

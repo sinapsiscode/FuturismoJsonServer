@@ -62,24 +62,26 @@ class EmergencyPDFService {
 
     // Portada
     this._addCoverPage();
-    
+
     // Índice
     this._addIndexPage(protocols);
-    
+
     // Protocolos individuales
-    protocols.forEach((protocol, index) => {
-      if (index > 0) {
-        this.pdf.addPage();
-        this.currentY = this.margin;
-      }
-      
-      this._addProtocolHeader(protocol, false);
-      this._addProtocolInfo(protocol);
-      this._addProtocolSteps(protocol);
-      this._addEmergencyContacts(protocol);
-      this._addRequiredMaterials(protocol);
-    });
-    
+    if (protocols && protocols.length > 0) {
+      protocols.forEach((protocol, index) => {
+        if (index > 0) {
+          this.pdf.addPage();
+          this.currentY = this.margin;
+        }
+
+        this._addProtocolHeader(protocol, false);
+        this._addProtocolInfo(protocol);
+        this._addProtocolSteps(protocol);
+        this._addEmergencyContacts(protocol);
+        this._addRequiredMaterials(protocol);
+      });
+    }
+
     // Página de contactos generales
     this.pdf.addPage();
     this.currentY = this.margin;
@@ -141,9 +143,17 @@ class EmergencyPDFService {
    * Descargar PDF de todos los protocolos
    */
   async downloadAllProtocolsPDF(protocols) {
-    const pdf = this.generateAllProtocolsPDF(protocols);
-    const filename = `protocolos_emergencia_${format(new Date(), 'yyyy-MM-dd')}.pdf`;
-    pdf.save(filename);
+    try {
+      if (!protocols || protocols.length === 0) {
+        throw new Error('No hay protocolos disponibles para generar el PDF');
+      }
+      const pdf = this.generateAllProtocolsPDF(protocols);
+      const filename = `protocolos_emergencia_${format(new Date(), 'yyyy-MM-dd')}.pdf`;
+      pdf.save(filename);
+    } catch (error) {
+      console.error('Error generando PDF de protocolos:', error);
+      throw error;
+    }
   }
 
   /**
@@ -159,34 +169,35 @@ class EmergencyPDFService {
 
   _addProtocolHeader(protocol, isStandalone = true) {
     const pdf = this.pdf;
-    
+
     // Logo/Título de emergencia
     pdf.setFillColor(...colors.emergency);
     pdf.rect(this.margin, this.currentY, this.pageWidth - (this.margin * 2), 15, 'F');
-    
+
     pdf.setFontSize(18);
     pdf.setTextColor(255, 255, 255);
     pdf.text('🚨 PROTOCOLO DE EMERGENCIA', this.margin + 5, this.currentY + 10);
-    
+
     this.currentY += 20;
 
     // Título del protocolo
     pdf.setFontSize(16);
     pdf.setTextColor(...colors.text);
-    pdf.text(protocol.title, this.margin, this.currentY);
-    
+    pdf.text(protocol.title || 'Sin título', this.margin, this.currentY);
+
     this.currentY += 10;
 
     // Información básica
     pdf.setFontSize(10);
     pdf.setTextColor(...colors.secondary);
-    
+
     const leftColumn = this.margin;
     const rightColumn = this.pageWidth / 2 + 10;
-    
+
     pdf.text('Categoría:', leftColumn, this.currentY);
     pdf.setTextColor(...colors.text);
-    pdf.text(`${protocol.icon} ${protocol.category.toUpperCase()}`, leftColumn + 20, this.currentY);
+    const categoryText = typeof protocol.category === 'string' ? protocol.category : 'General';
+    pdf.text(`${protocol.icon || '📋'} ${categoryText.toUpperCase()}`, leftColumn + 20, this.currentY);
     
     pdf.setTextColor(...colors.secondary);
     pdf.text('Prioridad:', rightColumn, this.currentY);
@@ -210,38 +221,48 @@ class EmergencyPDFService {
 
   _addProtocolInfo(protocol) {
     const pdf = this.pdf;
-    
+
     // Descripción
     pdf.setFontSize(12);
     pdf.setTextColor(...colors.primary);
     pdf.text('DESCRIPCIÓN', this.margin, this.currentY);
-    
+
     this.currentY += 8;
-    
+
     pdf.setFontSize(10);
     pdf.setTextColor(...colors.text);
-    const descriptionLines = pdf.splitTextToSize(protocol.description, this.pageWidth - (this.margin * 2));
+    const description = protocol.description || 'Sin descripción disponible';
+    const descriptionLines = pdf.splitTextToSize(description, this.pageWidth - (this.margin * 2));
     pdf.text(descriptionLines, this.margin, this.currentY);
-    
+
     this.currentY += (descriptionLines.length * 5) + 10;
   }
 
   _addProtocolSteps(protocol) {
     const pdf = this.pdf;
-    
+
     // Título de pasos
     pdf.setFontSize(12);
     pdf.setTextColor(...colors.primary);
     pdf.text('PASOS A SEGUIR', this.margin, this.currentY);
-    
+
     this.currentY += 10;
-    
+
     // Cuadro de pasos
-    const stepsData = protocol.content.steps.map((step, index) => [
+    const steps = protocol.content?.steps || protocol.steps || [];
+    if (steps.length === 0) {
+      pdf.setFontSize(10);
+      pdf.setTextColor(...colors.secondary);
+      pdf.text('No se especificaron pasos para este protocolo.', this.margin + 5, this.currentY);
+      this.currentY += 10;
+      return;
+    }
+
+    const stepsData = steps.map((step, index) => [
       `${index + 1}`,
       step
     ]);
-    
+
     autoTable(pdf, {
       startY: this.currentY,
       head: [['#', 'Acción a Realizar']],
@@ -264,7 +285,7 @@ class EmergencyPDFService {
       },
       margin: { left: this.margin, right: this.margin }
     });
-    
+
     this.currentY = pdf.lastAutoTable.finalY + 15;
   }
 
@@ -273,23 +294,32 @@ class EmergencyPDFService {
       this.pdf.addPage();
       this.currentY = this.margin;
     }
-    
+
     const pdf = this.pdf;
-    
+
     // Título de contactos
     pdf.setFontSize(12);
     pdf.setTextColor(...colors.emergency);
     pdf.text('📞 CONTACTOS DE EMERGENCIA', this.margin, this.currentY);
-    
+
     this.currentY += 10;
-    
+
     // Tabla de contactos
-    const contactsData = protocol.content.contacts.map(contact => [
-      contact.name,
-      contact.phone,
-      contact.type.charAt(0).toUpperCase() + contact.type.slice(1)
+    const contacts = protocol.content?.contacts || protocol.contacts || [];
+    if (contacts.length === 0) {
+      pdf.setFontSize(10);
+      pdf.setTextColor(...colors.secondary);
+      pdf.text('No se especificaron contactos para este protocolo.', this.margin + 5, this.currentY);
+      this.currentY += 10;
+      return;
+    }
+
+    const contactsData = contacts.map(contact => [
+      contact.name || 'Sin nombre',
+      contact.phone || 'Sin teléfono',
+      contact.type ? contact.type.charAt(0).toUpperCase() + contact.type.slice(1) : 'General'
     ]);
-    
+
     autoTable(pdf, {
       startY: this.currentY,
       head: [['Contacto', 'Teléfono', 'Tipo']],
@@ -313,7 +343,7 @@ class EmergencyPDFService {
       },
       margin: { left: this.margin, right: this.margin }
     });
-    
+
     this.currentY = pdf.lastAutoTable.finalY + 15;
   }
 
@@ -322,21 +352,22 @@ class EmergencyPDFService {
       this.pdf.addPage();
       this.currentY = this.margin;
     }
-    
+
     const pdf = this.pdf;
-    
+
     // Título de materiales
     pdf.setFontSize(12);
     pdf.setTextColor(...colors.primary);
     pdf.text('🎒 MATERIALES NECESARIOS', this.margin, this.currentY);
-    
+
     this.currentY += 8;
-    
-    if (protocol.content.materials && protocol.content.materials.length > 0) {
+
+    const materials = protocol.content?.materials || protocol.materials || [];
+    if (materials.length > 0) {
       pdf.setFontSize(10);
       pdf.setTextColor(...colors.text);
-      
-      protocol.content.materials.forEach(material => {
+
+      materials.forEach(material => {
         pdf.text(`• ${material}`, this.margin + 5, this.currentY);
         this.currentY += 5;
       });
@@ -345,7 +376,7 @@ class EmergencyPDFService {
       pdf.setTextColor(...colors.secondary);
       pdf.text('No se especificaron materiales para este protocolo.', this.margin + 5, this.currentY);
     }
-    
+
     this.currentY += 10;
   }
 
@@ -386,32 +417,39 @@ class EmergencyPDFService {
   _addIndexPage(protocols) {
     this.pdf.addPage();
     this.currentY = this.margin;
-    
+
     const pdf = this.pdf;
-    
+
     // Título del índice
     pdf.setFontSize(18);
     pdf.setTextColor(...colors.text);
     pdf.text('ÍNDICE DE PROTOCOLOS', this.margin, this.currentY);
-    
+
     this.currentY += 15;
-    
+
     // Lista de protocolos
+    if (!protocols || protocols.length === 0) {
+      pdf.setFontSize(10);
+      pdf.setTextColor(...colors.secondary);
+      pdf.text('No hay protocolos disponibles.', this.margin, this.currentY);
+      return;
+    }
+
     protocols.forEach((protocol, index) => {
       pdf.setFontSize(12);
       pdf.setTextColor(...colors.text);
-      
+
       const pageNum = index + 3; // Ajustar por portada e índice
-      pdf.text(`${protocol.icon} ${protocol.title}`, this.margin, this.currentY);
+      pdf.text(`${protocol.icon || '📋'} ${protocol.title || 'Sin título'}`, this.margin, this.currentY);
       pdf.text(`${pageNum}`, this.pageWidth - this.margin - 10, this.currentY, { align: 'right' });
-      
+
       // Línea punteada
       pdf.setDrawColor(...colors.border);
       const dotsY = this.currentY - 2;
       for (let x = this.margin + 80; x < this.pageWidth - this.margin - 20; x += 3) {
         pdf.circle(x, dotsY, 0.3, 'F');
       }
-      
+
       this.currentY += 8;
     });
   }
@@ -516,31 +554,38 @@ class EmergencyPDFService {
 
   _addProtocolsSummary(protocols) {
     const pdf = this.pdf;
-    
+
     pdf.setFontSize(16);
     pdf.setTextColor(...colors.text);
     pdf.text('RESUMEN DE PROTOCOLOS', this.margin, this.currentY);
-    
+
     this.currentY += 15;
-    
+
     protocols.forEach(protocol => {
       // Título del protocolo
       pdf.setFontSize(12);
       pdf.setTextColor(...colors.primary);
-      pdf.text(`${protocol.icon} ${protocol.title}`, this.margin, this.currentY);
-      
+      pdf.text(`${protocol.icon || '📋'} ${protocol.title || 'Sin título'}`, this.margin, this.currentY);
+
       this.currentY += 8;
-      
+
       // Primeros 3 pasos
+      const steps = protocol.content?.steps || protocol.steps || [];
       pdf.setFontSize(9);
       pdf.setTextColor(...colors.text);
-      protocol.content.steps.slice(0, 3).forEach((step, index) => {
+      steps.slice(0, 3).forEach((step, index) => {
         pdf.text(`${index + 1}. ${step}`, this.margin + 5, this.currentY);
         this.currentY += 5;
       });
-      
+
+      if (steps.length === 0) {
+        pdf.setTextColor(...colors.secondary);
+        pdf.text('Sin pasos definidos', this.margin + 5, this.currentY);
+        this.currentY += 5;
+      }
+
       this.currentY += 5;
-      
+
       // Verificar espacio en la página
       if (this.currentY > this.pageHeight - 40) {
         pdf.addPage();
@@ -551,30 +596,38 @@ class EmergencyPDFService {
 
   _addConsolidatedContacts(protocols) {
     const pdf = this.pdf;
-    
+
     pdf.setFontSize(16);
     pdf.setTextColor(...colors.text);
     pdf.text('CONTACTOS CONSOLIDADOS', this.margin, this.currentY);
-    
+
     this.currentY += 15;
-    
+
     // Recopilar todos los contactos únicos
     const allContacts = [];
     protocols.forEach(protocol => {
-      protocol.content.contacts.forEach(contact => {
-        if (!allContacts.find(c => c.phone === contact.phone)) {
+      const contacts = protocol.content?.contacts || protocol.contacts || [];
+      contacts.forEach(contact => {
+        if (contact && contact.phone && !allContacts.find(c => c.phone === contact.phone)) {
           allContacts.push(contact);
         }
       });
     });
-    
+
+    if (allContacts.length === 0) {
+      pdf.setFontSize(10);
+      pdf.setTextColor(...colors.secondary);
+      pdf.text('No hay contactos disponibles.', this.margin + 5, this.currentY);
+      return;
+    }
+
     // Tabla de contactos
     const contactsData = allContacts.map(contact => [
-      contact.name,
-      contact.phone,
-      contact.type.charAt(0).toUpperCase() + contact.type.slice(1)
+      contact.name || 'Sin nombre',
+      contact.phone || 'Sin teléfono',
+      contact.type ? contact.type.charAt(0).toUpperCase() + contact.type.slice(1) : 'General'
     ]);
-    
+
     autoTable(pdf, {
       startY: this.currentY,
       head: [['Contacto', 'Teléfono', 'Tipo']],
