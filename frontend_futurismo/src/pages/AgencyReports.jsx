@@ -24,9 +24,9 @@ const AgencyReports = () => {
   const [chartType, setChartType] = useState('revenue'); // revenue, reservations, participants
   const [reportData, setReportData] = useState(null);
   const [loading, setLoading] = useState(true);
-  
-  // Get actions from store after component initialization
-  const { actions } = useAgencyStore();
+
+  // Get functions from store
+  const { fetchMonthlyReport, fetchYearlyComparison } = useAgencyStore();
 
   // Obtener datos del reporte
   useEffect(() => {
@@ -37,10 +37,10 @@ const AgencyReports = () => {
       
       try {
         if (reportType === 'monthly') {
-          const data = await actions.fetchMonthlyReport(year, month);
+          const data = await fetchMonthlyReport(year, month);
           setReportData(data);
         } else {
-          const yearlyData = await actions.fetchYearlyComparison(year);
+          const yearlyData = await fetchYearlyComparison(year);
           setReportData({ yearlyData, year });
         }
       } catch (error) {
@@ -52,7 +52,7 @@ const AgencyReports = () => {
     };
 
     fetchReportData();
-  }, [selectedDate, reportType, actions]);
+  }, [selectedDate, reportType, fetchMonthlyReport, fetchYearlyComparison]);
 
   const navigateDate = (direction) => {
     if (direction === 'prev') {

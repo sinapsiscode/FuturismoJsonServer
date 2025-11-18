@@ -159,12 +159,17 @@ module.exports = (router) => {
         });
       }
 
+      // Merge existing data with update data (keep existing fields)
       const updatedGuide = {
-        ...req.body,
+        ...guide.value(),  // Keep all existing fields
+        ...req.body,       // Overwrite with new data
+        id: guide.value().id,  // Preserve ID
         updated_at: new Date().toISOString()
       };
 
       guide.assign(updatedGuide).write();
+
+      console.log('✅ Guía actualizado:', updatedGuide.id);
 
       res.json({
         success: true,
@@ -172,6 +177,7 @@ module.exports = (router) => {
         message: 'Guía actualizado exitosamente'
       });
     } catch (error) {
+      console.error('❌ Error actualizando guía:', error);
       res.status(500).json({
         success: false,
         error: 'Error al actualizar guía'

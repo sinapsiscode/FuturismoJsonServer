@@ -739,7 +739,30 @@
     "logoutCurrent": "Exit your current account",
     "systemConfig": "System Configuration",
     "generalConfig": "General configuration and notifications - To be implemented",
-    "logoutConfirm": "Are you sure you want to logout?"
+    "logoutConfirm": "Are you sure you want to logout?",
+    "payment": {
+      "title": "Payment Methods",
+      "subtitle": "Manage your payment methods to receive your earnings",
+      "types": {
+        "bankAccount": "Bank Account",
+        "card": "Card",
+        "digitalWallet": "Digital Wallet"
+      },
+      "bankEntity": "Bank Entity",
+      "accountNumber": "Account Number",
+      "accountType": "Account Type",
+      "accountTypes": {
+        "savings": "Savings",
+        "current": "Current",
+        "cts": "CTS"
+      },
+      "currency": "Currency",
+      "cardType": "Card Type",
+      "expiryDate": "Expiry Date",
+      "holder": "Holder",
+      "securityTitle": "Security",
+      "securityMessage": "Your payment data is protected and encrypted"
+    }
   },
   "navigation": {
     "dashboard": "Dashboard",

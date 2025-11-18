@@ -3,7 +3,11 @@
     "allow": [
       "Bash(temp_token.json)",
       "Bash(del temp_token.json)",
-      "Bash(token.txt)"
+      "Bash(token.txt)",
+      "Bash(node count-lines.js:*)",
+      "Bash(del count-lines.js)",
+      "Bash(powershell \"Get-Content db.json | ConvertFrom-Json | Select-Object -ExpandProperty users | Where-Object { $_email -eq ''contacto@tourslima.com'' } | ConvertTo-Json\")",
+      "Bash(curl:*)"
     ],
     "deny": [],
     "ask": []

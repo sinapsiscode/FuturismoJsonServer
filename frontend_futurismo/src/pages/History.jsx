@@ -89,6 +89,14 @@ const History = () => {
   const paginatedServices = getPaginatedServices();
   const filterOptions = getFilterOptions();
 
+  console.log('📄 History Page:', {
+    totalServices: filteredServices.length,
+    paginatedServices: paginatedServices.length,
+    pagination,
+    filters,
+    loading
+  });
+
   // Filtrar opciones según el rol del usuario
   const getFilteredOptions = () => {
     if (user?.role === 'guide') {

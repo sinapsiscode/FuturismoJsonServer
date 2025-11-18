@@ -182,27 +182,71 @@ const useGuidesStore = create((set, get) => ({
   
   updateGuide: async (id, updateData) => {
     set({ isLoading: true, error: null });
-    
+
     try {
-      const result = await guidesService.updateGuide(id, updateData);
-      
+      // Transform frontend format to backend format
+      const backendData = {};
+
+      // Handle fullName -> first_name + last_name
+      if (updateData.fullName) {
+        const nameParts = updateData.fullName.trim().split(' ');
+        backendData.first_name = nameParts[0];
+        backendData.last_name = nameParts.slice(1).join(' ') || nameParts[0];
+        backendData.name = updateData.fullName; // Also keep name field
+      }
+
+      // Handle guideType -> type conversion
+      if (updateData.guideType) {
+        backendData.type = updateData.guideType === 'planta' ? 'employed' : 'freelance';
+      }
+
+      // Handle dni
+      if (updateData.dni) {
+        backendData.documents = {
+          ...(updateData.documents || {}),
+          dni: updateData.dni
+        };
+      }
+
+      // Copy other fields directly
+      if (updateData.phone) backendData.phone = updateData.phone;
+      if (updateData.email) backendData.email = updateData.email;
+      if (updateData.address) backendData.address = updateData.address;
+      if (updateData.status) backendData.status = updateData.status;
+      if (updateData.specializations) backendData.specializations = updateData.specializations;
+
+      console.log('📝 Actualizando guía:', { id, updateData, backendData });
+
+      const result = await guidesService.updateGuide(id, backendData);
+
       if (!result.success) {
         throw new Error(result.error || 'Error al actualizar guía');
       }
-      
+
+      console.log('✅ Guía actualizado exitosamente');
+
+      // Transform backend response to frontend format
+      const transformedGuide = {
+        ...result.data,
+        fullName: result.data.fullName || `${result.data.first_name} ${result.data.last_name}`.trim() || result.data.name,
+        guideType: result.data.guideType || (result.data.type === 'employed' ? 'planta' : result.data.type),
+        dni: result.data.dni || result.data.documents?.dni
+      };
+
       set((state) => ({
-        guides: state.guides.map(g => 
-          g.id === id ? result.data : g
+        guides: state.guides.map(g =>
+          g.id === id ? transformedGuide : g
         ),
-        currentGuide: state.currentGuide?.id === id 
-          ? result.data 
+        currentGuide: state.currentGuide?.id === id
+          ? transformedGuide
           : state.currentGuide,
         isLoading: false
       }));
-      
-      return result.data;
+
+      return transformedGuide;
     } catch (error) {
-      set({ 
+      console.error('❌ Error al actualizar guía:', error);
+      set({
         isLoading: false,
         error: error.message
       });

@@ -500,7 +500,30 @@
     "logoutCurrent": "Salir de tu cuenta actual",
     "systemConfig": "Configuración del Sistema",
     "generalConfig": "Configuración general y notificaciones - Por implementar",
-    "logoutConfirm": "¿Está seguro que desea cerrar sesión?"
+    "logoutConfirm": "¿Está seguro que desea cerrar sesión?",
+    "payment": {
+      "title": "Métodos de Pago",
+      "subtitle": "Administra tus métodos de pago para recibir tus ganancias",
+      "types": {
+        "bankAccount": "Cuenta Bancaria",
+        "card": "Tarjeta",
+        "digitalWallet": "Billetera Digital"
+      },
+      "bankEntity": "Entidad Bancaria",
+      "accountNumber": "Número de Cuenta",
+      "accountType": "Tipo de Cuenta",
+      "accountTypes": {
+        "savings": "Ahorro",
+        "current": "Corriente",
+        "cts": "CTS"
+      },
+      "currency": "Moneda",
+      "cardType": "Tipo de Tarjeta",
+      "expiryDate": "Fecha de Expiración",
+      "holder": "Titular",
+      "securityTitle": "Seguridad",
+      "securityMessage": "Tus datos de pago están protegidos y encriptados"
+    }
   },
   "navigation": {
     "dashboard": "Dashboard",

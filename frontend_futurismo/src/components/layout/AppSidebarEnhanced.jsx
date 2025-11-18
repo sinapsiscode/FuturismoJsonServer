@@ -41,7 +41,6 @@ const AppSidebarEnhanced = () => {
           section: 'Marketplace',
           items: [
             { path: '/marketplace', icon: MagnifyingGlassIcon, label: t('navigation.searchGuides') },
-            { path: '/marketplace/requests', icon: BriefcaseIcon, label: t('navigation.myContracts') },
             { path: '/agency/rewards', icon: GiftIcon, label: 'Tienda de Premios' }
           ]
         },

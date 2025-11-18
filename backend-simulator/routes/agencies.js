@@ -1018,5 +1018,139 @@ module.exports = (router) => {
     }
   });
 
+  // Get monthly report for agency
+  agenciesRouter.get('/:agencyId/reports/monthly', (req, res) => {
+    try {
+      const { agencyId } = req.params;
+      const { year, month } = req.query;
+      const db = router.db;
+
+      const reservations = db.get('reservations').value() || [];
+      const tours = db.get('tours').value() || [];
+
+      // Filter reservations by agency, year, and month
+      const monthlyReservations = reservations.filter(r => {
+        if (r.agency_id !== agencyId) return false;
+
+        const resDate = new Date(r.date || r.tour_date);
+        return resDate.getFullYear() === parseInt(year) &&
+               (resDate.getMonth() + 1) === parseInt(month);
+      });
+
+      // Generate daily data for the month
+      const daysInMonth = new Date(year, month, 0).getDate();
+      const dailyData = [];
+
+      for (let day = 1; day <= daysInMonth; day++) {
+        const dateStr = `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+        const dayReservations = monthlyReservations.filter(r =>
+          (r.date || r.tour_date).startsWith(dateStr)
+        );
+
+        dailyData.push({
+          date: dateStr,
+          revenue: dayReservations.reduce((sum, r) => sum + (r.total_amount || r.total || 0), 0),
+          reservations: dayReservations.length,
+          participants: dayReservations.reduce((sum, r) => sum + (r.group_size || r.participants || 0), 0)
+        });
+      }
+
+      // Generate service breakdown
+      const serviceBreakdown = {};
+      monthlyReservations.forEach(r => {
+        const tour = tours.find(t => t.id === r.service_id);
+        const serviceName = r.service_name || tour?.name || tour?.title || 'Servicio desconocido';
+
+        if (!serviceBreakdown[serviceName]) {
+          serviceBreakdown[serviceName] = {
+            revenue: 0,
+            count: 0,
+            participants: 0
+          };
+        }
+
+        serviceBreakdown[serviceName].revenue += (r.total_amount || r.total || 0);
+        serviceBreakdown[serviceName].count += 1;
+        serviceBreakdown[serviceName].participants += (r.group_size || r.participants || 0);
+      });
+
+      // Calculate summary
+      const totalRevenue = monthlyReservations.reduce((sum, r) => sum + (r.total_amount || r.total || 0), 0);
+      const totalReservations = monthlyReservations.length;
+      const totalParticipants = monthlyReservations.reduce((sum, r) => sum + (r.group_size || r.participants || 0), 0);
+
+      res.json({
+        success: true,
+        data: {
+          summary: {
+            totalRevenue,
+            totalReservations,
+            totalParticipants,
+            averageOrderValue: totalReservations > 0 ? totalRevenue / totalReservations : 0
+          },
+          dailyData,
+          serviceBreakdown
+        }
+      });
+    } catch (error) {
+      console.error('Error getting monthly report:', error);
+      res.status(500).json({
+        success: false,
+        error: 'Error al obtener reporte mensual'
+      });
+    }
+  });
+
+  // Get yearly comparison for agency
+  agenciesRouter.get('/:agencyId/reports/yearly', (req, res) => {
+    try {
+      const { agencyId } = req.params;
+      const { year } = req.query;
+      const db = router.db;
+
+      const reservations = db.get('reservations').value() || [];
+      const monthNames = [
+        'enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio',
+        'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'
+      ];
+
+      const yearlyData = [];
+
+      for (let month = 1; month <= 12; month++) {
+        const monthReservations = reservations.filter(r => {
+          if (r.agency_id !== agencyId) return false;
+
+          const resDate = new Date(r.date || r.tour_date);
+          return resDate.getFullYear() === parseInt(year) &&
+                 (resDate.getMonth() + 1) === month;
+        });
+
+        const totalRevenue = monthReservations.reduce((sum, r) => sum + (r.total_amount || r.total || 0), 0);
+        const totalReservations = monthReservations.length;
+        const totalParticipants = monthReservations.reduce((sum, r) => sum + (r.group_size || r.participants || 0), 0);
+
+        yearlyData.push({
+          month,
+          monthName: monthNames[month - 1],
+          totalRevenue,
+          totalReservations,
+          totalParticipants,
+          averageOrderValue: totalReservations > 0 ? totalRevenue / totalReservations : 0
+        });
+      }
+
+      res.json({
+        success: true,
+        data: yearlyData
+      });
+    } catch (error) {
+      console.error('Error getting yearly comparison:', error);
+      res.status(500).json({
+        success: false,
+        error: 'Error al obtener comparación anual'
+      });
+    }
+  });
+
   return agenciesRouter;
 };

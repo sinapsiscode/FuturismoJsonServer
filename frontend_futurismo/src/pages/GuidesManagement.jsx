@@ -5,7 +5,7 @@ import GuideForm from '../components/guides/GuideForm';
 import GuideProfile from '../components/guides/GuideProfile';
 
 const GuidesManagement = () => {
-  const { guides = [], languages = [], museums = [], fetchGuides, isLoading } = useGuidesStore();
+  const { guides = [], languages = [], museums = [], fetchGuides, updateGuide, deleteGuide, isLoading } = useGuidesStore();
 
   // Cargar guías al montar el componente
   useEffect(() => {
@@ -22,11 +22,15 @@ const GuidesManagement = () => {
   // Filtrar guías
   const filteredGuides = guides.filter(guide => {
     const matchesSearch = !searchQuery ||
+      guide?.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
       guide?.fullName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      guide?.first_name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      guide?.last_name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
       guide?.email?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      guide?.documents?.dni?.includes(searchQuery) ||
       guide?.dni?.includes(searchQuery);
 
-    const matchesType = !filterType || guide?.guideType === filterType;
+    const matchesType = !filterType || guide?.type === filterType || guide?.guideType === filterType;
 
     const matchesMuseum = !filterMuseum ||
       guide?.specializations?.museums?.some(museum =>
@@ -48,16 +52,23 @@ const GuidesManagement = () => {
 
   const handleDeleteGuide = (guideId) => {
     if (confirm('¿Estás seguro de eliminar este guía?')) {
-      actions.deleteGuide(guideId);
+      deleteGuide(guideId);
     }
   };
 
-  const handleSaveGuide = (guideData) => {
+  const handleSaveGuide = async (guideData) => {
     // Solo permite edición, no creación
     if (editingGuide) {
-      actions.updateGuide(editingGuide.id, guideData);
-      setIsEditing(false);
-      setEditingGuide(null);
+      try {
+        await updateGuide(editingGuide.id, guideData);
+        setIsEditing(false);
+        setEditingGuide(null);
+        // Recargar guías para ver los cambios
+        await fetchGuides();
+      } catch (error) {
+        console.error('Error al actualizar guía:', error);
+        alert('Error al actualizar la información del guía');
+      }
     }
   };
 
@@ -190,7 +201,7 @@ const GuidesManagement = () => {
             <div className="flex items-center space-x-3">
               <TrophyIcon className="w-8 h-8 text-green-600" />
               <div>
-                <p className="text-2xl font-bold text-green-600">{guides.filter(g => g.guideType === 'planta').length}</p>
+                <p className="text-2xl font-bold text-green-600">{guides.filter(g => g.type === 'employed' || g.guideType === 'planta').length}</p>
                 <p className="text-sm text-green-700">Guías de Planta</p>
               </div>
             </div>
@@ -200,7 +211,7 @@ const GuidesManagement = () => {
             <div className="flex items-center space-x-3">
               <GlobeAltIcon className="w-8 h-8 text-yellow-600" />
               <div>
-                <p className="text-2xl font-bold text-yellow-600">{guides.filter(g => g.guideType === 'freelance').length}</p>
+                <p className="text-2xl font-bold text-yellow-600">{guides.filter(g => g.type === 'freelance' || g.guideType === 'freelance').length}</p>
                 <p className="text-sm text-yellow-700">Freelance</p>
               </div>
             </div>
@@ -233,7 +244,7 @@ const GuidesManagement = () => {
                 className="border border-gray-300 rounded-lg px-3 py-2"
               >
                 <option value="">Todos los tipos</option>
-                <option value="planta">Guía de Planta</option>
+                <option value="employed">Guía de Planta</option>
                 <option value="freelance">Freelance</option>
               </select>
             </div>
@@ -328,22 +339,22 @@ const GuidesManagement = () => {
                       <div className="flex items-center">
                         <div className="flex-shrink-0 h-10 w-10">
                           <div className="h-10 w-10 rounded-full bg-blue-500 flex items-center justify-center text-white font-semibold">
-                            {(guide?.fullName || 'G').split(' ').map(name => name[0]).join('').substring(0, 2)}
+                            {(guide?.name || guide?.fullName || 'G').split(' ').map(name => name[0]).join('').substring(0, 2)}
                           </div>
                         </div>
                         <div className="ml-4">
-                          <div className="text-sm font-medium text-gray-900">{guide?.fullName || 'Sin nombre'}</div>
+                          <div className="text-sm font-medium text-gray-900">{guide?.name || guide?.fullName || 'Sin nombre'}</div>
                           <div className="text-sm text-gray-500">{guide?.email || 'Sin email'}</div>
                         </div>
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <span className={`px-2 py-1 text-xs font-medium rounded-full ${
-                        guide?.guideType === 'planta'
+                        (guide?.type === 'employed' || guide?.guideType === 'planta')
                           ? 'bg-green-100 text-green-800'
                           : 'bg-yellow-100 text-yellow-800'
                       }`}>
-                        {guide?.guideType === 'planta' ? 'Planta' : 'Freelance'}
+                        {(guide?.type === 'employed' || guide?.guideType === 'planta') ? 'Planta' : 'Freelance'}
                       </span>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
@@ -421,19 +432,19 @@ const GuidesManagement = () => {
                     <div
                       className="w-12 h-12 rounded-full bg-blue-500 flex items-center justify-center text-white font-semibold text-lg"
                     >
-                      {(guide?.fullName || 'G').split(' ').map(name => name[0]).join('').substring(0, 2)}
+                      {(guide?.name || guide?.fullName || 'G').split(' ').map(name => name[0]).join('').substring(0, 2)}
                     </div>
                     <div className="flex-1">
                       <h3 className="font-semibold text-gray-900 line-clamp-1">
-                        {guide?.fullName || 'Sin nombre'}
+                        {guide?.name || guide?.fullName || 'Sin nombre'}
                       </h3>
                       <div className="flex items-center space-x-2 mt-1">
                         <span className={`px-2 py-1 text-xs font-medium rounded-full ${
-                          guide?.guideType === 'planta'
+                          (guide?.type === 'employed' || guide?.guideType === 'planta')
                             ? 'bg-green-100 text-green-800'
                             : 'bg-yellow-100 text-yellow-800'
                         }`}>
-                          {guide?.guideType === 'planta' ? 'Planta' : 'Freelance'}
+                          {(guide?.type === 'employed' || guide?.guideType === 'planta') ? 'Planta' : 'Freelance'}
                         </span>
                         <div className="flex items-center space-x-1">
                           <TrophyIcon className="w-3 h-3 text-yellow-500" />

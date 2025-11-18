@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { MagnifyingGlassIcon, PlusIcon, ArrowDownTrayIcon, DocumentTextIcon, ShieldCheckIcon, ExclamationTriangleIcon, PhoneIcon, CheckCircleIcon, CogIcon, FunnelIcon, EyeIcon, PencilIcon, TrashIcon, ArrowPathIcon } from '@heroicons/react/24/outline';
 import useEmergencyStore from '../stores/emergencyStore';
 import ProtocolViewer from '../components/emergency/ProtocolViewer';
@@ -18,9 +18,24 @@ const EmergencyProtocols = () => {
 
   const protocols = useEmergencyStore((state) => state.protocols);
   const categories = useEmergencyStore((state) => state.categories);
+  const fetchProtocols = useEmergencyStore((state) => state.fetchProtocols);
+  const initialize = useEmergencyStore((state) => state.initialize);
   const updateProtocol = useEmergencyStore((state) => state.updateProtocol);
   const createProtocol = useEmergencyStore((state) => state.createProtocol);
   const deleteProtocol = useEmergencyStore((state) => state.deleteProtocol);
+
+  // Cargar protocolos al montar el componente
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        await initialize();
+        await fetchProtocols();
+      } catch (error) {
+        console.error('Error cargando protocolos:', error);
+      }
+    };
+    loadData();
+  }, [initialize, fetchProtocols]);
 
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('');

@@ -142,6 +142,15 @@ const useHistoryStore = create(
           const totalItems = historyData.length;
           const totalPages = Math.ceil(totalItems / get().pagination.itemsPerPage);
 
+          console.log('📊 Historial cargado:', {
+            totalReservations: reservations.length,
+            totalHistory: historyData.length,
+            totalTours: tours.length,
+            totalGuides: guides.length,
+            totalClients: clients.length,
+            sampleService: historyData[0]
+          });
+
           set({
             services: historyData,
             filteredServices: historyData,

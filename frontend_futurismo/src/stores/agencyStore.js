@@ -275,14 +275,40 @@ const useAgencyStore = create(
         
         // === REPORTES Y ESTADÍSTICAS ===
         fetchMonthlyReport: async (year, month) => {
-          const { currentAgency } = get();
-          
-          if (!currentAgency) return null;
-          
           set({ isLoading: true, error: null });
-          
+
           try {
-            const result = await agencyService.getMonthlyReport(currentAgency.id, year, month);
+            // Importar authStore dinámicamente
+            const useAuthStore = (await import('./authStore')).useAuthStore;
+            const user = useAuthStore.getState().user;
+
+            if (!user) {
+              console.warn('No hay usuario disponible');
+              set({ isLoading: false });
+              return null;
+            }
+
+            // Buscar el agency_id: puede estar en user.agency_id o necesitamos buscarlo por user.id
+            let agencyId = user.agency_id;
+
+            if (!agencyId) {
+              // Buscar la agencia por user_id
+              const response = await fetch('/api/agencies');
+              const agenciesResult = await response.json();
+
+              if (agenciesResult.success && agenciesResult.data) {
+                const userAgency = agenciesResult.data.find(a => a.user_id === user.id);
+                agencyId = userAgency?.id;
+              }
+            }
+
+            if (!agencyId) {
+              console.warn('No se encontró agency_id para el usuario');
+              set({ isLoading: false });
+              return null;
+            }
+
+            const result = await agencyService.getMonthlyReport(agencyId, year, month);
             
             if (!result.success) {
               throw new Error(result.error || 'Error al cargar reporte mensual');
@@ -304,14 +330,40 @@ const useAgencyStore = create(
         },
         
         fetchYearlyComparison: async (year) => {
-          const { currentAgency } = get();
-          
-          if (!currentAgency) return null;
-          
           set({ isLoading: true, error: null });
-          
+
           try {
-            const result = await agencyService.getYearlyComparison(currentAgency.id, year);
+            // Importar authStore dinámicamente
+            const useAuthStore = (await import('./authStore')).useAuthStore;
+            const user = useAuthStore.getState().user;
+
+            if (!user) {
+              console.warn('No hay usuario disponible');
+              set({ isLoading: false });
+              return null;
+            }
+
+            // Buscar el agency_id: puede estar en user.agency_id o necesitamos buscarlo por user.id
+            let agencyId = user.agency_id;
+
+            if (!agencyId) {
+              // Buscar la agencia por user_id
+              const response = await fetch('/api/agencies');
+              const agenciesResult = await response.json();
+
+              if (agenciesResult.success && agenciesResult.data) {
+                const userAgency = agenciesResult.data.find(a => a.user_id === user.id);
+                agencyId = userAgency?.id;
+              }
+            }
+
+            if (!agencyId) {
+              console.warn('No se encontró agency_id para el usuario');
+              set({ isLoading: false });
+              return null;
+            }
+
+            const result = await agencyService.getYearlyComparison(agencyId, year);
             
             if (!result.success) {
               throw new Error(result.error || 'Error al cargar comparación anual');

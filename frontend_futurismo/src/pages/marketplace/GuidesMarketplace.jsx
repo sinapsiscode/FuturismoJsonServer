@@ -17,16 +17,14 @@ import LoadingSpinner from '../../components/common/LoadingSpinner';
 
 const GuidesMarketplace = () => {
   const navigate = useNavigate();
-  const { 
-    freelanceGuides, 
-    isLoading, 
-    fetchFreelanceGuides, 
-    searchGuides, 
+  const {
+    freelanceGuides,
+    isLoading,
+    fetchFreelanceGuides,
     setFilters,
-    activeFilters,
-    searchQuery
+    activeFilters
   } = useMarketplaceStore();
-  
+
   const [localSearchQuery, setLocalSearchQuery] = useState('');
   const [viewLayout, setViewLayout] = useState('grid');
   const [showFilters, setShowFilters] = useState(false);
@@ -43,9 +41,24 @@ const GuidesMarketplace = () => {
     }
   };
 
-  const handleSearch = (e) => {
-    e.preventDefault();
-    searchGuides(localSearchQuery);
+  // Filtrar guías localmente
+  const filteredGuides = freelanceGuides.filter(guide => {
+    if (!localSearchQuery) return true;
+
+    const query = localSearchQuery.toLowerCase();
+    return (
+      guide?.name?.toLowerCase().includes(query) ||
+      guide?.fullName?.toLowerCase().includes(query) ||
+      guide?.first_name?.toLowerCase().includes(query) ||
+      guide?.last_name?.toLowerCase().includes(query) ||
+      guide?.email?.toLowerCase().includes(query) ||
+      guide?.specialties?.some(s => s.toLowerCase().includes(query)) ||
+      guide?.bio?.toLowerCase().includes(query)
+    );
+  });
+
+  const handleSearchChange = (e) => {
+    setLocalSearchQuery(e.target.value);
   };
 
   const handleFilterChange = (filterType, value) => {
@@ -54,12 +67,12 @@ const GuidesMarketplace = () => {
 
   // Stats mock data until we have real stats
   const stats = {
-    totalGuides: freelanceGuides.length,
-    availableGuides: freelanceGuides.filter(g => g.status === 'available').length,
-    averageRating: freelanceGuides.length > 0 
-      ? (freelanceGuides.reduce((sum, g) => sum + (g.rating || 0), 0) / freelanceGuides.length).toFixed(1)
+    totalGuides: filteredGuides.length,
+    availableGuides: filteredGuides.filter(g => g.status === 'available').length,
+    averageRating: filteredGuides.length > 0
+      ? (filteredGuides.reduce((sum, g) => sum + (g.rating || 0), 0) / filteredGuides.length).toFixed(1)
       : '0.0',
-    totalReviews: freelanceGuides.reduce((sum, g) => sum + (g.reviewCount || 0), 0)
+    totalReviews: filteredGuides.reduce((sum, g) => sum + (g.reviewCount || 0), 0)
   };
 
   if (isLoading) {
@@ -146,18 +159,18 @@ const GuidesMarketplace = () => {
       {/* Search and Filters */}
       <div className="bg-white rounded-lg shadow-sm border p-6">
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between space-y-4 lg:space-y-0">
-          <form onSubmit={handleSearch} className="flex-1 max-w-md">
+          <div className="flex-1 max-w-md">
             <div className="relative">
               <MagnifyingGlassIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
               <input
                 type="text"
                 placeholder="Buscar guías por nombre, especialidad..."
                 value={localSearchQuery}
-                onChange={(e) => setLocalSearchQuery(e.target.value)}
+                onChange={handleSearchChange}
                 className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               />
             </div>
-          </form>
+          </div>
           
           <div className="flex items-center space-x-4">
             <button
@@ -242,18 +255,18 @@ const GuidesMarketplace = () => {
       <div className="bg-white rounded-lg shadow-sm border">
         <div className="p-6 border-b border-gray-200">
           <h3 className="text-lg font-medium text-gray-900">
-            Guías Disponibles ({freelanceGuides.length})
+            Guías Disponibles ({filteredGuides.length})
           </h3>
         </div>
-        
+
         <div className="p-6">
-          {freelanceGuides.length > 0 ? (
+          {filteredGuides.length > 0 ? (
             <div className={`grid gap-6 ${
               viewLayout === 'grid' 
                 ? 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3' 
                 : 'grid-cols-1'
             }`}>
-              {freelanceGuides.map((guide) => (
+              {filteredGuides.map((guide) => (
                 <div key={guide.id} className="border border-gray-200 rounded-lg p-6 hover:shadow-md transition-shadow">
                   <div className="flex items-start space-x-4">
                     <img
