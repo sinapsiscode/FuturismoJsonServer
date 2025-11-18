@@ -9,12 +9,21 @@ module.exports = (router) => {
 
   /**
    * GET /api/monitoring/photos
-   * Obtener fotos de tours con filtros
+   * Obtener fotos de tours con filtros y paginación
    */
   apiRouter.get('/photos', (req, res) => {
     try {
       const db = router.db;
-      const { date, guideId, tourId, agencyId } = req.query;
+      const {
+        date,
+        guideId,
+        tourId,
+        agencyId,
+        page = 1,
+        limit = 50,
+        sortBy = 'timestamp',
+        sortOrder = 'desc'
+      } = req.query;
 
       // Obtener datos relacionados
       const reservations = db.get('reservations').value() || [];
@@ -27,8 +36,11 @@ module.exports = (router) => {
 
       // Si no hay fotos guardadas, generar desde checkpoints completados
       if (photos.length === 0) {
+        console.log('⚠️ No hay fotos en tour_photos, generando desde checkpoints...');
         photos = generatePhotosFromCheckpoints(reservations, services, guides, agencies);
       }
+
+      console.log(`📸 Total de fotos encontradas: ${photos.length}`);
 
       // Aplicar filtros
       if (date) {
@@ -37,34 +49,73 @@ module.exports = (router) => {
           const photoDate = new Date(photo.timestamp).toDateString();
           return photoDate === targetDate;
         });
+        console.log(`📅 Filtradas por fecha ${date}: ${photos.length} fotos`);
       }
 
       if (guideId) {
         photos = photos.filter(photo => photo.guideId === guideId);
+        console.log(`👤 Filtradas por guía ${guideId}: ${photos.length} fotos`);
       }
 
       if (tourId) {
         photos = photos.filter(photo => photo.tourId === tourId);
+        console.log(`🎫 Filtradas por tour ${tourId}: ${photos.length} fotos`);
       }
 
       if (agencyId) {
         photos = photos.filter(photo => photo.agencyId === agencyId);
+        console.log(`🏢 Filtradas por agencia ${agencyId}: ${photos.length} fotos`);
       }
 
-      // Ordenar por fecha descendente (más recientes primero)
-      photos.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+      // Ordenar
+      photos.sort((a, b) => {
+        const aValue = sortBy === 'timestamp' ? new Date(a.timestamp) : a[sortBy];
+        const bValue = sortBy === 'timestamp' ? new Date(b.timestamp) : b[sortBy];
+
+        if (sortOrder === 'desc') {
+          return bValue > aValue ? 1 : -1;
+        } else {
+          return aValue > bValue ? 1 : -1;
+        }
+      });
+
+      // Paginación
+      const totalPhotos = photos.length;
+      const pageNum = parseInt(page);
+      const limitNum = parseInt(limit);
+      const startIndex = (pageNum - 1) * limitNum;
+      const endIndex = startIndex + limitNum;
+      const paginatedPhotos = photos.slice(startIndex, endIndex);
+
+      console.log(`📄 Página ${pageNum}: mostrando ${paginatedPhotos.length} de ${totalPhotos} fotos`);
 
       res.json({
         success: true,
-        data: photos
+        data: paginatedPhotos,
+        pagination: {
+          page: pageNum,
+          limit: limitNum,
+          total: totalPhotos,
+          totalPages: Math.ceil(totalPhotos / limitNum),
+          hasNextPage: endIndex < totalPhotos,
+          hasPrevPage: pageNum > 1
+        }
       });
     } catch (error) {
-      console.error('Error al obtener fotos de tours:', error);
+      console.error('❌ Error al obtener fotos de tours:', error);
       res.status(500).json({
         success: false,
         error: 'Error al obtener fotos de tours',
         details: error.message,
-        data: []
+        data: [],
+        pagination: {
+          page: 1,
+          limit: 50,
+          total: 0,
+          totalPages: 0,
+          hasNextPage: false,
+          hasPrevPage: false
+        }
       });
     }
   });
@@ -178,35 +229,28 @@ module.exports = (router) => {
   apiRouter.get('/active-tours', (req, res) => {
     try {
       const db = router.db;
-      const services = db.get('services').value() || [];
-      const guides = db.get('guides').value() || [];
+      // Usar monitoring_tours en lugar de services
+      const monitoringTours = db.get('monitoring_tours').value() || [];
 
-      // Filtrar servicios activos o en progreso
-      const activeTours = services.filter(s =>
-        s.status === 'active' || s.status === 'in_progress' || s.status === 'enroute'
-      ).map(service => {
-        const guide = guides.find(g => g.id === service.assignedGuide);
+      console.log(`📊 Total tours en monitoring: ${monitoringTours.length}`);
 
-        return {
-          id: service.id,
-          tourName: service.name,
-          guideName: guide?.name || 'Guía no asignado',
-          guideId: service.assignedGuide,
-          status: service.status,
-          startTime: service.startTime || service.created_at,
-          tourists: service.groupSize || 0,
-          currentLocation: service.currentLocation || null,
-          progress: service.progress || 0,
-          estimatedEndTime: service.estimatedEndTime || null
-        };
-      });
+      // Filtrar tours activos (en ruta, detenidos o retrasados)
+      const activeTours = monitoringTours.filter(tour =>
+        tour.status === 'enroute' ||
+        tour.status === 'stopped' ||
+        tour.status === 'delayed' ||
+        tour.status === 'active' ||
+        tour.status === 'in_progress'
+      );
+
+      console.log(`✅ Tours activos filtrados: ${activeTours.length}`);
 
       res.json({
         success: true,
         data: activeTours
       });
     } catch (error) {
-      console.error('Error al obtener tours activos:', error);
+      console.error('❌ Error al obtener tours activos:', error);
       res.status(500).json({
         success: false,
         error: 'Error al obtener tours activos',

@@ -1,0 +1,13 @@
+{
+  "success": true,
+  "data": {
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJ1c2VyLWFnZW5jeS0xIiwiZW1haWwiOiJjb250YWN0b0B0b3Vyc2xpbWEuY29tIiwicm9sZSI6ImFnZW5jeSIsImlhdCI6MTc2MzQzNjg0OCwiZXhwIjoxNzYzNTIzMjQ4fQ.JjytQMVA6Y5RlVwc8-18P7SruonYcO8O4g7sFGNAACQ",
+    "user": {
+      "id": "user-agency-1",
+      "name": "María González",
+      "email": "contacto@tourslima.com",
+      "role": "agency",
+      "avatar": "https://ui-avatars.com/api/?name=Maria+Gonzalez&background=10B981&color=fff"
+    }
+  }
+}

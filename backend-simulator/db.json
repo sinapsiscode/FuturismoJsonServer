@@ -28,7 +28,7 @@
       "avatar": "https://ui-avatars.com/api/?name=Maria+Gonzalez&background=10B981&color=fff",
       "created_at": "2024-02-01T00:00:00Z",
       "updated_at": "2024-02-01T00:00:00Z",
-      "last_login_at": "2025-11-15T22:26:27.216Z"
+      "last_login_at": "2025-11-18T03:34:34.466Z"
     },
     {
       "id": "user-guide-1",
@@ -1155,7 +1155,7 @@
       "total_amount": 566.4,
       "base_amount": 480,
       "tax_amount": 86.4,
-      "rating": 5.0,
+      "rating": 5,
       "review_comment": "Una experiencia increíble. La atención fue impecable y los lugares visitados fueron espectaculares.",
       "reviewed_at": "2025-05-24T09:00:00Z",
       "created_at": "2025-05-18T14:30:00Z",
@@ -1175,7 +1175,7 @@
       "total_amount": 424.8,
       "base_amount": 360,
       "tax_amount": 64.8,
-      "rating": 4.0,
+      "rating": 4,
       "review_comment": "Buen tour en general. Algunas mejoras en la puntualidad serían apreciadas.",
       "reviewed_at": "2025-06-07T15:20:00Z",
       "created_at": "2025-05-28T09:15:00Z",
@@ -2506,7 +2506,103 @@
     }
   ],
   "emergency_incidents": [],
-  "monitoring_tours": [],
+  "monitoring_tours": [
+    {
+      "id": "tour-001",
+      "tourName": "City Tour Lima Colonial",
+      "destination": "Centro Histórico de Lima",
+      "guideName": "Carlos Mendoza",
+      "guideId": "guide-001",
+      "status": "enroute",
+      "progress": 45,
+      "tourists": 12,
+      "startTime": "09:00 AM",
+      "estimatedEndTime": "01:00 PM",
+      "date": "2025-01-17",
+      "currentLocation": {
+        "lat": -12.046182344587248,
+        "lng": -77.0419451305027,
+        "name": "Plaza Mayor de Lima"
+      },
+      "lastUpdated": "2025-11-18T03:48:12.221Z"
+    },
+    {
+      "id": "tour-002",
+      "tourName": "Tour Gastronómico Miraflores",
+      "destination": "Miraflores",
+      "guideName": "Ana Torres",
+      "guideId": "guide-002",
+      "status": "stopped",
+      "progress": 60,
+      "tourists": 8,
+      "startTime": "11:00 AM",
+      "estimatedEndTime": "03:00 PM",
+      "date": "2025-01-17",
+      "currentLocation": {
+        "lat": -12.1208,
+        "lng": -77.028,
+        "name": "Parque Kennedy"
+      },
+      "lastUpdated": "2025-01-17T12:15:00Z"
+    },
+    {
+      "id": "tour-003",
+      "tourName": "Circuito Mágico del Agua",
+      "destination": "Parque de la Reserva",
+      "guideName": "Luis Ramírez",
+      "guideId": "guide-003",
+      "status": "enroute",
+      "progress": 25,
+      "tourists": 15,
+      "startTime": "06:00 PM",
+      "estimatedEndTime": "08:30 PM",
+      "date": "2025-01-17",
+      "currentLocation": {
+        "lat": -12.070983011536018,
+        "lng": -77.03762338964397,
+        "name": "Parque de la Reserva"
+      },
+      "lastUpdated": "2025-11-18T03:48:12.221Z"
+    },
+    {
+      "id": "tour-004",
+      "tourName": "Barranco Bohemio",
+      "destination": "Barranco",
+      "guideName": "María García",
+      "guideId": "guide-004",
+      "status": "delayed",
+      "progress": 35,
+      "tourists": 10,
+      "startTime": "03:00 PM",
+      "estimatedEndTime": "06:00 PM",
+      "date": "2025-01-17",
+      "currentLocation": {
+        "lat": -12.1472,
+        "lng": -77.0208,
+        "name": "Puente de los Suspiros"
+      },
+      "lastUpdated": "2025-01-17T16:45:00Z"
+    },
+    {
+      "id": "tour-005",
+      "tourName": "Pachacamac Arqueológico",
+      "destination": "Pachacamac",
+      "guideName": "Pedro Sánchez",
+      "guideId": "guide-005",
+      "status": "enroute",
+      "progress": 70,
+      "tourists": 20,
+      "startTime": "08:00 AM",
+      "estimatedEndTime": "02:00 PM",
+      "date": "2025-01-17",
+      "currentLocation": {
+        "lat": -12.259182105331861,
+        "lng": -76.90450069050304,
+        "name": "Santuario de Pachacamac"
+      },
+      "lastUpdated": "2025-11-18T03:48:12.221Z"
+    }
+  ],
   "monitoring_guides": [],
   "monitoring_config": {
     "version": "1.0.0",
@@ -13233,7 +13329,308 @@
     }
   ],
   "guide_availability": [],
-  "tour_photos": [],
+  "tour_photos": [
+    {
+      "id": "photo-008",
+      "tourId": "tour-003",
+      "tourName": "Circuito Mágico del Agua",
+      "stopId": "stop-202",
+      "stopName": "Fuente Túnel de las Sorpresas",
+      "guideId": "guide-003",
+      "guideName": "Luis Ramírez",
+      "agencyId": "agency-002",
+      "agencyName": "Aventura Perú",
+      "url": "https://images.unsplash.com/photo-1513836279014-a89f7a76ae86?w=1200",
+      "thumbnail": "https://images.unsplash.com/photo-1513836279014-a89f7a76ae86?w=400&h=300&fit=crop",
+      "comment": "Turistas caminando por el túnel de agua iluminado",
+      "coordinates": {
+        "lat": -12.0708,
+        "lng": -77.037
+      },
+      "timestamp": "2025-01-17T19:00:00Z",
+      "created_at": "2025-01-17T19:00:00Z"
+    },
+    {
+      "id": "photo-007",
+      "tourId": "tour-003",
+      "tourName": "Circuito Mágico del Agua",
+      "stopId": "stop-201",
+      "stopName": "Fuente de la Fantasía",
+      "guideId": "guide-003",
+      "guideName": "Luis Ramírez",
+      "agencyId": "agency-002",
+      "agencyName": "Aventura Perú",
+      "url": "https://images.unsplash.com/photo-1547036967-23d11aacaee0?w=1200",
+      "thumbnail": "https://images.unsplash.com/photo-1547036967-23d11aacaee0?w=400&h=300&fit=crop",
+      "comment": "Show de luces y agua sincronizado con música",
+      "coordinates": {
+        "lat": -12.0706,
+        "lng": -77.0368
+      },
+      "timestamp": "2025-01-17T18:30:00Z",
+      "created_at": "2025-01-17T18:30:00Z"
+    },
+    {
+      "id": "photo-011",
+      "tourId": "tour-004",
+      "tourName": "Barranco Bohemio",
+      "stopId": "stop-303",
+      "stopName": "Arte Urbano - Barranco",
+      "guideId": "guide-004",
+      "guideName": "María García",
+      "agencyId": "agency-001",
+      "agencyName": "Tours Lima Premium",
+      "url": "https://images.unsplash.com/photo-1499781350541-7783f6c6a0c8?w=1200",
+      "thumbnail": "https://images.unsplash.com/photo-1499781350541-7783f6c6a0c8?w=400&h=300&fit=crop",
+      "comment": "Mural colorido en las calles de Barranco, arte urbano vibrante",
+      "coordinates": {
+        "lat": -12.1468,
+        "lng": -77.021
+      },
+      "timestamp": "2025-01-17T16:30:00Z",
+      "created_at": "2025-01-17T16:30:00Z"
+    },
+    {
+      "id": "photo-010",
+      "tourId": "tour-004",
+      "tourName": "Barranco Bohemio",
+      "stopId": "stop-302",
+      "stopName": "Plaza de Armas de Barranco",
+      "guideId": "guide-004",
+      "guideName": "María García",
+      "agencyId": "agency-001",
+      "agencyName": "Tours Lima Premium",
+      "url": "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1200",
+      "thumbnail": "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=300&fit=crop",
+      "comment": "Vista de la iglesia y la plaza principal del distrito bohemio",
+      "coordinates": {
+        "lat": -12.147,
+        "lng": -77.0215
+      },
+      "timestamp": "2025-01-17T16:00:00Z",
+      "created_at": "2025-01-17T16:00:00Z"
+    },
+    {
+      "id": "photo-009",
+      "tourId": "tour-004",
+      "tourName": "Barranco Bohemio",
+      "stopId": "stop-301",
+      "stopName": "Puente de los Suspiros",
+      "guideId": "guide-004",
+      "guideName": "María García",
+      "agencyId": "agency-001",
+      "agencyName": "Tours Lima Premium",
+      "url": "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=1200",
+      "thumbnail": "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=400&h=300&fit=crop",
+      "comment": "El romántico Puente de los Suspiros, ícono de Barranco",
+      "coordinates": {
+        "lat": -12.1472,
+        "lng": -77.0208
+      },
+      "timestamp": "2025-01-17T15:30:00Z",
+      "created_at": "2025-01-17T15:30:00Z"
+    },
+    {
+      "id": "photo-014",
+      "tourId": "tour-005",
+      "tourName": "Pachacamac Arqueológico",
+      "stopId": "stop-403",
+      "stopName": "Museo de Sitio",
+      "guideId": "guide-005",
+      "guideName": "Pedro Sánchez",
+      "agencyId": "agency-002",
+      "agencyName": "Aventura Perú",
+      "url": "https://images.unsplash.com/photo-1595433707802-6b2626ef1c91?w=1200",
+      "thumbnail": "https://images.unsplash.com/photo-1595433707802-6b2626ef1c91?w=400&h=300&fit=crop",
+      "comment": "Cerámica y artefactos precolombinos en exhibición",
+      "coordinates": {
+        "lat": -12.259,
+        "lng": -76.9045
+      },
+      "timestamp": "2025-01-17T13:00:00Z",
+      "created_at": "2025-01-17T13:00:00Z"
+    },
+    {
+      "id": "photo-013",
+      "tourId": "tour-005",
+      "tourName": "Pachacamac Arqueológico",
+      "stopId": "stop-402",
+      "stopName": "Plaza de los Peregrinos",
+      "guideId": "guide-005",
+      "guideName": "Pedro Sánchez",
+      "agencyId": "agency-002",
+      "agencyName": "Aventura Perú",
+      "url": "https://images.unsplash.com/photo-1518509562904-e7ef99cdcc86?w=1200",
+      "thumbnail": "https://images.unsplash.com/photo-1518509562904-e7ef99cdcc86?w=400&h=300&fit=crop",
+      "comment": "Amplia plaza ceremonial donde se reunían los peregrinos antiguos",
+      "coordinates": {
+        "lat": -12.26,
+        "lng": -76.905
+      },
+      "timestamp": "2025-01-17T12:30:00Z",
+      "created_at": "2025-01-17T12:30:00Z"
+    },
+    {
+      "id": "photo-006",
+      "tourId": "tour-002",
+      "tourName": "Tour Gastronómico Miraflores",
+      "stopId": "stop-103",
+      "stopName": "Restaurante Central",
+      "guideId": "guide-002",
+      "guideName": "Ana Torres",
+      "agencyId": "agency-001",
+      "agencyName": "Tours Lima Premium",
+      "url": "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=1200",
+      "thumbnail": "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=400&h=300&fit=crop",
+      "comment": "Plato gourmet del chef, presentación espectacular",
+      "coordinates": {
+        "lat": -12.1195,
+        "lng": -77.029
+      },
+      "timestamp": "2025-01-17T12:30:00Z",
+      "created_at": "2025-01-17T12:30:00Z"
+    },
+    {
+      "id": "photo-012",
+      "tourId": "tour-005",
+      "tourName": "Pachacamac Arqueológico",
+      "stopId": "stop-401",
+      "stopName": "Templo del Sol",
+      "guideId": "guide-005",
+      "guideName": "Pedro Sánchez",
+      "agencyId": "agency-002",
+      "agencyName": "Aventura Perú",
+      "url": "https://images.unsplash.com/photo-1587595431973-160d0d94add1?w=1200",
+      "thumbnail": "https://images.unsplash.com/photo-1587595431973-160d0d94add1?w=400&h=300&fit=crop",
+      "comment": "Ruinas del Templo del Sol, impresionante arquitectura preinca",
+      "coordinates": {
+        "lat": -12.2594,
+        "lng": -76.9047
+      },
+      "timestamp": "2025-01-17T12:00:00Z",
+      "created_at": "2025-01-17T12:00:00Z"
+    },
+    {
+      "id": "photo-005",
+      "tourId": "tour-002",
+      "tourName": "Tour Gastronómico Miraflores",
+      "stopId": "stop-102",
+      "stopName": "Parque Kennedy",
+      "guideId": "guide-002",
+      "guideName": "Ana Torres",
+      "agencyId": "agency-001",
+      "agencyName": "Tours Lima Premium",
+      "url": "https://images.unsplash.com/photo-1542838132-92c53300491e?w=1200",
+      "thumbnail": "https://images.unsplash.com/photo-1542838132-92c53300491e?w=400&h=300&fit=crop",
+      "comment": "Parada en el icónico Parque Kennedy, corazón de Miraflores",
+      "coordinates": {
+        "lat": -12.1208,
+        "lng": -77.028
+      },
+      "timestamp": "2025-01-17T12:00:00Z",
+      "created_at": "2025-01-17T12:00:00Z"
+    },
+    {
+      "id": "photo-015",
+      "tourId": "tour-001",
+      "tourName": "City Tour Lima Colonial",
+      "stopId": "stop-004",
+      "stopName": "Convento de San Francisco",
+      "guideId": "guide-001",
+      "guideName": "Carlos Mendoza",
+      "agencyId": "agency-001",
+      "agencyName": "Tours Lima Premium",
+      "url": "https://images.unsplash.com/photo-1604156788853-99a86c1b3579?w=1200",
+      "thumbnail": "https://images.unsplash.com/photo-1604156788853-99a86c1b3579?w=400&h=300&fit=crop",
+      "comment": "Claustro del convento, arquitectura barroca colonial",
+      "coordinates": {
+        "lat": -12.0455,
+        "lng": -77.044
+      },
+      "timestamp": "2025-01-17T11:30:00Z",
+      "created_at": "2025-01-17T11:30:00Z"
+    },
+    {
+      "id": "photo-004",
+      "tourId": "tour-002",
+      "tourName": "Tour Gastronómico Miraflores",
+      "stopId": "stop-101",
+      "stopName": "Mercado de Miraflores",
+      "guideId": "guide-002",
+      "guideName": "Ana Torres",
+      "agencyId": "agency-001",
+      "agencyName": "Tours Lima Premium",
+      "url": "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=1200",
+      "thumbnail": "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=400&h=300&fit=crop",
+      "comment": "Degustación de ceviche fresco en el mercado local",
+      "coordinates": {
+        "lat": -12.12,
+        "lng": -77.0285
+      },
+      "timestamp": "2025-01-17T11:30:00Z",
+      "created_at": "2025-01-17T11:30:00Z"
+    },
+    {
+      "id": "photo-003",
+      "tourId": "tour-001",
+      "tourName": "City Tour Lima Colonial",
+      "stopId": "stop-003",
+      "stopName": "Palacio de Gobierno",
+      "guideId": "guide-001",
+      "guideName": "Carlos Mendoza",
+      "agencyId": "agency-001",
+      "agencyName": "Tours Lima Premium",
+      "url": "https://images.unsplash.com/photo-1589394815804-964ed0be2eb5?w=1200",
+      "thumbnail": "https://images.unsplash.com/photo-1589394815804-964ed0be2eb5?w=400&h=300&fit=crop",
+      "comment": "Cambio de guardia en el Palacio de Gobierno, ceremonia tradicional",
+      "coordinates": {
+        "lat": -12.046,
+        "lng": -77.0427
+      },
+      "timestamp": "2025-01-17T11:00:00Z",
+      "created_at": "2025-01-17T11:00:00Z"
+    },
+    {
+      "id": "photo-002",
+      "tourId": "tour-001",
+      "tourName": "City Tour Lima Colonial",
+      "stopId": "stop-002",
+      "stopName": "Catedral de Lima",
+      "guideId": "guide-001",
+      "guideName": "Carlos Mendoza",
+      "agencyId": "agency-001",
+      "agencyName": "Tours Lima Premium",
+      "url": "https://images.unsplash.com/photo-1583428858317-cfef21d18c5c?w=1200",
+      "thumbnail": "https://images.unsplash.com/photo-1583428858317-cfef21d18c5c?w=400&h=300&fit=crop",
+      "comment": "Fachada principal de la Catedral, arquitectura colonial impresionante",
+      "coordinates": {
+        "lat": -12.0465,
+        "lng": -77.043
+      },
+      "timestamp": "2025-01-17T10:45:00Z",
+      "created_at": "2025-01-17T10:45:00Z"
+    },
+    {
+      "id": "photo-001",
+      "tourId": "tour-001",
+      "tourName": "City Tour Lima Colonial",
+      "stopId": "stop-001",
+      "stopName": "Plaza Mayor de Lima",
+      "guideId": "guide-001",
+      "guideName": "Carlos Mendoza",
+      "agencyId": "agency-001",
+      "agencyName": "Tours Lima Premium",
+      "url": "https://images.unsplash.com/photo-1531968455001-5c5272a41129?w=1200",
+      "thumbnail": "https://images.unsplash.com/photo-1531968455001-5c5272a41129?w=400&h=300&fit=crop",
+      "comment": "Vista panorámica de la Plaza Mayor con la Catedral de Lima al fondo",
+      "coordinates": {
+        "lat": -12.0464,
+        "lng": -77.0428
+      },
+      "timestamp": "2025-01-17T10:30:00Z",
+      "created_at": "2025-01-17T10:30:00Z"
+    }
+  ],
   "rewards_categories": [
     {
       "id": "reward-cat-1",

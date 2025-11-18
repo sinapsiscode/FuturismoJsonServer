@@ -135,10 +135,18 @@ const LiveMapResponsive = ({ filters, onServiceSelect }) => {
       // Tercer invalidate para casos donde el contenedor tarda en renderizar
       setTimeout(() => {
         if (map) {
-          console.log('🔄 Invalidando tamaño del mapa (tercera vez - final)...');
+          console.log('🔄 Invalidando tamaño del mapa (tercera vez)...');
           map.invalidateSize({ animate: false });
         }
       }, 500);
+
+      // Cuarto invalidate para roles como agencia que pueden tener layout diferente
+      setTimeout(() => {
+        if (map) {
+          console.log('🔄 Invalidando tamaño del mapa (cuarta vez - final)...');
+          map.invalidateSize({ animate: false });
+        }
+      }, 1000);
 
       // Cargar servicios activos si es necesario
       if (activeServices.length === 0) {
@@ -319,9 +327,9 @@ const LiveMapResponsive = ({ filters, onServiceSelect }) => {
   };
 
   return (
-    <div className="relative w-full h-full" style={{ minHeight: '500px' }}>
+    <div className="relative w-full h-full">
       <div className="relative bg-gray-100 rounded-xl overflow-hidden shadow-lg border border-gray-200 h-full">
-        <div ref={mapRef} className="w-full h-full" style={{ minHeight: '500px' }} />
+        <div ref={mapRef} className="w-full h-full" />
 
         {/* Indicador de actualización en tiempo real */}
         <div className="absolute top-4 left-4 z-[10]">

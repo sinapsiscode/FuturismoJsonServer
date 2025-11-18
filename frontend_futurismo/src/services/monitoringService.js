@@ -17,6 +17,8 @@ class MonitoringService extends BaseService {
    * @param {string} filters.guideId - ID del guía
    * @param {string} filters.tourId - ID del tour
    * @param {string} filters.agencyId - ID de la agencia
+   * @param {number} filters.page - Número de página
+   * @param {number} filters.limit - Fotos por página
    * @returns {Promise<Object>}
    */
   async getPhotos(filters = {}) {
@@ -25,6 +27,8 @@ class MonitoringService extends BaseService {
     if (filters.guideId) params.guideId = filters.guideId;
     if (filters.tourId) params.tourId = filters.tourId;
     if (filters.agencyId) params.agencyId = filters.agencyId;
+    if (filters.page) params.page = filters.page;
+    if (filters.limit) params.limit = filters.limit;
 
     return this.get('/photos', params);
   }

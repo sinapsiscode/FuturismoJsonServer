@@ -1,19 +1,25 @@
-import { useState, useEffect } from 'react';
-import { MapIcon, UserGroupIcon, CameraIcon, PlayIcon, PauseIcon, CheckIcon, PhotoIcon, MapPinIcon, ClockIcon } from '@heroicons/react/24/outline';
+/**
+ * Página de Monitoreo de Tours Activos
+ * Actualizado: 2025-01-17 - Migrado a monitoringService
+ */
+import { useState, useEffect, useCallback } from 'react';
+import { MapIcon, UserGroupIcon, PlayIcon, PauseIcon, CheckIcon, PhotoIcon, MapPinIcon, ClockIcon } from '@heroicons/react/24/outline';
 import { useTranslation } from 'react-i18next';
 import LiveMapResponsive from '../components/monitoring/LiveMapResponsive';
 import TourProgress from '../components/monitoring/TourProgress';
-import TourPhotosGallery from '../components/monitoring/TourPhotosGallery';
 import ActiveTourDetailsModal from '../components/monitoring/ActiveTourDetailsModal';
 import useAuthStore from '../stores/authStore';
 import useGuideTours from '../hooks/useGuideTours';
-import useServicesStore from '../stores/servicesStore';
+import monitoringService from '../services/monitoringService';
 import toast from 'react-hot-toast';
 
 const Monitoring = () => {
   const { user } = useAuthStore();
   const { t } = useTranslation();
-  const { activeServices, loadActiveServices, loading: servicesLoading } = useServicesStore();
+
+  // Estados para tours activos (admin y agencia)
+  const [activeServices, setActiveServices] = useState([]);
+  const [servicesLoading, setServicesLoading] = useState(false);
 
   // Estados del componente
   const [activeView, setActiveView] = useState('map');
@@ -25,21 +31,41 @@ const Monitoring = () => {
   // Para guías, solo mostrar sus propios tours
   const isGuide = user?.role === 'guide';
   const isAdmin = user?.role === 'admin';
+  const isAgency = user?.role === 'agency';
 
-  // Cargar servicios activos para admin y establecer actualizaciones en tiempo real
+  // Función para cargar tours activos (memoizada con useCallback)
+  const loadActiveTours = useCallback(async () => {
+    try {
+      setServicesLoading(true);
+      console.log('📊 Cargando tours activos desde /api/monitoring/active-tours');
+
+      const result = await monitoringService.getActiveTours();
+
+      if (result.success) {
+        const tours = result.data || [];
+        setActiveServices(tours);
+        console.log(`✅ ${tours.length} tours activos cargados`);
+      } else {
+        console.error('❌ Error al cargar tours:', result.error);
+        setActiveServices([]);
+      }
+    } catch (err) {
+      console.error('❌ Error al cargar servicios activos:', err);
+      setActiveServices([]);
+    } finally {
+      setServicesLoading(false);
+    }
+  }, []); // Sin dependencias porque monitoringService y los setters son estables
+
+  // Cargar servicios activos para admin y agencias, establecer actualizaciones en tiempo real
   useEffect(() => {
-    if (isAdmin) {
+    if (isAdmin || isAgency) {
       // Cargar servicios activos desde el backend
-      loadActiveServices().catch(err => {
-        console.error('Error al cargar servicios activos:', err);
-        // Si hay error, los datos se quedarán vacíos y se mostrará el mensaje de "no hay tours"
-      });
+      loadActiveTours();
 
       // Configurar actualizaciones automáticas cada 10 segundos
       const intervalId = setInterval(() => {
-        loadActiveServices().catch(err => {
-          console.error('Error en actualización automática:', err);
-        });
+        loadActiveTours();
       }, 10000); // 10 segundos
 
       // Limpiar intervalo al desmontar
@@ -47,7 +73,7 @@ const Monitoring = () => {
         clearInterval(intervalId);
       };
     }
-  }, [isAdmin, loadActiveServices]);
+  }, [isAdmin, isAgency, loadActiveTours]);
 
   // Hook para manejar tours del guía (reemplaza datos hardcodeados)
   const {
@@ -213,28 +239,29 @@ const Monitoring = () => {
     : [
         { key: 'map', label: t('monitoring.views.liveMap'), icon: MapIcon },
         { key: 'tours', label: t('monitoring.views.activeTours'), icon: UserGroupIcon },
-        { key: 'photos', label: t('monitoring.views.photos'), icon: CameraIcon },
       ];
 
   return (
-    <div className="p-4 space-y-4 sm:p-6 lg:p-8 sm:space-y-6">
+    <div className="flex flex-col h-full">
       {/* Header */}
-      <div className="flex flex-col gap-3 sm:gap-0 sm:flex-row sm:items-center sm:justify-between">
-        <div className="text-center sm:text-left">
-          <h1 className="text-xl font-bold text-gray-900 break-words sm:text-2xl">
-            {isGuide ? t('monitoring.myToursTitle') : t('monitoring.title')}
-          </h1>
-          <p className="mt-1 text-sm text-gray-700 sm:mt-2 sm:text-base">
-            {isGuide 
-              ? t('monitoring.guideDescription') 
-              : t('monitoring.description')
-            }
-          </p>
+      <div className="flex-shrink-0 px-4 pt-4 pb-3 sm:px-6 sm:pt-6 sm:pb-4 lg:px-8 lg:pt-8 lg:pb-5">
+        <div className="flex flex-col gap-3 sm:gap-0 sm:flex-row sm:items-center sm:justify-between">
+          <div className="text-center sm:text-left">
+            <h1 className="text-xl font-bold text-gray-900 break-words sm:text-2xl">
+              {isGuide ? t('monitoring.myToursTitle') : t('monitoring.title')}
+            </h1>
+            <p className="mt-1 text-sm text-gray-700 sm:mt-2 sm:text-base">
+              {isGuide
+                ? t('monitoring.guideDescription')
+                : t('monitoring.description')
+              }
+            </p>
+          </div>
         </div>
       </div>
 
       {/* Navigation Tabs */}
-      <div className="overflow-x-auto border-b border-gray-200">
+      <div className="flex-shrink-0 px-4 sm:px-6 lg:px-8 overflow-x-auto border-b border-gray-200">
         <nav className="flex px-1 -mb-px space-x-4 sm:space-x-8 min-w-max">
           {viewConfig.map((view) => {
             const Icon = view.icon;
@@ -251,7 +278,7 @@ const Monitoring = () => {
                 <div className="flex items-center space-x-1 sm:space-x-2">
                   <Icon className="flex-shrink-0 w-4 h-4 sm:w-5 sm:h-5" />
                   <span className="hidden sm:inline">{view.label}</span>
-                  <span className="text-xs sm:hidden">{view.key === 'map' ? 'Mapa' : view.key === 'tours' ? 'Tours' : 'Fotos'}</span>
+                  <span className="text-xs sm:hidden">{view.key === 'map' ? 'Mapa' : 'Tours'}</span>
                 </div>
               </button>
             );
@@ -260,17 +287,17 @@ const Monitoring = () => {
       </div>
 
       {/* Content Area */}
-      <div className="overflow-hidden bg-white rounded-lg shadow">
+      <div className="flex-1 min-h-0 bg-white overflow-hidden">
         {/* Vista de Mapa - Para todos los roles */}
         {activeView === 'map' && (
-          <div className="p-4 sm:p-6" style={{ height: 'calc(100vh - 280px)', minHeight: '600px' }}>
+          <div className="h-full p-4 sm:p-6">
             <LiveMapResponsive />
           </div>
         )}
 
         {/* Vista de Tours */}
         {activeView === 'tours' && (
-          <div className="p-4 sm:p-6">
+          <div className="h-full p-4 sm:p-6 overflow-y-auto">
             {isGuide ? (
               /* Vista de guía - Sus propios tours */
               <div className="space-y-4 sm:space-y-6">
@@ -620,14 +647,6 @@ const Monitoring = () => {
                 )}
               </div>
             )}
-          </div>
-        )}
-
-
-        {/* Vista de Fotos - Solo para Admin */}
-        {activeView === 'photos' && !isGuide && (
-          <div className="p-4 sm:p-6">
-            <TourPhotosGallery />
           </div>
         )}
       </div>

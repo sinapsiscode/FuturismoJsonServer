@@ -1,26 +1,9 @@
 {
   "permissions": {
     "allow": [
-      "Bash(done)",
-      "Bash(timeout 3 bash:*)",
-      "Bash(node -e:*)",
-      "Bash(curl:*)",
-      "Bash(netstat:*)",
-      "Bash(findstr:*)",
-      "Bash(taskkill:*)",
-      "Bash(npm run dev:*)",
-      "Bash(node:*)",
-      "Bash(cat:*)",
-      "Bash(powershell \"Get-Process node | Stop-Process -Force\")",
-      "Bash(dir:*)",
-      "Bash(powershell \"Stop-Process -Id 4128 -Force\")",
-      "Bash(powershell \"Stop-Process -Id 12084 -Force\")",
-      "Bash(timeout /t 2)",
-      "Bash(nul)",
-      "Bash(tasklist:*)",
-      "Bash(git -C \"C:\\Users\\usu\\Documents\\FuturismoJsonServer\" diff backend-simulator/db.json)",
-      "Bash(python:*)",
-      "Bash(git config:*)"
+      "Bash(temp_token.json)",
+      "Bash(del temp_token.json)",
+      "Bash(token.txt)"
     ],
     "deny": [],
     "ask": []

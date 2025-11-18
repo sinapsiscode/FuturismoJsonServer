@@ -28,6 +28,14 @@ const TourPhotosGallery = () => {
     search: ''
   });
   const [loading, setLoading] = useState(true);
+  const [pagination, setPagination] = useState({
+    page: 1,
+    limit: 50,
+    total: 0,
+    totalPages: 0,
+    hasNextPage: false,
+    hasPrevPage: false
+  });
 
   // Cargar fotos desde la API
   useEffect(() => {
@@ -40,11 +48,18 @@ const TourPhotosGallery = () => {
           const photosData = result.data || [];
           setPhotos(photosData);
           setFilteredPhotos(photosData);
+
+          // Actualizar paginación si está disponible
+          if (result.pagination) {
+            setPagination(result.pagination);
+          }
+
+          console.log(`✅ ${photosData.length} fotos cargadas`);
         } else {
           throw new Error(result.error || 'Error al cargar fotos');
         }
       } catch (error) {
-        console.error('Error loading photos:', error);
+        console.error('❌ Error loading photos:', error);
         setPhotos([]);
         setFilteredPhotos([]);
       } finally {
@@ -219,8 +234,15 @@ const TourPhotosGallery = () => {
         </div>
 
         {/* Resultados */}
-        <div className="mt-4 text-sm text-gray-600">
-          {t('monitoring.photos.showingResults', { count: filteredPhotos.length })}
+        <div className="mt-4 flex items-center justify-between text-sm text-gray-600">
+          <span>
+            Mostrando {filteredPhotos.length} de {pagination.total || filteredPhotos.length} fotos
+          </span>
+          {pagination.total > 0 && (
+            <span className="text-xs">
+              Página {pagination.page} de {pagination.totalPages}
+            </span>
+          )}
         </div>
       </div>
 

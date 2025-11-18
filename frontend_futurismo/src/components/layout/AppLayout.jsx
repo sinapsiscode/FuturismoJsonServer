@@ -53,8 +53,8 @@ const AppLayout = () => {
 
         {/* Page Content */}
         <main className="flex-1 overflow-y-auto">
-          <div className="p-4 lg:p-6">
-            <div className="animate-fade-in">
+          <div className="h-full p-4 lg:p-6">
+            <div className="h-full animate-fade-in">
               <Outlet />
             </div>
           </div>
