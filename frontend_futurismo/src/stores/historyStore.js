@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
+import api from '../services/api';
 
 const useHistoryStore = create(
   persist(
@@ -42,51 +43,131 @@ const useHistoryStore = create(
           // Importar los stores necesarios dinámicamente
           const useReservationsStore = (await import('./reservationsStore')).default;
           const useClientsStore = (await import('./clientsStore')).default;
+          const useAuthStore = (await import('./authStore')).useAuthStore;
 
           // Obtener datos de los stores
           const reservationsStore = useReservationsStore.getState();
           const clientsStore = useClientsStore.getState();
+          const currentUser = useAuthStore.getState().user;
+
+          console.log('🔍 DEBUG - Current User:', {
+            id: currentUser?.id,
+            email: currentUser?.email,
+            role: currentUser?.role,
+            agency_id: currentUser?.agency_id
+          });
 
           // Cargar datos si no están disponibles
           if (!reservationsStore.reservations || reservationsStore.reservations.length === 0) {
+            console.log('🔍 DEBUG - Fetching reservations...');
             await reservationsStore.fetchReservations();
+            // Recargar el estado actualizado después de fetch
+            const updatedReservationsStore = useReservationsStore.getState();
+            console.log('🔍 DEBUG - Reservations fetched:', {
+              count: updatedReservationsStore.reservations?.length || 0,
+              sample: updatedReservationsStore.reservations?.[0]
+            });
           }
 
           if (!clientsStore.clients || clientsStore.clients.length === 0) {
             await clientsStore.loadClients();
           }
 
-          // Obtener token de autenticación
-          const token = localStorage.getItem('token');
-          const headers = {
-            'Content-Type': 'application/json'
-          };
-          if (token) {
-            headers['Authorization'] = `Bearer ${token}`;
-          }
-
           // Cargar tours para obtener nombres
-          const toursResponse = await fetch('/api/data/section/tours', { headers });
-          const toursData = await toursResponse.json();
+          const toursResponse = await api.get('/data/section/tours');
+          const toursData = toursResponse.data;
 
           // Cargar guías
-          const guidesResponse = await fetch('/api/data/section/guides', { headers });
-          const guidesData = await guidesResponse.json();
+          const guidesResponse = await api.get('/data/section/guides');
+          const guidesData = guidesResponse.data;
 
           // Cargar drivers
-          const driversResponse = await fetch('/api/data/section/drivers', { headers });
-          const driversData = await driversResponse.json();
+          const driversResponse = await api.get('/data/section/drivers');
+          const driversData = driversResponse.data;
 
           // Cargar vehicles
-          const vehiclesResponse = await fetch('/api/data/section/vehicles', { headers });
-          const vehiclesData = await vehiclesResponse.json();
+          const vehiclesResponse = await api.get('/data/section/vehicles');
+          const vehiclesData = vehiclesResponse.data;
 
-          const reservations = reservationsStore.reservations || [];
+          // Obtener las reservaciones actualizadas después del fetch
+          const updatedReservationsStore = useReservationsStore.getState();
+          let reservations = updatedReservationsStore.reservations || [];
           const tours = toursData.success ? toursData.data : [];
           const guides = guidesData.success ? guidesData.data : [];
           const clients = clientsStore.clients || [];
           const drivers = driversData.success ? driversData.data : [];
           const vehicles = vehiclesData.success ? vehiclesData.data : [];
+
+          console.log('🔍 DEBUG - Before filtering:', {
+            totalReservations: reservations.length,
+            sampleReservation: reservations[0],
+            userRole: currentUser?.role
+          });
+
+          // ✅ FILTRAR POR AGENCIA si el usuario es de tipo agency
+          if (currentUser?.role === 'agency') {
+            let agencyId = currentUser.agency_id;
+
+            console.log('🔍 DEBUG - User agency_id from currentUser:', agencyId);
+
+            // Si no tiene agency_id directo, buscar la agencia por user_id
+            if (!agencyId) {
+              console.log('🔍 DEBUG - Fetching agencies to find agency by user_id');
+              const agenciesResponse = await api.get('/agencies');
+              const agenciesData = agenciesResponse.data;
+
+              console.log('🔍 DEBUG - Agencies response:', {
+                success: agenciesData.success,
+                dataType: Array.isArray(agenciesData.data) ? 'array' : typeof agenciesData.data,
+                dataLength: agenciesData.data?.length,
+                firstAgency: agenciesData.data?.[0]
+              });
+
+              if (agenciesData.success && agenciesData.data) {
+                const userAgency = agenciesData.data.find(a => a.user_id === currentUser.id);
+                agencyId = userAgency?.id;
+
+                console.log('🔍 DEBUG - Found user agency:', {
+                  userAgency,
+                  agencyId,
+                  searchingForUserId: currentUser.id
+                });
+              }
+            }
+
+            // Filtrar solo las reservaciones de esta agencia
+            if (agencyId) {
+              const beforeFilterCount = reservations.length;
+              reservations = reservations.filter(r => r.agency_id === agencyId);
+              console.log('🔍 Filtrando historial por agencia:', {
+                agencyId,
+                totalReservationsBefore: beforeFilterCount,
+                agencyReservationsAfter: reservations.length,
+                sampleFilteredReservation: reservations[0]
+              });
+            } else {
+              console.warn('⚠️ No se encontró agency_id para el usuario:', currentUser.id);
+              reservations = [];
+            }
+          }
+
+          // ✅ FILTRAR POR GUÍA si el usuario es de tipo guide
+          if (currentUser?.role === 'guide') {
+            // Buscar el guide_id del usuario actual
+            const currentGuide = guides.find(g => g.email === currentUser.email);
+
+            if (currentGuide) {
+              reservations = reservations.filter(r => r.guide_id === currentGuide.id);
+              console.log('🔍 Filtrando historial por guía:', {
+                guideId: currentGuide.id,
+                totalReservations: reservationsStore.reservations.length,
+                guideReservations: reservations.length
+              });
+            } else {
+              console.warn('⚠️ No se encontró guide para el usuario:', currentUser.email);
+              reservations = [];
+            }
+          }
 
           // Transformar reservas a formato de historial de servicios
           const historyData = reservations.map(reservation => {
@@ -143,7 +224,9 @@ const useHistoryStore = create(
           const totalPages = Math.ceil(totalItems / get().pagination.itemsPerPage);
 
           console.log('📊 Historial cargado:', {
-            totalReservations: reservations.length,
+            userRole: currentUser?.role,
+            totalReservationsBeforeFilter: reservationsStore.reservations?.length || 0,
+            totalReservationsAfterFilter: reservations.length,
             totalHistory: historyData.length,
             totalTours: tours.length,
             totalGuides: guides.length,
@@ -359,26 +442,18 @@ const useHistoryStore = create(
 
       // Obtener todas las opciones disponibles (incluyendo no asignados)
       getAllFilterOptions: async () => {
-        const token = localStorage.getItem('token');
-        const headers = {
-          'Content-Type': 'application/json'
-        };
-        if (token) {
-          headers['Authorization'] = `Bearer ${token}`;
-        }
-
         try {
           // Cargar todos los drivers disponibles
-          const driversResponse = await fetch('/api/data/section/drivers', { headers });
-          const driversData = await driversResponse.json();
+          const driversResponse = await api.get('/data/section/drivers');
+          const driversData = driversResponse.data;
 
           // Cargar todos los vehicles disponibles
-          const vehiclesResponse = await fetch('/api/data/section/vehicles', { headers });
-          const vehiclesData = await vehiclesResponse.json();
+          const vehiclesResponse = await api.get('/data/section/vehicles');
+          const vehiclesData = vehiclesResponse.data;
 
           // Cargar todas las guías disponibles
-          const guidesResponse = await fetch('/api/data/section/guides', { headers });
-          const guidesData = await guidesResponse.json();
+          const guidesResponse = await api.get('/data/section/guides');
+          const guidesData = guidesResponse.data;
 
           const allDrivers = driversData.success ? driversData.data : [];
           const allVehicles = vehiclesData.success ? vehiclesData.data : [];
