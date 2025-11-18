@@ -841,18 +841,42 @@ module.exports = (router) => {
       transactions.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
 
       // Transform to camelCase format expected by frontend
-      const transformedTransactions = transactions.map(t => ({
-        id: t.id,
-        agencyId: t.agency_id,
-        type: t.type,
-        points: t.points,
-        reason: t.description,
-        description: t.description,
-        referenceId: t.reference_id,
-        referenceType: t.reference_type,
-        createdAt: t.created_at,
-        processedBy: t.processed_by || 'system'
-      }));
+      // For "earned" transactions, enrich with reservation/service details
+      const transformedTransactions = transactions.map(t => {
+        const baseTransaction = {
+          id: t.id,
+          agencyId: t.agency_id,
+          type: t.type,
+          points: t.points,
+          reason: t.description,
+          description: t.description,
+          referenceId: t.reference_id,
+          referenceType: t.reference_type,
+          createdAt: t.created_at,
+          processedBy: t.processed_by || 'system'
+        };
+
+        // If it's an earned transaction from a reservation, add service details
+        if (t.type === 'earned' && t.reference_type === 'reservation' && t.reference_id) {
+          const reservation = db.get('reservations').find({ id: t.reference_id }).value();
+
+          if (reservation) {
+            baseTransaction.serviceDetails = {
+              serviceName: reservation.service_name,
+              clientName: reservation.client_name,
+              date: reservation.tour_date || reservation.date,
+              participants: reservation.participants || reservation.group_size,
+              amount: reservation.total_amount,
+              baseAmount: reservation.base_amount,
+              status: reservation.status,
+              rating: reservation.rating,
+              reservationCode: reservation.reservation_code
+            };
+          }
+        }
+
+        return baseTransaction;
+      });
 
       // Pagination
       const { page = 1, pageSize = 50 } = req.query;

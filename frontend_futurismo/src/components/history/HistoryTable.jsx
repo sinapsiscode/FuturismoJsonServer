@@ -1,24 +1,29 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
-import { 
-  ChevronUpIcon, 
+import {
+  ChevronUpIcon,
   ChevronDownIcon,
   EyeIcon,
   StarIcon,
   DocumentTextIcon
 } from '@heroicons/react/24/outline';
 import StarRating from '../common/StarRating';
+import useAuthStore from '../../stores/authStore';
 
-const HistoryTable = ({ 
-  services, 
-  sort, 
-  onSort, 
+const HistoryTable = ({
+  services,
+  sort,
+  onSort,
   loading,
   onViewDetails,
   onRate
 }) => {
   const { t } = useTranslation();
+  const { user } = useAuthStore();
+
+  // Check if user is an employed guide (guía de planta)
+  const isEmployedGuide = user?.role === 'guide' && user?.guide_type === 'employed';
 
   const getSortIcon = (field) => {
     if (sort.field !== field) {
@@ -172,15 +177,17 @@ const HistoryTable = ({
                   {getSortIcon('guide')}
                 </button>
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                <button
-                  className="flex items-center space-x-1 hover:text-gray-700"
-                  onClick={() => onSort('amount')}
-                >
-                  <span>{t('history.table.headers.amount')}</span>
-                  {getSortIcon('amount')}
-                </button>
-              </th>
+              {!isEmployedGuide && (
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <button
+                    className="flex items-center space-x-1 hover:text-gray-700"
+                    onClick={() => onSort('amount')}
+                  >
+                    <span>{t('history.table.headers.amount')}</span>
+                    {getSortIcon('amount')}
+                  </button>
+                </th>
+              )}
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 {t('history.table.headers.rating')}
               </th>
@@ -192,7 +199,7 @@ const HistoryTable = ({
           <tbody className="bg-white divide-y divide-gray-200">
             {services.length === 0 ? (
               <tr>
-                <td colSpan="9" className="px-6 py-12 text-center text-gray-500">
+                <td colSpan={isEmployedGuide ? "8" : "9"} className="px-6 py-12 text-center text-gray-500">
                   <DocumentTextIcon className="w-12 h-12 mx-auto mb-4 text-gray-400" />
                   <p className="text-lg font-medium">{t('history.table.noResults')}</p>
                   <p className="text-sm">{t('history.table.noResultsDescription')}</p>
@@ -233,9 +240,11 @@ const HistoryTable = ({
                       )}
                     </div>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                    {formatCurrency(service.amount)}
-                  </td>
+                  {!isEmployedGuide && (
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                      {formatCurrency(service.amount)}
+                    </td>
+                  )}
                   <td className="px-6 py-4 whitespace-nowrap">
                     {service.rating ? (
                       <StarRating rating={service.rating} size="sm" showValue />
@@ -286,8 +295,8 @@ HistoryTable.propTypes = {
     guide: PropTypes.string.isRequired,
     driver: PropTypes.string,
     amount: PropTypes.number.isRequired,
-    duration: PropTypes.number.isRequired,
-    passengers: PropTypes.number.isRequired,
+    duration: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
+    passengers: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
     rating: PropTypes.number
   })).isRequired,
   sort: PropTypes.shape({

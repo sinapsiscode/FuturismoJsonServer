@@ -3,9 +3,14 @@ import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 import { XMarkIcon, StarIcon } from '@heroicons/react/24/outline';
 import { StarIcon as StarIconSolid } from '@heroicons/react/24/solid';
+import useAuthStore from '../../stores/authStore';
 
 const ServiceDetailsModal = ({ isOpen, onClose, service }) => {
   const { t } = useTranslation();
+  const { user } = useAuthStore();
+
+  // Check if user is an employed guide (guía de planta)
+  const isEmployedGuide = user?.role === 'guide' && user?.guide_type === 'employed';
 
   if (!isOpen || !service) {
     return null;
@@ -176,14 +181,16 @@ const ServiceDetailsModal = ({ isOpen, onClose, service }) => {
                           {service.passengers}
                         </span>
                       </div>
-                      <div>
-                        <span className="text-sm font-medium text-gray-900">
-                          {t('history.details.amount')}:
-                        </span>
-                        <span className="ml-2 text-sm font-semibold text-green-600">
-                          {formatCurrency(service.amount)}
-                        </span>
-                      </div>
+                      {!isEmployedGuide && (
+                        <div>
+                          <span className="text-sm font-medium text-gray-900">
+                            {t('history.details.amount')}:
+                          </span>
+                          <span className="ml-2 text-sm font-semibold text-green-600">
+                            {formatCurrency(service.amount)}
+                          </span>
+                        </div>
+                      )}
                     </div>
                   </div>
 

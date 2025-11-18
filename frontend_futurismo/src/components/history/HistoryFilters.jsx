@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 import { MagnifyingGlassIcon, XMarkIcon } from '@heroicons/react/24/outline';
+import useAuthStore from '../../stores/authStore';
 
 const HistoryFilters = ({
   filters,
@@ -12,6 +13,10 @@ const HistoryFilters = ({
   loading
 }) => {
   const { t } = useTranslation();
+  const { user } = useAuthStore();
+
+  // Check if user is a guide (employed or freelance) - they shouldn't see guide filter
+  const isGuide = user?.role === 'guide';
 
   const handleSearchChange = (e) => {
     onUpdateFilter('search', e.target.value);
@@ -60,7 +65,7 @@ const HistoryFilters = ({
       </div>
 
       {/* Filtros principales */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-${isGuide ? '3' : '4'} gap-4`}>
         {/* Rango de fechas */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -118,30 +123,32 @@ const HistoryFilters = ({
           </select>
         </div>
 
-        {/* Guía */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            {t('history.filters.guideLabel')}
-          </label>
-          <select
-            value={filters.guide}
-            onChange={(e) => handleFilterChange('guide', e.target.value)}
-            className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-            disabled={loading}
-            title="Seleccionar guía para filtrar"
-          >
-            <option value="all">Todos</option>
-            {guidesOptions.map(guide => (
-              <option
-                key={guide.id}
-                value={guide.name}
-                title={guide.assigned ? '✓ Asignado a reservas' : '○ No asignado'}
-              >
-                {guide.assigned ? '● ' : '○ '}{guide.name}
-              </option>
-            ))}
-          </select>
-        </div>
+        {/* Guía - Hidden for all guides (employed and freelance) */}
+        {!isGuide && (
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              {t('history.filters.guideLabel')}
+            </label>
+            <select
+              value={filters.guide}
+              onChange={(e) => handleFilterChange('guide', e.target.value)}
+              className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+              disabled={loading}
+              title="Seleccionar guía para filtrar"
+            >
+              <option value="all">Todos</option>
+              {guidesOptions.map(guide => (
+                <option
+                  key={guide.id}
+                  value={guide.name}
+                  title={guide.assigned ? '✓ Asignado a reservas' : '○ No asignado'}
+                >
+                  {guide.assigned ? '● ' : '○ '}{guide.name}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
       </div>
 
       {/* Filtros secundarios */}

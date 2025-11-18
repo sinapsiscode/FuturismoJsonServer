@@ -10,11 +10,22 @@ import toast from 'react-hot-toast';
 const AgencyPoints = () => {
   const { currentAgency, pointsTransactions, actions, isLoading } = useAgencyStore();
   const [filterType, setFilterType] = useState('all');
+  const [pointsConfig, setPointsConfig] = useState(null);
 
   // Fetch points data on component mount
   useEffect(() => {
     actions.fetchPointsTransactions();
     actions.fetchPointsBalance();
+
+    // Fetch points configuration
+    fetch('/api/data/section/points_config')
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          setPointsConfig(data.data);
+        }
+      })
+      .catch(err => console.error('Error loading points config:', err));
   }, [actions]);
 
   const pointsHistory = pointsTransactions || [];
@@ -171,18 +182,29 @@ const AgencyPoints = () => {
           <div>
             <h3 className="text-sm font-medium text-blue-800">Sistema de Puntos Automático</h3>
             <p className="text-sm text-blue-700 mt-1">
-              Los puntos se otorgan automáticamente cuando el administrador confirma tus reservas. 
-              La cantidad de puntos depende del tipo de servicio, monto y número de participantes.
+              {pointsConfig?.formula?.description ||
+                'Los puntos se otorgan automáticamente cuando el administrador confirma tus reservas. La cantidad de puntos depende del tipo de servicio, monto y número de participantes.'}
             </p>
-            <div className="mt-2 text-xs text-blue-600">
-              <strong>Fórmula:</strong> (10 base + monto/100 + participantes/2) × multiplicador del servicio
-            </div>
+            {pointsConfig?.formula?.display_text && (
+              <div className="mt-2 text-xs text-blue-600">
+                <strong>Fórmula:</strong> {pointsConfig.formula.display_text}
+              </div>
+            )}
+            {pointsConfig?.formula?.service_multipliers && (
+              <div className="mt-2 grid grid-cols-2 md:grid-cols-4 gap-2 text-xs">
+                {Object.entries(pointsConfig.formula.service_multipliers).map(([type, multiplier]) => (
+                  <div key={type} className="bg-white bg-opacity-50 rounded px-2 py-1">
+                    <span className="font-medium capitalize">{type}:</span> ×{multiplier}
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         </div>
       </div>
 
       {/* Resumen de puntos */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
         <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
           <div className="flex items-center space-x-3">
             <div className="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center">
@@ -221,22 +243,6 @@ const AgencyPoints = () => {
                 {pointsBalance.totalRedeemed.toLocaleString()}
               </p>
               <p className="text-sm text-gray-600">Total Canjeados</p>
-            </div>
-          </div>
-        </div>
-
-        <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-          <div className="flex items-center space-x-3">
-            <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
-              <TrophyIcon className="w-6 h-6 text-purple-600" />
-            </div>
-            <div>
-              <p className="text-2xl font-bold text-gray-900">
-                {currentAgency?.tier === 'gold' ? 'Oro' : 
-                 currentAgency?.tier === 'silver' ? 'Plata' : 
-                 currentAgency?.tier === 'bronze' ? 'Bronce' : 'Platino'}
-              </p>
-              <p className="text-sm text-gray-600">Nivel Actual</p>
             </div>
           </div>
         </div>
@@ -295,28 +301,31 @@ const AgencyPoints = () => {
                       }`}>
                         {getTransactionIcon(transaction.type)}
                       </div>
-                      
+
                       <div>
                         <h4 className="font-semibold text-gray-900">
-                          {transaction.reason}
+                          {transaction.serviceDetails?.serviceName || transaction.reason}
                         </h4>
                         <div className="flex items-center space-x-3 text-sm text-gray-600">
                           <div className="flex items-center space-x-1">
                             <CalendarIcon className="w-4 h-4" />
                             <span>
-                              {format(new Date(transaction.createdAt), 'd \'de\' MMMM \'de\' yyyy', { locale: es })}
+                              {transaction.serviceDetails?.date
+                                ? format(new Date(transaction.serviceDetails.date), 'd \'de\' MMMM \'de\' yyyy', { locale: es })
+                                : format(new Date(transaction.createdAt), 'd \'de\' MMMM \'de\' yyyy', { locale: es })
+                              }
                             </span>
                           </div>
                           <div className="flex items-center space-x-1">
                             <UserIcon className="w-4 h-4" />
                             <span>
-                              {transaction.processedBy === 'manual' ? 'Manual' : 'Sistema'}
+                              {transaction.serviceDetails?.clientName || (transaction.processedBy === 'manual' ? 'Manual' : 'Sistema')}
                             </span>
                           </div>
                         </div>
                       </div>
                     </div>
-                    
+
                     <div className="text-right">
                       <p className={`text-lg font-bold ${getTransactionColor(transaction.type)}`}>
                         {transaction.type === 'earned' ? '+' : '-'}{transaction.points}
@@ -325,11 +334,38 @@ const AgencyPoints = () => {
                     </div>
                   </div>
 
-                  {transaction.relatedReservation && (
+                  {/* Detalles del servicio para puntos ganados */}
+                  {transaction.type === 'earned' && transaction.serviceDetails && (
+                    <div className="mt-3 pt-3 border-t border-gray-100">
+                      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-sm">
+                        <div>
+                          <p className="text-gray-500">Código de Reserva</p>
+                          <p className="font-medium text-gray-900">{transaction.serviceDetails.reservationCode}</p>
+                        </div>
+                        <div>
+                          <p className="text-gray-500">Participantes</p>
+                          <p className="font-medium text-gray-900">{transaction.serviceDetails.participants} personas</p>
+                        </div>
+                        <div>
+                          <p className="text-gray-500">Monto del Servicio</p>
+                          <p className="font-medium text-green-600">
+                            S/. {transaction.serviceDetails.amount?.toFixed(2)}
+                          </p>
+                        </div>
+                        <div>
+                          <p className="text-gray-500">Estado</p>
+                          <p className="font-medium text-gray-900 capitalize">{transaction.serviceDetails.status}</p>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Detalles de canje para puntos canjeados */}
+                  {transaction.type === 'redeemed' && transaction.referenceId && (
                     <div className="mt-3 pt-3 border-t border-gray-100">
                       <div className="flex items-center space-x-2 text-sm text-gray-600">
                         <CreditCardIcon className="w-4 h-4" />
-                        <span>Relacionado con reserva: {transaction.relatedReservation}</span>
+                        <span>Premio canjeado: {transaction.referenceId}</span>
                       </div>
                     </div>
                   )}

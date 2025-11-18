@@ -68,7 +68,7 @@ const useAuthStore = create((set, get) => ({
       
     } catch (error) {
       const errorMessage = error.message || ERROR_MESSAGES.INVALID_CREDENTIALS;
-      
+
       set({
         isLoading: false,
         error: errorMessage,
@@ -80,8 +80,8 @@ const useAuthStore = create((set, get) => ({
 
       // Emitir evento de login fallido
       window.dispatchEvent(new CustomEvent(AUTH_EVENTS.LOGIN_FAILURE, { detail: { error: errorMessage } }));
-      
-      throw error;
+
+      return { success: false, error: errorMessage };
     }
   },
 
