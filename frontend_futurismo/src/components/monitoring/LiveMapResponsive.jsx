@@ -1,10 +1,9 @@
 import { useState, useEffect, useRef } from 'react';
 import { MapPinIcon, UserGroupIcon, ClockIcon, ExclamationTriangleIcon, PlusIcon, MinusIcon, ViewfinderCircleIcon } from '@heroicons/react/24/outline';
-import useServicesStore from '../../stores/servicesStore';
 import { useLayout } from '../../contexts/LayoutContext';
+import PropTypes from 'prop-types';
 
-const LiveMapResponsive = ({ filters, onServiceSelect }) => {
-  const { activeServices, loadActiveServices } = useServicesStore();
+const LiveMapResponsive = ({ services = [], loading = false, filters, onServiceSelect }) => {
   const { viewport, sidebarOpen } = useLayout();
   const [selectedService, setSelectedService] = useState(null);
   const [isUpdating, setIsUpdating] = useState(false);
@@ -148,10 +147,11 @@ const LiveMapResponsive = ({ filters, onServiceSelect }) => {
         }
       }, 1000);
 
-      // Cargar servicios activos si es necesario
-      if (activeServices.length === 0) {
-        console.log('📡 Cargando servicios activos...');
-        loadActiveServices();
+      // Log de servicios disponibles
+      if (services.length === 0) {
+        console.log('⚠️ No hay servicios activos para mostrar en el mapa');
+      } else {
+        console.log(`✅ ${services.length} servicios listos para el mapa`);
       }
     } catch (error) {
       console.error('❌ Error al inicializar el mapa:', error);
@@ -195,7 +195,7 @@ const LiveMapResponsive = ({ filters, onServiceSelect }) => {
   useEffect(() => {
     if (!leafletMapRef.current || !window.L) return;
 
-    console.log('🗺️ Actualizando marcadores del mapa:', activeServices.length, 'servicios');
+    console.log('🗺️ Actualizando marcadores del mapa:', services.length, 'servicios');
 
     // Mostrar indicador de actualización
     setIsUpdating(true);
@@ -233,8 +233,8 @@ const LiveMapResponsive = ({ filters, onServiceSelect }) => {
     };
 
     // Agregar marcadores para cada servicio
-    if (Array.isArray(activeServices)) {
-      activeServices.forEach(service => {
+    if (Array.isArray(services)) {
+      services.forEach(service => {
       if (!service.currentLocation?.lat || !service.currentLocation?.lng) return;
 
       const marker = window.L.marker(
@@ -289,11 +289,11 @@ const LiveMapResponsive = ({ filters, onServiceSelect }) => {
     // El mapa se mantendrá centrado en Lima por defecto
     if (leafletMapRef.current && leafletMapRef.current._loaded) {
       // Solo centrar si no hay servicios o en caso de error
-      if (!Array.isArray(activeServices) || activeServices.length === 0) {
+      if (!Array.isArray(services) || services.length === 0) {
         leafletMapRef.current.setView([-12.0464, -77.0428], viewport.isMobile ? 11 : 12);
       }
     }
-  }, [activeServices, viewport]);
+  }, [services, viewport]);
 
   // Funciones de control
   const handleZoom = (direction) => {
@@ -339,7 +339,7 @@ const LiveMapResponsive = ({ filters, onServiceSelect }) => {
               {isUpdating ? 'Actualizando...' : 'En vivo'}
             </span>
             <span className="text-xs text-gray-500">
-              {Array.isArray(activeServices) ? activeServices.length : 0} servicios
+              {Array.isArray(services) ? services.length : 0} servicios
             </span>
           </div>
         </div>
@@ -404,17 +404,35 @@ const LiveMapResponsive = ({ filters, onServiceSelect }) => {
         )}
 
         {/* Loading indicator */}
-        {(!Array.isArray(activeServices) || activeServices.length === 0) && (
+        {loading && (
           <div className="absolute inset-0 flex items-center justify-center bg-white bg-opacity-75 z-[5]">
             <div className="text-center">
-              <MapPinIcon className="w-12 h-12 text-gray-400 mx-auto mb-2 animate-bounce" />
-              <p className="text-gray-500">Cargando servicios activos...</p>
+              <div className="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto mb-3"></div>
+              <p className="text-gray-600 font-medium">Cargando servicios activos...</p>
+            </div>
+          </div>
+        )}
+
+        {/* Empty state */}
+        {!loading && (!Array.isArray(services) || services.length === 0) && (
+          <div className="absolute inset-0 flex items-center justify-center bg-white bg-opacity-90 z-[5]">
+            <div className="text-center px-4">
+              <MapPinIcon className="w-16 h-16 text-gray-300 mx-auto mb-3" />
+              <p className="text-gray-500 font-medium mb-1">No hay tours activos</p>
+              <p className="text-sm text-gray-400">Los tours aparecerán aquí cuando estén en curso</p>
             </div>
           </div>
         )}
       </div>
     </div>
   );
+};
+
+LiveMapResponsive.propTypes = {
+  services: PropTypes.arrayOf(PropTypes.object),
+  loading: PropTypes.bool,
+  filters: PropTypes.object,
+  onServiceSelect: PropTypes.func
 };
 
 export default LiveMapResponsive;

@@ -11,9 +11,9 @@ const Reservations = () => {
   const { t } = useTranslation();
 
   return (
-    <div className="h-full flex flex-col p-4 sm:p-6 lg:p-8">
+    <div className="h-full flex flex-col -m-4 lg:-m-6">
       {/* Header */}
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-4 sm:mb-6">
+      <div className="flex-shrink-0 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between px-4 sm:px-6 lg:px-8 py-4 sm:py-6 bg-gray-50">
         <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900 text-center sm:text-left break-words">{t('reservations.reservations')}</h1>
         
         <div className="flex flex-col sm:flex-row gap-3">

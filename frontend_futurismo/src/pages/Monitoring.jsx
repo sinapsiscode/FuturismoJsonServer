@@ -291,7 +291,14 @@ const Monitoring = () => {
         {/* Vista de Mapa - Para todos los roles */}
         {activeView === 'map' && (
           <div className="h-full p-4 sm:p-6">
-            <LiveMapResponsive />
+            <LiveMapResponsive
+              services={activeServices}
+              loading={servicesLoading}
+              onServiceSelect={(service) => {
+                setSelectedTour(service);
+                setIsDetailModalOpen(true);
+              }}
+            />
           </div>
         )}
 
