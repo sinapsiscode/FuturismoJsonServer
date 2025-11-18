@@ -78,6 +78,88 @@ module.exports = (router) => {
     }
   });
 
+  // Get tours for a specific guide (specific route - MUST come before /:id)
+  toursRouter.get('/guide-tours', (req, res) => {
+    try {
+      const { guideId } = req.query;
+      const db = router.db;
+
+      if (!guideId) {
+        return res.status(400).json({
+          success: false,
+          error: 'guideId es requerido'
+        });
+      }
+
+      console.log('🔍 [guide-tours] Buscando tours para guideId:', guideId);
+
+      // Encontrar el guía por user_id
+      const guides = db.get('guides').value() || [];
+      const guide = guides.find(g => g.user_id === guideId);
+
+      if (!guide) {
+        console.log('⚠️ [guide-tours] Guía no encontrado para user_id:', guideId);
+        return res.json({
+          success: true,
+          data: []
+        });
+      }
+
+      console.log('✅ [guide-tours] Guía encontrado:', guide.id, guide.name);
+
+      // Buscar reservas asignadas a este guía
+      const reservations = db.get('reservations').value() || [];
+      const guideReservations = reservations.filter(r => r.guide_id === guide.id);
+
+      console.log('📊 [guide-tours] Reservas del guía:', guideReservations.length);
+
+      // Transformar reservas a formato de tours para el frontend
+      const tours = db.get('tours').value() || [];
+      const agencies = db.get('agencies').value() || [];
+
+      const guideTours = guideReservations.map(reservation => {
+        const tour = tours.find(t => t.id === reservation.service_id);
+        const agency = agencies.find(a => a.id === reservation.agency_id);
+
+        // Mapear status de reserva a status de tour
+        let tourStatus = 'asignado';
+        if (reservation.status === 'completed') tourStatus = 'completado';
+        else if (reservation.status === 'in_progress') tourStatus = 'iniciado';
+        else if (reservation.status === 'confirmed') tourStatus = 'asignado';
+        else if (reservation.status === 'cancelled') tourStatus = 'cancelado';
+
+        return {
+          id: reservation.id,
+          name: tour ? tour.name : 'Tour sin nombre',
+          agency: agency ? agency.name : 'Agencia desconocida',
+          date: reservation.tour_date || reservation.created_at,
+          time: reservation.start_time || '09:00',
+          tourists: reservation.group_size || 1,
+          location: reservation.meeting_point || 'Por definir',
+          status: tourStatus,
+          isActive: ['iniciado', 'en_progreso'].includes(tourStatus),
+          checkpoints: [], // Podrías agregar checkpoints reales aquí si existen
+          tourDetails: tour,
+          reservationDetails: reservation
+        };
+      });
+
+      console.log('✅ [guide-tours] Tours procesados:', guideTours.length);
+
+      res.json({
+        success: true,
+        data: guideTours
+      });
+
+    } catch (error) {
+      console.error('❌ [guide-tours] Error:', error);
+      res.status(500).json({
+        success: false,
+        error: 'Error al obtener tours del guía'
+      });
+    }
+  });
+
   // Get all tours (base endpoint)
   toursRouter.get('/', (req, res) => {
     try {

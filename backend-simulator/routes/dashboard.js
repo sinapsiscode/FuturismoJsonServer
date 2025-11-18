@@ -43,16 +43,24 @@ module.exports = (router) => {
   // Get monthly data for charts
   dashboardRouter.get('/monthly-data', (req, res) => {
     try {
+      const { role, userId, months = 6 } = req.query;
       const db = router.db;
-      const dashboardStats = db.get('dashboard_stats').value();
 
-      // Use data from db.json or return empty data
-      const monthlyData = dashboardStats && dashboardStats.line_data ? dashboardStats.line_data.map(item => ({
-        month: item.name,
-        revenue: item.ingresos,
-        bookings: item.reservas,
-        guides: Math.floor(item.turistas / 50) // Estimate guides based on tourists
-      })) : [];
+      let monthlyData = [];
+
+      if (role === 'guide' && userId) {
+        // Calcular datos mensuales específicos del guía
+        monthlyData = getGuideMonthlyData(db, userId, parseInt(months));
+      } else {
+        // Datos genéricos para admin/agency
+        const dashboardStats = db.get('dashboard_stats').value();
+        monthlyData = dashboardStats && dashboardStats.line_data ? dashboardStats.line_data.map(item => ({
+          month: item.name,
+          revenue: item.ingresos,
+          bookings: item.reservas,
+          guides: Math.floor(item.turistas / 50)
+        })) : [];
+      }
 
       res.json({
         success: true,
@@ -60,6 +68,7 @@ module.exports = (router) => {
       });
 
     } catch (error) {
+      console.error('Error al obtener datos mensuales:', error);
       res.status(500).json({
         success: false,
         error: 'Error al obtener datos mensuales'
@@ -657,4 +666,57 @@ function calculateSummary(reservations, services, tours, timeRange = 'month') {
     bestDay,
     conversionRate
   };
+}
+
+// Helper function to get guide monthly data
+function getGuideMonthlyData(db, userId, months = 6) {
+  const guides = db.get('guides').value() || [];
+  const reservations = db.get('reservations').value() || [];
+
+  // Find guide by user_id
+  const guide = guides.find(g => g.user_id === userId);
+  if (!guide) {
+    console.log('⚠️ [getGuideMonthlyData] Guide not found for userId:', userId);
+    return [];
+  }
+
+  console.log('✅ [getGuideMonthlyData] Guide found:', guide.id);
+
+  // Filter reservations for this guide
+  const guideReservations = reservations.filter(r => r.guide_id === guide.id);
+  console.log('📊 [getGuideMonthlyData] Guide reservations:', guideReservations.length);
+
+  const now = new Date();
+  const monthNames = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
+  const monthlyData = [];
+
+  // Generate data for the last N months
+  for (let i = months - 1; i >= 0; i--) {
+    const targetDate = new Date(now.getFullYear(), now.getMonth() - i, 1);
+    const monthStart = new Date(targetDate.getFullYear(), targetDate.getMonth(), 1);
+    const monthEnd = new Date(targetDate.getFullYear(), targetDate.getMonth() + 1, 0);
+    monthEnd.setHours(23, 59, 59, 999);
+
+    // Filter reservations for this month
+    const monthReservations = guideReservations.filter(r => {
+      if (!r.tour_date && !r.created_at) return false;
+      const reservationDate = new Date(r.tour_date || r.created_at);
+      return reservationDate >= monthStart && reservationDate <= monthEnd;
+    });
+
+    // Calculate revenue for this month (only completed tours)
+    const revenue = monthReservations
+      .filter(r => r.status === 'completed')
+      .reduce((sum, r) => sum + (parseFloat(r.total_amount) || 0), 0);
+
+    monthlyData.push({
+      month: monthNames[targetDate.getMonth()],
+      revenue: Math.round(revenue),
+      bookings: monthReservations.length,
+      completed: monthReservations.filter(r => r.status === 'completed').length
+    });
+  }
+
+  console.log('📈 [getGuideMonthlyData] Monthly data:', monthlyData);
+  return monthlyData;
 }

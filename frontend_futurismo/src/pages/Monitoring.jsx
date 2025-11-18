@@ -87,6 +87,53 @@ const Monitoring = () => {
   // Obtener estadísticas del guía
   const guideStats = getStats();
 
+  // Función auxiliar para transformar tours del guía al formato del mapa
+  const transformGuideToursForMap = (tours) => {
+    if (!Array.isArray(tours) || tours.length === 0) return [];
+
+    // Coordenadas de algunos puntos de Lima para distribuir los tours
+    const limaLocations = [
+      { lat: -12.0464, lng: -77.0428, name: 'Plaza San Martín' },
+      { lat: -12.0432, lng: -77.0282, name: 'Centro Histórico' },
+      { lat: -12.1182, lng: -77.0377, name: 'Miraflores' },
+      { lat: -12.1467, lng: -77.0217, name: 'Barranco' },
+      { lat: -12.0700, lng: -77.0500, name: 'San Isidro' },
+      { lat: -12.0897, lng: -77.0438, name: 'Lince' },
+      { lat: -12.0608, lng: -77.0372, name: 'Cercado de Lima' },
+      { lat: -12.1026, lng: -77.0265, name: 'San Borja' }
+    ];
+
+    return tours.map((tour, index) => {
+      // Asignar ubicación basada en el meeting_point o distribuir en Lima
+      const location = limaLocations[index % limaLocations.length];
+
+      // Determinar el estado del servicio para el mapa
+      let mapStatus = 'enroute';
+      if (tour.status === 'completado') mapStatus = 'stopped';
+      else if (tour.status === 'iniciado') mapStatus = 'enroute';
+      else if (tour.status === 'asignado') mapStatus = 'enroute';
+
+      return {
+        id: tour.id,
+        tourName: tour.name,
+        guideName: user?.name || 'Carlos Mendoza',
+        tourists: tour.tourists || 0,
+        startTime: tour.time || '09:00',
+        status: mapStatus,
+        currentLocation: {
+          lat: location.lat,
+          lng: location.lng,
+          name: tour.location || location.name
+        },
+        progress: tour.status === 'completado' ? 100 : tour.status === 'iniciado' ? 50 : 10,
+        estimatedEndTime: tour.status === 'completado' ? 'Completado' : 'En curso',
+        // Datos adicionales del tour original
+        date: tour.date,
+        agency: tour.agency
+      };
+    });
+  };
+
   // Solo para guías: manejar tours
   const handleStartTour = async (tourId) => {
     try {
@@ -242,7 +289,7 @@ const Monitoring = () => {
       ];
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-screen">
       {/* Header */}
       <div className="flex-shrink-0 px-4 pt-4 pb-3 sm:px-6 sm:pt-6 sm:pb-4 lg:px-8 lg:pt-8 lg:pb-5">
         <div className="flex flex-col gap-3 sm:gap-0 sm:flex-row sm:items-center sm:justify-between">
@@ -287,13 +334,13 @@ const Monitoring = () => {
       </div>
 
       {/* Content Area */}
-      <div className="flex-1 min-h-0 bg-white overflow-hidden">
+      <div className="flex-1 min-h-0 bg-white overflow-hidden" style={{ minHeight: '500px' }}>
         {/* Vista de Mapa - Para todos los roles */}
         {activeView === 'map' && (
           <div className="h-full p-4 sm:p-6">
             <LiveMapResponsive
-              services={activeServices}
-              loading={servicesLoading}
+              services={isGuide ? transformGuideToursForMap(guideTours) : activeServices}
+              loading={isGuide ? toursLoading : servicesLoading}
               onServiceSelect={(service) => {
                 setSelectedTour(service);
                 setIsDetailModalOpen(true);
