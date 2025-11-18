@@ -15,7 +15,10 @@
       "Bash(node check-points.js:*)",
       "Bash(node add-redemptions-data.js:*)",
       "Bash(npm run dev:*)",
-      "Bash(powershell \"Get-Content db.json | ConvertFrom-Json | Select-Object -ExpandProperty guides | Where-Object { $_email -eq ''carlos@guia.com'' } | ConvertTo-Json\")"
+      "Bash(powershell \"Get-Content db.json | ConvertFrom-Json | Select-Object -ExpandProperty guides | Where-Object { $_email -eq ''carlos@guia.com'' } | ConvertTo-Json\")",
+      "Bash(dir /b /a-d *.md *.txt *.js 2)",
+      "Bash(dir /b /a-d *.md *.txt *.config.* 2)",
+      "Bash(find:*)"
     ],
     "deny": [],
     "ask": []
