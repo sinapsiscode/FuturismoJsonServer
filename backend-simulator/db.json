@@ -764,7 +764,53 @@
       "assignedGuide": "guide-001",
       "updated_at": "2025-10-25T00:10:33.168Z",
       "assignedDriver": "driver-001",
-      "assignedVehicle": "vehicle-001"
+      "assignedVehicle": "vehicle-001",
+      "checkpoints": [
+        {
+          "id": "cp-tour001-1",
+          "name": "Plaza de Armas",
+          "description": "Foto del grupo frente a la Catedral de Lima",
+          "order": 1,
+          "isRecommended": true,
+          "location": {
+            "lat": -12.0464,
+            "lng": -77.0428
+          }
+        },
+        {
+          "id": "cp-tour001-2",
+          "name": "Palacio de Gobierno",
+          "description": "Cambio de guardia - foto del grupo",
+          "order": 2,
+          "isRecommended": true,
+          "location": {
+            "lat": -12.0459,
+            "lng": -77.0308
+          }
+        },
+        {
+          "id": "cp-tour001-3",
+          "name": "Iglesia San Francisco",
+          "description": "Fachada barroca y catacumbas",
+          "order": 3,
+          "isRecommended": false,
+          "location": {
+            "lat": -12.0457,
+            "lng": -77.0285
+          }
+        },
+        {
+          "id": "cp-tour001-4",
+          "name": "Balcón Colonial",
+          "description": "Arquitectura colonial típica",
+          "order": 4,
+          "isRecommended": true,
+          "location": {
+            "lat": -12.0471,
+            "lng": -77.0297
+          }
+        }
+      ]
     },
     {
       "id": "tour-002",
@@ -832,6 +878,63 @@
           "purpose": "asf",
           "notes": "asf",
           "services": []
+        }
+      ],
+      "checkpoints": [
+        {
+          "id": "cp-tour003-1",
+          "name": "Qoricancha",
+          "description": "Templo del Sol - foto grupal en el patio principal",
+          "order": 1,
+          "isRecommended": true,
+          "location": {
+            "lat": -13.5183,
+            "lng": -71.9761
+          }
+        },
+        {
+          "id": "cp-tour003-2",
+          "name": "Sacsayhuamán",
+          "description": "Fortaleza inca - piedras gigantes",
+          "order": 2,
+          "isRecommended": true,
+          "location": {
+            "lat": -13.5088,
+            "lng": -71.9818
+          }
+        },
+        {
+          "id": "cp-tour003-3",
+          "name": "Q'enqo",
+          "description": "Anfiteatro ceremonial inca",
+          "order": 3,
+          "isRecommended": false,
+          "location": {
+            "lat": -13.5067,
+            "lng": -71.9839
+          }
+        },
+        {
+          "id": "cp-tour003-4",
+          "name": "Tambomachay",
+          "description": "Baños del Inca - fuentes de agua",
+          "order": 4,
+          "isRecommended": true,
+          "location": {
+            "lat": -13.5043,
+            "lng": -71.9878
+          }
+        },
+        {
+          "id": "cp-tour003-5",
+          "name": "Plaza de Armas Cusco",
+          "description": "Foto final del grupo - catedral al fondo",
+          "order": 5,
+          "isRecommended": true,
+          "location": {
+            "lat": -13.5165,
+            "lng": -71.9787
+          }
         }
       ]
     },
@@ -1046,14 +1149,14 @@
       "client_name": "GALDIAZ",
       "group_size": 6,
       "participants": 6,
-      "status": "confirmed",
+      "status": "completed",
       "payment_status": "pending",
       "total_amount": 510,
       "base_amount": 432,
       "tax_amount": 78,
       "special_requests": "",
       "created_at": "2025-11-10T10:00:00Z",
-      "updated_at": "2025-11-10T10:00:00Z"
+      "updated_at": "2025-11-18T20:10:37.766Z"
     },
     {
       "id": "res-nov-002",

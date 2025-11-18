@@ -3,7 +3,7 @@
  * Actualizado: 2025-01-17 - Migrado a monitoringService
  */
 import { useState, useEffect, useCallback } from 'react';
-import { MapIcon, UserGroupIcon, PlayIcon, PauseIcon, CheckIcon, PhotoIcon, MapPinIcon, ClockIcon } from '@heroicons/react/24/outline';
+import { MapIcon, UserGroupIcon, PlayIcon, PauseIcon, CheckIcon, PhotoIcon, MapPinIcon, ClockIcon, CameraIcon } from '@heroicons/react/24/outline';
 import { useTranslation } from 'react-i18next';
 import LiveMapResponsive from '../components/monitoring/LiveMapResponsive';
 import TourProgress from '../components/monitoring/TourProgress';

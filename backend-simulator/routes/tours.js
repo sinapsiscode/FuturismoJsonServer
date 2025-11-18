@@ -138,7 +138,7 @@ module.exports = (router) => {
           location: reservation.meeting_point || 'Por definir',
           status: tourStatus,
           isActive: ['iniciado', 'en_progreso'].includes(tourStatus),
-          checkpoints: [], // Podrías agregar checkpoints reales aquí si existen
+          checkpoints: tour && tour.checkpoints ? tour.checkpoints : [],
           tourDetails: tour,
           reservationDetails: reservation
         };
@@ -156,6 +156,76 @@ module.exports = (router) => {
       res.status(500).json({
         success: false,
         error: 'Error al obtener tours del guía'
+      });
+    }
+  });
+
+  // Update tour status (specific route - MUST come before /:id)
+  toursRouter.put('/:id/status', (req, res) => {
+    try {
+      const { id } = req.params;
+      const { status, guideId } = req.body;
+      const db = router.db;
+
+      console.log('🔄 [update-status] Tour:', id, 'Nuevo estado:', status, 'Guía:', guideId);
+
+      // Buscar la reserva (que es lo que el guía considera "tour")
+      const reservations = db.get('reservations').value() || [];
+      const reservationIndex = reservations.findIndex(r => r.id === id);
+
+      if (reservationIndex === -1) {
+        console.log('❌ [update-status] Reserva no encontrada:', id);
+        return res.status(404).json({
+          success: false,
+          error: 'Tour no encontrado'
+        });
+      }
+
+      // Verificar que el tour pertenezca al guía
+      const guides = db.get('guides').value() || [];
+      const guide = guides.find(g => g.user_id === guideId);
+
+      if (!guide || reservations[reservationIndex].guide_id !== guide.id) {
+        console.log('❌ [update-status] Tour no pertenece al guía');
+        return res.status(403).json({
+          success: false,
+          error: 'No tienes permiso para modificar este tour'
+        });
+      }
+
+      // Mapear estados del frontend al backend
+      let backendStatus = 'confirmed';
+      if (status === 'iniciado') backendStatus = 'in_progress';
+      else if (status === 'completado') backendStatus = 'completed';
+      else if (status === 'finalizado') backendStatus = 'completed';
+      else if (status === 'cancelado') backendStatus = 'cancelled';
+      else if (status === 'pausado') backendStatus = 'in_progress'; // pausado se mantiene como in_progress
+      else if (status === 'asignado') backendStatus = 'confirmed';
+
+      // Actualizar el estado
+      reservations[reservationIndex].status = backendStatus;
+      reservations[reservationIndex].updated_at = new Date().toISOString();
+
+      // Guardar cambios
+      db.set('reservations', reservations).write();
+
+      console.log('✅ [update-status] Estado actualizado:', backendStatus);
+
+      res.json({
+        success: true,
+        message: 'Estado del tour actualizado correctamente',
+        data: {
+          id: id,
+          status: status,
+          backendStatus: backendStatus
+        }
+      });
+
+    } catch (error) {
+      console.error('❌ [update-status] Error:', error);
+      res.status(500).json({
+        success: false,
+        error: 'Error al actualizar el estado del tour'
       });
     }
   });
