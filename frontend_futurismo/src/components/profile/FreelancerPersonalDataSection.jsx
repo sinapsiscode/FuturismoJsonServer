@@ -1,9 +1,9 @@
-import { useState } from 'react';
-import { 
-  PencilIcon, 
-  CheckIcon, 
-  XMarkIcon, 
-  ChevronDownIcon, 
+import { useState, useEffect } from 'react';
+import {
+  PencilIcon,
+  CheckIcon,
+  XMarkIcon,
+  ChevronDownIcon,
   ChevronUpIcon,
   UserIcon,
   IdentificationIcon,
@@ -12,42 +12,117 @@ import {
   CameraIcon
 } from '@heroicons/react/24/outline';
 import { useAuthStore } from '../../stores/authStore';
+import useGuidesStore from '../../stores/guidesStore';
 import { useTranslation } from 'react-i18next';
+import toast from 'react-hot-toast';
+import axios from 'axios';
 
 const FreelancerPersonalDataSection = () => {
   const { user } = useAuthStore();
   const { t } = useTranslation();
+  const updateGuide = useGuidesStore((state) => state.updateGuide);
+  const isLoading = useGuidesStore((state) => state.isLoading);
+
   const [isEditing, setIsEditing] = useState(false);
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [isUploadingPhoto, setIsUploadingPhoto] = useState(false);
-  
+  const [currentGuide, setCurrentGuide] = useState(null);
+  const [localLoading, setLocalLoading] = useState(false);
+
   const [formData, setFormData] = useState({
-    firstName: user?.firstName || 'Juan',
-    lastName: user?.lastName || 'Pérez',
-    email: user?.email || 'juan.perez@email.com',
-    phone: user?.phone || '+51 987 654 321',
+    firstName: '',
+    lastName: '',
+    email: '',
+    phone: '',
     documentType: 'DNI',
-    documentNumber: '12345678',
-    profilePhoto: user?.profilePhoto || null
+    documentNumber: '',
+    profilePhoto: null
   });
 
-  const handleSave = () => {
-    // Aquí iría la lógica para guardar los datos
-    console.log('Guardando datos personales:', formData);
-    setIsEditing(false);
+  // Cargar datos del guía
+  useEffect(() => {
+    const loadGuideData = async () => {
+      if (!user?.email) return;
+
+      try {
+        const response = await axios.get('/api/guides');
+        const guidesResult = response.data;
+
+        if (guidesResult.success && guidesResult.data) {
+          const userGuide = guidesResult.data.guides.find(g => g.email === user.email);
+
+          if (userGuide) {
+            setCurrentGuide(userGuide);
+            setFormData({
+              firstName: userGuide.first_name || '',
+              lastName: userGuide.last_name || '',
+              email: userGuide.email || '',
+              phone: userGuide.phone || userGuide.contact_phone || '',
+              documentType: userGuide.documents?.type || 'DNI',
+              documentNumber: userGuide.documents?.dni || userGuide.dni || '',
+              profilePhoto: userGuide.profile_photo || userGuide.avatar || null
+            });
+          }
+        }
+      } catch (error) {
+        console.error('Error al cargar guía:', error);
+      }
+    };
+
+    loadGuideData();
+  }, [user]);
+
+  const handleSave = async () => {
+    if (!currentGuide) {
+      toast.error('No se encontró la información del guía');
+      return;
+    }
+
+    setLocalLoading(true);
+
+    try {
+      const updateData = {
+        first_name: formData.firstName,
+        last_name: formData.lastName,
+        email: formData.email,
+        phone: formData.phone,
+        contact_phone: formData.phone,
+        documents: {
+          type: formData.documentType,
+          dni: formData.documentNumber
+        },
+        dni: formData.documentNumber,
+        profile_photo: formData.profilePhoto,
+        avatar: formData.profilePhoto
+      };
+
+      console.log('💾 Guardando datos personales:', updateData);
+
+      await updateGuide(currentGuide.id, updateData);
+
+      toast.success('✅ Datos personales actualizados correctamente');
+      setIsEditing(false);
+    } catch (error) {
+      console.error('❌ Error al guardar:', error);
+      toast.error(`Error al actualizar: ${error.message || 'Error desconocido'}`);
+    } finally {
+      setLocalLoading(false);
+    }
   };
 
   const handleCancel = () => {
     // Restaurar datos originales
-    setFormData({
-      firstName: user?.firstName || 'Juan',
-      lastName: user?.lastName || 'Pérez',
-      email: user?.email || 'juan.perez@email.com',
-      phone: user?.phone || '+51 987 654 321',
-      documentType: 'DNI',
-      documentNumber: '12345678',
-      profilePhoto: user?.profilePhoto || null
-    });
+    if (currentGuide) {
+      setFormData({
+        firstName: currentGuide.first_name || '',
+        lastName: currentGuide.last_name || '',
+        email: currentGuide.email || '',
+        phone: currentGuide.phone || currentGuide.contact_phone || '',
+        documentType: currentGuide.documents?.type || 'DNI',
+        documentNumber: currentGuide.documents?.dni || currentGuide.dni || '',
+        profilePhoto: currentGuide.profile_photo || currentGuide.avatar || null
+      });
+    }
     setIsEditing(false);
   };
 
@@ -92,10 +167,23 @@ const FreelancerPersonalDataSection = () => {
               <div className="flex space-x-2">
                 <button
                   onClick={handleSave}
-                  className="inline-flex items-center px-3 py-1.5 border border-transparent text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
+                  disabled={localLoading || isLoading}
+                  className="inline-flex items-center px-3 py-1.5 border border-transparent text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  <CheckIcon className="h-4 w-4 mr-1" />
-                  Guardar
+                  {localLoading || isLoading ? (
+                    <>
+                      <svg className="animate-spin h-4 w-4 mr-1" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                      </svg>
+                      Guardando...
+                    </>
+                  ) : (
+                    <>
+                      <CheckIcon className="h-4 w-4 mr-1" />
+                      Guardar
+                    </>
+                  )}
                 </button>
                 <button
                   onClick={handleCancel}

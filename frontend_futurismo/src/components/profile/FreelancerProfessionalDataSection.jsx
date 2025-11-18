@@ -1,9 +1,9 @@
-import { useState } from 'react';
-import { 
-  PencilIcon, 
-  CheckIcon, 
-  XMarkIcon, 
-  ChevronDownIcon, 
+import { useState, useEffect } from 'react';
+import {
+  PencilIcon,
+  CheckIcon,
+  XMarkIcon,
+  ChevronDownIcon,
   ChevronUpIcon,
   BriefcaseIcon,
   IdentificationIcon,
@@ -12,55 +12,113 @@ import {
   StarIcon
 } from '@heroicons/react/24/outline';
 import { useTranslation } from 'react-i18next';
+import { useAuthStore } from '../../stores/authStore';
+import useGuidesStore from '../../stores/guidesStore';
 import LanguageMultiSelect from '../common/LanguageMultiSelect';
+import toast from 'react-hot-toast';
+import axios from 'axios';
 
 const FreelancerProfessionalDataSection = () => {
   const { t } = useTranslation();
+  const { user } = useAuthStore();
+  const updateGuide = useGuidesStore((state) => state.updateGuide);
+  const isStoreLoading = useGuidesStore((state) => state.isLoading);
+
   const [isEditing, setIsEditing] = useState(false);
   const [isCollapsed, setIsCollapsed] = useState(false);
-  
+  const [currentGuide, setCurrentGuide] = useState(null);
+  const [localLoading, setLocalLoading] = useState(false);
+
   const [formData, setFormData] = useState({
-    licenseNumber: 'LIC-2024-001',
-    experience: 'Guía turístico con más de 5 años de experiencia especializado en tours históricos y culturales de Lima. He guiado a más de 2000 turistas nacionales e internacionales...',
-    specialties: 'Tours culturales, historia inca, gastronomía peruana, tours nocturnos',
-    languages: [
-      { code: 'es', level: 'nativo' },
-      { code: 'en', level: 'avanzado' },
-      { code: 'fr', level: 'intermedio' }
-    ],
-    yearsOfExperience: 5,
-    education: 'Licenciado en Turismo - Universidad San Martín de Porres',
-    certifications: [
-      'Certificación en Primeros Auxilios',
-      'Curso de Turismo Sostenible',
-      'Especialización en Historia del Perú'
-    ]
+    licenseNumber: '',
+    experience: '',
+    specialties: '',
+    languages: [],
+    yearsOfExperience: 0,
+    education: '',
+    certifications: []
   });
 
-  const handleSave = () => {
-    console.log('Guardando datos profesionales:', formData);
-    setIsEditing(false);
+  // Cargar datos del guía
+  useEffect(() => {
+    const loadGuideData = async () => {
+      if (!user?.email) return;
+
+      try {
+        const response = await axios.get('/api/guides');
+        const guidesResult = response.data;
+
+        if (guidesResult.success && guidesResult.data) {
+          const userGuide = guidesResult.data.guides.find(g => g.email === user.email);
+
+          if (userGuide) {
+            setCurrentGuide(userGuide);
+            setFormData({
+              licenseNumber: userGuide.license_number || '',
+              experience: userGuide.bio || userGuide.experience || '',
+              specialties: Array.isArray(userGuide.specialties) ? userGuide.specialties.join(', ') : (userGuide.specialties || ''),
+              languages: userGuide.languages || [],
+              yearsOfExperience: userGuide.experience_years || 0,
+              education: userGuide.education || '',
+              certifications: Array.isArray(userGuide.certifications) ? userGuide.certifications : []
+            });
+          }
+        }
+      } catch (error) {
+        console.error('Error al cargar guía:', error);
+      }
+    };
+
+    loadGuideData();
+  }, [user]);
+
+  const handleSave = async () => {
+    if (!currentGuide) {
+      toast.error('No se encontró la información del guía');
+      return;
+    }
+
+    setLocalLoading(true);
+
+    try {
+      const updateData = {
+        license_number: formData.licenseNumber,
+        bio: formData.experience,
+        experience: formData.experience,
+        specialties: formData.specialties.split(',').map(s => s.trim()).filter(s => s),
+        languages: formData.languages,
+        experience_years: formData.yearsOfExperience,
+        education: formData.education,
+        certifications: formData.certifications
+      };
+
+      console.log('💾 Guardando datos profesionales:', updateData);
+
+      await updateGuide(currentGuide.id, updateData);
+
+      toast.success('✅ Datos profesionales actualizados correctamente');
+      setIsEditing(false);
+    } catch (error) {
+      console.error('❌ Error al guardar:', error);
+      toast.error(`Error al actualizar: ${error.message || 'Error desconocido'}`);
+    } finally {
+      setLocalLoading(false);
+    }
   };
 
   const handleCancel = () => {
     // Restaurar datos originales
-    setFormData({
-      licenseNumber: 'LIC-2024-001',
-      experience: 'Guía turístico con más de 5 años de experiencia especializado en tours históricos y culturales de Lima. He guiado a más de 2000 turistas nacionales e internacionales...',
-      specialties: 'Tours culturales, historia inca, gastronomía peruana, tours nocturnos',
-      languages: [
-        { code: 'es', level: 'nativo' },
-        { code: 'en', level: 'avanzado' },
-        { code: 'fr', level: 'intermedio' }
-      ],
-      yearsOfExperience: 5,
-      education: 'Licenciado en Turismo - Universidad San Martín de Porres',
-      certifications: [
-        'Certificación en Primeros Auxilios',
-        'Curso de Turismo Sostenible',
-        'Especialización en Historia del Perú'
-      ]
-    });
+    if (currentGuide) {
+      setFormData({
+        licenseNumber: currentGuide.license_number || '',
+        experience: currentGuide.bio || currentGuide.experience || '',
+        specialties: Array.isArray(currentGuide.specialties) ? currentGuide.specialties.join(', ') : (currentGuide.specialties || ''),
+        languages: currentGuide.languages || [],
+        yearsOfExperience: currentGuide.experience_years || 0,
+        education: currentGuide.education || '',
+        certifications: Array.isArray(currentGuide.certifications) ? currentGuide.certifications : []
+      });
+    }
     setIsEditing(false);
   };
 
@@ -106,14 +164,28 @@ const FreelancerProfessionalDataSection = () => {
               <div className="flex space-x-2">
                 <button
                   onClick={handleSave}
-                  className="inline-flex items-center px-3 py-1.5 border border-transparent text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
+                  disabled={localLoading || isStoreLoading}
+                  className="inline-flex items-center px-3 py-1.5 border border-transparent text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  <CheckIcon className="h-4 w-4 mr-1" />
-                  Guardar
+                  {localLoading || isStoreLoading ? (
+                    <>
+                      <svg className="animate-spin h-4 w-4 mr-1" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                      </svg>
+                      Guardando...
+                    </>
+                  ) : (
+                    <>
+                      <CheckIcon className="h-4 w-4 mr-1" />
+                      Guardar
+                    </>
+                  )}
                 </button>
                 <button
                   onClick={handleCancel}
-                  className="inline-flex items-center px-3 py-1.5 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+                  disabled={localLoading || isStoreLoading}
+                  className="inline-flex items-center px-3 py-1.5 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <XMarkIcon className="h-4 w-4 mr-1" />
                   Cancelar

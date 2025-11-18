@@ -252,8 +252,11 @@ module.exports = (router) => {
         }
       }
 
+      // Merge existing data with updates to preserve fields not sent in request
       const updatedAgency = {
-        ...req.body,
+        ...agency.value(),  // Keep all existing fields
+        ...req.body,        // Overwrite with new data
+        id: agency.value().id,  // Preserve ID
         updated_at: new Date().toISOString()
       };
 

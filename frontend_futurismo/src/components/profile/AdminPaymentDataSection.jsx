@@ -1,12 +1,14 @@
 import { useState, useEffect } from 'react';
 import { CreditCardIcon, ChevronDownIcon, ChevronUpIcon, InformationCircleIcon } from '@heroicons/react/24/outline';
 import { useTranslation } from 'react-i18next';
-import profileService from '../../services/profileService';
+import { useAuthStore } from '../../stores/authStore';
+import axios from 'axios';
 
 const AdminPaymentDataSection = () => {
+  const { user } = useAuthStore();
   const { t } = useTranslation();
   const [isCollapsed, setIsCollapsed] = useState(false);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [paymentData, setPaymentData] = useState({
     bankName: '',
     accountType: '',
@@ -16,33 +18,19 @@ const AdminPaymentDataSection = () => {
     ruc: ''
   });
 
-  // Cargar datos desde el backend
+  // Cargar datos del usuario (solo lectura)
   useEffect(() => {
-    const loadPaymentData = async () => {
-      try {
-        setLoading(true);
-        const response = await profileService.getCompanyData();
-
-        if (response.success && response.data) {
-          const data = response.data;
-          setPaymentData({
-            bankName: 'Banco de Crédito del Perú (BCP)',
-            accountType: 'Cuenta Corriente en Soles',
-            accountNumber: data.accountNumber || '',
-            accountCCI: data.accountCCI || '',
-            accountHolder: data.businessName || '',
-            ruc: data.ruc || ''
-          });
-        }
-      } catch (error) {
-        console.error('Error al cargar datos de pago:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    loadPaymentData();
-  }, []);
+    if (user) {
+      setPaymentData({
+        bankName: 'Banco de Crédito del Perú (BCP)',
+        accountType: 'Cuenta Corriente en Soles',
+        accountNumber: user.company_data?.account_number || user.accountNumber || '',
+        accountCCI: user.company_data?.account_cci || user.accountCCI || '',
+        accountHolder: user.company_data?.business_name || user.businessName || '',
+        ruc: user.company_data?.ruc || user.ruc || ''
+      });
+    }
+  }, [user]);
 
   return (
     <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">

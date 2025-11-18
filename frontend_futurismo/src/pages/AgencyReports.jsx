@@ -26,7 +26,7 @@ const AgencyReports = () => {
   const [loading, setLoading] = useState(true);
 
   // Get functions from store
-  const { fetchMonthlyReport, fetchYearlyComparison } = useAgencyStore();
+  const actions = useAgencyStore((state) => state.actions);
 
   // Obtener datos del reporte
   useEffect(() => {
@@ -37,10 +37,10 @@ const AgencyReports = () => {
       
       try {
         if (reportType === 'monthly') {
-          const data = await fetchMonthlyReport(year, month);
+          const data = await actions.fetchMonthlyReport(year, month);
           setReportData(data);
         } else {
-          const yearlyData = await fetchYearlyComparison(year);
+          const yearlyData = await actions.fetchYearlyComparison(year);
           setReportData({ yearlyData, year });
         }
       } catch (error) {
@@ -52,7 +52,7 @@ const AgencyReports = () => {
     };
 
     fetchReportData();
-  }, [selectedDate, reportType, fetchMonthlyReport, fetchYearlyComparison]);
+  }, [selectedDate, reportType, actions]);
 
   const navigateDate = (direction) => {
     if (direction === 'prev') {

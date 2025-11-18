@@ -1,13 +1,22 @@
 import { useState, useEffect } from 'react';
 import { PhoneIcon, PencilIcon, CheckIcon, XMarkIcon, ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/24/outline';
 import { useTranslation } from 'react-i18next';
-import profileService from '../../services/profileService';
+import { useAuthStore } from '../../stores/authStore';
+import useUsersStore from '../../stores/usersStore';
+import toast from 'react-hot-toast';
+import axios from 'axios';
 
 const AdminContactDataSection = () => {
+  const { user } = useAuthStore();
   const { t } = useTranslation();
+  const updateUser = useUsersStore((state) => state.updateUser);
+  const isLoading = useUsersStore((state) => state.isLoading);
+
   const [isEditing, setIsEditing] = useState(false);
   const [isCollapsed, setIsCollapsed] = useState(false);
-  const [loading, setLoading] = useState(true);
+  const [currentUser, setCurrentUser] = useState(null);
+  const [localLoading, setLocalLoading] = useState(false);
+
   const [formData, setFormData] = useState({
     personalPhone: '',
     officePhone: '',
@@ -15,31 +24,18 @@ const AdminContactDataSection = () => {
     adminEmail: ''
   });
 
-  // Cargar datos desde el backend
+  // Cargar datos del usuario
   useEffect(() => {
-    const loadContactData = async () => {
-      try {
-        setLoading(true);
-        const response = await profileService.getContactData();
-
-        if (response.success && response.data) {
-          const data = response.data;
-          setFormData({
-            personalPhone: data.mainContact?.mobile || data.mainContact?.phone || '',
-            officePhone: data.mainContact?.phone || '',
-            emergencyPhone: data.emergencyContact?.phone || '',
-            adminEmail: data.mainContact?.email || ''
-          });
-        }
-      } catch (error) {
-        console.error('Error al cargar datos de contacto:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    loadContactData();
-  }, []);
+    if (user) {
+      setCurrentUser(user);
+      setFormData({
+        personalPhone: user.contact_data?.main_contact?.mobile || user.phone || '',
+        officePhone: user.contact_data?.main_contact?.phone || user.phone || '',
+        emergencyPhone: user.contact_data?.emergency_contact?.phone || '',
+        adminEmail: user.contact_data?.main_contact?.email || user.email || ''
+      });
+    }
+  }, [user]);
 
   const handleInputChange = (field, value) => {
     setFormData(prev => ({
@@ -49,59 +45,52 @@ const AdminContactDataSection = () => {
   };
 
   const handleSave = async () => {
-    try {
-      setLoading(true);
-      console.log('Guardando datos de contacto:', formData);
+    if (!currentUser) {
+      toast.error('No se encontró la información del usuario');
+      return;
+    }
 
-      // Mapear campos del formulario a la estructura del backend
-      const dataToSave = {
-        mainContact: {
-          phone: formData.officePhone,
-          mobile: formData.personalPhone,
-          email: formData.adminEmail
-        },
-        emergencyContact: {
-          phone: formData.emergencyPhone
+    setLocalLoading(true);
+
+    try {
+      const updateData = {
+        contact_data: {
+          main_contact: {
+            phone: formData.officePhone,
+            mobile: formData.personalPhone,
+            email: formData.adminEmail
+          },
+          emergency_contact: {
+            phone: formData.emergencyPhone
+          }
         }
       };
 
-      const response = await profileService.updateContactData(dataToSave);
+      console.log('💾 Guardando datos de contacto:', updateData);
 
-      if (response.success) {
-        setIsEditing(false);
-        alert('✅ Datos de contacto actualizados correctamente');
-      } else {
-        alert('❌ Error al actualizar datos de contacto');
-      }
+      await updateUser(currentUser.id, updateData);
+
+      toast.success('✅ Datos de contacto actualizados correctamente');
+      setIsEditing(false);
     } catch (error) {
-      console.error('Error al guardar datos de contacto:', error);
-      alert('❌ Error al actualizar datos de contacto');
+      console.error('❌ Error al guardar:', error);
+      toast.error(`Error al actualizar: ${error.message || 'Error desconocido'}`);
     } finally {
-      setLoading(false);
+      setLocalLoading(false);
     }
   };
 
   const handleCancel = () => {
+    // Restaurar datos originales
+    if (currentUser) {
+      setFormData({
+        personalPhone: currentUser.contact_data?.main_contact?.mobile || currentUser.phone || '',
+        officePhone: currentUser.contact_data?.main_contact?.phone || currentUser.phone || '',
+        emergencyPhone: currentUser.contact_data?.emergency_contact?.phone || '',
+        adminEmail: currentUser.contact_data?.main_contact?.email || currentUser.email || ''
+      });
+    }
     setIsEditing(false);
-    // Recargar datos originales
-    const loadContactData = async () => {
-      try {
-        const response = await profileService.getContactData();
-
-        if (response.success && response.data) {
-          const data = response.data;
-          setFormData({
-            personalPhone: data.mainContact?.mobile || data.mainContact?.phone || '',
-            officePhone: data.mainContact?.phone || '',
-            emergencyPhone: data.emergencyContact?.phone || '',
-            adminEmail: data.mainContact?.email || ''
-          });
-        }
-      } catch (error) {
-        console.error('Error al recargar datos de contacto:', error);
-      }
-    };
-    loadContactData();
   };
 
   return (
@@ -141,12 +130,15 @@ const AdminContactDataSection = () => {
             <div className="flex gap-2">
               <button
                 onClick={handleSave}
-                disabled={loading}
+                disabled={localLoading || isLoading}
                 className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {loading ? (
+                {localLoading || isLoading ? (
                   <>
-                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                    <svg className="animate-spin h-4 w-4 mr-1" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
                     Guardando...
                   </>
                 ) : (
@@ -158,7 +150,7 @@ const AdminContactDataSection = () => {
               </button>
               <button
                 onClick={handleCancel}
-                disabled={loading}
+                disabled={localLoading || isLoading}
                 className="flex items-center gap-2 px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <XMarkIcon className="w-4 h-4" />
@@ -170,12 +162,6 @@ const AdminContactDataSection = () => {
       </div>
 
       {!isCollapsed && (
-        loading && !isEditing ? (
-          <div className="flex justify-center items-center py-8">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-            <span className="ml-3 text-gray-600">Cargando datos...</span>
-          </div>
-        ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -253,7 +239,6 @@ const AdminContactDataSection = () => {
             )}
           </div>
         </div>
-        )
       )}
     </div>
   );

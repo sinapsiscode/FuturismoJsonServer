@@ -13,7 +13,7 @@
       "avatar": "https://ui-avatars.com/api/?name=Admin&background=3B82F6&color=fff",
       "created_at": "2024-01-01T00:00:00Z",
       "updated_at": "2024-01-01T00:00:00Z",
-      "last_login_at": "2025-11-17T21:34:02.453Z"
+      "last_login_at": "2025-11-18T18:03:27.400Z"
     },
     {
       "id": "user-agency-1",
@@ -28,7 +28,7 @@
       "avatar": "https://ui-avatars.com/api/?name=Maria+Gonzalez&background=10B981&color=fff",
       "created_at": "2024-02-01T00:00:00Z",
       "updated_at": "2024-02-01T00:00:00Z",
-      "last_login_at": "2025-11-18T07:28:01.674Z"
+      "last_login_at": "2025-11-18T18:39:46.698Z"
     },
     {
       "id": "user-guide-1",
@@ -239,7 +239,7 @@
     {
       "id": "agency-001",
       "user_id": "user-agency-1",
-      "name": "Tours Lima Premium",
+      "name": "LaLOCURASANA",
       "business_name": "Tours Lima Premium S.A.C.",
       "ruc": "20543218765",
       "email": "contacto@tourslima.com",
@@ -283,7 +283,13 @@
         "pt"
       ],
       "created_at": "2024-02-01T00:00:00Z",
-      "updated_at": "2025-10-20T00:00:00Z"
+      "updated_at": "2025-11-18T18:41:47.312Z",
+      "company_name": "LaLOCURASANA",
+      "tax_id": "20543218765",
+      "contact_phone": "+51987654322",
+      "contact_email": "contacto@tourslima.com",
+      "established_year": "",
+      "establishedYear": ""
     },
     {
       "id": "agency-002",
@@ -1694,6 +1700,14 @@
       "created_at": "2025-11-17T23:20:41.844Z",
       "updated_at": "2025-11-17T23:20:45.479Z",
       "created_by": "user-admin-1"
+    },
+    {
+      "id": "conv-1763488267412",
+      "title": null,
+      "type": "direct",
+      "created_at": "2025-11-18T17:51:07.412Z",
+      "updated_at": "2025-11-18T17:51:07.412Z",
+      "created_by": "user-agency-1"
     }
   ],
   "conversation_participants": [
@@ -1737,6 +1751,20 @@
       "conversation_id": "conv-1763421641844",
       "user_id": "guide-004",
       "joined_at": "2025-11-17T23:20:41.850Z",
+      "role": "member"
+    },
+    {
+      "id": "part-1763488267423-user-agency-1",
+      "conversation_id": "conv-1763488267412",
+      "user_id": "user-agency-1",
+      "joined_at": "2025-11-18T17:51:07.423Z",
+      "role": "admin"
+    },
+    {
+      "id": "part-1763488267423-guide-004",
+      "conversation_id": "conv-1763488267412",
+      "user_id": "guide-004",
+      "joined_at": "2025-11-18T17:51:07.423Z",
       "role": "member"
     }
   ],

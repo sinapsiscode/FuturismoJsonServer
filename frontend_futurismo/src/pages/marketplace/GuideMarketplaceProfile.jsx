@@ -121,6 +121,12 @@ const GuideMarketplaceProfile = () => {
     }
   };
 
+  const handleSendMessage = () => {
+    // Navigate to chat with guide information
+    const guideName = guide.fullName || guide.name;
+    navigate(`/chat?guide=${guideId}&name=${encodeURIComponent(guideName)}`);
+  };
+
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -653,7 +659,10 @@ const GuideMarketplaceProfile = () => {
                   Solicitar servicio
                 </button>
                 
-                <button className="w-full bg-gray-100 text-gray-700 px-4 py-3 rounded-lg hover:bg-gray-200 transition-colors font-medium flex items-center justify-center gap-2">
+                <button
+                  onClick={handleSendMessage}
+                  className="w-full bg-gray-100 text-gray-700 px-4 py-3 rounded-lg hover:bg-gray-200 transition-colors font-medium flex items-center justify-center gap-2"
+                >
                   <ChatBubbleLeftRightIcon className="h-5 w-5" />
                   Enviar mensaje
                 </button>

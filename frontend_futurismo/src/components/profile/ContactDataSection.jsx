@@ -1,12 +1,23 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { PhoneIcon, PencilIcon, CheckIcon, XMarkIcon, PlusIcon, TrashIcon, ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/24/outline';
+import { useAgencyStore } from '../../stores/agencyStore';
+import toast from 'react-hot-toast';
 
 const ContactDataSection = () => {
+  const currentAgency = useAgencyStore((state) => state.currentAgency);
+  const actions = useAgencyStore((state) => state.actions);
+  const storeLoading = useAgencyStore((state) => state.isLoading);
   const [isEditing, setIsEditing] = useState(false);
   const [isCollapsed, setIsCollapsed] = useState(false);
-  // Iniciar con array vacío - los usuarios agregarán sus propios contactos
-  // TODO: En el futuro, cargar desde API /api/profile/contacts o /api/agencies/:id/contacts
+  const [isLocalLoading, setIsLocalLoading] = useState(false);
   const [contacts, setContacts] = useState([]);
+
+  // Cargar contactos de la agencia
+  useEffect(() => {
+    if (currentAgency?.contacts) {
+      setContacts(currentAgency.contacts);
+    }
+  }, [currentAgency]);
 
   const [newContact, setNewContact] = useState({
     name: '',
@@ -37,13 +48,40 @@ const ContactDataSection = () => {
     setContacts(contacts.filter(contact => contact.id !== id));
   };
 
-  const handleSave = () => {
-    console.log('Guardando datos de contacto:', contacts);
-    setIsEditing(false);
-    alert('✅ Datos de contacto actualizados correctamente');
+  const handleSave = async () => {
+    if (!currentAgency) {
+      toast.error('No se encontró la información de la agencia');
+      return;
+    }
+
+    setIsLocalLoading(true);
+
+    try {
+      const updateData = {
+        contacts: contacts
+      };
+
+      console.log('💾 Guardando contactos:', updateData);
+
+      await actions.updateAgencyProfile(updateData);
+
+      toast.success('✅ Datos de contacto actualizados correctamente');
+      setIsEditing(false);
+    } catch (error) {
+      console.error('❌ Error al guardar:', error);
+      toast.error(`Error al actualizar: ${error.message || 'Error desconocido'}`);
+    } finally {
+      setIsLocalLoading(false);
+    }
   };
 
   const handleCancel = () => {
+    // Restaurar contactos originales
+    if (currentAgency?.contacts) {
+      setContacts(currentAgency.contacts);
+    } else {
+      setContacts([]);
+    }
     setIsEditing(false);
   };
 
@@ -84,14 +122,28 @@ const ContactDataSection = () => {
             <div className="flex gap-2">
               <button
                 onClick={handleSave}
-                className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+                disabled={isLocalLoading || storeLoading}
+                className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                <CheckIcon className="w-4 h-4" />
-                Guardar
+                {isLocalLoading || storeLoading ? (
+                  <>
+                    <svg className="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    Guardando...
+                  </>
+                ) : (
+                  <>
+                    <CheckIcon className="w-4 h-4" />
+                    Guardar
+                  </>
+                )}
               </button>
               <button
                 onClick={handleCancel}
-                className="flex items-center gap-2 px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
+                disabled={isLocalLoading || storeLoading}
+                className="flex items-center gap-2 px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <XMarkIcon className="w-4 h-4" />
                 Cancelar

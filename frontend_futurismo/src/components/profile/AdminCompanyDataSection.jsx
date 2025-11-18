@@ -1,13 +1,22 @@
 import { useState, useEffect } from 'react';
 import { BuildingOfficeIcon, PencilIcon, CheckIcon, XMarkIcon, ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/24/outline';
 import { useTranslation } from 'react-i18next';
-import profileService from '../../services/profileService';
+import { useAuthStore } from '../../stores/authStore';
+import useUsersStore from '../../stores/usersStore';
+import toast from 'react-hot-toast';
+import axios from 'axios';
 
 const AdminCompanyDataSection = () => {
+  const { user } = useAuthStore();
   const { t } = useTranslation();
+  const updateUser = useUsersStore((state) => state.updateUser);
+  const isLoading = useUsersStore((state) => state.isLoading);
+
   const [isEditing, setIsEditing] = useState(false);
   const [isCollapsed, setIsCollapsed] = useState(false);
-  const [loading, setLoading] = useState(true);
+  const [currentUser, setCurrentUser] = useState(null);
+  const [localLoading, setLocalLoading] = useState(false);
+
   const [formData, setFormData] = useState({
     companyName: '',
     ruc: '',
@@ -18,33 +27,21 @@ const AdminCompanyDataSection = () => {
     accountCCI: ''
   });
 
-  // Cargar datos desde el backend
+  // Cargar datos del usuario
   useEffect(() => {
-    const loadCompanyData = async () => {
-      try {
-        setLoading(true);
-        const response = await profileService.getCompanyData();
-
-        if (response.success && response.data) {
-          setFormData({
-            companyName: response.data.businessName || '',
-            ruc: response.data.ruc || '',
-            address: response.data.address || '',
-            phone: response.data.phone || '',
-            email: response.data.email || '',
-            accountNumber: response.data.accountNumber || '',
-            accountCCI: response.data.accountCCI || ''
-          });
-        }
-      } catch (error) {
-        console.error('Error al cargar datos de empresa:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    loadCompanyData();
-  }, []);
+    if (user) {
+      setCurrentUser(user);
+      setFormData({
+        companyName: user.company_data?.business_name || user.businessName || '',
+        ruc: user.company_data?.ruc || user.ruc || '',
+        address: user.company_data?.address || user.address || '',
+        phone: user.company_data?.phone || user.phone || '',
+        email: user.company_data?.email || user.email || '',
+        accountNumber: user.company_data?.account_number || user.accountNumber || '',
+        accountCCI: user.company_data?.account_cci || user.accountCCI || ''
+      });
+    }
+  }, [user]);
 
   const handleInputChange = (field, value) => {
     setFormData(prev => ({
@@ -54,60 +51,54 @@ const AdminCompanyDataSection = () => {
   };
 
   const handleSave = async () => {
-    try {
-      setLoading(true);
-      console.log('Guardando datos de empresa:', formData);
+    if (!currentUser) {
+      toast.error('No se encontró la información del usuario');
+      return;
+    }
 
-      // Mapear campos del formulario a la estructura del backend
-      const dataToSave = {
-        businessName: formData.companyName,
-        ruc: formData.ruc,
-        address: formData.address,
-        phone: formData.phone,
-        email: formData.email,
-        accountNumber: formData.accountNumber,
-        accountCCI: formData.accountCCI
+    setLocalLoading(true);
+
+    try {
+      const updateData = {
+        company_data: {
+          business_name: formData.companyName,
+          ruc: formData.ruc,
+          address: formData.address,
+          phone: formData.phone,
+          email: formData.email,
+          account_number: formData.accountNumber,
+          account_cci: formData.accountCCI
+        }
       };
 
-      const response = await profileService.updateCompanyData(dataToSave);
+      console.log('💾 Guardando datos de empresa:', updateData);
 
-      if (response.success) {
-        setIsEditing(false);
-        alert('✅ Datos de empresa actualizados correctamente');
-      } else {
-        alert('❌ Error al actualizar datos de empresa');
-      }
+      await updateUser(currentUser.id, updateData);
+
+      toast.success('✅ Datos de empresa actualizados correctamente');
+      setIsEditing(false);
     } catch (error) {
-      console.error('Error al guardar datos de empresa:', error);
-      alert('❌ Error al actualizar datos de empresa');
+      console.error('❌ Error al guardar:', error);
+      toast.error(`Error al actualizar: ${error.message || 'Error desconocido'}`);
     } finally {
-      setLoading(false);
+      setLocalLoading(false);
     }
   };
 
   const handleCancel = () => {
+    // Restaurar datos originales
+    if (currentUser) {
+      setFormData({
+        companyName: currentUser.company_data?.business_name || currentUser.businessName || '',
+        ruc: currentUser.company_data?.ruc || currentUser.ruc || '',
+        address: currentUser.company_data?.address || currentUser.address || '',
+        phone: currentUser.company_data?.phone || currentUser.phone || '',
+        email: currentUser.company_data?.email || currentUser.email || '',
+        accountNumber: currentUser.company_data?.account_number || currentUser.accountNumber || '',
+        accountCCI: currentUser.company_data?.account_cci || currentUser.accountCCI || ''
+      });
+    }
     setIsEditing(false);
-    // Recargar datos originales
-    const loadCompanyData = async () => {
-      try {
-        const response = await profileService.getCompanyData();
-
-        if (response.success && response.data) {
-          setFormData({
-            companyName: response.data.businessName || '',
-            ruc: response.data.ruc || '',
-            address: response.data.address || '',
-            phone: response.data.phone || '',
-            email: response.data.email || '',
-            accountNumber: response.data.accountNumber || '',
-            accountCCI: response.data.accountCCI || ''
-          });
-        }
-      } catch (error) {
-        console.error('Error al recargar datos de empresa:', error);
-      }
-    };
-    loadCompanyData();
   };
 
   return (
@@ -147,12 +138,15 @@ const AdminCompanyDataSection = () => {
             <div className="flex gap-2">
               <button
                 onClick={handleSave}
-                disabled={loading}
+                disabled={localLoading || isLoading}
                 className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {loading ? (
+                {localLoading || isLoading ? (
                   <>
-                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                    <svg className="animate-spin h-4 w-4 mr-1" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
                     Guardando...
                   </>
                 ) : (
@@ -164,7 +158,7 @@ const AdminCompanyDataSection = () => {
               </button>
               <button
                 onClick={handleCancel}
-                disabled={loading}
+                disabled={localLoading || isLoading}
                 className="flex items-center gap-2 px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <XMarkIcon className="w-4 h-4" />
@@ -176,12 +170,6 @@ const AdminCompanyDataSection = () => {
       </div>
 
       {!isCollapsed && (
-        loading && !isEditing ? (
-          <div className="flex justify-center items-center py-8">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-            <span className="ml-3 text-gray-600">Cargando datos...</span>
-          </div>
-        ) : (
         <div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Columna izquierda */}
@@ -325,7 +313,6 @@ const AdminCompanyDataSection = () => {
             )}
           </div>
         </div>
-        )
       )}
     </div>
   );

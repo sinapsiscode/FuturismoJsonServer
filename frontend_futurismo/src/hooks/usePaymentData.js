@@ -1,11 +1,14 @@
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import toast from 'react-hot-toast';
-import profileService from '../services/profileService';
+import { useAgencyStore } from '../stores/agencyStore';
 import { PAYMENT_METHOD_TYPES } from '../constants/profileConstants';
 
 const usePaymentData = () => {
   const { t } = useTranslation();
+  const currentAgency = useAgencyStore((state) => state.currentAgency);
+  const actions = useAgencyStore((state) => state.actions);
+  const storeLoading = useAgencyStore((state) => state.isLoading);
   const [isEditing, setIsEditing] = useState(false);
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [showCardNumbers, setShowCardNumbers] = useState({});
@@ -22,27 +25,16 @@ const usePaymentData = () => {
     isMain: false
   });
   const [paymentMethods, setPaymentMethods] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
-  // Load payment methods from API
+  // Load payment methods from currentAgency
   useEffect(() => {
-    const loadPaymentMethods = async () => {
-      try {
-        setLoading(true);
-        const result = await profileService.getPaymentMethods();
-        if (result.success) {
-          setPaymentMethods(result.data || []);
-        }
-      } catch (error) {
-        console.error('Error loading payment methods:', error);
-        toast.error('Error al cargar métodos de pago');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    loadPaymentMethods();
-  }, []);
+    if (currentAgency?.payment_methods) {
+      setPaymentMethods(currentAgency.payment_methods);
+    } else if (currentAgency) {
+      setPaymentMethods([]);
+    }
+  }, [currentAgency]);
 
   const maskCardNumber = (number) => {
     if (!number) return '';
@@ -58,32 +50,22 @@ const usePaymentData = () => {
     }));
   };
 
-  const handleAddPaymentMethod = async () => {
+  const handleAddPaymentMethod = () => {
     if (newPaymentMethod.type && newPaymentMethod.bank && newPaymentMethod.holderName) {
-      try {
-        const result = await profileService.addPaymentMethod(newPaymentMethod);
-        if (result.success) {
-          setPaymentMethods([...paymentMethods, { ...newPaymentMethod, id: Date.now() }]);
-          setNewPaymentMethod({
-            type: '',
-            bank: '',
-            accountNumber: '',
-            cardNumber: '',
-            accountType: '',
-            cardType: '',
-            currency: 'PEN',
-            holderName: '',
-            expiryDate: '',
-            isMain: false
-          });
-          toast.success(t('profile.payment.methodAdded'));
-        } else {
-          toast.error(result.error || 'Error al agregar método de pago');
-        }
-      } catch (error) {
-        console.error('Error adding payment method:', error);
-        toast.error('Error al agregar método de pago');
-      }
+      setPaymentMethods([...paymentMethods, { ...newPaymentMethod, id: Date.now() }]);
+      setNewPaymentMethod({
+        type: '',
+        bank: '',
+        accountNumber: '',
+        cardNumber: '',
+        accountType: '',
+        cardType: '',
+        currency: 'PEN',
+        holderName: '',
+        expiryDate: '',
+        isMain: false
+      });
+      toast.success(t('profile.payment.methodAdded'));
     }
   };
 
@@ -113,24 +95,40 @@ const usePaymentData = () => {
     setPaymentMethods(updatedMethods);
   };
 
-  const handleSave = () => {
-    if (process.env.NODE_ENV === 'development') {
-      console.log('Saving payment methods:', paymentMethods);
+  const handleSave = async () => {
+    if (!currentAgency) {
+      toast.error('No se encontró la información de la agencia');
+      return;
     }
-    setIsEditing(false);
-    toast.success(t('profile.payment.saved'));
+
+    setLoading(true);
+
+    try {
+      const updateData = {
+        payment_methods: paymentMethods
+      };
+
+      console.log('💾 Guardando métodos de pago:', updateData);
+
+      await actions.updateAgencyProfile(updateData);
+
+      toast.success(t('profile.payment.saved'));
+      setIsEditing(false);
+    } catch (error) {
+      console.error('❌ Error al guardar:', error);
+      toast.error(`Error al actualizar: ${error.message || 'Error desconocido'}`);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleCancel = async () => {
+  const handleCancel = () => {
     setIsEditing(false);
-    // Reload original data from API
-    try {
-      const result = await profileService.getPaymentMethods();
-      if (result.success) {
-        setPaymentMethods(result.data || []);
-      }
-    } catch (error) {
-      console.error('Error reloading payment methods:', error);
+    // Restaurar datos originales
+    if (currentAgency?.payment_methods) {
+      setPaymentMethods(currentAgency.payment_methods);
+    } else {
+      setPaymentMethods([]);
     }
   };
 
@@ -162,7 +160,8 @@ const usePaymentData = () => {
     handleUpdateMethod,
     handleSave,
     handleCancel,
-    getPaymentTypeLabel
+    getPaymentTypeLabel,
+    loading: loading || storeLoading
   };
 };
 

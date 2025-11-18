@@ -1,19 +1,86 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { BuildingOfficeIcon, PencilIcon, CheckIcon, XMarkIcon, ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/24/outline';
+import { useAgencyStore } from '../../stores/agencyStore';
+import { useAuthStore } from '../../stores/authStore';
+import toast from 'react-hot-toast';
+import axios from 'axios';
 
 const CompanyDataSection = () => {
+  const currentAgency = useAgencyStore((state) => state.currentAgency);
+  const actions = useAgencyStore((state) => state.actions);
+  const storeLoading = useAgencyStore((state) => state.isLoading);
+  const { user } = useAuthStore();
   const [isEditing, setIsEditing] = useState(false);
   const [isCollapsed, setIsCollapsed] = useState(false);
+  const [isLocalLoading, setIsLocalLoading] = useState(false);
+  const [isInitializing, setIsInitializing] = useState(false);
   const [formData, setFormData] = useState({
-    companyName: 'Viajes El Dorado SAC',
-    ruc: '20123456789',
-    address: 'Av. José Larco 123, Miraflores',
-    phone: '+51 (01) 234-5678',
-    email: 'contacto@viajeseldorado.com',
-    website: 'www.viajeseldorado.com',
-    description: 'Agencia de viajes especializada en turismo receptivo en Lima con más de 10 años de experiencia.',
-    establishedYear: '2014'
+    companyName: '',
+    ruc: '',
+    address: '',
+    phone: '',
+    email: '',
+    website: '',
+    description: '',
+    establishedYear: ''
   });
+
+  // Inicializar agencia si no existe currentAgency
+  useEffect(() => {
+    const initializeAgency = async () => {
+      if (!user || currentAgency) return;
+
+      setIsInitializing(true);
+      try {
+        // Buscar la agencia por user_id
+        const response = await axios.get('/api/agencies');
+        const agenciesResult = response.data;
+
+        if (agenciesResult.success && agenciesResult.data) {
+          const userAgency = agenciesResult.data.find(a => a.user_id === user.id);
+
+          if (userAgency) {
+            // Cargar datos de la agencia encontrada
+            setFormData({
+              companyName: userAgency.name || userAgency.company_name || '',
+              ruc: userAgency.ruc || userAgency.tax_id || '',
+              address: userAgency.address || '',
+              phone: userAgency.phone || userAgency.contact_phone || '',
+              email: userAgency.email || userAgency.contact_email || '',
+              website: userAgency.website || '',
+              description: userAgency.description || '',
+              establishedYear: userAgency.established_year || userAgency.establishedYear || ''
+            });
+
+            // Actualizar currentAgency en el store
+            useAgencyStore.setState({ currentAgency: userAgency });
+          }
+        }
+      } catch (error) {
+        console.error('Error al inicializar agencia:', error);
+      } finally {
+        setIsInitializing(false);
+      }
+    };
+
+    initializeAgency();
+  }, [user, currentAgency]);
+
+  // Cargar datos de la agencia cuando currentAgency cambia
+  useEffect(() => {
+    if (currentAgency) {
+      setFormData({
+        companyName: currentAgency.name || currentAgency.company_name || '',
+        ruc: currentAgency.ruc || currentAgency.tax_id || '',
+        address: currentAgency.address || '',
+        phone: currentAgency.phone || currentAgency.contact_phone || '',
+        email: currentAgency.email || currentAgency.contact_email || '',
+        website: currentAgency.website || '',
+        description: currentAgency.description || '',
+        establishedYear: currentAgency.established_year || currentAgency.establishedYear || ''
+      });
+    }
+  }, [currentAgency]);
 
   const handleInputChange = (field, value) => {
     setFormData(prev => ({
@@ -22,15 +89,77 @@ const CompanyDataSection = () => {
     }));
   };
 
-  const handleSave = () => {
-    console.log('Guardando datos de empresa:', formData);
-    setIsEditing(false);
-    alert('✅ Datos de empresa actualizados correctamente');
+  const handleSave = async () => {
+    if (!currentAgency) {
+      toast.error('No se encontró la información de la agencia');
+      return;
+    }
+
+    setIsLocalLoading(true);
+
+    try {
+      // Transformar formData al formato del backend
+      const updateData = {
+        name: formData.companyName,
+        company_name: formData.companyName,
+        ruc: formData.ruc,
+        tax_id: formData.ruc,
+        address: formData.address,
+        phone: formData.phone,
+        contact_phone: formData.phone,
+        email: formData.email,
+        contact_email: formData.email,
+        website: formData.website,
+        description: formData.description,
+        established_year: formData.establishedYear,
+        establishedYear: formData.establishedYear
+      };
+
+      console.log('💾 Guardando datos de empresa:', updateData);
+
+      await actions.updateAgencyProfile(updateData);
+
+      toast.success('✅ Datos de empresa actualizados correctamente');
+      setIsEditing(false);
+    } catch (error) {
+      console.error('❌ Error al guardar:', error);
+      toast.error(`Error al actualizar: ${error.message || 'Error desconocido'}`);
+    } finally {
+      setIsLocalLoading(false);
+    }
   };
 
   const handleCancel = () => {
+    // Restaurar datos originales de currentAgency
+    if (currentAgency) {
+      setFormData({
+        companyName: currentAgency.name || currentAgency.company_name || '',
+        ruc: currentAgency.ruc || currentAgency.tax_id || '',
+        address: currentAgency.address || '',
+        phone: currentAgency.phone || currentAgency.contact_phone || '',
+        email: currentAgency.email || currentAgency.contact_email || '',
+        website: currentAgency.website || '',
+        description: currentAgency.description || '',
+        establishedYear: currentAgency.established_year || currentAgency.establishedYear || ''
+      });
+    }
     setIsEditing(false);
   };
+
+  // Mostrar loading mientras se inicializa
+  if (isInitializing) {
+    return (
+      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+        <div className="flex items-center justify-center py-8">
+          <svg className="animate-spin h-8 w-8 text-blue-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+          </svg>
+          <span className="ml-3 text-gray-600">Cargando información de la agencia...</span>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
@@ -69,14 +198,28 @@ const CompanyDataSection = () => {
             <div className="flex gap-2">
               <button
                 onClick={handleSave}
-                className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+                disabled={isLocalLoading || storeLoading}
+                className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                <CheckIcon className="w-4 h-4" />
-                Guardar
+                {isLocalLoading || storeLoading ? (
+                  <>
+                    <svg className="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    Guardando...
+                  </>
+                ) : (
+                  <>
+                    <CheckIcon className="w-4 h-4" />
+                    Guardar
+                  </>
+                )}
               </button>
               <button
                 onClick={handleCancel}
-                className="flex items-center gap-2 px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
+                disabled={isLocalLoading || storeLoading}
+                className="flex items-center gap-2 px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <XMarkIcon className="w-4 h-4" />
                 Cancelar
