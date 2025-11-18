@@ -108,7 +108,7 @@ const Dashboard = () => {
                     <div className="flex items-center justify-between">
                       <div className="flex-1 min-w-0">
                         <p className="text-xs sm:text-sm text-gray-600">Tours completados</p>
-                        <p className="text-lg sm:text-2xl font-bold text-green-600 truncate">{stats.toursCompleted}</p>
+                        <p className="text-lg sm:text-2xl font-bold text-green-600 truncate">{stats?.toursCompleted ?? 0}</p>
                       </div>
                       <div className="text-green-600 text-lg sm:text-xl ml-2">✅</div>
                     </div>
@@ -117,7 +117,7 @@ const Dashboard = () => {
                     <div className="flex items-center justify-between">
                       <div className="flex-1 min-w-0">
                         <p className="text-xs sm:text-sm text-gray-600">Ingresos del mes</p>
-                        <p className="text-lg sm:text-2xl font-bold text-purple-600 truncate">S/{stats.monthlyIncome}</p>
+                        <p className="text-lg sm:text-2xl font-bold text-purple-600 truncate">S/{stats?.monthlyIncome ?? 0}</p>
                       </div>
                       <div className="text-purple-600 text-lg sm:text-xl ml-2">💰</div>
                     </div>

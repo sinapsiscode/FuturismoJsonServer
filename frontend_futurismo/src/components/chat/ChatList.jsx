@@ -1,12 +1,14 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
-import { MagnifyingGlassIcon, ChatBubbleLeftRightIcon, CheckIcon, UserGroupIcon } from '@heroicons/react/24/outline';
+import { MagnifyingGlassIcon, ChatBubbleLeftRightIcon, CheckIcon, UserGroupIcon, PlusIcon } from '@heroicons/react/24/outline';
 import { formatters } from '../../utils/formatters';
 import useChatList from '../../hooks/useChatList';
+import NewChatModal from './NewChatModal';
 
-const ChatList = ({ onSelectChat, selectedChatId }) => {
+const ChatList = ({ onSelectChat, selectedChatId, onCreateNewChat }) => {
   const { t } = useTranslation();
+  const [showNewChatModal, setShowNewChatModal] = useState(false);
   const {
     searchTerm,
     setSearchTerm,
@@ -15,10 +17,26 @@ const ChatList = ({ onSelectChat, selectedChatId }) => {
     getMessageStatus
   } = useChatList();
 
+  const handleSelectUser = (userId, userName) => {
+    if (onCreateNewChat) {
+      onCreateNewChat(userId, userName);
+    }
+  };
+
   return (
-    <div className="flex flex-col h-full bg-white border-r border-gray-200">
+    <div className="flex flex-col h-full bg-white border-r border-gray-200 overflow-hidden">
       {/* Search header */}
-      <div className="p-4 border-b border-gray-200">
+      <div className="flex-shrink-0 p-4 border-b border-gray-200 space-y-3">
+        <div className="flex items-center justify-between">
+          <h2 className="text-lg font-semibold text-gray-900">Mensajes</h2>
+          <button
+            onClick={() => setShowNewChatModal(true)}
+            className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+            title="Nueva conversación"
+          >
+            <PlusIcon className="w-5 h-5" />
+          </button>
+        </div>
         <div className="relative">
           <MagnifyingGlassIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
           <input
@@ -34,9 +52,36 @@ const ChatList = ({ onSelectChat, selectedChatId }) => {
       {/* Chat list */}
       <div className="flex-1 overflow-y-auto">
         {filteredChats.length === 0 ? (
-          <div className="p-4 text-center text-gray-500">
-            <ChatBubbleLeftRightIcon className="w-12 h-12 mx-auto mb-2 text-gray-300" />
-            <p>{t('chat.noConversations')}</p>
+          <div className="flex flex-col items-center justify-center h-full p-8 text-center">
+            <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-full p-6 mb-4">
+              <ChatBubbleLeftRightIcon className="w-16 h-16 text-blue-500" />
+            </div>
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">
+              {t('chat.noConversationsTitle')}
+            </h3>
+            <p className="text-sm text-gray-600 mb-6 max-w-xs">
+              {t('chat.noConversationsDescription')}
+            </p>
+            <div className="space-y-3 w-full max-w-xs">
+              <div className="flex items-start gap-3 p-3 bg-white rounded-lg border border-gray-200">
+                <div className="flex-shrink-0 w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+                  <span className="text-blue-600 text-sm font-semibold">1</span>
+                </div>
+                <div className="flex-1 text-left">
+                  <p className="text-sm font-medium text-gray-900">Agenda Guías</p>
+                  <p className="text-xs text-gray-500">Selecciona un guía desde la agenda para iniciar una conversación</p>
+                </div>
+              </div>
+              <div className="flex items-start gap-3 p-3 bg-white rounded-lg border border-gray-200">
+                <div className="flex-shrink-0 w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
+                  <span className="text-green-600 text-sm font-semibold">2</span>
+                </div>
+                <div className="flex-1 text-left">
+                  <p className="text-sm font-medium text-gray-900">Coordinación</p>
+                  <p className="text-xs text-gray-500">Coordina servicios y actividades en tiempo real</p>
+                </div>
+              </div>
+            </div>
           </div>
         ) : (
           filteredChats.map((chat) => (
@@ -96,9 +141,9 @@ const ChatList = ({ onSelectChat, selectedChatId }) => {
                 <div className="flex items-center justify-between">
                   <p className="text-sm text-gray-600 truncate">
                     {chat.typing && chat.typingUser ? (
-                      <span className="text-primary-600 italic">{t(chat.typingUser)}</span>
+                      <span className="text-primary-600 italic">{chat.typingUser}</span>
                     ) : (
-                      t(chat.lastMessage)
+                      chat.lastMessage
                     )}
                   </p>
                   {chat.unreadCount > 0 && (
@@ -114,7 +159,7 @@ const ChatList = ({ onSelectChat, selectedChatId }) => {
       </div>
 
       {/* Footer with statistics */}
-      <div className="p-4 border-t border-gray-200 bg-gray-50">
+      <div className="flex-shrink-0 p-4 border-t border-gray-200 bg-gray-50">
         <div className="flex items-center justify-between text-xs text-gray-600">
           <span>{t('chat.conversationCount', { count: filteredChats.length })}</span>
           <span>
@@ -122,13 +167,21 @@ const ChatList = ({ onSelectChat, selectedChatId }) => {
           </span>
         </div>
       </div>
+
+      {/* New Chat Modal */}
+      <NewChatModal
+        isOpen={showNewChatModal}
+        onClose={() => setShowNewChatModal(false)}
+        onSelectUser={handleSelectUser}
+      />
     </div>
   );
 };
 
 ChatList.propTypes = {
   onSelectChat: PropTypes.func.isRequired,
-  selectedChatId: PropTypes.string
+  selectedChatId: PropTypes.string,
+  onCreateNewChat: PropTypes.func
 };
 
 export default ChatList;

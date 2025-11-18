@@ -469,6 +469,8 @@
     "fromAgenda": "Coordination from agenda",
     "searchConversation": "Search conversation...",
     "noConversations": "No conversations found",
+    "noConversationsTitle": "No active conversations",
+    "noConversationsDescription": "Start coordinating with guides and agencies to manage your tourism services",
     "members": "{{count}} members",
     "conversationCount": "{{count}} conversations",
     "unreadCount": "{{count}} unread",

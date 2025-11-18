@@ -98,6 +98,24 @@ class ProfileService extends BaseService {
   }
 
   /**
+   * Actualizar datos de contacto
+   * @param {Object} contactData - Datos de contacto
+   * @returns {Promise<Object>}
+   */
+  async updateContactData(contactData) {
+    try {
+      const result = await this.put('/contact-data', contactData);
+      return result;
+    } catch (error) {
+      console.error('Error updating contact data:', error);
+      return {
+        success: false,
+        error: 'Error al actualizar datos de contacto'
+      };
+    }
+  }
+
+  /**
    * Obtener plantillas de documentos
    * @returns {Promise<Object>}
    */

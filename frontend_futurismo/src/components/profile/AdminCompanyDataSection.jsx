@@ -1,20 +1,50 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { BuildingOfficeIcon, PencilIcon, CheckIcon, XMarkIcon, ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/24/outline';
 import { useTranslation } from 'react-i18next';
+import profileService from '../../services/profileService';
 
 const AdminCompanyDataSection = () => {
   const { t } = useTranslation();
   const [isEditing, setIsEditing] = useState(false);
   const [isCollapsed, setIsCollapsed] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [formData, setFormData] = useState({
-    companyName: 'Futurismo FF S.A.C.',
-    ruc: '20601234567',
-    address: 'Av. Aviación 2431, San Borja, Lima',
-    phone: '+51 (01) 456-7890',
-    email: 'info@futurismoff.com',
-    accountNumber: 'BCP: 194-1234567-0-89',
-    accountCCI: '002-194-001234567089-91'
+    companyName: '',
+    ruc: '',
+    address: '',
+    phone: '',
+    email: '',
+    accountNumber: '',
+    accountCCI: ''
   });
+
+  // Cargar datos desde el backend
+  useEffect(() => {
+    const loadCompanyData = async () => {
+      try {
+        setLoading(true);
+        const response = await profileService.getCompanyData();
+
+        if (response.success && response.data) {
+          setFormData({
+            companyName: response.data.businessName || '',
+            ruc: response.data.ruc || '',
+            address: response.data.address || '',
+            phone: response.data.phone || '',
+            email: response.data.email || '',
+            accountNumber: response.data.accountNumber || '',
+            accountCCI: response.data.accountCCI || ''
+          });
+        }
+      } catch (error) {
+        console.error('Error al cargar datos de empresa:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadCompanyData();
+  }, []);
 
   const handleInputChange = (field, value) => {
     setFormData(prev => ({
@@ -23,14 +53,61 @@ const AdminCompanyDataSection = () => {
     }));
   };
 
-  const handleSave = () => {
-    console.log('Guardando datos de empresa:', formData);
-    setIsEditing(false);
-    alert('✅ Datos de empresa actualizados correctamente');
+  const handleSave = async () => {
+    try {
+      setLoading(true);
+      console.log('Guardando datos de empresa:', formData);
+
+      // Mapear campos del formulario a la estructura del backend
+      const dataToSave = {
+        businessName: formData.companyName,
+        ruc: formData.ruc,
+        address: formData.address,
+        phone: formData.phone,
+        email: formData.email,
+        accountNumber: formData.accountNumber,
+        accountCCI: formData.accountCCI
+      };
+
+      const response = await profileService.updateCompanyData(dataToSave);
+
+      if (response.success) {
+        setIsEditing(false);
+        alert('✅ Datos de empresa actualizados correctamente');
+      } else {
+        alert('❌ Error al actualizar datos de empresa');
+      }
+    } catch (error) {
+      console.error('Error al guardar datos de empresa:', error);
+      alert('❌ Error al actualizar datos de empresa');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleCancel = () => {
     setIsEditing(false);
+    // Recargar datos originales
+    const loadCompanyData = async () => {
+      try {
+        const response = await profileService.getCompanyData();
+
+        if (response.success && response.data) {
+          setFormData({
+            companyName: response.data.businessName || '',
+            ruc: response.data.ruc || '',
+            address: response.data.address || '',
+            phone: response.data.phone || '',
+            email: response.data.email || '',
+            accountNumber: response.data.accountNumber || '',
+            accountCCI: response.data.accountCCI || ''
+          });
+        }
+      } catch (error) {
+        console.error('Error al recargar datos de empresa:', error);
+      }
+    };
+    loadCompanyData();
   };
 
   return (
@@ -70,14 +147,25 @@ const AdminCompanyDataSection = () => {
             <div className="flex gap-2">
               <button
                 onClick={handleSave}
-                className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+                disabled={loading}
+                className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                <CheckIcon className="w-4 h-4" />
-                Guardar
+                {loading ? (
+                  <>
+                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                    Guardando...
+                  </>
+                ) : (
+                  <>
+                    <CheckIcon className="w-4 h-4" />
+                    Guardar
+                  </>
+                )}
               </button>
               <button
                 onClick={handleCancel}
-                className="flex items-center gap-2 px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
+                disabled={loading}
+                className="flex items-center gap-2 px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <XMarkIcon className="w-4 h-4" />
                 Cancelar
@@ -88,6 +176,12 @@ const AdminCompanyDataSection = () => {
       </div>
 
       {!isCollapsed && (
+        loading && !isEditing ? (
+          <div className="flex justify-center items-center py-8">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+            <span className="ml-3 text-gray-600">Cargando datos...</span>
+          </div>
+        ) : (
         <div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Columna izquierda */}
@@ -231,6 +325,7 @@ const AdminCompanyDataSection = () => {
             )}
           </div>
         </div>
+        )
       )}
     </div>
   );

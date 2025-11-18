@@ -321,12 +321,17 @@ function getAgencyStats(db, userId) {
 }
 
 function getGuideStats(db, userId) {
-  const reservations = db.get('reservations').value() || [];
-  const guides = db.get('guides').value() || [];
+  try {
+    console.log('🔍 [getGuideStats] UserId:', userId);
+    const reservations = db.get('reservations').value() || [];
+    const guides = db.get('guides').value() || [];
+    console.log('📊 [getGuideStats] Total guides:', guides.length);
 
-  // Find guide by user_id
-  const guide = guides.find(g => g.user_id === userId);
-  const guideReservations = guide ? reservations.filter(r => r.guide_id === guide.id) : [];
+    // Find guide by user_id
+    const guide = guides.find(g => g.user_id === userId);
+    console.log('👤 [getGuideStats] Guide found:', guide ? guide.id : 'NOT FOUND');
+    const guideReservations = guide ? reservations.filter(r => r.guide_id === guide.id) : [];
+    console.log('📝 [getGuideStats] Guide reservations:', guideReservations.length);
 
   // Calcular valores actuales
   const toursCompleted = guideReservations.filter(r => r.status === 'completed').length;
@@ -336,7 +341,9 @@ function getGuideStats(db, userId) {
 
   // Tours esta semana
   const today = new Date();
-  const weekStart = new Date(today.setDate(today.getDate() - today.getDay()));
+  const weekStart = new Date(today);
+  weekStart.setDate(today.getDate() - today.getDay());
+  weekStart.setHours(0, 0, 0, 0); // Start of day
   const toursThisWeek = guideReservations.filter(r => {
     const tourDate = r.tour_date ? new Date(r.tour_date) : null;
     return tourDate && tourDate >= weekStart && r.status !== 'cancelled';
@@ -363,6 +370,10 @@ function getGuideStats(db, userId) {
     ratingTrend: calculateTrendPercentage(personalRating, Math.max(1, personalRating - 0.2)),
     monthlyIncomeTrend: calculateTrendPercentage(monthlyIncome, Math.max(50, monthlyIncome * 0.85))
   };
+  } catch (error) {
+    console.error('❌ [getGuideStats] Error:', error);
+    throw error;
+  }
 }
 
 function getBasicStats(db) {

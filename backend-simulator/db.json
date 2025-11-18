@@ -86,7 +86,8 @@
       "updated_at": "2025-10-14T00:00:19.346Z",
       "email_verified": false,
       "phone_verified": false,
-      "last_login": null
+      "last_login": null,
+      "last_login_at": "2025-11-17T23:44:11.945Z"
     },
     {
       "id": "user-1760400618945",
@@ -1134,6 +1135,9 @@
       "total_amount": 803.2,
       "base_amount": 680,
       "tax_amount": 123.2,
+      "rating": 4.5,
+      "review_comment": "Excelente tour, el guía fue muy profesional y conocedor de la historia. Lo recomiendo totalmente.",
+      "reviewed_at": "2025-05-17T10:30:00Z",
       "created_at": "2025-05-10T10:00:00Z",
       "updated_at": "2025-05-16T14:00:00Z"
     },
@@ -1151,6 +1155,9 @@
       "total_amount": 566.4,
       "base_amount": 480,
       "tax_amount": 86.4,
+      "rating": 5.0,
+      "review_comment": "Una experiencia increíble. La atención fue impecable y los lugares visitados fueron espectaculares.",
+      "reviewed_at": "2025-05-24T09:00:00Z",
       "created_at": "2025-05-18T14:30:00Z",
       "updated_at": "2025-05-23T18:00:00Z"
     },
@@ -1168,6 +1175,9 @@
       "total_amount": 424.8,
       "base_amount": 360,
       "tax_amount": 64.8,
+      "rating": 4.0,
+      "review_comment": "Buen tour en general. Algunas mejoras en la puntualidad serían apreciadas.",
+      "reviewed_at": "2025-06-07T15:20:00Z",
       "created_at": "2025-05-28T09:15:00Z",
       "updated_at": "2025-06-06T20:00:00Z"
     },
@@ -1185,6 +1195,9 @@
       "total_amount": 1381.2,
       "base_amount": 1170,
       "tax_amount": 211.2,
+      "rating": 4.8,
+      "review_comment": "Excelente servicio, muy recomendable. El guía fue muy atento y la experiencia superó nuestras expectativas.",
+      "reviewed_at": "2025-06-14T11:00:00Z",
       "created_at": "2025-06-07T11:45:00Z",
       "updated_at": "2025-06-13T19:30:00Z"
     },
@@ -1202,6 +1215,9 @@
       "total_amount": 1204.8,
       "base_amount": 1020,
       "tax_amount": 184.8,
+      "rating": 4.3,
+      "review_comment": "Gran experiencia para todo el grupo. Solo un pequeño detalle con el horario de recogida.",
+      "reviewed_at": "2025-06-22T14:30:00Z",
       "created_at": "2025-06-15T08:20:00Z",
       "updated_at": "2025-06-21T16:00:00Z"
     },
@@ -1625,8 +1641,210 @@
   ],
   "financial_transactions": [],
   "notifications": [],
-  "conversations": [],
-  "messages": [],
+  "conversations": [
+    {
+      "id": "conv-001",
+      "title": null,
+      "type": "direct",
+      "created_at": "2025-01-15T10:00:00.000Z",
+      "updated_at": "2025-01-17T14:30:00.000Z",
+      "created_by": "user-admin-1"
+    },
+    {
+      "id": "conv-002",
+      "title": null,
+      "type": "direct",
+      "created_at": "2025-01-16T09:00:00.000Z",
+      "updated_at": "2025-01-17T15:00:00.000Z",
+      "created_by": "user-agency-1"
+    },
+    {
+      "id": "conv-1763421641844",
+      "title": null,
+      "type": "direct",
+      "created_at": "2025-11-17T23:20:41.844Z",
+      "updated_at": "2025-11-17T23:20:45.479Z",
+      "created_by": "user-admin-1"
+    }
+  ],
+  "conversation_participants": [
+    {
+      "id": "part-001",
+      "conversation_id": "conv-001",
+      "user_id": "user-admin-1",
+      "joined_at": "2025-01-15T10:00:00.000Z",
+      "role": "admin"
+    },
+    {
+      "id": "part-002",
+      "conversation_id": "conv-001",
+      "user_id": "user-guide-1",
+      "joined_at": "2025-01-15T10:00:00.000Z",
+      "role": "member"
+    },
+    {
+      "id": "part-003",
+      "conversation_id": "conv-002",
+      "user_id": "user-agency-1",
+      "joined_at": "2025-01-16T09:00:00.000Z",
+      "role": "admin"
+    },
+    {
+      "id": "part-004",
+      "conversation_id": "conv-002",
+      "user_id": "user-guide-freelance-1",
+      "joined_at": "2025-01-16T09:00:00.000Z",
+      "role": "member"
+    },
+    {
+      "id": "part-1763421641850-user-admin-1",
+      "conversation_id": "conv-1763421641844",
+      "user_id": "user-admin-1",
+      "joined_at": "2025-11-17T23:20:41.850Z",
+      "role": "admin"
+    },
+    {
+      "id": "part-1763421641850-guide-004",
+      "conversation_id": "conv-1763421641844",
+      "user_id": "guide-004",
+      "joined_at": "2025-11-17T23:20:41.850Z",
+      "role": "member"
+    }
+  ],
+  "messages": [
+    {
+      "id": "msg-001",
+      "conversation_id": "conv-001",
+      "sender_id": "user-admin-1",
+      "content": "Hola, necesito coordinar el tour de mañana",
+      "message_type": "text",
+      "metadata": {},
+      "created_at": "2025-01-17T10:00:00.000Z",
+      "edited_at": null,
+      "is_deleted": false
+    },
+    {
+      "id": "msg-002",
+      "conversation_id": "conv-001",
+      "sender_id": "user-guide-1",
+      "content": "Claro, dime los detalles",
+      "message_type": "text",
+      "metadata": {},
+      "created_at": "2025-01-17T10:05:00.000Z",
+      "edited_at": null,
+      "is_deleted": false
+    },
+    {
+      "id": "msg-003",
+      "conversation_id": "conv-001",
+      "sender_id": "user-admin-1",
+      "content": "Son 15 turistas, punto de encuentro Plaza de Armas a las 9am",
+      "message_type": "text",
+      "metadata": {},
+      "created_at": "2025-01-17T10:10:00.000Z",
+      "edited_at": null,
+      "is_deleted": false
+    },
+    {
+      "id": "msg-004",
+      "conversation_id": "conv-001",
+      "sender_id": "user-guide-1",
+      "content": "Perfecto, estaré allí puntual",
+      "message_type": "text",
+      "metadata": {},
+      "created_at": "2025-01-17T14:30:00.000Z",
+      "edited_at": null,
+      "is_deleted": false
+    },
+    {
+      "id": "msg-005",
+      "conversation_id": "conv-002",
+      "sender_id": "user-agency-1",
+      "content": "Tengo un grupo para el City Tour del sábado, ¿estás disponible?",
+      "message_type": "text",
+      "metadata": {},
+      "created_at": "2025-01-17T12:00:00.000Z",
+      "edited_at": null,
+      "is_deleted": false
+    },
+    {
+      "id": "msg-006",
+      "conversation_id": "conv-002",
+      "sender_id": "user-guide-freelance-1",
+      "content": "Sí, estoy disponible. ¿Cuántas personas son?",
+      "message_type": "text",
+      "metadata": {},
+      "created_at": "2025-01-17T12:15:00.000Z",
+      "edited_at": null,
+      "is_deleted": false
+    },
+    {
+      "id": "msg-007",
+      "conversation_id": "conv-002",
+      "sender_id": "user-agency-1",
+      "content": "Son 8 personas, turistas alemanes",
+      "message_type": "text",
+      "metadata": {},
+      "created_at": "2025-01-17T15:00:00.000Z",
+      "edited_at": null,
+      "is_deleted": false
+    },
+    {
+      "id": "msg-1763421645473",
+      "conversation_id": "conv-1763421641844",
+      "sender_id": "user-admin-1",
+      "content": "hoola",
+      "message_type": "text",
+      "metadata": {},
+      "created_at": "2025-11-17T23:20:45.473Z",
+      "edited_at": null,
+      "is_deleted": false
+    }
+  ],
+  "read_receipts": [
+    {
+      "id": "read-001",
+      "conversation_id": "conv-001",
+      "user_id": "user-guide-1",
+      "message_id": "msg-003",
+      "read_at": "2025-01-17T14:00:00.000Z"
+    },
+    {
+      "id": "read-002",
+      "conversation_id": "conv-002",
+      "user_id": "user-guide-freelance-1",
+      "message_id": "msg-005",
+      "read_at": "2025-01-17T12:10:00.000Z"
+    },
+    {
+      "id": "read-1763421125647",
+      "conversation_id": "conv-001",
+      "user_id": "user-admin-1",
+      "message_id": null,
+      "read_at": "2025-11-17T23:12:05.647Z"
+    },
+    {
+      "id": "read-1763421125668",
+      "conversation_id": "conv-001",
+      "user_id": "user-admin-1",
+      "message_id": null,
+      "read_at": "2025-11-17T23:12:05.668Z"
+    },
+    {
+      "id": "read-1763421413780",
+      "conversation_id": "conv-001",
+      "user_id": "user-admin-1",
+      "message_id": null,
+      "read_at": "2025-11-17T23:16:53.780Z"
+    },
+    {
+      "id": "read-1763421413812",
+      "conversation_id": "conv-001",
+      "user_id": "user-admin-1",
+      "message_id": null,
+      "read_at": "2025-11-17T23:16:53.812Z"
+    }
+  ],
   "dashboard_stats": {
     "kpi_data": {
       "totalReservas": {
@@ -1785,7 +2003,7 @@
   ],
   "company_data": {
     "ruc": "20123456789",
-    "businessName": "Tours Lima Premium S.A.C.",
+    "businessName": "AkiseSAC",
     "commercialName": "Tours Lima Premium",
     "address": "Av. José Larco 1234, Miraflores, Lima",
     "district": "Miraflores",
@@ -1793,7 +2011,11 @@
     "department": "Lima",
     "legalRepresentative": "María González López",
     "foundingDate": "2010-01-15",
-    "economicActivity": "Servicios de turismo y agencias de viaje"
+    "economicActivity": "Servicios de turismo y agencias de viaje",
+    "phone": "+51 (01) 456-7890",
+    "email": "info@tourslima.com",
+    "accountNumber": "BCP: 194-1234567-0-89",
+    "accountCCI": "002-194-001234567089-91"
   },
   "contact_data": {
     "mainContact": {

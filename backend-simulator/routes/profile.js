@@ -126,19 +126,64 @@ module.exports = (router) => {
   profileRouter.put('/company-data', (req, res) => {
     try {
       const db = router.db;
-      const updatedCompanyData = req.body;
+      const updatedFields = req.body;
 
-      db.set('company_data', updatedCompanyData).write();
+      console.log('📝 Actualizando company_data con:', updatedFields);
+
+      // Usar assign() para actualizar objetos en lowdb v1
+      db.get('company_data')
+        .assign(updatedFields)
+        .write();
+
+      // Obtener datos actualizados
+      const updatedData = db.get('company_data').value();
+
+      console.log('✅ Datos de empresa actualizados en db.json:', updatedData);
 
       res.json({
         success: true,
-        data: updatedCompanyData
+        data: updatedData
       });
 
     } catch (error) {
+      console.error('❌ Error al actualizar datos de empresa:', error);
       res.status(500).json({
         success: false,
-        error: 'Error al actualizar datos de empresa'
+        error: 'Error al actualizar datos de empresa',
+        details: error.message
+      });
+    }
+  });
+
+  // Update contact data
+  profileRouter.put('/contact-data', (req, res) => {
+    try {
+      const db = router.db;
+      const updatedFields = req.body;
+
+      console.log('📝 Actualizando contact_data con:', updatedFields);
+
+      // Usar assign() para actualizar objetos en lowdb v1
+      db.get('contact_data')
+        .assign(updatedFields)
+        .write();
+
+      // Obtener datos actualizados
+      const updatedData = db.get('contact_data').value();
+
+      console.log('✅ Datos de contacto actualizados en db.json:', updatedData);
+
+      res.json({
+        success: true,
+        data: updatedData
+      });
+
+    } catch (error) {
+      console.error('❌ Error al actualizar datos de contacto:', error);
+      res.status(500).json({
+        success: false,
+        error: 'Error al actualizar datos de contacto',
+        details: error.message
       });
     }
   });

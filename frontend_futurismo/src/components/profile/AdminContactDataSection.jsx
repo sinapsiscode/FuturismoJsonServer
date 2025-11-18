@@ -1,17 +1,45 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { PhoneIcon, PencilIcon, CheckIcon, XMarkIcon, ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/24/outline';
 import { useTranslation } from 'react-i18next';
+import profileService from '../../services/profileService';
 
 const AdminContactDataSection = () => {
   const { t } = useTranslation();
   const [isEditing, setIsEditing] = useState(false);
   const [isCollapsed, setIsCollapsed] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [formData, setFormData] = useState({
-    personalPhone: '+51 987 654 321',
-    officePhone: '+51 (01) 456-7890',
-    emergencyPhone: '+51 999 888 777',
-    adminEmail: 'admin@futurismoff.com'
+    personalPhone: '',
+    officePhone: '',
+    emergencyPhone: '',
+    adminEmail: ''
   });
+
+  // Cargar datos desde el backend
+  useEffect(() => {
+    const loadContactData = async () => {
+      try {
+        setLoading(true);
+        const response = await profileService.getContactData();
+
+        if (response.success && response.data) {
+          const data = response.data;
+          setFormData({
+            personalPhone: data.mainContact?.mobile || data.mainContact?.phone || '',
+            officePhone: data.mainContact?.phone || '',
+            emergencyPhone: data.emergencyContact?.phone || '',
+            adminEmail: data.mainContact?.email || ''
+          });
+        }
+      } catch (error) {
+        console.error('Error al cargar datos de contacto:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadContactData();
+  }, []);
 
   const handleInputChange = (field, value) => {
     setFormData(prev => ({
@@ -20,14 +48,60 @@ const AdminContactDataSection = () => {
     }));
   };
 
-  const handleSave = () => {
-    console.log('Guardando datos de contacto:', formData);
-    setIsEditing(false);
-    alert('✅ Datos de contacto actualizados correctamente');
+  const handleSave = async () => {
+    try {
+      setLoading(true);
+      console.log('Guardando datos de contacto:', formData);
+
+      // Mapear campos del formulario a la estructura del backend
+      const dataToSave = {
+        mainContact: {
+          phone: formData.officePhone,
+          mobile: formData.personalPhone,
+          email: formData.adminEmail
+        },
+        emergencyContact: {
+          phone: formData.emergencyPhone
+        }
+      };
+
+      const response = await profileService.updateContactData(dataToSave);
+
+      if (response.success) {
+        setIsEditing(false);
+        alert('✅ Datos de contacto actualizados correctamente');
+      } else {
+        alert('❌ Error al actualizar datos de contacto');
+      }
+    } catch (error) {
+      console.error('Error al guardar datos de contacto:', error);
+      alert('❌ Error al actualizar datos de contacto');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleCancel = () => {
     setIsEditing(false);
+    // Recargar datos originales
+    const loadContactData = async () => {
+      try {
+        const response = await profileService.getContactData();
+
+        if (response.success && response.data) {
+          const data = response.data;
+          setFormData({
+            personalPhone: data.mainContact?.mobile || data.mainContact?.phone || '',
+            officePhone: data.mainContact?.phone || '',
+            emergencyPhone: data.emergencyContact?.phone || '',
+            adminEmail: data.mainContact?.email || ''
+          });
+        }
+      } catch (error) {
+        console.error('Error al recargar datos de contacto:', error);
+      }
+    };
+    loadContactData();
   };
 
   return (
@@ -67,14 +141,25 @@ const AdminContactDataSection = () => {
             <div className="flex gap-2">
               <button
                 onClick={handleSave}
-                className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+                disabled={loading}
+                className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                <CheckIcon className="w-4 h-4" />
-                Guardar
+                {loading ? (
+                  <>
+                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                    Guardando...
+                  </>
+                ) : (
+                  <>
+                    <CheckIcon className="w-4 h-4" />
+                    Guardar
+                  </>
+                )}
               </button>
               <button
                 onClick={handleCancel}
-                className="flex items-center gap-2 px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
+                disabled={loading}
+                className="flex items-center gap-2 px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <XMarkIcon className="w-4 h-4" />
                 Cancelar
@@ -85,6 +170,12 @@ const AdminContactDataSection = () => {
       </div>
 
       {!isCollapsed && (
+        loading && !isEditing ? (
+          <div className="flex justify-center items-center py-8">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+            <span className="ml-3 text-gray-600">Cargando datos...</span>
+          </div>
+        ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -162,6 +253,7 @@ const AdminContactDataSection = () => {
             )}
           </div>
         </div>
+        )
       )}
     </div>
   );

@@ -441,6 +441,8 @@
     "fromAgenda": "Coordinación desde agenda",
     "searchConversation": "Buscar conversación...",
     "noConversations": "No se encontraron conversaciones",
+    "noConversationsTitle": "No tienes conversaciones activas",
+    "noConversationsDescription": "Comienza a coordinar con guías y agencias para gestionar tus servicios turísticos",
     "members": "{{count}} miembros",
     "conversationCount": "{{count}} conversaciones",
     "unreadCount": "{{count}} sin leer",

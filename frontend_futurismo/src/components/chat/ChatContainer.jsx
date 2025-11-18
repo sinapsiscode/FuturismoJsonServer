@@ -12,36 +12,65 @@ const ChatContainer = () => {
     selectedChat,
     isMobileView,
     handleSelectChat,
-    handleCloseChat
+    handleCloseChat,
+    handleCreateNewChat
   } = useChatContainer();
 
   return (
-    <div className="flex h-full bg-gray-50">
+    <div className="flex h-full w-full bg-gray-50 rounded-lg overflow-hidden shadow-sm border border-gray-200">
       {/* Chat list - hidden on mobile when chat is selected */}
-      <div className={`w-full lg:w-80 ${isMobileView ? 'hidden lg:block' : 'block'}`}>
-        <ChatList 
-          onSelectChat={handleSelectChat} 
+      <div className={`w-full lg:w-80 flex flex-col ${isMobileView ? 'hidden lg:block' : 'block'}`}>
+        <ChatList
+          onSelectChat={handleSelectChat}
           selectedChatId={selectedChat?.id}
+          onCreateNewChat={handleCreateNewChat}
         />
       </div>
 
       {/* Chat window - visible on mobile when chat is selected */}
-      <div className={`flex-1 ${!isMobileView && !selectedChat ? 'hidden lg:flex' : 'flex'}`}>
+      <div className={`flex-1 flex flex-col ${!isMobileView && !selectedChat ? 'hidden lg:flex' : 'flex'}`}>
         {selectedChat ? (
           <ChatWindow 
             chat={selectedChat} 
             onClose={handleCloseChat}
           />
         ) : (
-          <div className="flex-1 flex items-center justify-center bg-gray-50">
-            <div className="text-center">
-              <ChatBubbleLeftRightIcon className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-              <h3 className="text-lg font-medium text-gray-900 mb-2">
+          <div className="flex-1 flex items-center justify-center bg-gradient-to-br from-gray-50 to-blue-50">
+            <div className="text-center max-w-md px-6">
+              <div className="mb-6 relative">
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <div className="w-32 h-32 bg-blue-100 rounded-full opacity-20 animate-pulse"></div>
+                </div>
+                <div className="relative bg-white rounded-full p-6 inline-block shadow-lg">
+                  <ChatBubbleLeftRightIcon className="w-20 h-20 text-blue-500" />
+                </div>
+              </div>
+              <h3 className="text-2xl font-bold text-gray-900 mb-3">
                 {t('chat.welcome')}
               </h3>
-              <p className="text-gray-500 max-w-sm">
+              <p className="text-gray-600 mb-8 leading-relaxed">
                 {t('chat.selectConversation')}
               </p>
+              <div className="grid grid-cols-2 gap-4 text-left">
+                <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
+                  <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center mb-3">
+                    <svg className="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                    </svg>
+                  </div>
+                  <h4 className="font-semibold text-gray-900 text-sm mb-1">Chat con Guías</h4>
+                  <p className="text-xs text-gray-500">Coordina con tu equipo de guías turísticos</p>
+                </div>
+                <div className="bg-white p-4 rounded-lg shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
+                  <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center mb-3">
+                    <svg className="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                    </svg>
+                  </div>
+                  <h4 className="font-semibold text-gray-900 text-sm mb-1">Chat con Agencias</h4>
+                  <p className="text-xs text-gray-500">Gestiona reservas y coordinación</p>
+                </div>
+              </div>
             </div>
           </div>
         )}

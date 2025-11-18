@@ -1,19 +1,48 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { CreditCardIcon, ChevronDownIcon, ChevronUpIcon, InformationCircleIcon } from '@heroicons/react/24/outline';
 import { useTranslation } from 'react-i18next';
+import profileService from '../../services/profileService';
 
 const AdminPaymentDataSection = () => {
   const { t } = useTranslation();
   const [isCollapsed, setIsCollapsed] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [paymentData, setPaymentData] = useState({
+    bankName: '',
+    accountType: '',
+    accountNumber: '',
+    accountCCI: '',
+    accountHolder: '',
+    ruc: ''
+  });
 
-  const paymentData = {
-    bankName: 'Banco de Crédito del Perú (BCP)',
-    accountType: 'Cuenta Corriente en Soles',
-    accountNumber: '194-1234567-0-89',
-    accountCCI: '002-194-001234567089-91',
-    accountHolder: 'FUTURISMO FF S.A.C.',
-    ruc: '20601234567'
-  };
+  // Cargar datos desde el backend
+  useEffect(() => {
+    const loadPaymentData = async () => {
+      try {
+        setLoading(true);
+        const response = await profileService.getCompanyData();
+
+        if (response.success && response.data) {
+          const data = response.data;
+          setPaymentData({
+            bankName: 'Banco de Crédito del Perú (BCP)',
+            accountType: 'Cuenta Corriente en Soles',
+            accountNumber: data.accountNumber || '',
+            accountCCI: data.accountCCI || '',
+            accountHolder: data.businessName || '',
+            ruc: data.ruc || ''
+          });
+        }
+      } catch (error) {
+        console.error('Error al cargar datos de pago:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadPaymentData();
+  }, []);
 
   return (
     <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
@@ -41,6 +70,12 @@ const AdminPaymentDataSection = () => {
       </div>
 
       {!isCollapsed && (
+        loading ? (
+          <div className="flex justify-center items-center py-8">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600"></div>
+            <span className="ml-3 text-gray-600">Cargando datos...</span>
+          </div>
+        ) : (
         <div>
           {/* Mensaje informativo */}
           <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
@@ -120,6 +155,7 @@ const AdminPaymentDataSection = () => {
             </p>
           </div>
         </div>
+        )
       )}
     </div>
   );

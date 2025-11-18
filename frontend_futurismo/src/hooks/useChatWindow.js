@@ -1,16 +1,12 @@
 import { useState, useRef, useEffect, useCallback, useMemo } from 'react';
 import { useAuthStore } from '../stores/authStore';
+import chatService from '../services/chatService';
 import {
   MESSAGE_TYPES,
   MESSAGE_STATUS,
-  SENDER_IDS,
-  SIMULATION_DELAYS,
   AVAILABLE_EMOJIS,
-  SYSTEM_MESSAGE_KEYS,
-  DEFAULT_MESSAGE_KEYS,
   FILE_CONFIG,
-  CALL_PERMISSION_ROLES,
-  MOCK_MESSAGE_TIMES
+  CALL_PERMISSION_ROLES
 } from '../constants/chatWindowConstants';
 
 /**
@@ -20,115 +16,58 @@ import {
  */
 const useChatWindow = (chat) => {
   const { user } = useAuthStore();
+  const [messages, setMessages] = useState([]);
   const [message, setMessage] = useState('');
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [sending, setSending] = useState(false);
   const messagesEndRef = useRef(null);
   const fileInputRef = useRef(null);
 
-  // Get initial messages based on chat type
-  const getInitialMessages = useCallback(() => {
-    if (chat?.isFromAgenda) {
-      return [
-        {
-          id: '1',
-          senderId: SENDER_IDS.SYSTEM,
-          senderName: 'System',
-          content: SYSTEM_MESSAGE_KEYS.COORDINATION_STARTED,
-          contentData: { name: chat.name },
-          timestamp: new Date(),
-          type: MESSAGE_TYPES.SYSTEM,
-          status: MESSAGE_STATUS.READ
-        }
-      ];
-    }
-    
-    return [
-      {
-        id: '1',
-        senderId: chat?.id,
-        senderName: chat?.name,
-        content: DEFAULT_MESSAGE_KEYS.HOW_IS_EVERYONE,
-        timestamp: new Date(Date.now() - MOCK_MESSAGE_TIMES.ONE_HOUR_AGO),
-        type: MESSAGE_TYPES.TEXT,
-        status: MESSAGE_STATUS.READ
-      },
-      {
-        id: '2',
-        senderId: SENDER_IDS.CURRENT_USER,
-        senderName: 'You',
-        content: DEFAULT_MESSAGE_KEYS.READY_FOR_TOUR,
-        timestamp: new Date(Date.now() - MOCK_MESSAGE_TIMES.FIFTY_MINUTES_AGO),
-        type: MESSAGE_TYPES.TEXT,
-        status: MESSAGE_STATUS.READ
-      },
-      {
-        id: '3',
-        senderId: chat?.id,
-        senderName: chat?.name,
-        content: DEFAULT_MESSAGE_KEYS.MEETING_POINT,
-        timestamp: new Date(Date.now() - MOCK_MESSAGE_TIMES.FORTY_MINUTES_AGO),
-        type: MESSAGE_TYPES.TEXT,
-        status: MESSAGE_STATUS.READ
-      },
-      {
-        id: '4',
-        senderId: chat?.id,
-        senderName: chat?.name,
-        content: 'location',
-        timestamp: new Date(Date.now() - MOCK_MESSAGE_TIMES.THIRTY_NINE_MINUTES_AGO),
-        type: MESSAGE_TYPES.LOCATION,
-        location: {
-          name: 'Plaza de Armas de Lima',
-          address: 'Cercado de Lima 15001',
-          lat: -12.0464,
-          lng: -77.0428
-        },
-        status: MESSAGE_STATUS.READ
-      },
-      {
-        id: '5',
-        senderId: SENDER_IDS.CURRENT_USER,
-        senderName: 'You',
-        content: DEFAULT_MESSAGE_KEYS.UNDERSTOOD,
-        timestamp: new Date(Date.now() - MOCK_MESSAGE_TIMES.THIRTY_MINUTES_AGO),
-        type: MESSAGE_TYPES.TEXT,
-        status: MESSAGE_STATUS.DELIVERED
-      },
-      {
-        id: '6',
-        senderId: chat?.id,
-        senderName: chat?.name,
-        content: DEFAULT_MESSAGE_KEYS.SHARE_ITINERARY,
-        timestamp: new Date(Date.now() - MOCK_MESSAGE_TIMES.TEN_MINUTES_AGO),
-        type: MESSAGE_TYPES.TEXT,
-        status: MESSAGE_STATUS.READ
-      },
-      {
-        id: '7',
-        senderId: chat?.id,
-        senderName: chat?.name,
-        content: 'document',
-        timestamp: new Date(Date.now() - MOCK_MESSAGE_TIMES.NINE_MINUTES_AGO),
-        type: MESSAGE_TYPES.DOCUMENT,
-        document: {
-          name: 'Itinerario_City_Tour_Lima.pdf',
-          size: '2.5 MB'
-        },
-        status: MESSAGE_STATUS.READ
-      },
-      {
-        id: '8',
-        senderId: SENDER_IDS.CURRENT_USER,
-        senderName: 'You',
-        content: chat?.typing ? '' : DEFAULT_MESSAGE_KEYS.LEAVING_HOTEL,
-        timestamp: new Date(Date.now() - MOCK_MESSAGE_TIMES.FIVE_MINUTES_AGO),
-        type: MESSAGE_TYPES.TEXT,
-        status: MESSAGE_STATUS.SENT
+  // Load messages from backend
+  useEffect(() => {
+    const loadMessages = async () => {
+      if (!chat?.id) {
+        setMessages([]);
+        return;
       }
-    ];
-  }, [chat]);
 
-  const [messages, setMessages] = useState(() => getInitialMessages());
+      setLoading(true);
+      try {
+        console.log('🔵 Cargando mensajes para conversación:', chat.id);
+        const response = await chatService.getMessages(chat.id);
+
+        // Transform messages to UI format
+        const transformedMessages = response.data.map(msg => ({
+          id: msg.id,
+          senderId: msg.sender_id,
+          senderName: msg.sender?.name || 'Usuario',
+          content: msg.content,
+          timestamp: new Date(msg.created_at),
+          type: msg.message_type || MESSAGE_TYPES.TEXT,
+          status: MESSAGE_STATUS.READ, // TODO: Implement real status
+          metadata: msg.metadata,
+          // Store original message data
+          _originalData: msg
+        }));
+
+        setMessages(transformedMessages);
+        console.log('✅ Mensajes cargados:', transformedMessages.length);
+
+        // Mark messages as read
+        if (transformedMessages.length > 0 && user?.id) {
+          await chatService.markAsRead(chat.id, user.id);
+        }
+      } catch (error) {
+        console.error('Error loading messages:', error);
+        setMessages([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadMessages();
+  }, [chat?.id, user?.id]);
 
   useEffect(() => {
     scrollToBottom();
@@ -138,36 +77,47 @@ const useChatWindow = (chat) => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, []);
 
-  const handleSendMessage = useCallback((e) => {
+  const handleSendMessage = useCallback(async (e) => {
     e.preventDefault();
-    if (!message.trim()) return;
+    if (!message.trim() || !chat?.id || !user?.id || sending) return;
 
-    const newMessage = {
-      id: Date.now().toString(),
-      senderId: 'current-user',
-      senderName: 'You',
-      content: message,
-      timestamp: new Date(),
-      type: MESSAGE_TYPES.TEXT,
-      status: MESSAGE_STATUS.SENT
-    };
+    const messageContent = message;
+    setMessage(''); // Clear input immediately
+    setSending(true);
 
-    setMessages([...messages, newMessage]);
-    setMessage('');
+    try {
+      console.log('📤 Enviando mensaje a conversación:', chat.id);
 
-    // Simulate message status change
-    setTimeout(() => {
-      setMessages(prev => prev.map(msg => 
-        msg.id === newMessage.id ? { ...msg, status: MESSAGE_STATUS.DELIVERED } : msg
-      ));
-    }, SIMULATION_DELAYS.STATUS_TO_DELIVERED);
+      const response = await chatService.sendMessage(chat.id, {
+        sender_id: user.id,
+        content: messageContent,
+        message_type: MESSAGE_TYPES.TEXT,
+        metadata: {}
+      });
 
-    setTimeout(() => {
-      setMessages(prev => prev.map(msg => 
-        msg.id === newMessage.id ? { ...msg, status: MESSAGE_STATUS.READ } : msg
-      ));
-    }, SIMULATION_DELAYS.STATUS_TO_READ);
-  }, [message, messages]);
+      // Add new message to UI
+      const newMessage = {
+        id: response.data.id,
+        senderId: response.data.sender_id,
+        senderName: user.name || 'You',
+        content: response.data.content,
+        timestamp: new Date(response.data.created_at),
+        type: response.data.message_type,
+        status: MESSAGE_STATUS.SENT,
+        metadata: response.data.metadata,
+        _originalData: response.data
+      };
+
+      setMessages(prev => [...prev, newMessage]);
+      console.log('✅ Mensaje enviado:', newMessage);
+    } catch (error) {
+      console.error('Error al enviar mensaje:', error);
+      // Restore message in input if failed
+      setMessage(messageContent);
+    } finally {
+      setSending(false);
+    }
+  }, [message, chat?.id, user?.id, user?.name, sending]);
 
   const handleFileSelect = useCallback((e) => {
     const file = e.target.files[0];
@@ -196,7 +146,9 @@ const useChatWindow = (chat) => {
     handleFileSelect,
     canMakeCalls,
     emojis,
-    
+    loading,
+    sending,
+
     // Constantes
     MESSAGE_TYPES,
     MESSAGE_STATUS,
