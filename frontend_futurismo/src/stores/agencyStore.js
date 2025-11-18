@@ -8,6 +8,7 @@ import { persist } from 'zustand/middleware';
 import { format, addDays, eachDayOfInterval } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { agencyService } from '../services/agencyService';
+import api from '../services/api';
 import {
   DATE_FORMATS,
   DEFAULT_AGENCY,
@@ -292,9 +293,9 @@ const useAgencyStore = create(
             let agencyId = user.agency_id;
 
             if (!agencyId) {
-              // Buscar la agencia por user_id
-              const response = await fetch('/api/agencies');
-              const agenciesResult = await response.json();
+              // Buscar la agencia por user_id usando api configurado
+              const response = await api.get('/agencies');
+              const agenciesResult = response.data;
 
               if (agenciesResult.success && agenciesResult.data) {
                 const userAgency = agenciesResult.data.find(a => a.user_id === user.id);
@@ -347,9 +348,9 @@ const useAgencyStore = create(
             let agencyId = user.agency_id;
 
             if (!agencyId) {
-              // Buscar la agencia por user_id
-              const response = await fetch('/api/agencies');
-              const agenciesResult = await response.json();
+              // Buscar la agencia por user_id usando api configurado
+              const response = await api.get('/agencies');
+              const agenciesResult = response.data;
 
               if (agenciesResult.success && agenciesResult.data) {
                 const userAgency = agenciesResult.data.find(a => a.user_id === user.id);

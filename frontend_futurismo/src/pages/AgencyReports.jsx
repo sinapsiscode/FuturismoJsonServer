@@ -3,19 +3,21 @@ import { useTranslation } from 'react-i18next';
 import { ChartBarIcon, ArrowTrendingUpIcon, CurrencyDollarIcon, UserGroupIcon, CalendarIcon, ArrowDownTrayIcon, FunnelIcon, ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
 import { format, addMonths, subMonths } from 'date-fns';
 import { es } from 'date-fns/locale';
-import { 
-  BarChart as Chart, 
-  Bar, 
-  XAxis, 
-  YAxis, 
-  CartesianGrid, 
-  Tooltip, 
-  Legend, 
+import {
+  BarChart as Chart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
   ResponsiveContainer,
   LineChart,
   Line
 } from 'recharts';
 import useAgencyStore from '../stores/agencyStore';
+import * as XLSX from 'xlsx';
+import toast from 'react-hot-toast';
 
 const AgencyReports = () => {
   const { t } = useTranslation();
@@ -112,8 +114,109 @@ const AgencyReports = () => {
   };
 
   const exportReport = () => {
-    // Implementar exportación a PDF/Excel (sin CSV)
-    console.log('Exportando reporte...', reportData);
+    if (!reportData) {
+      toast.error('No hay datos para exportar');
+      return;
+    }
+
+    try {
+      const workbook = XLSX.utils.book_new();
+      const year = selectedDate.getFullYear();
+      const month = selectedDate.getMonth() + 1;
+
+      if (reportType === 'monthly') {
+        // === REPORTE MENSUAL ===
+        const monthName = format(selectedDate, 'MMMM yyyy', { locale: es });
+
+        // Hoja 1: Resumen
+        const summaryData = [
+          ['REPORTE MENSUAL - ' + monthName.toUpperCase()],
+          [],
+          ['Métrica', 'Valor'],
+          ['Total de Reservaciones', reportData.summary?.totalReservations || 0],
+          ['Total de Participantes', reportData.summary?.totalParticipants || 0],
+          ['Ingresos Totales', formatCurrency(reportData.summary?.totalRevenue || 0)],
+          ['Valor Promedio de Orden', formatCurrency(reportData.summary?.averageOrderValue || 0)]
+        ];
+        const summarySheet = XLSX.utils.aoa_to_sheet(summaryData);
+        summarySheet['!cols'] = [{ wch: 30 }, { wch: 20 }];
+        XLSX.utils.book_append_sheet(workbook, summarySheet, 'Resumen');
+
+        // Hoja 2: Datos Diarios
+        if (reportData.dailyData && reportData.dailyData.length > 0) {
+          const dailyHeaders = [['Fecha', 'Ingresos', 'Reservaciones', 'Participantes']];
+          const dailyRows = reportData.dailyData.map(day => [
+            format(new Date(day.date), 'dd/MM/yyyy', { locale: es }),
+            day.revenue || 0,
+            day.reservations || 0,
+            day.participants || 0
+          ]);
+          const dailyData = [...dailyHeaders, ...dailyRows];
+          const dailySheet = XLSX.utils.aoa_to_sheet(dailyData);
+          dailySheet['!cols'] = [{ wch: 15 }, { wch: 15 }, { wch: 15 }, { wch: 15 }];
+          XLSX.utils.book_append_sheet(workbook, dailySheet, 'Datos Diarios');
+        }
+
+        // Hoja 3: Desglose por Servicios
+        if (reportData.serviceBreakdown && Object.keys(reportData.serviceBreakdown).length > 0) {
+          const serviceHeaders = [['Servicio', 'Ingresos', 'Cantidad', 'Participantes']];
+          const serviceRows = Object.entries(reportData.serviceBreakdown).map(([service, data]) => [
+            service,
+            data.revenue || 0,
+            data.count || 0,
+            data.participants || 0
+          ]);
+          const serviceData = [...serviceHeaders, ...serviceRows];
+          const serviceSheet = XLSX.utils.aoa_to_sheet(serviceData);
+          serviceSheet['!cols'] = [{ wch: 40 }, { wch: 15 }, { wch: 15 }, { wch: 15 }];
+          XLSX.utils.book_append_sheet(workbook, serviceSheet, 'Por Servicios');
+        }
+
+        // Generar archivo
+        const fileName = `Reporte_Mensual_${year}_${String(month).padStart(2, '0')}.xlsx`;
+        XLSX.writeFile(workbook, fileName);
+        toast.success('✅ Reporte mensual exportado correctamente');
+
+      } else {
+        // === REPORTE ANUAL ===
+        const yearlyHeaders = [['Mes', 'Ingresos', 'Reservaciones', 'Participantes', 'Valor Promedio']];
+        const yearlyRows = reportData.yearlyData.map(month => [
+          month.monthName,
+          month.totalRevenue || 0,
+          month.totalReservations || 0,
+          month.totalParticipants || 0,
+          month.averageOrderValue || 0
+        ]);
+
+        // Agregar totales
+        const totalRevenue = reportData.yearlyData.reduce((sum, m) => sum + (m.totalRevenue || 0), 0);
+        const totalReservations = reportData.yearlyData.reduce((sum, m) => sum + (m.totalReservations || 0), 0);
+        const totalParticipants = reportData.yearlyData.reduce((sum, m) => sum + (m.totalParticipants || 0), 0);
+        const avgOrderValue = totalReservations > 0 ? totalRevenue / totalReservations : 0;
+
+        const yearlyData = [
+          ['REPORTE ANUAL - ' + year],
+          [],
+          ...yearlyHeaders,
+          ...yearlyRows,
+          [],
+          ['TOTALES', totalRevenue, totalReservations, totalParticipants, avgOrderValue]
+        ];
+
+        const yearlySheet = XLSX.utils.aoa_to_sheet(yearlyData);
+        yearlySheet['!cols'] = [{ wch: 15 }, { wch: 15 }, { wch: 15 }, { wch: 15 }, { wch: 15 }];
+        XLSX.utils.book_append_sheet(workbook, yearlySheet, 'Reporte Anual');
+
+        // Generar archivo
+        const fileName = `Reporte_Anual_${year}.xlsx`;
+        XLSX.writeFile(workbook, fileName);
+        toast.success('✅ Reporte anual exportado correctamente');
+      }
+
+    } catch (error) {
+      console.error('Error al exportar reporte:', error);
+      toast.error('❌ Error al exportar el reporte');
+    }
   };
 
   return (

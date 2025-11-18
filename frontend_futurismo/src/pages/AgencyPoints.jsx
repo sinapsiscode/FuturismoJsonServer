@@ -4,6 +4,8 @@ import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
 import { Link } from 'react-router-dom';
 import useAgencyStore from '../stores/agencyStore';
+import * as XLSX from 'xlsx';
+import toast from 'react-hot-toast';
 
 const AgencyPoints = () => {
   const { currentAgency, pointsTransactions, actions, isLoading } = useAgencyStore();
@@ -43,8 +45,67 @@ const AgencyPoints = () => {
   };
 
   const exportHistory = () => {
-    console.log('Exportando historial de puntos...', filteredHistory);
-    // Implementar exportación
+    if (!filteredHistory || filteredHistory.length === 0) {
+      toast.error('No hay datos para exportar');
+      return;
+    }
+
+    try {
+      const workbook = XLSX.utils.book_new();
+
+      // Preparar datos para exportar
+      const headers = [['Fecha', 'Tipo', 'Descripción', 'Puntos', 'Procesado Por', 'Referencia']];
+
+      const rows = filteredHistory.map(transaction => [
+        format(new Date(transaction.createdAt), 'dd/MM/yyyy HH:mm', { locale: es }),
+        transaction.type === 'earned' ? 'Ganados' : 'Canjeados',
+        transaction.reason || transaction.description || 'N/A',
+        transaction.type === 'earned' ? `+${transaction.points}` : `-${transaction.points}`,
+        transaction.processedBy === 'manual' ? 'Manual' : 'Sistema',
+        transaction.relatedReservation || 'N/A'
+      ]);
+
+      // Agregar resumen al inicio
+      const summaryData = [
+        ['HISTORIAL DE PUNTOS'],
+        ['Agencia', currentAgency?.name || 'N/A'],
+        ['Fecha de exportación', format(new Date(), 'dd/MM/yyyy HH:mm', { locale: es })],
+        [],
+        ['RESUMEN'],
+        ['Balance Actual', `${pointsBalance.balance} puntos`],
+        ['Total Ganados', `${pointsBalance.totalEarned} puntos`],
+        ['Total Canjeados', `${pointsBalance.totalRedeemed} puntos`],
+        ['Filtro Aplicado', filterType === 'all' ? 'Todas las transacciones' : filterType === 'earned' ? 'Solo ganados' : 'Solo canjeados'],
+        [],
+        ...headers,
+        ...rows
+      ];
+
+      const worksheet = XLSX.utils.aoa_to_sheet(summaryData);
+
+      // Configurar anchos de columna
+      worksheet['!cols'] = [
+        { wch: 18 }, // Fecha
+        { wch: 12 }, // Tipo
+        { wch: 50 }, // Descripción
+        { wch: 10 }, // Puntos
+        { wch: 15 }, // Procesado Por
+        { wch: 20 }  // Referencia
+      ];
+
+      XLSX.utils.book_append_sheet(workbook, worksheet, 'Historial de Puntos');
+
+      // Generar nombre de archivo
+      const agencyId = currentAgency?.id || 'agencia';
+      const filterSuffix = filterType === 'all' ? 'todos' : filterType === 'earned' ? 'ganados' : 'canjeados';
+      const fileName = `Historial_Puntos_${agencyId}_${filterSuffix}_${format(new Date(), 'yyyyMMdd')}.xlsx`;
+
+      XLSX.writeFile(workbook, fileName);
+      toast.success('✅ Historial de puntos exportado correctamente');
+    } catch (error) {
+      console.error('Error al exportar historial:', error);
+      toast.error('❌ Error al exportar el historial');
+    }
   };
 
   return (
@@ -258,7 +319,7 @@ const AgencyPoints = () => {
                     
                     <div className="text-right">
                       <p className={`text-lg font-bold ${getTransactionColor(transaction.type)}`}>
-                        {transaction.type === 'earned' ? '+' : '-'}{transaction.amount}
+                        {transaction.type === 'earned' ? '+' : '-'}{transaction.points}
                       </p>
                       <p className="text-sm text-gray-600">puntos</p>
                     </div>

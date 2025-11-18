@@ -8,7 +8,12 @@
       "Bash(del count-lines.js)",
       "Bash(powershell \"Get-Content db.json | ConvertFrom-Json | Select-Object -ExpandProperty users | Where-Object { $_email -eq ''contacto@tourslima.com'' } | ConvertTo-Json\")",
       "Bash(curl:*)",
-      "Bash(nul)"
+      "Bash(nul)",
+      "Bash(node -e:*)",
+      "Bash(node check-reports.js:*)",
+      "Bash(node add-points-data.js:*)",
+      "Bash(node check-points.js:*)",
+      "Bash(node add-redemptions-data.js:*)"
     ],
     "deny": [],
     "ask": []

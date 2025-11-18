@@ -770,6 +770,56 @@ module.exports = (router) => {
     }
   });
 
+  // Get agency points balance
+  agenciesRouter.get('/:id/points/balance', (req, res) => {
+    try {
+      const db = router.db;
+      const agency = db.get('agencies').find({ id: req.params.id }).value();
+
+      if (!agency) {
+        return res.status(404).json({
+          success: false,
+          error: 'Agencia no encontrada'
+        });
+      }
+
+      // Calculate points balance from transactions
+      let transactions = db.get('points_transactions').value() || [];
+      transactions = transactions.filter(t => t.agency_id === req.params.id);
+
+      const totalEarned = transactions
+        .filter(t => t.type === 'earned')
+        .reduce((sum, t) => sum + t.points, 0);
+
+      const totalRedeemed = Math.abs(transactions
+        .filter(t => t.type === 'redeemed')
+        .reduce((sum, t) => sum + t.points, 0));
+
+      const balance = totalEarned - totalRedeemed;
+
+      // Determine tier based on balance
+      let tier = 'bronze';
+      if (balance >= 2000) tier = 'platinum';
+      else if (balance >= 1000) tier = 'gold';
+      else if (balance >= 500) tier = 'silver';
+
+      res.json({
+        success: true,
+        data: {
+          balance,
+          totalEarned,
+          totalRedeemed,
+          tier
+        }
+      });
+    } catch (error) {
+      res.status(500).json({
+        success: false,
+        error: 'Error al obtener balance de puntos'
+      });
+    }
+  });
+
   // Get agency points transactions
   agenciesRouter.get('/:id/points/transactions', (req, res) => {
     try {
@@ -783,24 +833,109 @@ module.exports = (router) => {
         });
       }
 
-      // TODO: Implement points transactions when the feature is ready
-      // For now, return empty array
+      // Get points transactions for this agency
+      let transactions = db.get('points_transactions').value() || [];
+      transactions = transactions.filter(t => t.agency_id === req.params.id);
+
+      // Sort by date descending (newest first)
+      transactions.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+
+      // Transform to camelCase format expected by frontend
+      const transformedTransactions = transactions.map(t => ({
+        id: t.id,
+        agencyId: t.agency_id,
+        type: t.type,
+        points: t.points,
+        reason: t.description,
+        description: t.description,
+        referenceId: t.reference_id,
+        referenceType: t.reference_type,
+        createdAt: t.created_at,
+        processedBy: t.processed_by || 'system'
+      }));
+
+      // Pagination
+      const { page = 1, pageSize = 50 } = req.query;
+      const startIndex = (page - 1) * pageSize;
+      const endIndex = startIndex + parseInt(pageSize);
+      const paginatedTransactions = transformedTransactions.slice(startIndex, endIndex);
+
       res.json({
         success: true,
         data: {
-          transactions: [],
-          pagination: {
-            page: 1,
-            pageSize: 50,
-            total: 0,
-            totalPages: 0
-          }
+          transactions: paginatedTransactions,
+          page: parseInt(page),
+          pageSize: parseInt(pageSize),
+          total: transformedTransactions.length,
+          totalPages: Math.ceil(transformedTransactions.length / pageSize)
         }
       });
     } catch (error) {
       res.status(500).json({
         success: false,
         error: 'Error al obtener transacciones de puntos'
+      });
+    }
+  });
+
+  // Get agency points redemptions (canjes realizados)
+  agenciesRouter.get('/:id/points/redemptions', (req, res) => {
+    try {
+      const db = router.db;
+      const agency = db.get('agencies').find({ id: req.params.id }).value();
+
+      if (!agency) {
+        return res.status(404).json({
+          success: false,
+          error: 'Agencia no encontrada'
+        });
+      }
+
+      // Get redemptions for this agency
+      let redemptions = db.get('points_redemptions').value() || [];
+      redemptions = redemptions.filter(r => r.agency_id === req.params.id);
+
+      // Sort by date descending (newest first)
+      redemptions.sort((a, b) => new Date(b.requested_at) - new Date(a.requested_at));
+
+      // Transform to camelCase format
+      const transformedRedemptions = redemptions.map(r => ({
+        id: r.id,
+        agencyId: r.agency_id,
+        rewardId: r.reward_id,
+        rewardName: r.reward_name,
+        pointsSpent: r.points_spent,
+        quantity: r.quantity,
+        status: r.status,
+        requestedAt: r.requested_at,
+        processedAt: r.processed_at,
+        deliveredAt: r.delivered_at,
+        appliedAt: r.applied_at,
+        trackingNumber: r.tracking_number,
+        deliveryAddress: r.delivery_address,
+        notes: r.notes
+      }));
+
+      // Pagination
+      const { page = 1, pageSize = 20 } = req.query;
+      const startIndex = (page - 1) * pageSize;
+      const endIndex = startIndex + parseInt(pageSize);
+      const paginatedRedemptions = transformedRedemptions.slice(startIndex, endIndex);
+
+      res.json({
+        success: true,
+        data: {
+          redemptions: paginatedRedemptions,
+          page: parseInt(page),
+          pageSize: parseInt(pageSize),
+          total: transformedRedemptions.length,
+          totalPages: Math.ceil(transformedRedemptions.length / pageSize)
+        }
+      });
+    } catch (error) {
+      res.status(500).json({
+        success: false,
+        error: 'Error al obtener historial de canjes'
       });
     }
   });
