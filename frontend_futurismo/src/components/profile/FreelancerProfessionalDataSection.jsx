@@ -16,7 +16,7 @@ import { useAuthStore } from '../../stores/authStore';
 import useGuidesStore from '../../stores/guidesStore';
 import LanguageMultiSelect from '../common/LanguageMultiSelect';
 import toast from 'react-hot-toast';
-import axios from 'axios';
+import api from '../../services/api';
 
 const FreelancerProfessionalDataSection = () => {
   const { t } = useTranslation();
@@ -42,30 +42,57 @@ const FreelancerProfessionalDataSection = () => {
   // Cargar datos del guía
   useEffect(() => {
     const loadGuideData = async () => {
-      if (!user?.email) return;
+      if (!user?.email) {
+        console.warn('⚠️ No hay email de usuario para cargar datos profesionales');
+        return;
+      }
+
+      console.log('🔍 Cargando datos profesionales para:', user.email);
+      setLocalLoading(true);
 
       try {
-        const response = await axios.get('/api/guides');
+        const response = await api.get('/guides');
+        console.log('📦 Respuesta de /guides (profesional):', response.data);
         const guidesResult = response.data;
 
         if (guidesResult.success && guidesResult.data) {
           const userGuide = guidesResult.data.guides.find(g => g.email === user.email);
 
           if (userGuide) {
+            console.log('✅ Guía encontrado (profesional):', userGuide.id);
             setCurrentGuide(userGuide);
+
+            // Transform languages from array of codes to array of objects
+            const transformedLanguages = Array.isArray(userGuide.languages)
+              ? userGuide.languages.map(lang =>
+                  typeof lang === 'string'
+                    ? { code: lang, level: 'Avanzado' }
+                    : lang
+                )
+              : [];
+
             setFormData({
-              licenseNumber: userGuide.license_number || '',
+              licenseNumber: userGuide.documents?.license_number || userGuide.license_number || '',
               experience: userGuide.bio || userGuide.experience || '',
               specialties: Array.isArray(userGuide.specialties) ? userGuide.specialties.join(', ') : (userGuide.specialties || ''),
-              languages: userGuide.languages || [],
+              languages: transformedLanguages,
               yearsOfExperience: userGuide.experience_years || 0,
               education: userGuide.education || '',
               certifications: Array.isArray(userGuide.certifications) ? userGuide.certifications : []
             });
+          } else {
+            console.error('❌ No se encontró guía con email:', user.email);
+            toast.error('No se encontraron datos profesionales');
           }
+        } else {
+          console.error('❌ Respuesta sin datos válidos');
+          toast.error('Error al cargar datos profesionales');
         }
       } catch (error) {
-        console.error('Error al cargar guía:', error);
+        console.error('❌ Error al cargar datos profesionales:', error);
+        toast.error('Error al cargar datos profesionales');
+      } finally {
+        setLocalLoading(false);
       }
     };
 
@@ -208,6 +235,20 @@ const FreelancerProfessionalDataSection = () => {
 
       {!isCollapsed && (
         <div className="p-6 space-y-6">
+          {localLoading && !currentGuide ? (
+            <div className="flex justify-center items-center py-8">
+              <svg className="animate-spin h-8 w-8 text-blue-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              </svg>
+              <span className="ml-2 text-gray-600">Cargando datos...</span>
+            </div>
+          ) : !currentGuide ? (
+            <div className="text-center py-8 text-gray-500">
+              No se encontraron datos profesionales.
+            </div>
+          ) : (
+          <>
           {/* Información básica profesional */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
@@ -371,6 +412,8 @@ const FreelancerProfessionalDataSection = () => {
               </div>
             )}
           </div>
+          </>
+          )}
         </div>
       )}
     </div>

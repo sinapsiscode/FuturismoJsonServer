@@ -28,7 +28,7 @@
       "avatar": "https://ui-avatars.com/api/?name=Maria+Gonzalez&background=10B981&color=fff",
       "created_at": "2024-02-01T00:00:00Z",
       "updated_at": "2024-02-01T00:00:00Z",
-      "last_login_at": "2025-11-18T18:39:46.698Z"
+      "last_login_at": "2025-11-18T20:45:20.543Z"
     },
     {
       "id": "user-guide-1",
@@ -410,12 +410,20 @@
         }
       },
       "documents": {
-        "dni": "12345678",
-        "license_number": "GT-2024-001234",
-        "license_expiry": "2026-12-31"
+        "type": "DNI",
+        "dni": "12345678"
+      },
+      "banking": {
+        "bank_name": "Banco de Crédito del Perú",
+        "account_type": "Ahorros",
+        "account_number": "194-12345678-0-12",
+        "account_holder": "Carlos Mendoza",
+        "identification_number": "12345678",
+        "currency": "PEN",
+        "interbank_code": "002-194-001234567812"
       },
       "created_at": "2024-03-01T00:00:00Z",
-      "updated_at": "2025-10-20T00:00:00Z"
+      "updated_at": "2025-11-18T20:38:51.587Z"
     },
     {
       "id": "guide-002",
@@ -1155,6 +1163,9 @@
       "base_amount": 432,
       "tax_amount": 78,
       "special_requests": "",
+      "rating": 5,
+      "feedback": "Excelente experiencia! El guía Carlos fue muy profesional y conocedor de la historia de Lima. El recorrido superó nuestras expectativas. Muy recomendado para familias.",
+      "ratingDate": "2025-11-16T14:30:00Z",
       "created_at": "2025-11-10T10:00:00Z",
       "updated_at": "2025-11-18T20:10:37.766Z"
     },
@@ -2267,6 +2278,20 @@
       "user_id": "user-agency-1",
       "message_id": null,
       "read_at": "2025-11-18T06:25:53.759Z"
+    },
+    {
+      "id": "read-1763497721399",
+      "conversation_id": "conv-001",
+      "user_id": "user-guide-1",
+      "message_id": null,
+      "read_at": "2025-11-18T20:28:41.399Z"
+    },
+    {
+      "id": "read-1763497721416",
+      "conversation_id": "conv-001",
+      "user_id": "user-guide-1",
+      "message_id": null,
+      "read_at": "2025-11-18T20:28:41.416Z"
     }
   ],
   "dashboard_stats": {

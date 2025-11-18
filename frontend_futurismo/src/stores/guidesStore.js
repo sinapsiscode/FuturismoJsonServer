@@ -185,35 +185,31 @@ const useGuidesStore = create((set, get) => ({
 
     try {
       // Transform frontend format to backend format
-      const backendData = {};
+      const backendData = { ...updateData }; // Start with all data
 
-      // Handle fullName -> first_name + last_name
-      if (updateData.fullName) {
+      // Handle fullName -> first_name + last_name (only if fullName is provided)
+      if (updateData.fullName && !updateData.first_name) {
         const nameParts = updateData.fullName.trim().split(' ');
         backendData.first_name = nameParts[0];
         backendData.last_name = nameParts.slice(1).join(' ') || nameParts[0];
-        backendData.name = updateData.fullName; // Also keep name field
+        backendData.name = updateData.fullName;
+        delete backendData.fullName; // Remove fullName after converting
       }
 
-      // Handle guideType -> type conversion
-      if (updateData.guideType) {
+      // Handle guideType -> type conversion (only if guideType is provided)
+      if (updateData.guideType && !updateData.type) {
         backendData.type = updateData.guideType === 'planta' ? 'employed' : 'freelance';
+        delete backendData.guideType; // Remove guideType after converting
       }
 
-      // Handle dni
-      if (updateData.dni) {
+      // Handle dni at top level -> documents.dni (only if top-level dni is provided)
+      if (updateData.dni && typeof updateData.dni === 'string') {
         backendData.documents = {
           ...(updateData.documents || {}),
           dni: updateData.dni
         };
+        delete backendData.dni; // Remove top-level dni after moving to documents
       }
-
-      // Copy other fields directly
-      if (updateData.phone) backendData.phone = updateData.phone;
-      if (updateData.email) backendData.email = updateData.email;
-      if (updateData.address) backendData.address = updateData.address;
-      if (updateData.status) backendData.status = updateData.status;
-      if (updateData.specializations) backendData.specializations = updateData.specializations;
 
       console.log('📝 Actualizando guía:', { id, updateData, backendData });
 

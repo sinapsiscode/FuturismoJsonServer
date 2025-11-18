@@ -1,7 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
-import { XMarkIcon } from '@heroicons/react/24/outline';
+import { XMarkIcon, StarIcon } from '@heroicons/react/24/outline';
+import { StarIcon as StarIconSolid } from '@heroicons/react/24/solid';
 
 const ServiceDetailsModal = ({ isOpen, onClose, service }) => {
   const { t } = useTranslation();
@@ -236,6 +237,76 @@ const ServiceDetailsModal = ({ isOpen, onClose, service }) => {
                     </h4>
                     <div className="bg-gray-50 p-3 rounded-lg">
                       <p className="text-sm text-gray-700">{service.notes}</p>
+                    </div>
+                  </div>
+                )}
+
+                {/* Calificación y Comentarios */}
+                {(service.rating || service.feedback || service.review_comment) && (
+                  <div className="border-t border-gray-200 pt-6">
+                    <h4 className="text-sm font-medium text-gray-900 mb-4">
+                      Calificación del Servicio
+                    </h4>
+
+                    <div className="bg-gradient-to-br from-blue-50 to-indigo-50 p-4 rounded-lg border border-blue-100">
+                      {/* Rating con estrellas */}
+                      {service.rating && (
+                        <div className="mb-4">
+                          <div className="flex items-center space-x-2">
+                            <div className="flex items-center">
+                              {[1, 2, 3, 4, 5].map((star) => (
+                                star <= Math.floor(service.rating || 0) ? (
+                                  <StarIconSolid
+                                    key={star}
+                                    className="h-6 w-6 text-yellow-400"
+                                  />
+                                ) : (
+                                  <StarIcon
+                                    key={star}
+                                    className="h-6 w-6 text-gray-300"
+                                  />
+                                )
+                              ))}
+                            </div>
+                            <span className="text-2xl font-bold text-gray-900">
+                              {service.rating}
+                            </span>
+                            <span className="text-sm text-gray-500">/ 5.0</span>
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Comentarios del cliente */}
+                      {(service.feedback || service.review_comment) && (
+                        <div>
+                          <p className="text-sm font-medium text-gray-700 mb-2">
+                            Comentario del cliente:
+                          </p>
+                          <div className="bg-white p-3 rounded-lg shadow-sm border border-gray-200">
+                            <p className="text-sm text-gray-800 italic">
+                              "{service.feedback || service.review_comment}"
+                            </p>
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Fecha de calificación */}
+                      {(service.ratingDate || service.reviewed_at) && (
+                        <div className="mt-3 text-xs text-gray-500">
+                          Calificado el {formatDate(service.ratingDate || service.reviewed_at)}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )}
+
+                {/* Mensaje si no hay calificación */}
+                {service.status === 'completed' && !service.rating && !service.feedback && !service.review_comment && (
+                  <div className="border-t border-gray-200 pt-6">
+                    <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                      <p className="text-sm text-gray-600 text-center">
+                        Este servicio aún no ha sido calificado por el cliente
+                      </p>
                     </div>
                   </div>
                 )}

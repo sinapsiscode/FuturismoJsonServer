@@ -529,7 +529,7 @@
     "dashboard": "Dashboard",
     "monitoring": "Monitoreo",
     "reservations": "Reservas",
-    "searchGuides": "Buscar Guías",
+    "searchGuides": "Marketplace",
     "myContracts": "Mis Contrataciones",
     "calendar": "Calendario",
     "reports": "Reportes",
@@ -1322,7 +1322,8 @@
     "updateService": "Actualizar Servicio",
     "min": "Mínimo",
     "max": "Máximo",
-    "back": "Volver"
+    "back": "Volver",
+    "toggleMenu": "Alternar menú"
   },
   "settings": {
     "title": "Configuración",
@@ -1736,6 +1737,15 @@
       "pause": "Pausar",
       "resume": "Reanudar",
       "complete": "Completar"
+    },
+    "status": {
+      "asignado": "Asignado",
+      "iniciado": "En Progreso",
+      "pausado": "Pausado",
+      "completado": "Completado",
+      "cancelado": "Cancelado",
+      "en_progreso": "En Progreso",
+      "finalizado": "Finalizado"
     },
     "tour": {
       "checkIn": "Check-in",

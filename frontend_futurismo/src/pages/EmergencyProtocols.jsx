@@ -45,13 +45,13 @@ const EmergencyProtocols = () => {
   const [viewMode, setViewMode] = useState('cards'); // 'cards' | 'list'
 
   // Filtrar protocolos
-  const filteredProtocols = protocols.filter(protocol => {
-    const matchesSearch = !searchQuery || 
+  const filteredProtocols = (protocols || []).filter(protocol => {
+    const matchesSearch = !searchQuery ||
       protocol.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       protocol.description.toLowerCase().includes(searchQuery.toLowerCase());
-    
+
     const matchesCategory = !selectedCategory || protocol.category === selectedCategory;
-    
+
     return matchesSearch && matchesCategory;
   });
 

@@ -12,6 +12,7 @@ import FreelancerBankingDataSection from '../components/profile/FreelancerBankin
 import AdminCompanyDataSection from '../components/profile/AdminCompanyDataSection';
 import AdminContactDataSection from '../components/profile/AdminContactDataSection';
 import AdminPaymentDataSection from '../components/profile/AdminPaymentDataSection';
+import AdminGuidesBankingSection from '../components/profile/AdminGuidesBankingSection';
 import AccountStatusSection from '../components/profile/AccountStatusSection';
 import FeedbackSection from '../components/profile/FeedbackSectionSimple';
 import AgencyRatingsSection from '../components/profile/AgencyRatingsSection';
@@ -128,6 +129,7 @@ const Profile = () => {
               <AdminCompanyDataSection />
               <AdminContactDataSection />
               <AdminPaymentDataSection />
+              <AdminGuidesBankingSection />
               <AgencyRatingsSection />
             </>
           )}

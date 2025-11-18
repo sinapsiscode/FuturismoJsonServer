@@ -14,7 +14,8 @@
       "Bash(node add-points-data.js:*)",
       "Bash(node check-points.js:*)",
       "Bash(node add-redemptions-data.js:*)",
-      "Bash(npm run dev:*)"
+      "Bash(npm run dev:*)",
+      "Bash(powershell \"Get-Content db.json | ConvertFrom-Json | Select-Object -ExpandProperty guides | Where-Object { $_email -eq ''carlos@guia.com'' } | ConvertTo-Json\")"
     ],
     "deny": [],
     "ask": []

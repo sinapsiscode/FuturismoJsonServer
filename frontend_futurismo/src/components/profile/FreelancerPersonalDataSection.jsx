@@ -15,7 +15,7 @@ import { useAuthStore } from '../../stores/authStore';
 import useGuidesStore from '../../stores/guidesStore';
 import { useTranslation } from 'react-i18next';
 import toast from 'react-hot-toast';
-import axios from 'axios';
+import api from '../../services/api';
 
 const FreelancerPersonalDataSection = () => {
   const { user } = useAuthStore();
@@ -42,16 +42,27 @@ const FreelancerPersonalDataSection = () => {
   // Cargar datos del guía
   useEffect(() => {
     const loadGuideData = async () => {
-      if (!user?.email) return;
+      if (!user?.email) {
+        console.warn('⚠️ No hay email de usuario para cargar datos del guía');
+        return;
+      }
+
+      console.log('🔍 Cargando datos del guía para:', user.email);
+      setLocalLoading(true);
 
       try {
-        const response = await axios.get('/api/guides');
+        const response = await api.get('/guides');
+        console.log('📦 Respuesta de /guides:', response.data);
         const guidesResult = response.data;
 
         if (guidesResult.success && guidesResult.data) {
+          console.log('✅ Datos exitosos, buscando guía con email:', user.email);
+          console.log('📋 Total de guías:', guidesResult.data.guides?.length);
+
           const userGuide = guidesResult.data.guides.find(g => g.email === user.email);
 
           if (userGuide) {
+            console.log('✅ Guía encontrado:', userGuide.id, userGuide.first_name);
             setCurrentGuide(userGuide);
             setFormData({
               firstName: userGuide.first_name || '',
@@ -62,10 +73,21 @@ const FreelancerPersonalDataSection = () => {
               documentNumber: userGuide.documents?.dni || userGuide.dni || '',
               profilePhoto: userGuide.profile_photo || userGuide.avatar || null
             });
+          } else {
+            console.error('❌ No se encontró guía con email:', user.email);
+            console.log('📋 Emails disponibles:', guidesResult.data.guides.map(g => g.email));
+            toast.error('No se encontraron datos del perfil');
           }
+        } else {
+          console.error('❌ Respuesta sin datos válidos:', guidesResult);
+          toast.error('Error al cargar datos del perfil');
         }
       } catch (error) {
-        console.error('Error al cargar guía:', error);
+        console.error('❌ Error al cargar guía:', error);
+        console.error('Error details:', error.response?.data || error.message);
+        toast.error('Error al cargar datos del perfil');
+      } finally {
+        setLocalLoading(false);
       }
     };
 
@@ -210,6 +232,19 @@ const FreelancerPersonalDataSection = () => {
 
       {!isCollapsed && (
         <div className="p-6">
+          {localLoading && !currentGuide ? (
+            <div className="flex justify-center items-center py-8">
+              <svg className="animate-spin h-8 w-8 text-blue-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              </svg>
+              <span className="ml-2 text-gray-600">Cargando datos...</span>
+            </div>
+          ) : !currentGuide ? (
+            <div className="text-center py-8 text-gray-500">
+              No se encontraron datos del perfil. Por favor, contacta al administrador.
+            </div>
+          ) : (
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             {/* Foto de perfil */}
             <div className="lg:col-span-1">
@@ -356,6 +391,7 @@ const FreelancerPersonalDataSection = () => {
               </div>
             </div>
           </div>
+          )}
         </div>
       )}
     </div>

@@ -225,10 +225,23 @@ module.exports = (router) => {
 
   // Get all reservations with filtering
   // Only admins and agencies can manage reservations
-  reservationsRouter.get('/', adminOrAgency(), (req, res) => {
+  reservationsRouter.get('/', (req, res) => {
     try {
       const db = router.db;
       let reservations = db.get('reservations').value() || [];
+
+      // Get user from token
+      const user = req.user;
+      if (!user) {
+        return res.status(401).json({
+          success: false,
+          error: 'No autorizado'
+        });
+      }
+
+      // El token puede tener 'id' o 'userId' dependiendo de cómo se generó
+      const userId = user.id || user.userId;
+      console.log('📋 [GET /reservations] Usuario:', user.role, 'userId:', userId, 'token:', user);
 
       // Get related data for joining
       const services = db.get('services').value() || [];
@@ -236,6 +249,28 @@ module.exports = (router) => {
       const clients = db.get('clients').value() || [];
       const users = db.get('users').value() || [];
       const guides = db.get('guides').value() || [];
+
+      // Si es guía, filtrar solo sus reservas
+      if (user.role === 'guide') {
+        const guide = guides.find(g => g.user_id === userId);
+        if (guide) {
+          reservations = reservations.filter(r => r.guide_id === guide.id);
+          console.log('🔍 [GET /reservations] Guía filtrado:', guide.id, '- Reservas:', reservations.length);
+        } else {
+          console.log('⚠️ [GET /reservations] Guía no encontrado para user_id:', userId);
+          reservations = [];
+        }
+      }
+      // Si es agencia, filtrar solo sus reservas
+      else if (user.role === 'agency') {
+        const agencies = db.get('agencies').value() || [];
+        const agency = agencies.find(a => a.user_id === userId);
+        if (agency) {
+          reservations = reservations.filter(r => r.agency_id === agency.id);
+          console.log('🔍 [GET /reservations] Agencia filtrada:', agency.id, '- Reservas:', reservations.length);
+        }
+      }
+      // Admin puede ver todas
 
       // Transform reservations to extended format with joined data
       let extendedReservations = reservations.map(reservation => {

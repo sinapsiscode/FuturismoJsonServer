@@ -159,17 +159,32 @@ module.exports = (router) => {
         });
       }
 
-      // Merge existing data with update data (keep existing fields)
-      const updatedGuide = {
-        ...guide.value(),  // Keep all existing fields
-        ...req.body,       // Overwrite with new data
-        id: guide.value().id,  // Preserve ID
-        updated_at: new Date().toISOString()
+      const currentGuide = guide.value();
+
+      // Deep merge function for nested objects
+      const deepMerge = (target, source) => {
+        const output = { ...target };
+        for (const key in source) {
+          if (source[key] && typeof source[key] === 'object' && !Array.isArray(source[key])) {
+            output[key] = deepMerge(target[key] || {}, source[key]);
+          } else {
+            output[key] = source[key];
+          }
+        }
+        return output;
       };
+
+      // Deep merge existing data with update data
+      const updatedGuide = deepMerge(currentGuide, {
+        ...req.body,
+        id: currentGuide.id,  // Preserve ID
+        updated_at: new Date().toISOString()
+      });
 
       guide.assign(updatedGuide).write();
 
       console.log('✅ Guía actualizado:', updatedGuide.id);
+      console.log('📝 Campos actualizados:', Object.keys(req.body).join(', '));
 
       res.json({
         success: true,
